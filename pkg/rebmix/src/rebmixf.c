@@ -3619,6 +3619,14 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 	    }
 	}
 
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymin %2.1f\n",InpParType.ymin[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
+
 	if (InpParType.ymax == NULL) {
 		InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
@@ -3632,6 +3640,14 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 			}
 		}
 	}
+
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymax %2.1f\n", InpParType.ymax[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
 
     for (i = 0; i < InpParType.d; i++) {
         h[i] = InpParType.ymax[i] - InpParType.ymin[i];
@@ -4041,6 +4057,14 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 		}
 	}
 
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymin %2.1f\n", InpParType.ymin[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
+
 	if (InpParType.ymax == NULL) {
 	    InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
@@ -4054,6 +4078,14 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 			}
 		}
 	}
+
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymax %2.1f\n", InpParType.ymax[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
 
     R = (FLOAT*)malloc(OutParType->n * sizeof(FLOAT));
 
@@ -4475,6 +4507,14 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 		}
 	}
 
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymin %2.1f\n", InpParType.ymin[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
+
 	if (InpParType.ymax == NULL) {
 	    InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
@@ -4488,6 +4528,14 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 			}
 		}
 	}
+
+    #if (_REBMIXR)
+	for (i = 0; i < InpParType.d; i++) {
+        Rprintf("InpParType.ymax %2.1f\n", InpParType.ymax[i]);
+	}
+    R_FlushConsole();
+    R_ProcessEvents();
+    #endif
 
     R = (FLOAT*)malloc(OutParType->n * sizeof(FLOAT));
 

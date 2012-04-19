@@ -141,41 +141,51 @@ Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Multivariate Finite Mix
 Estimation. \emph{Communications in Statistics - Theory and Methods}. 40(11), 2022-2034.
 }
 \examples{
-## Generate complex dataset.
+## Generate the complex 1 dataset.
 
-n <- c(99, 26, 109, 49, 21, 108, 23, 
-  78, 84, 46, 77, 2, 81, 109, 86)
+n <- c(998, 263, 1086, 487, 213, 1076, 232, 
+  784, 840, 461, 773, 24, 811, 1091, 861)
 
-Theta <- rbind(pdf = "n",
+Theta <- rbind(pdf = "normal",
   theta1 = c(688.4, 265.1, 30.8, 934, 561.6, 854.9, 883.7, 
   758.3, 189.3, 919.3, 98, 143, 202.5, 628, 977),
   theta2 = c(12.4, 14.6, 14.8, 8.4, 11.7, 9.2, 6.3, 10.2,
   9.5, 8.1, 14.7, 11.7, 7.4, 10.1, 14.6))
 
-complex <- RNGMIX(Dataset = "complex",
+complex1 <- RNGMIX(Dataset = "complex1",
   rseed = -1,
   n = n,
   Theta = Theta)
+  
+complex1
 
-complex 
-
-complex$Dataset$complex
+complex1$Dataset[[1]][1:20, ]  
 
 ## Estimate number of components, component weights and component parameters. 
 
-K <- c(as.integer(1 + log2(sum(n))), ## Minimum v follows the Sturges rule.
+v <- c(as.integer(1 + log2(sum(n))), ## Minimum v follows the Sturges rule.
   as.integer(2 * sum(n)^0.5)) ## Maximum v follows the RootN rule.
 
-complexest <- REBMIX(Dataset = complex$Dataset, 
+## Number of classes or nearest neighbours to be processed.
+
+N <- as.integer(log(v[2] / (v[1] + 1)) / log(1 + 1 / v[1]))
+
+K <- c(v[1], as.integer((v[1] + 1) * (1 + 1 / v[1])^(0:N)))
+
+complex1est <- REBMIX(Dataset = complex1$Dataset, 
   Preprocessing = "histogram", 
   D = 0.0025, 
-  cmax = 30  , 
+  cmax = 30, 
   Criterion = "BIC", 
   Variables = "continuous",
   pdf = "normal", 
   K = K, 
   b = 0.0)
+                 
+complex1est
 
-complexest
+## Plot the finite mixture.
+
+plot(complex1est, npts = 1000)
 }
 \keyword{parameter estimation}
