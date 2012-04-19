@@ -1,0 +1,37 @@
+citHeader("To cite rebmix in publications use:")
+
+citEntry(entry = "Article",
+  title = "The REBMIX Algorithm for the Univariate Finite Mixture Estimation",
+  author  = personList(as.person("Marko Nagode"),
+                              as.person("Matija Fajdiga")),
+  journal  = "Communications in Statistics - Theory and Methods",
+  year = "2011",
+  volume = "40",
+  number = "5",
+  pages = "876-892",
+  url = "http://www.informaworld.com/smpp/content~db=all~content=a931193825~frm=titlelink",
+
+  textVersion  =
+  paste("Marko Nagode, Matija Fajdiga (2011).",
+        "The REBMIX Algorithm for the Univariate Finite Mixture Estimation.",
+        "Communications in Statistics - Theory and Methods, 40(5), 876-892.",
+        "URL http://www.informaworld.com/smpp/content~db=all~content=a931193825~frm=titlelink.")
+)
+
+citEntry(entry = "Article",
+  title = "The REBMIX Algorithm for the Multivariate Finite Mixture Estimation",
+  author  = personList(as.person("Marko Nagode"),
+                              as.person("Matija Fajdiga")),
+  journal  = "Communications in Statistics - Theory and Methods",
+  year = "2011",
+  volume = "40",
+  number = "11",
+  pages = "2022-2034",
+  url = "http://www.informaworld.com/smpp/content~db=all~content=a935984004~frm=titlelink",
+
+  textVersion  =
+  paste("Marko Nagode, Matija Fajdiga (2011).",
+        "The REBMIX Algorithm for the Multivariate Finite Mixture Estimation.",
+        "Communications in Statistics - Theory and Methods, 40(11), 2022-2034.",
+        "URL http://www.informaworld.com/smpp/content~db=all~content=a935984004~frm=titlelink.")
+)

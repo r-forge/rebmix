@@ -1,0 +1,22 @@
+.rebmix <- structure(list(
+Preprocessing = c("histogram", "Parzen window", "k-nearest neighbour"),
+Criterion = c("AIC", "AIC3", "AIC4", "AICc", "BIC", "CAIC", "HQC", "MDL2", "MDL5", "AWE", "CLC", "ICL", "ICL-BIC", "D", "SSE"),
+Variables = c("continuous", "discrete"),
+pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac"),
+pdf.nargs = c(2, 2, 2, 2, 1, 1),
+pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete"),
+Restraints = c("rigid", "loose")),
+.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints"))
+
+.rebmix.plot <- structure(list(
+what = c("density", "marginal", "c", "IC", "logL", "D", "distribution")),
+.Names = c("what"))
+
+.rebmix.boot <- structure(list(
+Bootstrap = c("parametric", "nonparametric")),
+.Names = c("Bootstrap"))
+
+
+
+
+
