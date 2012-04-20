@@ -48,21 +48,41 @@
     if (n < 1) {
       stop(sQuote("n"), " must be greater than 0!", call. = FALSE)
     }
+    
+    if (length(pdf) != d) {
+      stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }    
 
     if (!is.null(Theta1)) {
       Theta1[is.na(Theta1)] <- 0
+      
+      if (length(Theta1) != d) {
+        stop("lengths of ", sQuote("Theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      }
     }
 
     if (!is.null(Theta2)) {
       Theta2[is.na(Theta2)] <- 0
+      
+      if (length(Theta2) != d) {
+        stop("lengths of ", sQuote("Theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      }
     }
 
     if (!is.null(ymin)) {
       ymin[is.na(ymin)] <- 0
+      
+      if (length(ymin) != d) {
+        stop("lengths of ", sQuote("ymin"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      }      
     }
 
     if (!is.null(ymax)) {
       ymax[is.na(ymax)] <- 0
+      
+      if (length(ymax) != d) {
+        stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      }      
     }
 
     output <- .C("RREBMIX",
@@ -73,11 +93,15 @@
       d = as.integer(d),
       VarType = as.character(Variables),
       IniFamType = as.character(pdf),
+      length.Ini0 = as.integer(length(Theta1)),
       Ini0 = as.double(Theta1),
+      length.Ini1 = as.integer(length(Theta2)),
       Ini1 = as.double(Theta2),
       kmax = as.integer(length(K)),
       K = as.integer(K),
+      length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
+      length.ymax = as.integer(length(ymax)),
       ymax = as.double(ymax),
       b = as.double(b),
       ar = as.double(ar),

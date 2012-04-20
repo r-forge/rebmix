@@ -502,7 +502,7 @@ likelihood resulting in $6$ components coincides with the Weibull parametric fam
 appear. The \pkg{rebmix} leads thus to the number of components similar to \citet{Stephens_2000}. The two spurious components reported about by
 \citet{McLachlan_and_Peel_1997} can not be identified by the algorithm. For the particular dataset the AIC is favorable. It gives $4$ to $6$ components.
 \begin{figure}[tbh] \centering
-<<galaxy-fig, fig = TRUE, height = 2.5, width = 5.5, echo = FALSE, results = hide, keep.source = FALSE>>=
+<<galaxy-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 2.5, width = 5.5, echo = FALSE, results = hide, keep.source = FALSE>>=
 ## Visualize Figure 1.
 
 plot(galaxyest$Weibull, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
@@ -552,7 +552,7 @@ It can be concluded that AIC and CLC overestimate the number of components for t
 plot(irisest, pos = 5, what = c("den", "IC", "logL", "D"), nrow = 3, ncol = 3, npts = 1000)
 @
 \begin{figure}[tbh] \centering
-<<iris-fig, fig = TRUE, height = 4.5, width = 5.5, echo = FALSE, results = hide, keep.source = FALSE>>=
+<<iris-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 4.5, width = 5.5, echo = FALSE, results = hide, keep.source = FALSE>>=
 ## Visualize Figure 2.
 
 plot(irisest, pos = 5, what = c("den", "IC", "logL", "D"), nrow = 3, ncol = 3, npts = 1000)
@@ -694,7 +694,7 @@ points(x, y, type = "l", col = "red", lty = "dashed")
 points(x, z, type = "l", col = "blue", lty = "dashed")
 @
 \begin{figure}[t] \centering
-<<complex1-fig, fig = TRUE, height = 2.5, width = 5.5, echo = false, keep.source = FALSE>>=
+<<complex1-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 2.5, width = 5.5, echo = false, keep.source = FALSE>>=
 ## Visualize Figure 3.
 
 plot(complex1est1, npts = 1000)
@@ -755,7 +755,7 @@ plot(complex2est, what = c("dens", "marg", "IC", "D"), nrow = 4, ncol = 3, npts 
 @
 \begin{figure}[t]
 \centering
-<<complex2-fig, fig = TRUE, height = 6.5, width = 7.5, echo = false, keep.source = FALSE>>=
+<<complex2-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 6.5, width = 7.5, echo = false, keep.source = FALSE>>=
 ## Visualize Figure 4.
 
 plot(complex2est, what = c("dens", "marg", "IC", "D"), nrow = 4, ncol = 3, npts = 1000)

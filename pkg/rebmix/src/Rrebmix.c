@@ -145,11 +145,15 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
              int    *d,           /* Number of independent random variables. */ 
 			 char   **VarType,    /* Types of variables. */
 			 char   **IniFamType, /* Initial parametric family types. */
+			 int    *length_Ini0, /* Length of Ini0. */
              double *Ini0,        /* Initial component parameters. */
+			 int    *length_Ini1, /* Length of Ini1. */
              double *Ini1,        /* Initial component parameters. */
 			 int    *kmax,        /* Number of classes or k-nearest neighbours to be processed. */
 			 int    *K,           /* Number of classes or k-nearest neighbours. */
+			 int    *length_ymin, /* Length of ymin. */
 			 double *ymin,        /* Minimum observations. */
+			 int    *length_ymax, /* Length of ymax. */
 			 double *ymax,        /* Maximum observations. */
 			 double *b,           /* Minimum weight multiplier. */
 			 double *ar,          /* Acceleration rate. */
@@ -322,7 +326,7 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
         }
 	}
 
-	if (Ini0 != NULL) {
+	if (*length_Ini0 > 0) {
 		InpParType.Ini0 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
 		*Error = NULL == InpParType.Ini0; if (*Error) goto E0;
@@ -331,8 +335,11 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 		    InpParType.Ini0[i] = Ini0[i];
     	}
 	}
+	else {
+		InpParType.Ini0 = NULL;
+	}
 
-	if (Ini1 != NULL) {
+	if (*length_Ini1 > 0) {
 		InpParType.Ini1 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
 		*Error = NULL == InpParType.Ini1; if (*Error) goto E0;
@@ -340,6 +347,9 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 	    for (i = 0; i < InpParType.d; i++) {
 		    InpParType.Ini1[i] = Ini1[i];
     	}
+	}
+	else {
+		InpParType.Ini1 = NULL;
 	}
 
 	InpParType.kmax = *kmax;
@@ -352,7 +362,7 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
         InpParType.K[i] = K[i];
 	}
 
-	if (ymin != NULL) {
+	if (*length_ymin > 0) {
 		InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
 		*Error = NULL == InpParType.ymin; if (*Error) goto E0;
@@ -361,8 +371,11 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 		    InpParType.ymin[i] = ymin[i];
     	}
 	}
+	else {
+		InpParType.ymin = NULL;
+	}
 
-	if (ymax != NULL) {
+	if (*length_ymax > 0) {
 		InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
 		*Error = NULL == InpParType.ymax; if (*Error) goto E0;
@@ -370,6 +383,9 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 	    for (i = 0; i < InpParType.d; i++) {
 		    InpParType.ymax[i] = ymax[i];
     	}
+	}
+	else {
+		InpParType.ymax = NULL;
 	}
 
 	InpParType.b = *b;
