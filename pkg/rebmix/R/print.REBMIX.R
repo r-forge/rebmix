@@ -26,7 +26,7 @@ print.REBMIX <- function(x, pos = 1, ...)
 
   cat(paste("$summary", "\n", sep = ""))
 
-  p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL"), names(x$summary), nomatch = 0)
+  p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(x$summary), nomatch = 0)
 
   print(apply(x$summary[pos, p], c(1, 2), as.number), quote = FALSE, ...)
 

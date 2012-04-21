@@ -1,7 +1,7 @@
-\name{boot.REBMIX}
+\name{boot}
+\alias{boot}
+\alias{boot.default}
 \alias{boot.REBMIX}
-\alias{boot.REBMIX.default}
-\alias{boot.REBMIX.REBMIX}
 \title{
 Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Variation Estimation
 }
@@ -9,7 +9,7 @@ Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Vari
 Returns the boot.REBMIX output for mixtures of conditionally independent normal, lognormal, Weibull, binomial, Poisson or Dirac component densities.
 }
 \usage{
-\method{boot.REBMIX}{REBMIX}(x, pos = 1, Bootstrap = "parametric", 
+\method{boot}{REBMIX}(x, pos = 1, Bootstrap = "parametric", 
      B = 100, n = NULL, replace = TRUE, prob = NULL, ...)
 }
 \arguments{
@@ -115,7 +115,7 @@ plot(weibullest, what = c("density", "distribution", "c", "IC", "logL", "D"),
 
 ## Bootstrap finite mixture.  
 
-weibullboot <- boot.REBMIX(x = weibullest, Bootstrap = "nonparametric")
+weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric")
 
 weibullboot
 }

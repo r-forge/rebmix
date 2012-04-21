@@ -1,13 +1,13 @@
-boot.REBMIX <- function(x,
+boot <- function(x,
   pos = 1,
   Bootstrap = "parametric",
   B = 100, 
   n = NULL,
   replace = TRUE, 
   prob = NULL, ...) 
-UseMethod("boot.REBMIX")
+UseMethod("boot")
 
-boot.REBMIX.default <- function(x,
+boot.default <- function(x,
   pos = 1,
   Bootstrap = "parametric",
   B = 100, 
@@ -16,9 +16,9 @@ boot.REBMIX.default <- function(x,
   prob = NULL, ...)
 {
   stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
-} ## boot.REBMIX.default
+} ## boot.default
 
-boot.REBMIX.REBMIX <- function(x,
+boot.REBMIX <- function(x,
   pos = 1,
   Bootstrap = "parametric",
   B = 100, 
@@ -89,7 +89,7 @@ boot.REBMIX.REBMIX <- function(x,
       
       bsample$Dataset[[i]] <- as.data.frame(Dataset[R1, ], stringsAsFactors = FALSE)
       
-      range <- apply(rbind(range, Dataset[R1, ]), 2, range)
+      range <- apply(rbind(range, Dataset[R1, , drop = FALSE]), 2, range)
     }
     
     bsample$ymin <- range[1, ]; bsample$ymax <- range[2, ]
@@ -134,11 +134,11 @@ boot.REBMIX.REBMIX <- function(x,
     Criterion = as.character(x$summary[pos, "Criterion"]),
     Variables = as.character(x$Variables),
     pdf = as.character(x$pdf),
-    Theta1 = as.numeric(x$Theta1),
-    Theta2 = as.numeric(x$Theta2),
+    Theta1 = if (is.null(x$Theta1)) NULL else as.numeric(x$Theta1),
+    Theta2 = if (is.null(x$Theta2)) NULL else as.numeric(x$Theta2),
     K = k,
-    ymin = ymin,
-    ymax = ymax,
+    ymin = if (is.null(ymin)) NULL else as.numeric(ymin),
+    ymax = if (is.null(ymax)) NULL else as.numeric(ymax),
     b = as.numeric(x$summary[pos, "b"]),
     ar = as.numeric(x$summary[pos, "ar"]),
     Restraints = as.character(x$summary[pos, "Restraints"]))
@@ -253,4 +253,4 @@ boot.REBMIX.REBMIX <- function(x,
   class(output) <- "boot.REBMIX" 
    
   return(output)  
-} ## boot.REBMIX.REBMIX
+} ## boot.REBMIX
