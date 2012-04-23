@@ -59,7 +59,7 @@ The \pkg{rebmix} package for \proglang{R} provides functions for random univaria
 \usepackage{algorithm}
 \usepackage{multirow}
 \usepackage{array}
-\usepackage{thumbpdf}
+%% \usepackage{thumbpdf}
 \newcommand{\unit}[1]{\ensuremath{\, \mathrm{#1}}}
 \begin{document}
 %% include your article here, just as usual
