@@ -26,6 +26,10 @@
     if (xTheta[[i]]$pdf == .rebmix$pdf[6]) {
       fix <- pdirac(as.numeric(x), location = as.numeric(xTheta[[i]]$theta1), ...)
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[7]) {
+      fix <- pgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
+    }    
 
     f <- f + w[i] * fix
   }

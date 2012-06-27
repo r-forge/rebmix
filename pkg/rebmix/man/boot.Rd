@@ -6,7 +6,7 @@
 Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Variation Estimation
 }
 \description{
-Returns the boot.REBMIX output for mixtures of conditionally independent normal, lognormal, Weibull, binomial, Poisson or Dirac component densities.
+Returns the boot.REBMIX output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
 }
 \usage{
 \method{boot}{REBMIX}(x, pos = 1, Bootstrap = "parametric", 

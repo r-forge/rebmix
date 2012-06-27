@@ -26,6 +26,10 @@
     if (xTheta[[i]]$pdf == .rebmix$pdf[6]) {
       fix <- ddirac(as.numeric(x), location = as.numeric(xTheta[[i]]$theta1))
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[7]) {
+      fix <- dgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
+    }    
 
     f <- f + w[i] * fix
   }

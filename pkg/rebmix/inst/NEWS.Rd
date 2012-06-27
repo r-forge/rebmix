@@ -49,3 +49,10 @@
 \item Dataset \code{weibull} is added. 
 }
 }
+\section{Changes in version 2.4.1}{ 
+\itemize{ 
+\item Continuous parametric family \code{"gamma"} is added.  
+}
+}
+
+

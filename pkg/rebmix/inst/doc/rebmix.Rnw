@@ -15,7 +15,7 @@
 
 %% an abstract and keywords
 \Abstract{
-The \pkg{rebmix} package for \proglang{R} provides functions for random univariate and multivariate finite mixture generation, number of components, component weights and component parameters estimation, bootstrapping and plotting of the finite mixtures. It relies on the REBMIX algorithm that requires preprocessing, information criterion and conditionally independent normal, lognormal, Weibull, binomial, Poisson or Dirac component densities. The rest is accomplished by the algorithm optimizing the component parameters, mixing weights and number of components successively based on the boundary conditions, such as the maximum number of components, total of positive relative deviations, number of classes or nearest neighbours. The algorithm is robust and time efficient and is insensitive to the number of components and random variables. It can be used either to assess the initial set of the unknown parameters and number of components for, e.g., the EM algorithm or as a standalone procedure that is a good compromise between the nonparametric and parametric methods to the finite mixture estimation. Moreover, \pkg{rebmix} is compared to the \pkg{mixtools} and \pkg{mclust} packages. The datasets analysed are the galaxy, iris, wine, complex 1, complex 2 and simulated 1.
+The \pkg{rebmix} package for \proglang{R} provides functions for random univariate and multivariate finite mixture generation, number of components, component weights and component parameters estimation, bootstrapping and plotting of the finite mixtures. It relies on the REBMIX algorithm that requires preprocessing, information criterion and conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. The rest is accomplished by the algorithm optimizing the component parameters, mixing weights and number of components successively based on the boundary conditions, such as the maximum number of components, total of positive relative deviations, number of classes or nearest neighbours. The algorithm is robust and time efficient and is insensitive to the number of components and random variables. It can be used either to assess the initial set of the unknown parameters and number of components for, e.g., the EM algorithm or as a standalone procedure that is a good compromise between the nonparametric and parametric methods to the finite mixture estimation. Moreover, \pkg{rebmix} is compared to the \pkg{mixtools} and \pkg{mclust} packages. The datasets analysed are the galaxy, iris, wine, complex 1, complex 2 and simulated 1.
 }
 \Keywords{continuous variable, discrete variable, finite mixture, parameter estimation, \proglang{R} software, REBMIX algorithm}
 \Plainkeywords{continuous variable, discrete variable, finite mixture, parameter estimation, R software, REBMIX algorithm}
@@ -104,6 +104,10 @@ Weibull
 \begin{equation}
 f(y_{i} | \bm{\theta}_{il}) = \frac{\beta_{il}}{\theta_{il}} \left (\frac{y_{i}}{\theta_{il}} \right )^{\beta_{il} - 1} \exp \left \{-\left (\frac{y_{i}}{\theta_{il}} \right )^{\beta_{il}} \right \} \nonumber,
 \end{equation}
+gamma
+\begin{equation}
+f(y_{i} | \bm{\theta}_{il}) = \frac{1}{\Gamma [\beta_{il}] y_{i}} \left (\frac{y_{i}}{\theta_{il}} \right )^{\beta_{il}} \exp \left \{ -\frac{y_{i}}{\theta_{il}} \right \} \nonumber,
+\end{equation}
 binomial
 \begin{equation}
 f(y_{i} | \bm{\theta}_{il}) = \binom{\theta_{il}}{y_{i}}p_{il}^{y_{i}}(1 - p_{il})^{\theta_{il} - y_{i}} \nonumber,
@@ -134,7 +138,7 @@ The algorithm requires the preprocessing of observations. By the histogram appro
 \begin{equation}
 \bar{y}_{ij} = \bar{y}_{i0} + \textrm{'An arbitrary integer'} \times h_{ij}, \ i = 1, \ldots, d,
 \end{equation}
-the fraction of observations $k_{j}$ for $j = 1, \ldots, v$ falling into volume $V_{j}$ is counted out, where $\bar{y}_{i0}$ stands for an arbitrary origin and $v$ depicts the number of bins. Similarly, if the Parzen window is employed, the fraction of observations falling into $V_{j}$ centered on observation $\bm{y}_{j}$ is obtained. In both cases, the volume is taken to be a hypersquare with the sides of length $h_{ij}$. This yields $V_{j} = \prod_{i = 1}^{d} h_{ij}$. Moreover, $h_{ij} = h_{i}$ and $V_{j} = V$. If the $k$-nearest neighbour approach is used, the fraction of observations falling into normalized hypersphere $V_{j} = \pi^{d/2} R_{j}^{d} / \Gamma (1 + d / 2)$ of radius $R_{j}$ centered on observation $\bm{y}_{j}$ contains $k_{j} = k$ observations.
+the fraction of observations $k_{j}$ for $j = 1, \ldots, v$ falling into volume $V_{j}$ is counted out, where $\bar{y}_{i0}$ stands for an arbitrary origin and $v$ depicts the number of bins. Similarly, if the Parzen window is employed, the fraction of observations falling into $V_{j}$ centered on observation $\bm{y}_{j}$ is obtained. In both cases, the volume is taken to be a hypersquare with the sides of length $h_{ij}$. This yields $V_{j} = \prod_{i = 1}^{d} h_{ij}$. Moreover, $h_{ij} = h_{i}$ and $V_{j} = V$. If the $k$-nearest neighbour approach is used, the fraction of observations falling into normalized hypersphere $V_{j} = \pi^{d/2} R_{j}^{d} / \Gamma [1 + d / 2]$ of radius $R_{j}$ centered on observation $\bm{y}_{j}$ contains $k_{j} = k$ observations.
 
 The class widths for the histogram and Parzen window and continuous parametric families
 \begin{eqnarray}
@@ -232,6 +236,10 @@ Weibull
 \begin{equation}
 \theta_{il} = \hat{y}_{im} \left ( \frac{\beta_{il} - 1}{\beta_{il}} \right)^{-\frac{1}{\beta_{il}}} \textrm{, } f(\beta_{il}) = \varepsilon f_{i | \hat{i}.lm} \hat{y}_{im} - (\beta_{il} - 1) e^{-\frac{\beta_{il} - 1}{\beta_{il}}} = 0 \textrm{ and } \beta_{il} > 1,
 \end{equation}
+gamma
+\begin{equation}
+\theta_{il} = \frac{\hat{y}_{im}}{\beta_{il} - 1} \textrm{, } f(\beta_{il}) = \varepsilon f_{i | \hat{i}.lm} \hat{y}_{im} - e^{\beta_{il} \log (\beta_{il} - 1) -\beta_{il} + 1 - \log(\Gamma [\beta_{il}])} = 0 \textrm{ and } \beta_{il} > 1,
+\end{equation}
 binomial
 \begin{equation}
 p_{il} = \left\{ \begin{array}{l l} 1 - (\varepsilon f_{i | \hat{i}.lm})^{1 / \theta_{il}} & \hat{y}_{im} = 0\\ (\varepsilon f_{i | \hat{i}.lm})^{1 / \theta_{il}} & \hat{y}_{im} = \theta_{il}\\ (\hat{y}_{im} + 0.5) / (\theta_{il} + 1) & \textrm{otherwise}, \end{array} \right.
@@ -273,6 +281,10 @@ Weibull
 \begin{equation}
 \theta_{il}^{\beta_{il}} = \frac{1}{n_{l}} \sum_{j = 1}^{v} k_{lj} \hat{y}_{ij}^{\beta_{il}} \textrm{ and } f(\beta_{il}) = \frac{1}{\beta_{il}} + \frac{1}{n_{l}} \sum_{j = 1}^{v} k_{lj} \log(\hat{y}_{ij}) - \frac{\sum_{j = 1}^{v} k_{lj} \hat{y}_{ij}^{\beta_{il}} \log(\hat{y}_{ij})}{\sum_{j = 1}^{v} k_{lj} \hat{y}_{ij}^{\beta_{il}}} = 0,
 \end{equation}
+gamma
+\begin{equation}
+\theta_{il} = \frac{1}{\beta_{il} n_{l}} \sum_{j = 1}^{v} k_{lj} \hat{y}_{ij} \textrm{ and } f(\beta_{il}) = \frac{1}{n_{l}} \sum_{j = 1}^{v} k_{lj} \log (\hat{y}_{ij}) - \log (\theta_{il}) - \frac{\Gamma' [\beta_{il}]}{\Gamma [\beta_{il}]} = 0,
+\end{equation}
 binomial
 \begin{equation}
 p_{il} = \frac{1}{n_{l} \theta_{il}} \sum_{j = 1}^{v} k_{lj} \hat{y}_{ij},
@@ -298,7 +310,11 @@ m_{il} = e^{ \mu_{il} + \frac{\sigma_{il}^{2}}{2} } \textrm{ and } V_{il} = e^{ 
 Weibull
 \begin{equation}
 m_{il} = \theta_{il} \Gamma \left [ 1 + \frac{1}{\beta_{il}} \right ] \textrm{ and } V_{il} = \theta_{il}^{2} \Gamma \left [ 1 + \frac{2}{\beta_{il}}
-\right ]
+\right ],
+\end{equation}
+gamma
+\begin{equation}
+m_{il} = \theta_{il} \beta_{il} \textrm{ and } V_{il} = \theta_{il}^{2} \beta_{il} (1 + \beta_{il})
 \end{equation}
 and the first moment of binomial
 \begin{equation}
@@ -343,7 +359,7 @@ information criterion, e.g., \citet{Akaike_1974}
 \begin{equation}
 \mathrm{IC} = -2 \operatorname{log} L(c, \bm{w}, \bm{\Theta}) + 2 M
 \end{equation}
-is calculated, whereas the number of free parameters for the normal, lognormal and Weibull mixtures can be written as
+is calculated, whereas the number of free parameters for the normal, lognormal, Weibull and gamma mixtures can be written as
 \begin{equation}
 M = 2 c d + c - 1.
 \end{equation}
@@ -374,7 +390,7 @@ for $c$ and $c + 1$ components is preserved. When line 47 is fulfilled, the proc
 \begin{algorithmic}[1]
 \footnotesize
 \REQUIRE \code{Dataset}\footnotemark, \code{Preprocessing}\footnotemark[\value{footnote}], \code{D}, \code{cmax}, \code{Criterion}, \code{Variables}\footnotemark[\value{footnote}], \code{pdf}\footnotemark[\value{footnote}], \code{Theta1}\footnotemark[\value{footnote}], \code{Theta2}, \code{K}\footnotemark[\value{footnote}], \code{ymin}, \code{ymax}, \code{b}, \code{ar} and \code{Restraints}.
-\ENSURE \code{Dataset} contains datasets, \code{Preprocessing} is one of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}, $0 \leq \texttt{D} \leq 1$, $\texttt{cmax} \in \mathbb{N}$, \code{Criterion} is one of \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"}, \code{"AICc"}, \code{"BIC"}, \code{"CAIC"}, \code{"HQC"}, \code{"MDL2"}, \code{"MDL5"}, \code{"AWE"}, \code{"CLC"}, \code{"ICL"}, \code{"PC"}, \code{"ICL-BIC"}, \code{"D"} or \code{"SSE"}, \code{Variables} are \code{"continuous"} or \code{"discrete"}, \code{pdf} is one of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}, \code{Theta1} may contain initial binomial parameters, \code{Theta2} is inactive, $\texttt{K} \subset \mathbb{N}$, \code{ymin} and \code{ymax} may contain minimum and maximum observations, $0 \leq \texttt{b} \leq 1$, $0 < \texttt{ar} \leq 1$ and \code{Restraints} are \code{"loose"} or \code{"rigid"}. \FORALL {$v$ such that $v \in \texttt{K}$}
+\ENSURE \code{Dataset} contains datasets, \code{Preprocessing} is one of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}, $0 \leq \texttt{D} \leq 1$, $\texttt{cmax} \in \mathbb{N}$, \code{Criterion} is one of \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"}, \code{"AICc"}, \code{"BIC"}, \code{"CAIC"}, \code{"HQC"}, \code{"MDL2"}, \code{"MDL5"}, \code{"AWE"}, \code{"CLC"}, \code{"ICL"}, \code{"PC"}, \code{"ICL-BIC"}, \code{"D"} or \code{"SSE"}, \code{Variables} are \code{"continuous"} or \code{"discrete"}, \code{pdf} is one of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}, \code{Theta1} may contain initial binomial parameters, \code{Theta2} is inactive, $\texttt{K} \subset \mathbb{N}$, \code{ymin} and \code{ymax} may contain minimum and maximum observations, $0 \leq \texttt{b} \leq 1$, $0 < \texttt{ar} \leq 1$ and \code{Restraints} are \code{"loose"} or \code{"rigid"}. \FORALL {$v$ such that $v \in \texttt{K}$}
 \STATE Preprocessing of observations
 \STATE $I_{1} \leftarrow 1$, $D_{\mathrm{min}} \leftarrow 0.25$, $k_{lj} \leftarrow k_{j}$ for $j = 1$ to $v$
 \REPEAT
@@ -483,8 +499,8 @@ for (i in 1:3) {
 @
 See \code{help("REBMIX")} in \pkg{rebmix} for details about specifying arguments for the function returning an object of class \code{REBMIX}. List of data frames
 \code{w} contains component weights $w_{l}$ summing to $1$, \code{Theta} stands for a list of data frames containing parametric family types \code{pdfi}. One of
-\code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}. Component parameters \code{theta1.i} follow the parametric family types. One of $\mu_{il}$ for normal and lognormal distributions and $\theta_{il}$ for Weibull, binomial, Poisson and Dirac distributions. Component parameters
-\code{theta2.i} follow \code{theta1.i}. One of $\sigma_{il}$ for normal and lognormal distributions, $\beta_{il}$ for Weibull distribution and $p_{il}$ for binomial
+\code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}. Component parameters \code{theta1.i} follow the parametric family types. One of $\mu_{il}$ for normal and lognormal distributions and $\theta_{il}$ for Weibull, gamma, binomial, Poisson and Dirac distributions. Component parameters
+\code{theta2.i} follow \code{theta1.i}. One of $\sigma_{il}$ for normal and lognormal distributions, $\beta_{il}$ for Weibull and gamma distributions and $p_{il}$ for binomial
 distribution. Character vector \code{Variables} contains types of variables. One of \code{"continuous"} or \code{"discrete"}. In the \code{summary} data frame
 additional information about dataset, preprocessing, $D$, $c_{\mathrm{max}}$, information criterion type, $b$, $a_{\mathrm{r}}$, restraints type, optimal $c$, optimal
 $k$, $\bar{y}_{i0}$, optimal $h_{i}$, information criterion $\mathrm{IC}$ and log likelihood $\operatorname{log} L$ is stored. Position \code{pos} in the \code{summary} data frame at which log likelihood $\mathrm{log}\, L$ attains its maximum is available, too.
@@ -587,7 +603,7 @@ wineest <- REBMIX(Dataset = list(wine = wine),
 summary(wineest)
 @
 \subsection[Complex 1 dataset]{Complex 1 dataset}\label{subsec:complex1_dataset}
-Next, a $15$ component univariate normal mixture is generated by calling the \code{RNGMIX} function. It demands character vector \code{Dataset} containing list names of data frames that datasets are written in, random seed \code{rseed}, vector \code{n} containing number of observations in classes $n_{l}$ and a matrix containing $c$ parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}. Component parameters \code{theta1.i} follow the parametric family types. One of $\mu_{il}$ for normal and lognormal distributions and $\theta_{il}$ for Weibull, binomial, Poisson and Dirac distributions. Component parameters \code{theta2.i} follow \code{theta1.i}. One of $\sigma_{il}$ for normal and lognormal distributions, $\beta_{il}$ for Weibull distribution and $p_{il}$ for binomial distribution.
+Next, a $15$ component univariate normal mixture is generated by calling the \code{RNGMIX} function. It demands character vector \code{Dataset} containing list names of data frames that datasets are written in, random seed \code{rseed}, vector \code{n} containing number of observations in classes $n_{l}$ and a matrix containing $c$ parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}. Component parameters \code{theta1.i} follow the parametric family types. One of $\mu_{il}$ for normal and lognormal distributions and $\theta_{il}$ for Weibull, gamma, binomial, Poisson and Dirac distributions. Component parameters \code{theta2.i} follow \code{theta1.i}. One of $\sigma_{il}$ for normal and lognormal distributions, $\beta_{il}$ for Weibull and gamma distributions and $p_{il}$ for binomial distribution.
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 #######################
 ## Complex 1 dataset ##
@@ -755,7 +771,7 @@ plot(complex2est, what = c("dens", "marg", "IC", "D"), nrow = 4, ncol = 3, npts 
 @
 \begin{figure}[t]
 \centering
-<<complex2-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 6.5, width = 7.5, echo = false, keep.source = FALSE>>=
+<<complex2-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 6.5, width = 5.5, echo = false, keep.source = FALSE>>=
 ## Visualize Figure 4.
 
 plot(complex2est, what = c("dens", "marg", "IC", "D"), nrow = 4, ncol = 3, npts = 1000)

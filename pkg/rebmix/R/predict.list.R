@@ -110,7 +110,7 @@ predict.list <- function(object,
   }
 
   if (s > 1) {
-    message("RCLSMIX Version 2.4.0");
+    message("RCLSMIX Version 2.4.1");
     flush.console()
 
     output <- .C("RCLSMIX",

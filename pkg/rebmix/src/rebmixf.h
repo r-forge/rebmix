@@ -74,6 +74,7 @@ typedef enum {
     pfNormal,      /* Normal distribution. */
     pfLognormal,   /* Lognormal distribution. */
     pfWeibull,     /* Weibull distribution. */
+	pfGamma,       /* Gamma distribution. */
     pfBinomial,    /* Binomial distribution. */
 	pfPoisson,     /* Poisson distribution. */
 	pfDirac        /* Dirac distribution. */
@@ -182,6 +183,14 @@ int ReadREBMIXDataFile(InputREBMIXParameterType  InpParType,   /* Input paramete
 /* Returns the value log(Gamma(y)) for y > 0. See http://www.nrbook.com/a/bookcpdf/c6-1.pdf */
 
 FLOAT Gammaln(FLOAT y);
+
+/* Returns the digamma for y > 0. */
+
+int Digamma(FLOAT y, FLOAT *Psi);
+
+/* Returns the inverse of the gamma c.d.f. for the specified Theta and Beta. */
+
+int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
 
 /* Returns component p.d.f or c.d.f. */ 
 

@@ -4,10 +4,6 @@
 #include <ctype.h>
 #include <time.h>
 
-#if (_REBMIXDLL)
-#include <windows.h>
-#endif
-
 #include "rebmixf.h"
 
 #if (_REBMIXR)
@@ -59,6 +55,104 @@ FLOAT Gammaln(FLOAT y)
     return (-Tmp + (FLOAT)log(Stp * Ser / x));
 } /* Gammaln */
 
+/* Returns the digamma for y > 0. */
+
+int Digamma(FLOAT y, FLOAT *Psi)
+{
+    static FLOAT piov4 = (FLOAT)0.785398163397448;
+    static FLOAT dy0 = (FLOAT)1.461632144968362341262659542325721325;
+    static FLOAT p1[7] = {(FLOAT)0.0089538502298197, (FLOAT)4.77762828042627, (FLOAT)142.441585084029,
+		                  (FLOAT)1186.45200713425, (FLOAT)3633.51846806499, (FLOAT)4138.10161269013, 
+						  (FLOAT)1305.60269827897};
+    static FLOAT q1[6] = {(FLOAT)44.8452573429826, (FLOAT)520.752771467162, (FLOAT)2210.0079924783,
+		                  (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6};
+    static FLOAT p2[4] = {-(FLOAT)2.12940445131011, -(FLOAT)7.01677227766759,
+	                      -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
+    static FLOAT q2[4] = {(FLOAT)32.2703493791143, (FLOAT)89.2920700481861,
+	                      (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
+    int   i, m, n, nq;
+    FLOAT d2;
+    FLOAT w, z;
+    FLOAT den, aug, sgn, ymy0, ymax, upper, ymin;
+	int Error = 0;
+
+    ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / DBL_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
+
+    if (y < (FLOAT)0.5) {
+	    if ((FLOAT)fabs(y) <= ymin) {
+  	        if (y == (FLOAT)0.0) {
+		        Error = 1; goto E0;
+	        }
+	    
+			aug = -(FLOAT)1.0 / y;
+	    }
+	    else { 
+	        w = -y; sgn = piov4;
+
+	        if (w <= (FLOAT)0.0) {
+		        w = -w; sgn = -sgn;
+	        }
+
+	        if (w >= ymax) {
+		        Error = 1; goto E0;
+	        }
+
+	        nq = (int)w; w -= (FLOAT)nq; nq = (int)(w * (FLOAT)4.0); w = (w - (FLOAT) nq * (FLOAT)0.25) * (FLOAT)4.0; n = nq / 2;
+
+	        if (n + n != nq) {
+		        w = (FLOAT)1.0 - w;
+	        }
+
+	        z = piov4 * w; m = n / 2;
+
+	        if (m + m != n) {
+		        sgn = -sgn;
+	        }
+
+	        n = (nq + 1) / 2; m = n / 2; m += m;
+	        
+			if (m == n) {
+		        if (z == 0.0) {
+		            Error = 1; goto E0;
+		        }
+
+		        aug = sgn * (cos(z) / sin(z) * (FLOAT)4.0);
+	        } 
+		    else { 
+		        aug = sgn * ((FLOAT)sin(z) / (FLOAT)cos(z) * (FLOAT)4.0);
+	        }
+		}
+
+	    y = (FLOAT)1.0 - y;
+    }
+
+    if (y <= (FLOAT)3.0) {
+	    den = y; upper = p1[0] * y;
+
+	    for (i = 1; i <= 5; ++i) {
+	        den = (den + q1[i - 1]) * y; upper = (upper + p1[i]) * y;
+	    }
+
+	    den = (upper + p1[6]) / (den + q1[5]); ymy0 = y - dy0;
+
+	    *Psi = den * ymy0 + aug;
+    }
+	else
+    if (y < ymax) {
+	    w = (FLOAT)1.0 / (y * y); den = w; upper = p2[0] * w;
+
+        for (i = 1; i <= 3; ++i) {
+	        den = (den + q2[i - 1]) * w; upper = (upper + p2[i]) * w;
+	    }
+
+	    aug = upper / (den + q2[3]) - (FLOAT)0.5 / y + aug;
+
+		*Psi = aug + (FLOAT)log(y);
+    }
+
+E0: return (Error);
+} /* Digamma */
+
 /* Returns the inverse of the binomial c.d.f. for the specified n and p. */
 
 FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p)
@@ -96,7 +190,7 @@ FLOAT PoissonInv(FLOAT Fy, FLOAT Theta)
 } /* PoissonInv */
 
 /* Returns the incomplete gamma function P(a, y) evaluated by its series
-   representation as GamSer. Also returns log(Gamma(a)) as Gln. */
+   representation as GamSer. Also returns log(Gamma(a)) as Gamln. */
 
 int GammaSer(FLOAT a,       /* Constant a > 0. */
              FLOAT y,       /* Variable y > 0. */
@@ -134,7 +228,7 @@ E0: return (Error);
 } /* GammaSer */
 
 /* Returns the incomplete gamma function Q(a, y) evaluated by its continued
-   fraction representation as GamCfg. Also returns log(Gamma(a)) as Gln. */
+   fraction representation as GamCfg. Also returns log(Gamma(a)) as Gamln. */
 
 int GammaCfg(FLOAT a,       /* Constant a > 0. */
              FLOAT y,       /* Variable y > 0. */
@@ -183,13 +277,14 @@ int GammaCfg(FLOAT a,       /* Constant a > 0. */
 E0: return (Error);
 } /* GammaCfg */
 
-/* Returns the incomplete gamma function P(a, y). See http://www.nrbook.com/a/bookcpdf/c6-2.pdf */
+/* Returns the incomplete gamma function P(a, y). Also returns log(Gamma(a)) as Gamln. See http://www.nrbook.com/a/bookcpdf/c6-2.pdf */
 
-int GammaP(FLOAT a,     /* Constant a > 0. */
-           FLOAT y,     /* Variable y > 0. */
-           FLOAT *GamP) /* Incomplete gamma function. */
+int GammaP(FLOAT a,       /* Constant a > 0. */
+           FLOAT y,       /* Variable y > 0. */
+           FLOAT *GamP,   /* Incomplete gamma function. */
+		   FLOAT *Gamln)  /* Log(Gamma(a)). */
 {
-    FLOAT GamSer, GamCfg, Gamln;
+    FLOAT GamSer, GamCfg;
     int   Error = 0;
 
     if ((y < (FLOAT)0.0) || (a <= FLOAT_MIN)) {
@@ -197,14 +292,14 @@ int GammaP(FLOAT a,     /* Constant a > 0. */
     }
     else
     if (y < a + (FLOAT)1.0) {
-        Error = GammaSer(a, y, &GamSer, &Gamln); 
+        Error = GammaSer(a, y, &GamSer, Gamln); 
 
         if (Error) goto E0;
         
         *GamP = GamSer;
     }
     else {
-        Error = GammaCfg(a, y, &GamCfg, &Gamln); 
+        Error = GammaCfg(a, y, &GamCfg, Gamln); 
 
         if (Error) goto E0;
         
@@ -214,15 +309,49 @@ int GammaP(FLOAT a,     /* Constant a > 0. */
 E0: return (Error);
 } /* GammaP */
 
+/* Returns the inverse of the gamma c.d.f. for the specified Theta and Beta. */
+
+int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
+{
+    FLOAT dy, GamP, Gamln, Tmp;
+    int   i;
+    int   Error = 0;
+
+    *y = (Beta - (FLOAT)1.0) * Theta + Eps;
+
+    i = 1; Error = 1;
+    while ((i <= ItMax) && Error) {
+	    if (GammaP(Beta, *y / Theta, &GamP, &Gamln)) goto E0;
+
+        Tmp = *y / Theta;
+
+        dy = (GamP - Fy) / ((FLOAT)exp(Beta * (FLOAT)log(Tmp) - Tmp - Gamln) / (*y));
+
+        *y -= dy;
+
+        #if (_REBMIXEXE || _REBMIXR)
+        if (IsNan(dy) || IsInf(dy) || (*y <= (FLOAT)0.0)) {
+            Error = 1; goto E0;
+        }
+        #endif
+
+        if ((FLOAT)fabs(dy / (*y)) < Eps) Error = 0; 
+
+        i++;
+    }
+
+E0: return (Error);
+} /* GammaInv */
+
 /* Returns the error function erf(y). */
 
 int ErrorF(FLOAT y,     /* Variable y. */
            FLOAT *ErF)  /* Error function. */
 {
-    FLOAT GamP;
+    FLOAT GamP, Gamln;
     int   Error = 0;
 
-    Error = GammaP((FLOAT)0.5, y * y, &GamP);
+    Error = GammaP((FLOAT)0.5, y * y, &GamP, &Gamln);
 
     if (Error) goto E0;
 
@@ -242,7 +371,7 @@ int ComponentDist(int                      d,            /* Number of independen
                   FLOAT                    *CmpDist,     /* Component distribution. */
                   int                      Cumulative)   /* Set 1 if c.d.f. or 0 if p.d.f. */
 {
-    FLOAT y, ypb, ErF, Sum, p, Theta;
+    FLOAT y, ypb, ErF, Sum, p, Theta, GamP, Gamln;
     int   i, j, k, n;
     int   Error = 0;
 
@@ -287,6 +416,19 @@ int ComponentDist(int                      d,            /* Number of independen
                 }
 
                 break;
+			case pfGamma:
+                if (Y[i] > FLOAT_MIN) {
+                    Error = GammaP(MrgDistType[i].Par1, Y[i] / MrgDistType[i].Par0, &GamP, &Gamln);
+
+					if (Error) goto E0;
+
+                    *CmpDist *= GamP;
+                }
+                else {
+                    *CmpDist = (FLOAT)0.0;
+                }
+
+				break;
             case pfBinomial:
                 k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -365,6 +507,17 @@ int ComponentDist(int                      d,            /* Number of independen
                 }
 
                 break;
+			case pfGamma:
+                if (Y[i] > FLOAT_MIN) {
+					ypb = Y[i] /  MrgDistType[i].Par0;
+
+                    *CmpDist *= (FLOAT)exp(MrgDistType[i].Par1 * log(ypb) - ypb - Gammaln(MrgDistType[i].Par1)) / Y[i];
+                }
+                else {
+                    *CmpDist = (FLOAT)0.0;
+                }
+
+				break;
             case pfBinomial:
                 k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -412,7 +565,7 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                           FLOAT                    *CmpMrgDist,  /* Component marginal distribution. */
                           int                      Cumulative)   /* Set 1 if c.d.f. or 0 if p.d.f. */
 {
-    FLOAT y, ypb, Sum, p, Theta;
+    FLOAT y, ypb, Sum, p, Theta, GamP, Gamln;
     int   j, k, n;
     FLOAT ErF;
     int   Error = 0;
@@ -457,6 +610,19 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             }
 
             break;
+		case pfGamma:
+            if (Y[i] > FLOAT_MIN) {
+                Error = GammaP(MrgDistType[i].Par1, Y[i] / MrgDistType[i].Par0, &GamP, &Gamln);
+
+        	    if (Error) goto E0;
+
+                *CmpMrgDist *= GamP;
+            }
+            else {
+                *CmpMrgDist = (FLOAT)0.0;
+            }
+
+			break;
         case pfBinomial:
             k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -533,6 +699,17 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             }
 
             break;
+		case pfGamma:
+            if (Y[i] > FLOAT_MIN) {
+                ypb = Y[i] /  MrgDistType[i].Par0;
+
+                *CmpMrgDist *= (FLOAT)exp(MrgDistType[i].Par1 * log(ypb) - ypb - Gammaln(MrgDistType[i].Par1)) / Y[i];
+            }
+            else {
+                *CmpMrgDist = (FLOAT)0.0;
+            }
+
+			break;
         case pfBinomial:
             k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -647,6 +824,10 @@ int DegreesOffreedom(int                      d,             /* Number of indepe
                 
 				break;
 			case pfWeibull:
+				*M += 2;
+
+				break;
+			case pfGamma:
 				*M += 2;
 
 				break;
@@ -1317,9 +1498,6 @@ int RoughLognormalParameters(FLOAT ym,
     int   i;
     int   Error = 0;
 
-    #if (_REBMIXDLL)
-    __try {
-    #endif
     Error = ym <= FLOAT_MIN; if (Error) goto E0;
 
     *Stdev = (FLOAT)1.0;
@@ -1347,13 +1525,6 @@ int RoughLognormalParameters(FLOAT ym,
 
     *Mean = (FLOAT)log(ym) + (*Stdev) * (*Stdev);
 
-    #if (_REBMIXDLL)
-    }
-    __except(EXCEPTION_EXECUTE_HANDLER) {
-        _clearfp(); Error = 1; goto E0;
-    }
-    #endif
-
 E0: return (Error);
 } /* RoughLognormalParameters */
 
@@ -1368,9 +1539,6 @@ int RoughWeibullParameters(FLOAT ym,
     int   i;
     int   Error = 0;
 
-    #if (_REBMIXDLL)
-    __try {
-    #endif
     Error = ym <= FLOAT_MIN; if (Error) goto E0;
 
     *Beta = (FLOAT)1.0;
@@ -1397,15 +1565,54 @@ int RoughWeibullParameters(FLOAT ym,
     if (Error) goto E0;
 
     *Theta = ym * (FLOAT)exp(log((*Beta) / ((*Beta) - (FLOAT)1.0)) / (*Beta));
-    #if (_REBMIXDLL)
-    }
-    __except(EXCEPTION_EXECUTE_HANDLER) {
-        _clearfp(); Error = 1; goto E0;
-    }
-    #endif
 
 E0: return (Error);
 } /* RoughWeibullParameters */
+
+/* Returns rough Gamma parameters. */
+
+int RoughGammaParameters(FLOAT ym,   
+                         FLOAT fm,
+                         FLOAT *Theta,
+                         FLOAT *Beta)
+{
+    FLOAT Cor, dBeta, Prd, Tmp, Psi;
+    int   i;
+    int   Error = 0;
+
+    Error = ym <= FLOAT_MIN; if (Error) goto E0;
+
+    *Beta = (FLOAT)1.0 + Eps;
+
+    i = 1; Prd = ym * fm; Error = 1;
+    while ((i <= ItMax) && Error) {
+		Cor = *Beta - (FLOAT)1.0;
+		
+        Tmp = (FLOAT)exp(*Beta * (FLOAT)log(Cor) - Cor - (FLOAT)Gammaln(*Beta)); 
+		
+		if (Digamma(*Beta, &Psi)) goto E0;
+
+        dBeta = (Tmp - Prd) / (Tmp * ((FLOAT)log(Cor) + (*Beta) / Cor - (FLOAT)1.0 - Psi));
+
+        *Beta -= dBeta;
+
+        #if (_REBMIXEXE || _REBMIXR)
+        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= (FLOAT)0.0)) {
+            Error = 1; goto E0;
+        }
+        #endif
+
+        if ((FLOAT)fabs(dBeta / (*Beta)) < Eps) Error = 0; 
+
+        i++;
+    }
+
+    if (Error) goto E0;
+
+    *Theta = ym / (*Beta - (FLOAT)1.0);
+
+E0: return (Error);
+} /* RoughGammaParameters */
 
 /* Returns rough binomial parameters. */
 
@@ -1539,6 +1746,16 @@ S0:;        }
             if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
+		case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+
+            if (Error) goto E0;
+
+            Mode[i].dy = Y[m][d + 2] * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
+
+            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
+
+			break;
         case pfBinomial:
             Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
@@ -1574,93 +1791,109 @@ S0:;        }
 
             Mode[i].y = Mode[i].ymin; Mode[i].dy = (FLOAT)2.0 * Mode[i].dy / (ny - (FLOAT)1.0);
 
-            j = 0; Tmp = FLOAT_MAX;
+            if (Mode[i].dy != (FLOAT)0.0) {
+	            j = 0; Tmp = FLOAT_MAX;
 
-            for (l = 0; l < ny; l++) {
-                CP[l] = (FLOAT)0.0;
+		        for (l = 0; l < ny; l++) {
+			        CP[l] = (FLOAT)0.0;
 
-                switch (TmpDistType[i].ParFamType) {
-                case pfNormal:
-                    Error = RoughNormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+				    switch (TmpDistType[i].ParFamType) {
+					case pfNormal:
+						Error = RoughNormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                    Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
+						Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
+						Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
 
-                    break;
-                case pfLognormal:
-                    Error = RoughLognormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+						break;
+					case pfLognormal:
+						Error = RoughLognormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
-                    Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
+						Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
+						Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
 
-                    break;
-                case pfWeibull:
-                    Error = RoughWeibullParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+						break;
+					case pfWeibull:
+						Error = RoughWeibullParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                    Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
+						Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
+						Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
-                    break;
-                case pfBinomial:
-                    Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
+						break;
+					case pfGamma:
+						Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+						if (Error) goto E0;
+
+						Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+						if (Error) goto E0;
+
+						Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+						if (Error) goto E0;
+
+						break;
+					case pfBinomial:
+						Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-					Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
+						Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
+						Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
 
-					break;
-				case pfPoisson:
-                    Error = RoughPoissonParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0);
+						break;
+					case pfPoisson:
+						Error = RoughPoissonParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0);
                                                        
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-					Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
+						Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
+						Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
 
-					break;
-				case pfDirac:
-					break;
-                }
+						break;
+					case pfDirac:
+						break;
+					}
 
-                for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                    Dc = (FLOAT)0.0;
+					for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
+						Dc = (FLOAT)0.0;
 
-                    for (p = 0; p < d; p++) if (i != p) {
-                        R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
-                    }
+						for (p = 0; p < d; p++) if (i != p) {
+							R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
+						}
 
-                    R = (FLOAT)sqrt(Dc);
+						R = (FLOAT)sqrt(Dc);
 
-                    if (R > Y[m][d + 2]) goto S1;
+						if (R > Y[m][d + 2]) goto S1;
 
-                    Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
+						Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
 
-                    if (Error) goto E0;
+						if (Error) goto E0;
 
-                    dP = (FLOAT)1.0 - Mode[i].k_lm * (FLOAT)2.0 * Y[o][d + 2] * h[i] * CmpMrgDist / Y[o][d] / k;
+						dP = (FLOAT)1.0 - Mode[i].k_lm * (FLOAT)2.0 * Y[o][d + 2] * h[i] * CmpMrgDist / Y[o][d] / k;
 
-                    if (dP > CP[l]) CP[l] = dP;
-S1:;            } 
+						if (dP > CP[l]) CP[l] = dP;
+S1:;	            } 
 
-                if (CP[l] < Tmp) {
-                    j = l; Tmp = CP[l];
-                }
+			        if (CP[l] < Tmp) {
+				        j = l; Tmp = CP[l];
+					}
 
-                Mode[i].y += Mode[i].dy;
-            }
+					Mode[i].y += Mode[i].dy;
+				}
 
-            if ((j == 0) || (j == ny - 1))
-                Mode[i].y = Mode[i].ym;
-            else
-            if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                Mode[i].y = (FLOAT)0.5 * Mode[i].dy * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]) + Mode[i].ymin + Mode[i].dy * j;
+	            if ((j == 0) || (j == ny - 1))
+		            Mode[i].y = Mode[i].ym;
+			    else
+				if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
+					Mode[i].y = (FLOAT)0.5 * Mode[i].dy * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]) + Mode[i].ymin + Mode[i].dy * j;
+			}
 
             /* Mode empirical density optimisation. */
 
@@ -1722,6 +1955,20 @@ S2:;        }
                     Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
                     break;
+		        case pfGamma:
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                    if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+					if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+					if (Error) goto E0;
+
+			        break;
                 case pfBinomial:
                     Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -1808,6 +2055,12 @@ S3:;            }
                 if (Error) goto E0;
 
                 break;
+		    case pfGamma:
+                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                if (Error) goto E0;
+
+			    break;
             case pfBinomial:
                 Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -1920,6 +2173,16 @@ S0:;        }
             if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
+		case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+
+            if (Error) goto E0;
+
+            Mode[i].dy = (FLOAT)0.5 * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
+
+            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
+
+			break;
         case pfBinomial:
             Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
@@ -1989,6 +2252,20 @@ S0:;        }
                         Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
                         break;
+		            case pfGamma:
+                        Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                        if (Error) goto E0;
+
+					    Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+					    if (Error) goto E0;
+
+					    Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+					    if (Error) goto E0;
+
+			            break;
                     case pfBinomial:
                         Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2089,6 +2366,20 @@ S2:;        }
                     Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
                     break;
+		        case pfGamma:
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                    if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+					if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+					if (Error) goto E0;
+
+			        break;
                 case pfBinomial:
                     Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2167,6 +2458,12 @@ S3:;            }
                 if (Error) goto E0;
 
                 break;
+		    case pfGamma:
+                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                if (Error) goto E0;
+
+			    break;
             case pfBinomial:
                 Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2279,6 +2576,16 @@ S0:;        }
             if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
+		case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+
+            if (Error) goto E0;
+
+            Mode[i].dy = h[i]; Tmp = Mode[i].ym - Mode[i].dy;
+
+            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
+
+			break;
         case pfBinomial:
             Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
@@ -2348,6 +2655,20 @@ S0:;        }
                         Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
                         break;
+		            case pfGamma:
+                        Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                        if (Error) goto E0;
+
+					    Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+					    if (Error) goto E0;
+
+					    Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+					    if (Error) goto E0;
+
+			            break;
                     case pfBinomial:
                         Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2448,6 +2769,20 @@ S2:;        }
                     Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
 
                     break;
+		        case pfGamma:
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                    if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+
+					if (Error) goto E0;
+
+					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+
+					if (Error) goto E0;
+
+			        break;
                 case pfBinomial:
                     Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2526,6 +2861,12 @@ S3:;            }
                 if (Error) goto E0;
 
                 break;
+		    case pfGamma:
+                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+
+                if (Error) goto E0;
+
+			    break;
             case pfBinomial:
                 Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
                                                        
@@ -2637,9 +2978,6 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
 
             break;
         case pfWeibull:
-            #if (_REBMIXDLL)
-            __try {
-            #endif
             TmpDistType[i].ParFamType = pfWeibull;
 
             TmpDistType[i].Par1 = (FLOAT)1.0;
@@ -2697,14 +3035,60 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 Error = 1; if (Error) goto E0;
             }
 
-            #if (_REBMIXDLL)
-            }
-            __except(EXCEPTION_EXECUTE_HANDLER) {
-                _clearfp(); Error = 1; goto E0;
-            }
-            #endif
-
             break;
+		case pfGamma:
+            TmpDistType[i].ParFamType = pfGamma;
+
+            TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
+
+            memset(&A, 0, 2 * sizeof(FLOAT));
+
+            for (l = 0; l < n; l++) {
+                if ((Y[l][d] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
+                    A[0] += Y[l][d] * Y[l][i];
+                    A[1] += Y[l][d] * (FLOAT)log(Y[l][i]);
+                }
+            }
+
+            A[0] /= nl; A[1] /= nl; 
+
+            j = 1; Error = 1;
+            while ((j <= ItMax) && Error) {
+				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+
+                dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
+
+                TmpDistType[i].Par1 -= dP;
+
+                #if (_REBMIXEXE || _REBMIXR)
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                    Error = 1; goto E0;
+                }
+                #endif
+
+                if ((FLOAT)fabs(dP / TmpDistType[i].Par1) < Eps) Error = 0;
+
+                j++;
+            }
+
+            if (Error) goto E0;
+
+            A[2] /= nl;
+
+            TmpDistType[i].Par0 = A[0] / TmpDistType[i].Par1;
+
+            if ((TmpDistType[i].Par0 <= FLOAT_MIN) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+
+            if (TmpVar < MrgVar) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -2853,9 +3237,6 @@ int EnhancedEstimationPW(int                      n,             /* Total number
 
             break;
         case pfWeibull:
-            #if (_REBMIXDLL)
-            __try {
-            #endif
             TmpDistType[i].ParFamType = pfWeibull;
 
             TmpDistType[i].Par1 = (FLOAT)1.0;
@@ -2913,14 +3294,60 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 Error = 1; if (Error) goto E0;
             }
 
-            #if (_REBMIXDLL)
-            }
-            __except(EXCEPTION_EXECUTE_HANDLER) {
-                _clearfp(); Error = 1; goto E0;
-            }
-            #endif
-
             break;
+		case pfGamma:
+            TmpDistType[i].ParFamType = pfGamma;
+
+            TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
+
+            memset(&A, 0, 2 * sizeof(FLOAT));
+
+            for (l = 0; l < n; l++) {
+                if ((Y[l][d] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
+                    A[0] += Y[l][d] * Y[l][i];
+                    A[1] += Y[l][d] * (FLOAT)log(Y[l][i]);
+                }
+            }
+
+            A[0] /= nl; A[1] /= nl; 
+
+            j = 1; Error = 1;
+            while ((j <= ItMax) && Error) {
+				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+
+                dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
+
+                TmpDistType[i].Par1 -= dP;
+
+                #if (_REBMIXEXE || _REBMIXR)
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                    Error = 1; goto E0;
+                }
+                #endif
+
+                if ((FLOAT)fabs(dP / TmpDistType[i].Par1) < Eps) Error = 0;
+
+                j++;
+            }
+
+            if (Error) goto E0;
+
+            A[2] /= nl;
+
+            TmpDistType[i].Par0 = A[0] / TmpDistType[i].Par1;
+
+            if ((TmpDistType[i].Par0 <= FLOAT_MIN) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+
+            if (TmpVar < MrgVar) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -3069,9 +3496,6 @@ int EnhancedEstimationH(int                      k,             /* Total number 
 
             break;
         case pfWeibull:
-            #if (_REBMIXDLL)
-            __try {
-            #endif
             TmpDistType[i].ParFamType = pfWeibull;
 
             TmpDistType[i].Par1 = (FLOAT)1.0;
@@ -3129,14 +3553,60 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 Error = 1; if (Error) goto E0;
             }
 
-            #if (_REBMIXDLL)
-            }
-            __except(EXCEPTION_EXECUTE_HANDLER) {
-                _clearfp(); Error = 1; goto E0;
-            }
-            #endif
-
             break;
+		case pfGamma:
+            TmpDistType[i].ParFamType = pfGamma;
+
+            TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
+
+            memset(&A, 0, 2 * sizeof(FLOAT));
+
+            for (l = 0; l < k; l++) {
+                if ((Y[l][d] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
+                    A[0] += Y[l][d] * Y[l][i];
+                    A[1] += Y[l][d] * (FLOAT)log(Y[l][i]);
+                }
+            }
+
+            A[0] /= nl; A[1] /= nl; 
+
+            j = 1; Error = 1;
+            while ((j <= ItMax) && Error) {
+				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+
+                dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
+
+                TmpDistType[i].Par1 -= dP;
+
+                #if (_REBMIXEXE || _REBMIXR)
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                    Error = 1; goto E0;
+                }
+                #endif
+
+                if ((FLOAT)fabs(dP / TmpDistType[i].Par1) < Eps) Error = 0;
+
+                j++;
+            }
+
+            if (Error) goto E0;
+
+            A[2] /= nl;
+
+            TmpDistType[i].Par0 = A[0] / TmpDistType[i].Par1;
+
+            if ((TmpDistType[i].Par0 <= FLOAT_MIN) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+
+            if (TmpVar < MrgVar) {
+                Error = 1; if (Error) goto E0;
+            }
+
+			break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -3231,6 +3701,12 @@ int MomentsCalculation(int                      d,            /* Number of indep
             SecondM[i] = MrgDistType[i].Par0 * MrgDistType[i].Par0 * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1));
 
             break;
+		case pfGamma:
+            FirstM[i] = MrgDistType[i].Par1 * MrgDistType[i].Par0;
+
+            SecondM[i] = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0 * ((FLOAT)1.0 + MrgDistType[i].Par1);
+
+			break;
         case pfBinomial:
             FirstM[i] = MrgDistType[i].Par0 * MrgDistType[i].Par1;
 
@@ -3383,6 +3859,12 @@ int BayesClassificationKNN(int                      n,             /* Total numb
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
+		case pfGamma:
+			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+
+			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+
+			break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
@@ -3465,6 +3947,12 @@ int BayesClassificationPW(int                      n,             /* Total numbe
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
+		case pfGamma:
+			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+
+			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+
+			break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
@@ -3548,6 +4036,12 @@ int BayesClassificationH(int                      k,             /* Total number
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
+		case pfGamma:
+			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+
+			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+
+			break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
@@ -5064,7 +5558,7 @@ int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input pa
 
         for (i = 0; i < InpParType.d; i++) {
 			switch (InpParType.IniFamType[i]) {
-            case pfNormal: case pfLognormal: case pfWeibull: case pfBinomial:
+			case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial:
                 if (InpParType.d == 1)
                     fprintf(fp1, "\t%s\t%s\t%s", "pdf", "theta1", "theta2");
                 else
@@ -5255,6 +5749,11 @@ int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input pa
                                              OutParType.Theta[i][j].Par0,
                                              OutParType.Theta[i][j].Par1);
                 break;
+            case pfGamma:
+                fprintf(fp1, "\t%s\t%E\t%E", "gamma", 
+                                             OutParType.Theta[i][j].Par0,
+                                             OutParType.Theta[i][j].Par1);
+                break;
             case pfBinomial:
                 fprintf(fp1, "\t%s\t%E\t%E", "binomial", 
                                              OutParType.Theta[i][j].Par0,
@@ -5363,7 +5862,7 @@ int RunREBMIXTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("\r%s\rREBMIX Version 2.4.0\n", CL);
+    printf("\r%s\rREBMIX Version 2.4.1\n", CL);
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -5571,6 +6070,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (!strcmp(pchar, "WEIBULL"))
                     InpParType.IniFamType[i] = pfWeibull;
                 else
+                if (!strcmp(pchar, "GAMMA"))
+                    InpParType.IniFamType[i] = pfGamma;
+                else
                 if (!strcmp(pchar, "BINOMIAL"))
                     InpParType.IniFamType[i] = pfBinomial;
                 else
@@ -5773,28 +6275,6 @@ E0: if (fp) fclose(fp);
          
         free(InpParType.open);
     }
-
-    if (OutParType.X) {
-        for (i = 0; i < OutParType.n; i++) {
-            if (OutParType.X[i]) free(OutParType.X[i]);
-        }
-         
-        free(OutParType.X);
-    }
-
-    if (OutParType.Theta) {
-        for (i = 0; i < OutParType.c; i++) {
-            if (OutParType.Theta[i]) free(OutParType.Theta[i]);
-        }
-         
-        free(OutParType.Theta);
-    }
-
-    if (OutParType.W) free(OutParType.W);
-
-    if (OutParType.y0) free(OutParType.y0);
-
-    if (OutParType.h) free(OutParType.h);
 
     if (HisParType.D) free(HisParType.D);
 

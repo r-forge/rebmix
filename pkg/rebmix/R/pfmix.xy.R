@@ -26,6 +26,10 @@
     if (xTheta[[i]]$pdf == .rebmix$pdf[6]) {
       fix <- pdirac(as.numeric(x), location = as.numeric(xTheta[[i]]$theta1), ...)
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[7]) {
+      fix <- pgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
+    }    
 
     if (yTheta[[i]]$pdf == .rebmix$pdf[1]) {
       fiy <- pnorm(as.numeric(y), mean = as.numeric(yTheta[[i]]$theta1), sd = as.numeric(yTheta[[i]]$theta2), ...)
@@ -50,6 +54,11 @@
     if (yTheta[[i]]$pdf == .rebmix$pdf[6]) {
       fiy <- pdirac(as.numeric(y), location = as.numeric(yTheta[[i]]$theta1), ...)
     }
+    else
+    if (yTheta[[i]]$pdf == .rebmix$pdf[7]) {
+      fiy <- pgamma(as.numeric(y), scale = as.numeric(yTheta[[i]]$theta1), shape = as.numeric(yTheta[[i]]$theta2), ...)
+    }    
+    
 
     f <- f + w[i] * fix * fiy
   }

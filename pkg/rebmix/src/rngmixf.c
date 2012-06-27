@@ -63,22 +63,22 @@ int WriteRNGMIXDataFile(InputRNGMIXParameterType  InpParType,  /* Input paramete
     }
 
 	for (i = 0; i < OutParType.n; i++) {
-        fprintf(fp, "%E", OutParType.X[0][i]); 
+        fprintf(fp, "%E", OutParType.X[i][0]); 
         
-        for (j = 1; j < InpParType.d; j++) fprintf(fp, "\t%E", OutParType.X[j][i]); 
+        for (j = 1; j < InpParType.d; j++) fprintf(fp, "\t%E", OutParType.X[i][j]); 
         
         fprintf(fp, "\n");
 	}
 
 E0: if (fp) fclose(fp);
-    
+
     if (OutParType.X) {
-        for (i = 0; i < InpParType.d; i++) {
+        for (i = 0; i < OutParType.n; i++) {
             if (OutParType.X[i]) free(OutParType.X[i]);
         }
-         
-        free(OutParType.X);
-    }
+
+		free(OutParType.X);
+	}
 
 	return (Error);
 } /* WriteRNGMIXDataFile */
@@ -200,6 +200,14 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
                                           InpParType.Theta[i][k].Par1);
 
                     break;
+				case pfGamma:
+                    Error = GammaInv(Ran1(&InpParType.IDum), InpParType.Theta[i][k].Par0, InpParType.Theta[i][k].Par1, &y);
+
+					if (Error) goto E0;
+
+					OutParType->X[l][k] = y;
+
+					break;
                 case pfBinomial:
                     if (InpParType.Theta[i][k].Par1 < (FLOAT)0.5) {
                         p = InpParType.Theta[i][k].Par1;
@@ -347,7 +355,7 @@ int RunRNGMIXTemplateFile(char *file)  /* File stream. */
     }
 
     #if (_REBMIXEXE)
-    printf("\r%s\rRNGMIX Version 2.4.0\n", CL);
+    printf("\r%s\rRNGMIX Version 2.4.1\n", CL);
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -496,6 +504,22 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                     else
                     if (!strcmp(pchar, "WEIBULL")) {
                         InpParType.Theta[InpParType.c][InpParType.d].ParFamType = pfWeibull; 
+
+                        pchar = strtok(NULL, "\t"); 
+
+                        InpParType.Theta[InpParType.c][InpParType.d].Par0 = isF = (FLOAT)atof(pchar);
+
+                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
+
+                        pchar = strtok(NULL, "\t"); 
+
+                        InpParType.Theta[InpParType.c][InpParType.d].Par1 = isF = (FLOAT)atof(pchar);
+
+                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
+                    }
+                    else
+                    if (!strcmp(pchar, "GAMMA")) {
+                        InpParType.Theta[InpParType.c][InpParType.d].ParFamType = pfGamma; 
 
                         pchar = strtok(NULL, "\t"); 
 

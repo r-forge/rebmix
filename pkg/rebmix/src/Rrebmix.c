@@ -79,6 +79,13 @@ void RRNGMIX(int    *IDum,        /* Random seed. */
 				InpParType.Theta[j][k].Par1 = Par1[i];
 			}
 			else
+			if (!strcmp(ParFamType[i], "GAMMA")) {
+  			    InpParType.Theta[j][k].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
+
+				InpParType.Theta[j][k].Par0 = Par0[i];
+				InpParType.Theta[j][k].Par1 = Par1[i];
+			}
+			else
 			if (!strcmp(ParFamType[i], "BINOMIAL")) {
   			    InpParType.Theta[j][k].ParFamType = pfBinomial; strcpy(ParFamType[i], "binomial");
 
@@ -310,6 +317,10 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
   		    InpParType.IniFamType[i] = pfWeibull; strcpy(IniFamType[i], "Weibull");
 		}
 		else
+		if (!strcmp(IniFamType[i], "GAMMA")) {
+  		    InpParType.IniFamType[i] = pfGamma; strcpy(IniFamType[i], "gamma");
+		}
+		else
 		if (!strcmp(IniFamType[i], "BINOMIAL")) {
   		    InpParType.IniFamType[i] = pfBinomial; strcpy(IniFamType[i], "binomial");
 		}
@@ -468,6 +479,13 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 				break;
             case pfWeibull:
 				strcpy(ParFamType[i], "Weibull");
+
+				Par0[i] = OutParType.Theta[j][l].Par0;
+				Par1[i] = OutParType.Theta[j][l].Par1;
+
+				break;
+            case pfGamma:
+				strcpy(ParFamType[i], "gamma");
 
 				Par0[i] = OutParType.Theta[j][l].Par0;
 				Par1[i] = OutParType.Theta[j][l].Par1;
@@ -923,6 +941,13 @@ void RCLSMIX(int    *n,           /* Total number of independent observations. *
 						Theta[j][k][l][m].Par1 = Par1[i];
 					}
 					else
+					if (!strcmp(ParFamType[i], "GAMMA")) {
+  						Theta[j][k][l][m].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
+
+						Theta[j][k][l][m].Par0 = Par0[i];
+						Theta[j][k][l][m].Par1 = Par1[i];
+					}
+					else
 					if (!strcmp(ParFamType[i], "BINOMIAL")) {
   						Theta[j][k][l][m].ParFamType = pfBinomial; strcpy(ParFamType[i], "binomial");
 
@@ -1076,6 +1101,13 @@ void RCLRMIX(int    *n,           /* Total number of independent observations. *
 			else
 			if (!strcmp(ParFamType[i], "WEIBULL")) {
   			    Theta[j][k].ParFamType = pfWeibull; strcpy(ParFamType[i], "Weibull");
+
+				Theta[j][k].Par0 = Par0[i];
+				Theta[j][k].Par1 = Par1[i];
+			}
+			else
+			if (!strcmp(ParFamType[i], "GAMMA")) {
+  			    Theta[j][k].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
 
 				Theta[j][k].Par0 = Par0[i];
 				Theta[j][k].Par1 = Par1[i];
@@ -1511,6 +1543,13 @@ void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
 				OutParType.Theta[j][l].Par1 = Par1[i];
 			}
 			else
+			if (!strcmp(ParFamType[i], "GAMMA")) {
+  				OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
+
+				OutParType.Theta[j][l].Par0 = Par0[i];
+				OutParType.Theta[j][l].Par1 = Par1[i];
+			}
+			else
 			if (!strcmp(ParFamType[i], "BINOMIAL")) {
   				OutParType.Theta[j][l].ParFamType = pfBinomial;  strcpy(ParFamType[i], "binomial");
 
@@ -1712,6 +1751,13 @@ void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. *
 			else
 			if (!strcmp(ParFamType[i], "WEIBULL")) {
   				OutParType.Theta[j][l].ParFamType = pfWeibull;  strcpy(ParFamType[i], "Weibull");
+
+				OutParType.Theta[j][l].Par0 = Par0[i];
+				OutParType.Theta[j][l].Par1 = Par1[i];
+			}
+			else
+			if (!strcmp(ParFamType[i], "GAMMA")) {
+  				OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
 
 				OutParType.Theta[j][l].Par0 = Par0[i];
 				OutParType.Theta[j][l].Par1 = Par1[i];
@@ -1962,6 +2008,13 @@ void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
 			else
 			if (!strcmp(ParFamType[i], "WEIBULL")) {
   				OutParType.Theta[j][l].ParFamType = pfWeibull;  strcpy(ParFamType[i], "Weibull");
+
+				OutParType.Theta[j][l].Par0 = Par0[i];
+				OutParType.Theta[j][l].Par1 = Par1[i];
+			}
+			else
+			if (!strcmp(ParFamType[i], "GAMMA")) {
+  				OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
 
 				OutParType.Theta[j][l].Par0 = Par0[i];
 				OutParType.Theta[j][l].Par1 = Par1[i];

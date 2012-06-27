@@ -4,7 +4,7 @@
 Random Univariate or Multivariate Finite Mixture Generation
 }
 \description{
-Returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, binomial, Poisson or Dirac component densities.
+Returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
 }
 \usage{
 RNGMIX(Dataset = NULL, rseed = -1, n = NULL, Theta = NULL)
@@ -21,9 +21,9 @@ For each next file the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\m
 a vector or a data frame containing number of observations in classes \eqn{n_{l}}, where number of observations \eqn{n = \sum_{l = 1}^{c} n_{l}}.
 }
 \item{Theta}{
-a matrix or a data frame containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull distribution and \eqn{p_{il}} for binomial distribution.
+a matrix or a data frame containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
+Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
 }
 \details{
@@ -39,9 +39,9 @@ in the datasets.
 a data frame containing \eqn{c} component weights \eqn{w_{l}} summing to 1.
 }
 \item{Theta}{
-a data frame containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull distribution and \eqn{p_{il}} for binomial distribution.
+a data frame containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
+Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
 \item{Variables}{
 a character vector containing types of variables. One of \code{"continuous"} or \code{"discrete"}.

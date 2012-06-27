@@ -109,6 +109,10 @@ pfmix <- function(x = NULL, w = NULL, Theta = NULL, lower.tail = TRUE, log.p = F
       if (pdf[j, i] == .rebmix$pdf[6]) {
         fi <- fi * pdirac(as.numeric(x[, j]), location = as.numeric(theta1[j, i]), ...)
       }
+      else
+      if (pdf[j, i] == .rebmix$pdf[7]) {
+        fi <- fi * pgamma(as.numeric(x[, j]), scale = as.numeric(theta1[j, i]), shape = as.numeric(theta2[j, i]), ...)
+      }      
     }
     
     f <- f + as.numeric(w[i]) * fi

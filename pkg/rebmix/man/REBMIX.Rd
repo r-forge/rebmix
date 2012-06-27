@@ -4,7 +4,7 @@
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, binomial, Poisson or Dirac component densities.
+Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
 }
 \usage{
 REBMIX(Dataset = NULL, Preprocessing = NULL, D = 0.025, cmax = 15, 
@@ -40,7 +40,7 @@ total of positive relative deviations \code{"D"} or sum of squares error \code{"
 a character vector of length \eqn{d} containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
 }
 \item{pdf}{
-a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
 }
 \item{Theta1}{
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
@@ -83,15 +83,15 @@ represents one random variable. Number of observations \eqn{n} equals the number
 a list of data frames each containing \eqn{c} component weights \eqn{w_{l}} summing to 1.
 }
 \item{Theta}{
-a list of data frames each containing  \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull distribution and \eqn{p_{il}} for binomial distribution.
+a list of data frames each containing  \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
+Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
 \item{Variables}{
 a character vector containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
 }
 \item{pdf}{
-a character vector containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+a character vector containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
 }
 \item{Theta1}{
 a vector containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 

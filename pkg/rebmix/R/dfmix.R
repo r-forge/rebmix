@@ -109,6 +109,10 @@ dfmix <- function(x = NULL, w = NULL, Theta = NULL, ...)
       if (pdf[j, i] == .rebmix$pdf[6]) {
         fi <- fi * ddirac(as.numeric(x[, j]), location = as.numeric(theta1[j, i]))
       }
+      else
+      if (pdf[j, i] == .rebmix$pdf[7]) {
+        fi <- fi * dgamma(as.numeric(x[, j]), scale = as.numeric(theta1[j, i]), shape = as.numeric(theta2[j, i]), ...)
+      }      
     }
     
     f <- f + as.numeric(w[i]) * fi
