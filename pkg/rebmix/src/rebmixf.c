@@ -12,6 +12,9 @@
 #include <R_ext/Rdynload.h>
 #endif
 
+char Progress[2048];
+int  ProgressLength = 0;
+
 /* Inserts y into ascending list Y of length n. Set n = 0 initially. */
 
 void Insert(FLOAT y,  /* Inserted value. */
@@ -4398,12 +4401,24 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 			memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
 		}
 
-        TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
-        printf("%sTime left %2.1f sec", CL, TimeLeft); 
+        printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
-        Rprintf("%sTime left %2.1f sec", CL, TimeLeft);
+        Rprintf("\r%s\r", Progress);
+        R_FlushConsole();
+		R_ProcessEvents();
+        #endif
+		
+        TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+
+		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+
+        #if (_REBMIXEXE)
+        printf("%s", Progress); 
+        #elif (_REBMIXR)
+        Rprintf("%s", Progress);
         R_FlushConsole();
 		R_ProcessEvents();
         #endif
@@ -4411,10 +4426,12 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
+	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+
     #if (_REBMIXEXE)
-    printf("%s", CL);
+    printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
-    Rprintf("%s", CL);
+    Rprintf("\r%s\r", Progress);
     R_FlushConsole();
 	R_ProcessEvents();
     #endif
@@ -4829,12 +4846,24 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 			memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
 		}
  
-		TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
-        printf("%sTime left %2.1f sec", CL, TimeLeft); 
+        printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
-        Rprintf("%sTime left %2.1f sec", CL, TimeLeft);
+        Rprintf("\r%s\r", Progress);
+        R_FlushConsole();
+		R_ProcessEvents();
+        #endif
+		
+        TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+
+		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+
+        #if (_REBMIXEXE)
+        printf("%s", Progress); 
+        #elif (_REBMIXR)
+        Rprintf("%s", Progress);
         R_FlushConsole();
 		R_ProcessEvents();
         #endif
@@ -4842,10 +4871,12 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
+	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+
     #if (_REBMIXEXE)
-    printf("%s", CL);
+    printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
-    Rprintf("%s", CL);
+    Rprintf("\r%s\r", Progress);
     R_FlushConsole();
 	R_ProcessEvents();
     #endif
@@ -5273,12 +5304,24 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
         InpParType.K[i] = k;
 
-        TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
-        printf("%sTime left %2.1f sec", CL, TimeLeft); 
+        printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
-        Rprintf("%sTime left %2.1f sec", CL, TimeLeft);
+        Rprintf("\r%s\r", Progress);
+        R_FlushConsole();
+		R_ProcessEvents();
+        #endif
+		
+        TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
+
+		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+
+		#if (_REBMIXEXE)
+        printf("%s", Progress); 
+        #elif (_REBMIXR)
+        Rprintf("%s", Progress);
         R_FlushConsole();
 		R_ProcessEvents();
         #endif
@@ -5286,10 +5329,12 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
+	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+
     #if (_REBMIXEXE)
-    printf("%s", CL);
+    printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
-    Rprintf("%s", CL);
+    Rprintf("\r%s\r", Progress);
     R_FlushConsole();
 	R_ProcessEvents();
     #endif
@@ -5862,7 +5907,7 @@ int RunREBMIXTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("\r%s\rREBMIX Version 2.4.1\n", CL);
+    printf("REBMIX Version 2.4.2\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -5926,7 +5971,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (Error) goto E0;
 
                 #if (_REBMIXEXE)
-                printf("\r%s\rDataset = %s\n", CL, InpParType.curr);
+                printf("Dataset = %s\n", InpParType.curr);
                 #endif
 
                 Error = REBMIX(InpParType, &OutParType, &HisParType);

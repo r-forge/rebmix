@@ -355,7 +355,7 @@ int RunRNGMIXTemplateFile(char *file)  /* File stream. */
     }
 
     #if (_REBMIXEXE)
-    printf("\r%s\rRNGMIX Version 2.4.1\n", CL);
+    printf("RNGMIX Version 2.4.2\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -419,7 +419,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 InpParType.curr = InpParType.open[k]; 
 
                 #if (_REBMIXEXE)
-                printf("\r%s\rDataset = %s\n", CL, InpParType.curr);
+                printf("Dataset = %s\n", InpParType.curr);
                 #endif
 
                 Error = RNGMIX(InpParType, &OutParType);

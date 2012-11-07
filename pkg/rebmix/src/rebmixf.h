@@ -52,10 +52,6 @@ extern "C" {
 #define BufInc 1000
 #endif
 
-#ifndef CL
-#define CL "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
-#endif
-
 #define IsNan(x) ((x) != (x)) 
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x))) 
 

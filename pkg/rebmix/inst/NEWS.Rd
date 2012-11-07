@@ -54,5 +54,9 @@
 \item Continuous parametric family \code{"gamma"} is added.  
 }
 }
-
+\section{Changes in version 2.4.2}{ 
+\itemize{ 
+\item Fixed symbol eating bug for Mac OS X.  
+}
+}
 
