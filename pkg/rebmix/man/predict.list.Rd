@@ -32,6 +32,7 @@ predictive classes.
 Duda RO, Hart PE (1973). \emph{Pattern Classification and Scene Analysis}. John Wiley & Sons, New York.
 }
 \examples{
+\dontrun{
 data("adult")
 
 ## Find complete cases.
@@ -190,5 +191,6 @@ Error <- 1.0 - Accuracy
 ## Error on test dataset.
 
 Error
+}
 }
 \keyword{classification}
