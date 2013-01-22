@@ -59,4 +59,10 @@
 \item Fixed symbol eating bug for Mac OS X.  
 }
 }
+\section{Changes in version 2.5.0}{ 
+\itemize{ 
+\item Rough parameter estimation is improved by introducing constrained entropy maximization.
+\item Fixed bug in C functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
+}
+}
 

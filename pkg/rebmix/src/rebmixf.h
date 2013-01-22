@@ -40,6 +40,10 @@ extern "C" {
 #define LogPi (FLOAT)1.1447298858494001741434273513531
 #endif
 
+#ifndef Euler       
+#define Euler (FLOAT)0.5772156649015328606065120900824
+#endif
+
 #ifndef Eps
 #define Eps (FLOAT)0.000001
 #endif

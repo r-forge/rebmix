@@ -610,13 +610,13 @@ void RdensKNearestNeighbourXY(int    *n,     /* Total number of independent obse
             R = (x[i] - x[j]) / (*hx); Dc = R * R;
             R = (y[i] - y[j]) / (*hy); Dc += R * R;
 
-			q += Dc < FLOAT_MIN;
+			q += Dc <= FLOAT_MIN;
 
             for (l = 0; l < K; l++) {
                 if (Dc < Dk[l]) {
 					for (m = K - 1; m > l; m--) Dk[m] = Dk[m - 1];
 
-					if ((Dc >= FLOAT_MIN) || (l != K - 1)) Dk[l] = Dc;
+					if ((Dc > FLOAT_MIN) || (l != K - 1)) Dk[l] = Dc;
 
 					break;
                 }
@@ -743,13 +743,13 @@ void RdensKNearestNeighbourX(int    *n,     /* Total number of independent obser
         for (j = 0; j < *n; j++) if (i != j) {
             R = (FLOAT)fabs((x[i] - x[j]) / (*hx)); Dc = R;
 
-			q += Dc < FLOAT_MIN;
+			q += Dc <= FLOAT_MIN;
 
             for (l = 0; l < K; l++) {
                 if (Dc < Dk[l]) {
 					for (m = K - 1; m > l; m--) Dk[m] = Dk[m - 1];
 
-					if ((Dc >= FLOAT_MIN) || (l != K - 1)) Dk[l] = Dc;
+					if ((Dc > FLOAT_MIN) || (l != K - 1)) Dk[l] = Dc;
 
 					break;
                 }

@@ -164,13 +164,11 @@ FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p)
 
     Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n); y = (FLOAT)0.0;
 
-    while (Sum < Fy) {
-	    y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Sum += ypb;
+    while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
+        y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Sum += ypb;
 	}
 
-	if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
-
-	if (y > n) y = n;
+    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
 
     return (y);
 } /* BinomialInv */
@@ -183,7 +181,7 @@ FLOAT PoissonInv(FLOAT Fy, FLOAT Theta)
 
     Sum = ypb = (FLOAT)exp(-Theta); y = (FLOAT)0.0;
 
-    while (Sum < Fy) {
+    while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
 	    y++; ypb *= Theta / y; Sum += ypb;
 	}
 
@@ -320,7 +318,10 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
     int   i;
     int   Error = 0;
 
-    *y = (Beta - (FLOAT)1.0) * Theta + Eps;
+    if (Beta > (FLOAT)1.0)
+        *y = (Beta - (FLOAT)1.0) * Theta + Eps;
+    else
+        *y = Eps;
 
     i = 1; Error = 1;
     while ((i <= ItMax) && Error) {
@@ -333,8 +334,12 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
         *y -= dy;
 
         #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dy) || IsInf(dy) || (*y <= (FLOAT)0.0)) {
+        if (IsNan(dy) || IsInf(dy)) {
             Error = 1; goto E0;
+        }
+        else
+        if (*y < Eps) {
+            *y = Eps; Error = 0;
         }
         #endif
 
@@ -443,12 +448,6 @@ int ComponentDist(int                      d,            /* Number of independen
                 else
                 if (k >= n)
                     *CmpDist *= (FLOAT)1.0;
-                else 
-                if (p <= FLOAT_MIN)
-                    *CmpDist *= (FLOAT)1.0;
-                else
-                if ((FLOAT)fabs(p - (FLOAT)1.0) <= FLOAT_MIN)
-                    *CmpDist *= (FLOAT)0.0;
                 else {
 					Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
 	
@@ -535,12 +534,9 @@ int ComponentDist(int                      d,            /* Number of independen
                 else
                 if (k > n)
                     *CmpDist *= (FLOAT)0.0;
-                else 
-                if ((p <= FLOAT_MIN) || ((FLOAT)fabs(p - (FLOAT)1.0) <= FLOAT_MIN))
-                    *CmpDist *= (FLOAT)0.0;
                 else
-                    *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
-                                k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p));
+                    *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
+                                (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
 				break;
 			case pfPoisson:
@@ -637,12 +633,6 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             else
             if (k >= n)
                 *CmpMrgDist *= (FLOAT)1.0;
-            else
-            if (p <= FLOAT_MIN)
-                *CmpMrgDist *= (FLOAT)1.0;
-            else
-            if ((FLOAT)fabs(p - (FLOAT)1.0) <= FLOAT_MIN)
-                *CmpMrgDist *= (FLOAT)0.0;
             else {
                 Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
 	
@@ -728,11 +718,8 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             if (k > n)
                 *CmpMrgDist *= (FLOAT)0.0;
             else
-            if ((p <= FLOAT_MIN) || ((FLOAT)fabs(p - (FLOAT)1.0) <= FLOAT_MIN))
-                *CmpMrgDist *= (FLOAT)0.0;
-            else
-                *CmpMrgDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
-                               k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p));
+                *CmpMrgDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
+                               (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
 			break;
 		case pfPoisson:
@@ -1497,6 +1484,54 @@ int RoughLognormalParameters(FLOAT ym,
                              FLOAT *Mean,
                              FLOAT *Stdev)
 {
+    FLOAT Lambda, dLambda;
+    FLOAT A[3];
+    int   i;
+    int   Error = 0;
+
+    Error = ym <= FLOAT_MIN; if (Error) goto E0;
+
+    Lambda = (FLOAT)1.0 + Eps;
+
+    i = 1; A[0] = (FLOAT)2.0 * (FLOAT)log(Sqrt2Pi * ym * fm); Error = 1;
+    while ((i <= ItMax) && Error) {
+        A[1] = (FLOAT)1.0 / Lambda; A[2] = Lambda - (FLOAT)1.0;
+
+        dLambda = ((FLOAT)1.0 - A[1] + (FLOAT)log(Lambda * A[2]) + A[0]) / (A[1] * ((FLOAT)1.0 + A[1]) + (FLOAT)1.0 / A[2]);
+
+        Lambda -= dLambda;
+
+        #if (_REBMIXEXE || _REBMIXR)
+        if (IsNan(dLambda) || IsInf(dLambda)) {
+            Error = 1; goto E0;
+        }
+        else
+        if (Lambda < (FLOAT)1.0 + Eps) {
+            Lambda = (FLOAT)1.0 + Eps; Error = 0;
+        }
+        #endif
+
+        if ((FLOAT)fabs(dLambda / Lambda) < Eps) Error = 0;
+
+        i++;
+    }
+
+    if (Error) goto E0;
+
+    *Mean = Lambda - (FLOAT)1.0 + (FLOAT)log(ym);
+
+    *Stdev = (FLOAT)pow(Lambda * (Lambda - (FLOAT)1.0), (FLOAT)0.5);
+
+E0: return (Error);
+} /* RoughLognormalParameters */
+
+/* Returns rough lognormal parameters. */
+
+int RoughLognormalParametersOld(FLOAT ym,   
+                                FLOAT fm,
+                                FLOAT *Mean,
+                                FLOAT *Stdev)
+{
     FLOAT dStdev, Prd, Tmp;
     int   i;
     int   Error = 0;
@@ -1514,7 +1549,7 @@ int RoughLognormalParameters(FLOAT ym,
         (*Stdev) -= dStdev;
 
         #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dStdev) || IsInf(dStdev) || (*Stdev <= (FLOAT)0.0)) {
+        if (IsNan(dStdev) || IsInf(dStdev) || (*Stdev <= FLOAT_MIN)) {
             Error = 1; goto E0;
         }
         #endif
@@ -1529,7 +1564,7 @@ int RoughLognormalParameters(FLOAT ym,
     *Mean = (FLOAT)log(ym) + (*Stdev) * (*Stdev);
 
 E0: return (Error);
-} /* RoughLognormalParameters */
+} /* RoughLognormalParametersOld */
 
 /* Returns rough Weibull parameters. */
 
@@ -1537,6 +1572,58 @@ int RoughWeibullParameters(FLOAT ym,
                            FLOAT fm,
                            FLOAT *Theta,
                            FLOAT *Beta)
+{
+    FLOAT Alpha, dAlpha;
+    FLOAT A[4];
+    int   i;
+    int   Error = 0;
+
+    Error = ym <= FLOAT_MIN; if (Error) goto E0;
+                     
+    Alpha = (FLOAT)1.3349695;
+
+    i = 1; A[0] = (FLOAT)exp((FLOAT)1.0) * ym * fm; Error = 1;
+    while ((i <= ItMax) && Error) {
+        A[1] = Alpha - (FLOAT)1.0; 
+
+        A[2] = (FLOAT)1.0 + (Euler + (FLOAT)log(A[1] / Alpha)) / Alpha;
+
+        A[3] = (FLOAT)exp((FLOAT)1.0 / Alpha); 
+        
+        dAlpha = (A[2] * A[1] * A[3] - A[0]) / (A[3] * ((FLOAT)1.0 - (A[1] - A[2]) / Alpha / Alpha));
+
+        Alpha -= dAlpha;
+
+        #if (_REBMIXEXE || _REBMIXR)                                
+        if (IsNan(dAlpha) || IsInf(dAlpha)) {
+            Error = 1; goto E0;
+        }
+        else
+        if (Alpha < (FLOAT)1.234332) {
+            Alpha = (FLOAT)1.234332; Error = 0;
+        }
+        #endif
+
+        if ((FLOAT)fabs(dAlpha / Alpha) < Eps) Error = 0; 
+
+        i++;
+    }
+
+    if (Error) goto E0;
+
+    *Beta = Alpha + Euler + (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
+
+    *Theta = ym * (FLOAT)pow(Alpha / (Alpha - (FLOAT)1.0), (FLOAT)1.0 / (*Beta));
+
+E0: return (Error);
+} /* RoughWeibullParameters */
+
+/* Returns rough Weibull parameters. */
+
+int RoughWeibullParametersOld(FLOAT ym,   
+                              FLOAT fm,
+                              FLOAT *Theta,
+                              FLOAT *Beta)
 {
     FLOAT Cor, dBeta, Prd, Tmp;
     int   i;
@@ -1555,7 +1642,7 @@ int RoughWeibullParameters(FLOAT ym,
         *Beta -= dBeta;
 
         #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= (FLOAT)0.0)) {
+        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= FLOAT_MIN)) {
             Error = 1; goto E0;
         }
         #endif
@@ -1570,7 +1657,7 @@ int RoughWeibullParameters(FLOAT ym,
     *Theta = ym * (FLOAT)exp(log((*Beta) / ((*Beta) - (FLOAT)1.0)) / (*Beta));
 
 E0: return (Error);
-} /* RoughWeibullParameters */
+} /* RoughWeibullParametersOld */
 
 /* Returns rough Gamma parameters. */
 
@@ -1578,6 +1665,59 @@ int RoughGammaParameters(FLOAT ym,
                          FLOAT fm,
                          FLOAT *Theta,
                          FLOAT *Beta)
+{
+
+    FLOAT Alpha, dAlpha;
+    FLOAT A[5];
+    int   i;
+    int   Error = 0;
+
+    Error = ym <= FLOAT_MIN; if (Error) goto E0;
+
+    Alpha = (FLOAT)1.00032;
+
+    i = 1; A[0] = (FLOAT)log(ym * fm * Sqrt2Pi); Error = 1;
+    while ((i <= ItMax) && Error) {
+        A[1] = (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
+
+        A[2] = A[1] + (FLOAT)1.0 / Alpha; 
+
+        A[3] = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * A[1]);
+
+        A[4] = A[3] * ((FLOAT)1.0 + A[3] * (A[1] + (FLOAT)1.0 / (Alpha - (FLOAT)1.0)) / Euler) / ((FLOAT)1.0 + Alpha);
+
+        dAlpha = (A[3] * A[2] + (FLOAT)0.5 * (FLOAT)log(A[3]) - A[0]) / (A[4] * (A[2] + (FLOAT)0.5 / A[3]) + A[3] / (Alpha - (FLOAT)1.0) / Alpha / Alpha);
+
+        Alpha -= dAlpha;
+
+        #if (_REBMIXEXE || _REBMIXR)
+        if (IsNan(dAlpha) || IsInf(dAlpha)) {
+            Error = 1; goto E0;
+        }
+        else
+        if (Alpha < 1.00032) {
+            Alpha = 1.00032; Error = 0;
+        }
+        #endif
+
+        if ((FLOAT)fabs(dAlpha / (Alpha)) < Eps) Error = 0; 
+
+        i++;
+    }
+
+    if (Error) goto E0;
+
+    *Beta = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha));
+
+    *Theta = ym * Alpha / (Alpha - (FLOAT)1.0) / (*Beta);
+
+E0: return (Error);
+} /* RoughGammaParameters */
+
+int RoughGammaParametersOld(FLOAT ym,   
+                            FLOAT fm,
+                            FLOAT *Theta,
+                            FLOAT *Beta)
 {
     FLOAT Cor, dBeta, Prd, Tmp, Psi;
     int   i;
@@ -1600,7 +1740,7 @@ int RoughGammaParameters(FLOAT ym,
         *Beta -= dBeta;
 
         #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= (FLOAT)0.0)) {
+        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= FLOAT_MIN)) {
             Error = 1; goto E0;
         }
         #endif
@@ -1615,7 +1755,7 @@ int RoughGammaParameters(FLOAT ym,
     *Theta = ym / (*Beta - (FLOAT)1.0);
 
 E0: return (Error);
-} /* RoughGammaParameters */
+} /* RoughGammaParametersOld */
 
 /* Returns rough binomial parameters. */
 
@@ -1626,14 +1766,15 @@ int RoughBinomialParameters(FLOAT ym,
 {
     int Error = 0;
 
-    *p = (ym + (FLOAT)0.5) / (n + (FLOAT)1.0);
-
     if ((int)ym == 0) {
         *p = (fm < (FLOAT)1.0) ? (FLOAT)1.0 - (FLOAT)pow(fm, (FLOAT)1.0 / n) : (FLOAT)0.0;
     }
     else
     if ((int)ym == (int)n) {
         *p = (fm < (FLOAT)1.0) ? (FLOAT)pow(fm, (FLOAT)1.0 / n) : (FLOAT)1.0;
+    }
+    else {
+        *p = ym / n;
     }
 
     return (Error);
@@ -1651,7 +1792,7 @@ int RoughPoissonParameters(FLOAT ym,
         *Theta = (fm < (FLOAT)1.0) ? -(FLOAT)log(fm) : (FLOAT)0.0;
     }
     else {
-		*Theta = ym + (FLOAT)0.5;
+		*Theta = ym;
     }
 
     return (Error);
@@ -1959,7 +2100,7 @@ S2:;        }
 
                     break;
 		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
                     if (Error) goto E0;
 
@@ -2370,7 +2511,7 @@ S2:;        }
 
                     break;
 		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
                     if (Error) goto E0;
 
@@ -2773,7 +2914,7 @@ S2:;        }
 
                     break;
 		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
 
                     if (Error) goto E0;
 
@@ -3008,7 +3149,7 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -3064,7 +3205,7 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -3267,7 +3408,7 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -3323,7 +3464,7 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -3526,7 +3667,7 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -3582,7 +3723,7 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 TmpDistType[i].Par1 -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= (FLOAT)0.0)) {
+                if (IsNan(dP) || IsInf(dP) || (TmpDistType[i].Par1 <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
