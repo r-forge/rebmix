@@ -1527,7 +1527,7 @@ E0: return (Error);
 
 /* Returns rough lognormal parameters. */
 
-int RoughLognormalParametersA(FLOAT ym,   
+int RoughLognormalParametersOld(FLOAT ym,   
                                 FLOAT fm,
                                 FLOAT *Mean,
                                 FLOAT *Stdev)
