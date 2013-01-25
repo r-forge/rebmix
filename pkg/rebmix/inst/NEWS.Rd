@@ -63,6 +63,7 @@
 \itemize{ 
 \item Rough parameter estimation is improved by introducing constrained entropy maximization.
 \item Fixed bug in C functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
+\item Fixed bug in \code{boot.REBMIX} method.
 }
 }
 

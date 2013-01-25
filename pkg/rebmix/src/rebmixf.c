@@ -1527,7 +1527,7 @@ E0: return (Error);
 
 /* Returns rough lognormal parameters. */
 
-int RoughLognormalParametersOld(FLOAT ym,   
+int RoughLognormalParametersA(FLOAT ym,   
                                 FLOAT fm,
                                 FLOAT *Mean,
                                 FLOAT *Stdev)
@@ -6048,7 +6048,7 @@ int RunREBMIXTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.4.2\n");
+    printf("REBMIX Version 2.5.0\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {

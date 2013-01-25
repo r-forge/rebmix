@@ -100,15 +100,13 @@ boot.REBMIX <- function(x,
   C <- x$summary[pos, "Preprocessing"]
   
   if (C == .rebmix$Preprocessing[1]) {
-    y0 <- as.numeric(x$summary[pos, paste("y0", if (d > 1) 1:d, sep = "")])
     h <- as.numeric(x$summary[pos, paste("h", if (d > 1) 1:d, sep = "")])    
+
+    k <- ceiling((bsample$ymax - bsample$ymin) / h)
     
-    kmin <- ceiling((y0 - bsample$ymin) / h - 0.5) 
-    kmax <- ceiling((bsample$ymax - y0) / h - 0.5)
-  
-    k <- max(kmin + kmax + 1)
-  
-    ymin <- y0 - h * (kmin + 0.5); ymax <- ymin + h * k
+    k <- max(k)
+    
+    ymin <- bsample$ymin; ymax <- ymin + h * k
   }
   else
   if (C == .rebmix$Preprocessing[2]) {
