@@ -6048,7 +6048,7 @@ int RunREBMIXTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.5.0\n");
+    printf("REBMIX Version 2.5.1\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {

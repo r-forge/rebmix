@@ -355,7 +355,7 @@ int RunRNGMIXTemplateFile(char *file)  /* File stream. */
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.5.0\n");
+    printf("RNGMIX Version 2.5.1\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {

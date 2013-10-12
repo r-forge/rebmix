@@ -66,4 +66,9 @@
 \item Fixed bug in \code{boot.REBMIX} method.
 }
 }
-
+\section{Changes in version 2.5.1}{ 
+\itemize{ 
+\item Fixed checking top-level files.
+\item Fixed checking for old-style vignette sources.
+}
+}
