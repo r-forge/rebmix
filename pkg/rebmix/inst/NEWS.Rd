@@ -70,5 +70,6 @@
 \itemize{ 
 \item Fixed checking top-level files.
 \item Fixed checking for old-style vignette sources.
+\item Packages mixtools and mclust excluded from vignette.
 }
 }
