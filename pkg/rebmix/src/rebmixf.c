@@ -1690,7 +1690,7 @@ int RoughEstimationKNN(int                      n,             /* Total number o
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, Dlm, Dlmin, Dlmax, Dc, R;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, Dlm, Dlmin, Dc, R;
     int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
@@ -1806,7 +1806,7 @@ S1:;    }
         if (Dlm > (FLOAT)0.0) goto E1; 
 
         flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
-        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
+        flmax = (FLOAT)Mode[i].flm;
 
         /* Bisection. */
 
@@ -1886,7 +1886,7 @@ S2:;        }
                     flmin = flm; Dlmin = Dlm; 
                 }
                 else {
-                    flmax = flm; Dlmax = Dlm;
+                    flmax = flm;
                 }
             }
         }
@@ -1910,7 +1910,7 @@ int RoughEstimationPW(int                      n,             /* Total number of
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Dlmax;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin;
     int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
@@ -2012,7 +2012,7 @@ S1:;    }
         if (Dlm > (FLOAT)0.0) goto E1; 
 
         flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
-        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
+        flmax = (FLOAT)Mode[i].flm;
 
         /* Bisection. */
 
@@ -2084,7 +2084,7 @@ S2:;        }
                     flmin = flm; Dlmin = Dlm; 
                 }
                 else {
-                    flmax = flm; Dlmax = Dlm;
+                    flmax = flm;
                 }
             }
         }
@@ -2108,7 +2108,7 @@ int RoughEstimationH(int                      k,             /* Total number of 
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Dlmax;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin;
     int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
@@ -2210,7 +2210,7 @@ S1:;    }
         if (Dlm > (FLOAT)0.0) goto E1; 
 
         flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
-        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
+        flmax = (FLOAT)Mode[i].flm;
 
         /* Bisection. */
 
@@ -2282,7 +2282,7 @@ S2:;        }
                     flmin = flm; Dlmin = Dlm; 
                 }
                 else {
-                    flmax = flm; Dlmax = Dlm;
+                    flmax = flm;
                 }
             }
         }

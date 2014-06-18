@@ -11,7 +11,7 @@
   ymin = NULL,
   ymax = NULL,
   ar = 0.1,
-  Restraints = "loose")
+  Restraints = "loose", ...)
 {
   REBMIX <- NULL
   REBMIX$Dataset <- Dataset
@@ -473,7 +473,7 @@ REBMIX <- function(Dataset = NULL,
         ymin = ymin,
         ymax = ymax,
         ar = ar,
-        Restraints = Restraints)
+        Restraints = Restraints, ...)
 
       for (k in (1:length(Dataset))) {
         REBMIX$w[[length(REBMIX$w) + 1]] <- output$w[[k]] 
