@@ -318,7 +318,7 @@ REBMIX <- function(Dataset = NULL,
   ymin = NULL,
   ymax = NULL,
   ar = 0.1,
-  Restraints = "loose")
+  Restraints = "loose", ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
