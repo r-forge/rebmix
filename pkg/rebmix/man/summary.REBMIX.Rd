@@ -39,8 +39,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "D", 
   Variables = "discrete",
   pdf = "Dirac", 
-  K = 1, 
-  b = 0.0)
+  K = 1)
   
 ## Print summary and plot finite mixture.  
 

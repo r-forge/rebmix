@@ -10,7 +10,7 @@ Returns the REBMIX algorithm output for mixtures of conditionally independent no
 REBMIX(Dataset = NULL, Preprocessing = NULL, D = 0.025, cmax = 15, 
        Criterion = "AIC", Variables = NULL, pdf = NULL,
        Theta1 = NULL, Theta2 = NULL, K = NULL, ymin = NULL, 
-       ymax = NULL, b = 1.0, ar = 0.1, Restraints = "loose")
+       ymax = NULL, ar = 0.1, Restraints = "loose", ...)
 }
 \arguments{
 \item{Dataset}{
@@ -24,7 +24,7 @@ a character vector, giving the preprocessing types. One of \code{"histogram"}, \
 a total of positive relative deviations standing for the maximum acceptable measure of
 distance between predictive and empirical densities. It satisfies the relation \eqn{0 \leq D \leq 1}.
 The default value is \code{0.025}. However, if components with a low probability of occurrence are expected, it has to
-decrease. If \eqn{D = 0} and \eqn{b = 0} the mixture tends to \eqn{c = c_{\mathrm{max}}} components.
+decrease. If \eqn{D = 0} the mixture tends to \eqn{c = c_{\mathrm{max}}} components.
 }
 \item{cmax}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
@@ -62,16 +62,15 @@ a vector of length \eqn{d} containing minimum observations. The default value is
 \item{ymax}{
 a vector of length \eqn{d} containing maximum observations. The default value is \code{NULL}.
 }
-\item{b}{
-minimum weight multiplier \eqn{0 \leq b \leq 1} influences the number of components \eqn{w_{\mathrm{min}} = 2 D_{\mathrm{min}} ((l - 1)b + 1)}. The
-default value is \code{1.0}.
-}
 \item{ar}{
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.
 }
 \item{Restraints}{
 a character string giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
 The rigid restraints are obsolete and applicable for well separated components only. 
+}
+\item{...}{
+potential further arguments of the method. 
 }
 }
 \value{
@@ -101,7 +100,7 @@ a vector containing initial component parameters. The value is \code{NULL}.
 }
 \item{summary}{
 a data frame with additional information about dataset, preprocessing, \eqn{D}, \eqn{c_{\mathrm{max}}}, information criterion type, 
-\eqn{b}, \eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
+\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
 information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
 }
 \item{pos}{
@@ -179,8 +178,7 @@ complex1est <- REBMIX(Dataset = complex1$Dataset,
   Criterion = "BIC", 
   Variables = "continuous",
   pdf = "normal", 
-  K = K, 
-  b = 0.0)
+  K = K)
                  
 complex1est
 

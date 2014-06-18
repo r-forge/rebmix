@@ -43,8 +43,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "AIC", 
   Variables = "continuous",
   pdf = "Weibull", 
-  K = 8:25, 
-  b = 1.0)
+  K = 8:25)
   
 ## Print coefficients and plot finite mixture.  
 

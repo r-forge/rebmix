@@ -8,6 +8,10 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef _TIME_LEFT_SWITCH
+#define _TIME_LEFT_SWITCH 0 
+#endif
+
 #ifndef FLOAT
 #define FLOAT double 
 #endif
@@ -58,6 +62,7 @@ extern "C" {
 
 #define IsNan(x) ((x) != (x)) 
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x))) 
+#define Angle(b, x) ((x > 1) ? b * x : 1)
 
 typedef enum {
     poHistogram,         /* Histogram approach. */
@@ -74,10 +79,10 @@ typedef enum {
     pfNormal,      /* Normal distribution. */
     pfLognormal,   /* Lognormal distribution. */
     pfWeibull,     /* Weibull distribution. */
-	pfGamma,       /* Gamma distribution. */
+    pfGamma,       /* Gamma distribution. */
     pfBinomial,    /* Binomial distribution. */
-	pfPoisson,     /* Poisson distribution. */
-	pfDirac        /* Dirac distribution. */
+    pfPoisson,     /* Poisson distribution. */
+    pfDirac        /* Dirac distribution. */
 } ParametricFamilyType_e;
 
 typedef enum {
@@ -106,26 +111,14 @@ typedef enum {
     icICL,    /* ICL - Integrated classification likelihood Biernacki et al. (1998). */
     icPC,     /* PC - Partition coefficient Bezdek (1981). */
     icICLBIC, /* ICL-BIC - Integrated classification likelihood criterion Biernacki et al. (1998). */ 
-	icD,      /* D - Total of positive relative deviations Nagode & Fajdiga (2011). */
-	icSSE,    /* SSE - Sum of squares error Bishop (1998). */
+    icD,      /* D - Total of positive relative deviations Nagode & Fajdiga (2011). */
+    icSSE,    /* SSE - Sum of squares error Bishop (1998). */
 } InformationCriterionType_e;
 
 typedef struct roughparametertype {
-    FLOAT y;      /* Loose mode position. */
-    FLOAT f;      /* Loose mode empirical density. */
-    FLOAT dy;     /* Increment dy. */
-    FLOAT df;     /* Increment df. */
-    FLOAT ym;     /* Mode position. */
-    FLOAT f_lm;   /* Component conditional empirical density. */
-    FLOAT ymin;   /* Mode position lower boundary. */
-    FLOAT ymax;   /* Mode position upper boundary. */
-    FLOAT y_lmin; /* Component conditional minimum y. */
-    FLOAT y_lmax; /* Component conditional maximum y. */
-    FLOAT f_lmin; /* Component conditional minimum empirical density. */
-    FLOAT f_lmax; /* Component conditional maximum empirical density. */
-    FLOAT b_lmin; /* Component conditional 0.001 boundary. */
-    FLOAT b_lmax; /* Component conditional 0.999 boundary. */
-    FLOAT k_lm;   /* Component conditional total number of observations. */
+    FLOAT ym;    /* Mode position. */
+    FLOAT flm;   /* Component conditional empirical density. */
+    FLOAT klm;   /* Component conditional total number of observations. */
 } RoughParameterType;
 
 typedef struct inputrebmixparametertype {
@@ -143,8 +136,8 @@ typedef struct inputrebmixparametertype {
     FLOAT                      *Ini1;       /* Initial component parameters. */
     int                        kmax;        /* Number of classes or k-nearest neighbours to be processed. */
     int                        *K;          /* Number of classes or k-nearest neighbours. */
-	FLOAT                      *ymin;       /* Minimum observations. */
-	FLOAT                      *ymax;       /* Maximum observations. */
+    FLOAT                      *ymin;       /* Minimum observations. */
+    FLOAT                      *ymax;       /* Maximum observations. */
     FLOAT                      b;           /* Minimum weight multiplier. */
     FLOAT                      ar;          /* Acceleration rate. */
     PestraintsType_e           ResType;     /* Restraints type. */
@@ -166,11 +159,11 @@ typedef struct outputrebmixparametertype {
 } OutputREBMIXParameterType;
 
 typedef struct historyrebmixparametertype {
-	int   Imax;   /* Number of iterations. */
-	int   *c;     /* Numbers of components. */ 
-	FLOAT *IC;    /* Information criteria. */  
-	FLOAT *logL;  /* Log-likelihoods. */
-	FLOAT *D;     /* Totals of positive relative deviations. */ 
+    int   Imax;   /* Number of iterations. */
+    int   *c;     /* Numbers of components. */ 
+    FLOAT *IC;    /* Information criteria. */  
+    FLOAT *logL;  /* Log-likelihoods. */
+    FLOAT *D;     /* Totals of positive relative deviations. */ 
 } HistoryREBMIXParameterType;
 
 #if (_REBMIXDLL)
@@ -214,7 +207,7 @@ int MixtureDist(int                      d,             /* Number of independent
 
 int REBMIX(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
            OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
-		   HistoryREBMIXParameterType *HisParType); /* History parameters. */ 
+           HistoryREBMIXParameterType *HisParType); /* History parameters. */ 
 
 /* Reads input data from the file stream. */
 
@@ -268,8 +261,8 @@ int InformationCriterionKNN(InformationCriterionType_e ICType,        /* Informa
                             MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                             FLOAT                      *IC,           /* Information criterion. */
                             FLOAT                      *logL,         /* log-likelihood. */
-							int                        *M,            /* Degrees of freedom. */
-							FLOAT                      *D);           /* Total of positive relative deviations. */
+                            int                        *M,            /* Degrees of freedom. */
+                            FLOAT                      *D);           /* Total of positive relative deviations. */
 
 /* Returns information criterion for Parzen window. */ 
 
@@ -283,8 +276,8 @@ int InformationCriterionPW(InformationCriterionType_e ICType,        /* Informat
                            MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                            FLOAT                      *IC,           /* Information criterion. */
                            FLOAT                      *logL,         /* log-likelihood. */
-						   int                        *M,            /* Degrees of freedom. */
-  						   FLOAT                      *D);           /* Total of positive relative deviations. */
+                           int                        *M,            /* Degrees of freedom. */
+                           FLOAT                      *D);           /* Total of positive relative deviations. */
 
 /* Returns information criterion for histogram. */ 
 
@@ -299,8 +292,8 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
                           MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                           FLOAT                      *IC,           /* Information criterion. */
                           FLOAT                      *logL,         /* log-likelihood. */
-						  int                        *M,            /* Degrees of freedom. */
-						  FLOAT                      *D);           /* Total of positive relative deviations. */
+                          int                        *M,            /* Degrees of freedom. */
+                          FLOAT                      *D);           /* Total of positive relative deviations. */
 
 #endif
 

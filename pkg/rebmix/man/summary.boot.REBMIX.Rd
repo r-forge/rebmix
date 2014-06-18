@@ -38,8 +38,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "AIC", 
   Variables = "continuous",
   pdf = "normal", 
-  K = 30:40, 
-  b = 1.0)
+  K = 30:40)
 
 ## Bootstrap finite mixture and print summary.  
 

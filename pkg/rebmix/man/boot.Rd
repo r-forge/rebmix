@@ -105,7 +105,6 @@ weibullest <- REBMIX(Dataset = list(weibull),
   Variables = "continuous",
   pdf = "Weibull", 
   K = K[1]:K[2], 
-  b = 1.0,
   Restraints = "loose")
 
 ## Plot finite mixture.

@@ -137,7 +137,6 @@ boot.REBMIX <- function(x,
     K = k,
     ymin = if (is.null(ymin)) NULL else as.numeric(ymin),
     ymax = if (is.null(ymax)) NULL else as.numeric(ymax),
-    b = as.numeric(x$summary[pos, "b"]),
     ar = as.numeric(x$summary[pos, "ar"]),
     Restraints = as.character(x$summary[pos, "Restraints"]))
 

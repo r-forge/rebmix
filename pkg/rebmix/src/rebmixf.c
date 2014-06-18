@@ -1,5 +1,6 @@
 #include <math.h>
 #include <float.h> 
+
 #include <stdio.h>
 #include <ctype.h>
 #include <time.h>
@@ -12,28 +13,30 @@
 #include <R_ext/Rdynload.h>
 #endif
 
+#if (_TIME_LEFT_SWITCH)
 char Progress[2048];
 int  ProgressLength = 0;
+#endif
 
 /* Inserts y into ascending list Y of length n. Set n = 0 initially. */
 
 void Insert(FLOAT y,  /* Inserted value. */
-	        int   *n, /* Length of Y. */
-	        FLOAT *Y) /* Pointer to Y = [y0,...,yn-1]. */
+            int   *n, /* Length of Y. */
+            FLOAT *Y) /* Pointer to Y = [y0,...,yn-1]. */
 {
-	int i, j;
+    int i, j;
 
-	Y[*n] = y;
+    Y[*n] = y;
 
-	for (i = 0; i < *n; i++) {
-		if (y < Y[i]) {
-			for (j = *n; j > i; j--) Y[j] = Y[j - 1]; Y[i] = y;
-					
-			break;
-		}
-	}
+    for (i = 0; i < *n; i++) {
+        if (y < Y[i]) {
+            for (j = *n; j > i; j--) Y[j] = Y[j - 1]; Y[i] = y;
+                    
+            break;
+        }
+    }
 
-	*n += 1;
+    *n += 1;
 } /* Insert */
 
 /* Returns the value log(Gamma(y)) for y > 0. See http://www.nrbook.com/a/bookcpdf/c6-1.pdf */
@@ -65,92 +68,92 @@ int Digamma(FLOAT y, FLOAT *Psi)
     static FLOAT piov4 = (FLOAT)0.785398163397448;
     static FLOAT dy0 = (FLOAT)1.461632144968362341262659542325721325;
     static FLOAT p1[7] = {(FLOAT)0.0089538502298197, (FLOAT)4.77762828042627, (FLOAT)142.441585084029,
-		                  (FLOAT)1186.45200713425, (FLOAT)3633.51846806499, (FLOAT)4138.10161269013, 
-						  (FLOAT)1305.60269827897};
+                          (FLOAT)1186.45200713425, (FLOAT)3633.51846806499, (FLOAT)4138.10161269013, 
+                          (FLOAT)1305.60269827897};
     static FLOAT q1[6] = {(FLOAT)44.8452573429826, (FLOAT)520.752771467162, (FLOAT)2210.0079924783,
-		                  (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6};
+                          (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6};
     static FLOAT p2[4] = {-(FLOAT)2.12940445131011, -(FLOAT)7.01677227766759,
-	                      -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
+                          -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
     static FLOAT q2[4] = {(FLOAT)32.2703493791143, (FLOAT)89.2920700481861,
-	                      (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
+                          (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
     int   i, m, n, nq;
     FLOAT d2;
     FLOAT w, z;
     FLOAT den, aug, sgn, ymy0, ymax, upper, ymin;
-	int Error = 0;
+    int Error = 0;
 
     ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / DBL_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
 
     if (y < (FLOAT)0.5) {
-	    if ((FLOAT)fabs(y) <= ymin) {
-  	        if (y == (FLOAT)0.0) {
-		        Error = 1; goto E0;
-	        }
-	    
-			aug = -(FLOAT)1.0 / y;
-	    }
-	    else { 
-	        w = -y; sgn = piov4;
+        if ((FLOAT)fabs(y) <= ymin) {
+              if (y == (FLOAT)0.0) {
+                Error = 1; goto E0;
+            }
+        
+            aug = -(FLOAT)1.0 / y;
+        }
+        else { 
+            w = -y; sgn = piov4;
 
-	        if (w <= (FLOAT)0.0) {
-		        w = -w; sgn = -sgn;
-	        }
+            if (w <= (FLOAT)0.0) {
+                w = -w; sgn = -sgn;
+            }
 
-	        if (w >= ymax) {
-		        Error = 1; goto E0;
-	        }
+            if (w >= ymax) {
+                Error = 1; goto E0;
+            }
 
-	        nq = (int)w; w -= (FLOAT)nq; nq = (int)(w * (FLOAT)4.0); w = (w - (FLOAT) nq * (FLOAT)0.25) * (FLOAT)4.0; n = nq / 2;
+            nq = (int)w; w -= (FLOAT)nq; nq = (int)(w * (FLOAT)4.0); w = (w - (FLOAT) nq * (FLOAT)0.25) * (FLOAT)4.0; n = nq / 2;
 
-	        if (n + n != nq) {
-		        w = (FLOAT)1.0 - w;
-	        }
+            if (n + n != nq) {
+                w = (FLOAT)1.0 - w;
+            }
 
-	        z = piov4 * w; m = n / 2;
+            z = piov4 * w; m = n / 2;
 
-	        if (m + m != n) {
-		        sgn = -sgn;
-	        }
+            if (m + m != n) {
+                sgn = -sgn;
+            }
 
-	        n = (nq + 1) / 2; m = n / 2; m += m;
-	        
-			if (m == n) {
-		        if (z == 0.0) {
-		            Error = 1; goto E0;
-		        }
+            n = (nq + 1) / 2; m = n / 2; m += m;
+            
+            if (m == n) {
+                if (z == 0.0) {
+                    Error = 1; goto E0;
+                }
 
-		        aug = sgn * (cos(z) / sin(z) * (FLOAT)4.0);
-	        } 
-		    else { 
-		        aug = sgn * ((FLOAT)sin(z) / (FLOAT)cos(z) * (FLOAT)4.0);
-	        }
-		}
+                aug = sgn * (cos(z) / sin(z) * (FLOAT)4.0);
+            } 
+            else { 
+                aug = sgn * ((FLOAT)sin(z) / (FLOAT)cos(z) * (FLOAT)4.0);
+            }
+        }
 
-	    y = (FLOAT)1.0 - y;
+        y = (FLOAT)1.0 - y;
     }
 
     if (y <= (FLOAT)3.0) {
-	    den = y; upper = p1[0] * y;
+        den = y; upper = p1[0] * y;
 
-	    for (i = 1; i <= 5; ++i) {
-	        den = (den + q1[i - 1]) * y; upper = (upper + p1[i]) * y;
-	    }
+        for (i = 1; i <= 5; ++i) {
+            den = (den + q1[i - 1]) * y; upper = (upper + p1[i]) * y;
+        }
 
-	    den = (upper + p1[6]) / (den + q1[5]); ymy0 = y - dy0;
+        den = (upper + p1[6]) / (den + q1[5]); ymy0 = y - dy0;
 
-	    *Psi = den * ymy0 + aug;
+        *Psi = den * ymy0 + aug;
     }
-	else
+    else
     if (y < ymax) {
-	    w = (FLOAT)1.0 / (y * y); den = w; upper = p2[0] * w;
+        w = (FLOAT)1.0 / (y * y); den = w; upper = p2[0] * w;
 
         for (i = 1; i <= 3; ++i) {
-	        den = (den + q2[i - 1]) * w; upper = (upper + p2[i]) * w;
-	    }
+            den = (den + q2[i - 1]) * w; upper = (upper + p2[i]) * w;
+        }
 
-	    aug = upper / (den + q2[3]) - (FLOAT)0.5 / y + aug;
+        aug = upper / (den + q2[3]) - (FLOAT)0.5 / y + aug;
 
-		*Psi = aug + (FLOAT)log(y);
+        *Psi = aug + (FLOAT)log(y);
     }
 
 E0: return (Error);
@@ -166,7 +169,7 @@ FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p)
 
     while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
         y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Sum += ypb;
-	}
+    }
 
     if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
 
@@ -182,10 +185,10 @@ FLOAT PoissonInv(FLOAT Fy, FLOAT Theta)
     Sum = ypb = (FLOAT)exp(-Theta); y = (FLOAT)0.0;
 
     while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
-	    y++; ypb *= Theta / y; Sum += ypb;
-	}
+        y++; ypb *= Theta / y; Sum += ypb;
+    }
 
-	if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
+    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
 
     return (y);
 } /* PoissonInv */
@@ -215,7 +218,7 @@ int GammaSer(FLOAT a,       /* Constant a > 0. */
         while ((i <= ItMax) && Error) {
             ap += (FLOAT)1.0; Del *= y / ap; Sum += Del;
 
-            if ((FLOAT)fabs(Del) < (FLOAT)fabs(Sum) * Eps) Error = 0;
+            if ((FLOAT)fabs(Del / Sum) < Eps) Error = 0;
 
             i++;
         }
@@ -283,7 +286,7 @@ E0: return (Error);
 int GammaP(FLOAT a,       /* Constant a > 0. */
            FLOAT y,       /* Variable y > 0. */
            FLOAT *GamP,   /* Incomplete gamma function. */
-		   FLOAT *Gamln)  /* Log(Gamma(a)). */
+           FLOAT *Gamln)  /* Log(Gamma(a)). */
 {
     FLOAT GamSer, GamCfg;
     int   Error = 0;
@@ -325,7 +328,7 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 
     i = 1; Error = 1;
     while ((i <= ItMax) && Error) {
-	    if (GammaP(Beta, *y / Theta, &GamP, &Gamln)) goto E0;
+        if (GammaP(Beta, *y / Theta, &GamP, &Gamln)) goto E0;
 
         Tmp = *y / Theta;
 
@@ -424,11 +427,11 @@ int ComponentDist(int                      d,            /* Number of independen
                 }
 
                 break;
-			case pfGamma:
+            case pfGamma:
                 if (Y[i] > FLOAT_MIN) {
                     Error = GammaP(MrgDistType[i].Par1, Y[i] / MrgDistType[i].Par0, &GamP, &Gamln);
 
-					if (Error) goto E0;
+                    if (Error) goto E0;
 
                     *CmpDist *= GamP;
                 }
@@ -436,7 +439,7 @@ int ComponentDist(int                      d,            /* Number of independen
                     *CmpDist = (FLOAT)0.0;
                 }
 
-				break;
+                break;
             case pfBinomial:
                 k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -449,33 +452,33 @@ int ComponentDist(int                      d,            /* Number of independen
                 if (k >= n)
                     *CmpDist *= (FLOAT)1.0;
                 else {
-					Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
-	
-					for (j = 1; j <= k; j++) {
-						ypb *= (n - j + (FLOAT)1.0) * p / j / ((FLOAT)1.0 - p); Sum += ypb; 
-					}
+                    Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
+    
+                    for (j = 1; j <= k; j++) {
+                        ypb *= (n - j + (FLOAT)1.0) * p / j / ((FLOAT)1.0 - p); Sum += ypb; 
+                    }
 
                     *CmpDist *= Sum;
                 }
 
-				break;
-			case pfPoisson:
-				k = (int)Y[i]; Theta = MrgDistType[i].Par0;
+                break;
+            case pfPoisson:
+                k = (int)Y[i]; Theta = MrgDistType[i].Par0;
 
                 Sum = ypb = (FLOAT)exp(-Theta);
-	
+    
                 for (j = 1; j <= k; j++) {
                    ypb *= Theta / j; Sum += ypb;
                 }
 
                 *CmpDist *= Sum;
 
-				break;
-			case pfDirac:
-				if (Y[i] < MrgDistType[i].Par0) {
-					*CmpDist *= (FLOAT)0.0;
-				}
-			}
+                break;
+            case pfDirac:
+                if (Y[i] < MrgDistType[i].Par0) {
+                    *CmpDist *= (FLOAT)0.0;
+                }
+            }
         }
     }
     else {
@@ -509,9 +512,9 @@ int ComponentDist(int                      d,            /* Number of independen
                 }
 
                 break;
-			case pfGamma:
+            case pfGamma:
                 if (Y[i] > FLOAT_MIN) {
-					ypb = Y[i] /  MrgDistType[i].Par0;
+                    ypb = Y[i] /  MrgDistType[i].Par0;
 
                     *CmpDist *= (FLOAT)exp(MrgDistType[i].Par1 * log(ypb) - ypb - Gammaln(MrgDistType[i].Par1)) / Y[i];
                 }
@@ -519,7 +522,7 @@ int ComponentDist(int                      d,            /* Number of independen
                     *CmpDist = (FLOAT)0.0;
                 }
 
-				break;
+                break;
             case pfBinomial:
                 k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -538,17 +541,17 @@ int ComponentDist(int                      d,            /* Number of independen
                     *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
                                 (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
-				break;
-			case pfPoisson:
-				k = (int)Y[i]; Theta = MrgDistType[i].Par0;
+                break;
+            case pfPoisson:
+                k = (int)Y[i]; Theta = MrgDistType[i].Par0;
 
-   		        *CmpDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
+                   *CmpDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
 
-				break;
-			case pfDirac:
-				if ((FLOAT)fabs(Y[i] - MrgDistType[i].Par0) > FLOAT_MIN) {
-					*CmpDist *= (FLOAT)0.0;
-				}
+                break;
+            case pfDirac:
+                if ((FLOAT)fabs(Y[i] - MrgDistType[i].Par0) > FLOAT_MIN) {
+                    *CmpDist *= (FLOAT)0.0;
+                }
             }
         }
     }
@@ -609,11 +612,11 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             }
 
             break;
-		case pfGamma:
+        case pfGamma:
             if (Y[i] > FLOAT_MIN) {
                 Error = GammaP(MrgDistType[i].Par1, Y[i] / MrgDistType[i].Par0, &GamP, &Gamln);
 
-        	    if (Error) goto E0;
+                if (Error) goto E0;
 
                 *CmpMrgDist *= GamP;
             }
@@ -621,7 +624,7 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                 *CmpMrgDist = (FLOAT)0.0;
             }
 
-			break;
+            break;
         case pfBinomial:
             k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -635,7 +638,7 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                 *CmpMrgDist *= (FLOAT)1.0;
             else {
                 Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
-	
+    
                 for (j = 1; j <= k; j++) {
                     ypb *= (n - j + (FLOAT)1.0) * p / j / ((FLOAT)1.0 - p); Sum += ypb; 
                 }
@@ -643,23 +646,23 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                 *CmpMrgDist *= Sum;
             }
 
-			break;
-		case pfPoisson:
-		    k = (int)Y[i]; Theta = MrgDistType[i].Par0;
+            break;
+        case pfPoisson:
+            k = (int)Y[i]; Theta = MrgDistType[i].Par0;
 
             Sum = ypb = (FLOAT)exp(-Theta);
-	
+    
             for (j = 1; j <= k; j++) {
                 ypb *= Theta / j; Sum += ypb; 
             }
 
             *CmpMrgDist *= Sum;
 
-			break;
-		case pfDirac:
-			if (Y[i] < MrgDistType[i].Par0) {
-				*CmpMrgDist *= (FLOAT)0.0;
-			}
+            break;
+        case pfDirac:
+            if (Y[i] < MrgDistType[i].Par0) {
+                *CmpMrgDist *= (FLOAT)0.0;
+            }
         }
     }
     else {
@@ -692,7 +695,7 @@ int ComponentMarginalDist(int                      i,            /* Index of var
             }
 
             break;
-		case pfGamma:
+        case pfGamma:
             if (Y[i] > FLOAT_MIN) {
                 ypb = Y[i] /  MrgDistType[i].Par0;
 
@@ -702,7 +705,7 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                 *CmpMrgDist = (FLOAT)0.0;
             }
 
-			break;
+            break;
         case pfBinomial:
             k = (int)Y[i]; n = (int)MrgDistType[i].Par0; p = MrgDistType[i].Par1;
 
@@ -721,18 +724,18 @@ int ComponentMarginalDist(int                      i,            /* Index of var
                 *CmpMrgDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
                                (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
-			break;
-		case pfPoisson:
-		    k = (int)Y[i]; Theta = MrgDistType[i].Par0;
+            break;
+        case pfPoisson:
+            k = (int)Y[i]; Theta = MrgDistType[i].Par0;
 
-   		    *CmpMrgDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
+               *CmpMrgDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
 
-			break;
-		case pfDirac:
-			if ((FLOAT)fabs(Y[i] - MrgDistType[i].Par0) > FLOAT_MIN) {
-				*CmpMrgDist *= (FLOAT)0.0;
-			}
-		}
+            break;
+        case pfDirac:
+            if ((FLOAT)fabs(Y[i] - MrgDistType[i].Par0) > FLOAT_MIN) {
+                *CmpMrgDist *= (FLOAT)0.0;
+            }
+        }
     }
 
 E0: return (Error);
@@ -803,37 +806,37 @@ int DegreesOffreedom(int                      d,             /* Number of indepe
     *M = c - 1;
 
     for (i = 0; i < c; i++) {
-		for (j = 0; j < d; j++) {
-			switch (MrgDistType[i][j].ParFamType) {
-			case pfNormal:
-				*M += 2;
+        for (j = 0; j < d; j++) {
+            switch (MrgDistType[i][j].ParFamType) {
+            case pfNormal:
+                *M += 2;
 
-				break;
-			case pfLognormal:
-				*M += 2;
+                break;
+            case pfLognormal:
+                *M += 2;
                 
-				break;
-			case pfWeibull:
-				*M += 2;
+                break;
+            case pfWeibull:
+                *M += 2;
 
-				break;
-			case pfGamma:
-				*M += 2;
+                break;
+            case pfGamma:
+                *M += 2;
 
-				break;
-			case pfBinomial:
-				*M += 1;
+                break;
+            case pfBinomial:
+                *M += 1;
 
-				break;
-			case pfPoisson:
-				*M += 1;
+                break;
+            case pfPoisson:
+                *M += 1;
 
-				break;
-			case pfDirac:
-				*M += 1;
-			}
-		}
-	}
+                break;
+            case pfDirac:
+                *M += 1;
+            }
+        }
+    }
 
     return (Error);
 } /* DegreesOffreedom */
@@ -850,16 +853,16 @@ int InformationCriterionKNN(InformationCriterionType_e ICType,        /* Informa
                             MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                             FLOAT                      *IC,           /* Information criterion. */
                             FLOAT                      *logL,         /* log-likelihood. */
-							int                        *M,            /* Degrees of freedom. */
-							FLOAT                      *D)            /* Total of positive relative deviations. */
+                            int                        *M,            /* Degrees of freedom. */
+                            FLOAT                      *D)            /* Total of positive relative deviations. */
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-	Error = DegreesOffreedom(d, c, MrgDistType, M);
+    Error = DegreesOffreedom(d, c, MrgDistType, M);
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
@@ -869,16 +872,16 @@ int InformationCriterionKNN(InformationCriterionType_e ICType,        /* Informa
         if (Error) goto E0;
 
         if (MixDist > FLOAT_MIN) {
-			*logL += (FLOAT)log(MixDist);
-		}
+            *logL += (FLOAT)log(MixDist);
+        }
 
         E = Y[i][d] / n - MixDist * Y[i][d + 1] / k;
-	
-	    if (E > (FLOAT)0.0) {
-			*D += E;
-		}
+    
+        if (E > (FLOAT)0.0) {
+            *D += E;
+        }
 
-		switch (ICType) {
+        switch (ICType) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
             for (j = 0; j < c; j++) {
                 Error = ComponentDist(d, Y[i], MrgDistType[j], &CmpDist, 0);
@@ -893,12 +896,12 @@ int InformationCriterionKNN(InformationCriterionType_e ICType,        /* Informa
             }
 
             break;
-		case icSSE:
+        case icSSE:
             E = Y[i][d] - n * MixDist * Y[i][d + 1] / k; E *= E;
-	
-     		SSE += E;
+    
+             SSE += E;
 
-			break;
+            break;
         default:
             EN = SSE = PC = (FLOAT)0.0;
         }
@@ -966,11 +969,11 @@ int InformationCriterionKNN(InformationCriterionType_e ICType,        /* Informa
     case icICLBIC: /* ICL-BIC - Integrated classification likelihood criterion Biernacki et al. (1998). */
         *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (*M) * (FLOAT)log((FLOAT)n);
 
-		break;
+        break;
     case icD: /* D - Total of positive relative deviations Nagode & Fajdiga (2011). */
         *IC = *D;
 
-		break;
+        break;
     case icSSE: /* SSE - Sum of squares error Bishop (1998). */
         *IC = (FLOAT)0.5 * SSE;
     }
@@ -990,16 +993,16 @@ int InformationCriterionPW(InformationCriterionType_e ICType,        /* Informat
                            MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                            FLOAT                      *IC,           /* Information criterion. */
                            FLOAT                      *logL,         /* log-likelihood. */
- 						   int                        *M,            /* Degrees of freedom. */
-  						   FLOAT                      *D)            /* Total of positive relative deviations. */
+                           int                        *M,            /* Degrees of freedom. */
+                           FLOAT                      *D)            /* Total of positive relative deviations. */
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-	Error = DegreesOffreedom(d, c, MrgDistType, M);
+    Error = DegreesOffreedom(d, c, MrgDistType, M);
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
@@ -1010,13 +1013,13 @@ int InformationCriterionPW(InformationCriterionType_e ICType,        /* Informat
 
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
-		}
+        }
 
         E =  Y[i][d] / n - MixDist * V / Y[i][d + 1];
-	
-	    if (E > (FLOAT)0.0) {
-			*D += E;
-		}
+    
+        if (E > (FLOAT)0.0) {
+            *D += E;
+        }
 
         switch (ICType) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
@@ -1033,12 +1036,12 @@ int InformationCriterionPW(InformationCriterionType_e ICType,        /* Informat
             }
 
             break;
-		case icSSE:
+        case icSSE:
             E = Y[i][d] - n * MixDist * V / Y[i][d + 1]; E *= E;
-	
-     		SSE += E;
+    
+             SSE += E;
 
-			break;
+            break;
         default:
             EN = SSE = PC = (FLOAT)0.0;
         }
@@ -1106,11 +1109,11 @@ int InformationCriterionPW(InformationCriterionType_e ICType,        /* Informat
     case icICLBIC: /* ICL-BIC - Integrated classification likelihood criterion Biernacki et al. (1998). */
         *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (*M) * (FLOAT)log((FLOAT)n);
 
-		break;
+        break;
     case icD: /* D - Total of positive relative deviations Nagode & Fajdiga (2011). */
         *IC = *D;
 
-		break;
+        break;
     case icSSE: /* SSE - Sum of squares error Bishop (1998). */
         *IC = (FLOAT)0.5 * SSE;
     }
@@ -1131,16 +1134,16 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
                           MarginalDistributionType   **MrgDistType, /* Marginal distribution type. */
                           FLOAT                      *IC,           /* Information criterion. */
                           FLOAT                      *logL,         /* log-likelihood. */
-   					      int                        *M,            /* Degrees of freedom. */
-						  FLOAT                      *D)            /* Total of positive relative deviations. */
+                          int                        *M,            /* Degrees of freedom. */
+                          FLOAT                      *D)            /* Total of positive relative deviations. */
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-	Error = DegreesOffreedom(d, c, MrgDistType, M);
+    Error = DegreesOffreedom(d, c, MrgDistType, M);
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
@@ -1151,13 +1154,13 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
 
         if (MixDist > FLOAT_MIN) {
             *logL += Y[i][d] * (FLOAT)log(MixDist);
-		}
+        }
 
         E = Y[i][d] / n - MixDist * V;
-	
-	    if (E > (FLOAT)0.0) {
-			*D += E;
-		}
+    
+        if (E > (FLOAT)0.0) {
+            *D += E;
+        }
 
         switch (ICType) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
@@ -1174,12 +1177,12 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
             }
 
             break;
-		case icSSE:
+        case icSSE:
             E = Y[i][d] - n * MixDist * V; E *= E;
-	
-     		SSE += E;
+    
+            SSE += E;
 
-			break;
+            break;
         default:
             EN = SSE = PC = (FLOAT)0.0;
         }
@@ -1247,11 +1250,11 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
     case icICLBIC: /* ICL-BIC - Integrated classification likelihood criterion Biernacki et al. (1998). */
         *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (*M) * (FLOAT)log((FLOAT)n);
 
-		break;
+        break;
     case icD: /* D - Total of positive relative deviations Nagode & Fajdiga (2011). */
         *IC = *D;
 
-		break;
+        break;
     case icSSE: /* SSE - Sum of squares error Bishop (1998). */
         *IC = (FLOAT)0.5 * SSE;
     }
@@ -1272,7 +1275,7 @@ int PreprocessingKNN(int   k,    /* k-nearest neighbours. */
     int   i, j, l, m, q;
     int   Error = n < 1;
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
     if (k > 1) k -= 1; else k = 1; 
     
@@ -1283,7 +1286,7 @@ int PreprocessingKNN(int   k,    /* k-nearest neighbours. */
     Vn = (FLOAT)exp(d * LogPi / (FLOAT)2.0 - Gammaln((FLOAT)1.0 + d / (FLOAT)2.0));
 
     for (i = 0; i < n; i++) {
-		Dk[0] = FLOAT_MAX; q = 0;
+        Dk[0] = FLOAT_MAX; q = 0;
 
         for (j = 0; j < n; j++) if (i != j) {
             Dc = (FLOAT)0.0;
@@ -1292,22 +1295,22 @@ int PreprocessingKNN(int   k,    /* k-nearest neighbours. */
                 R = (Y[i][l] - Y[j][l]) / h[l]; Dc += R * R;
             }
 
-			q += Dc <= FLOAT_MIN;
+            q += Dc <= FLOAT_MIN;
 
             for (l = 0; l < k; l++) {
                 if (Dc < Dk[l]) {
-					for (m = k - 1; m > l; m--) Dk[m] = Dk[m - 1];
+                    for (m = k - 1; m > l; m--) Dk[m] = Dk[m - 1];
 
-					if ((Dc > FLOAT_MIN) || (l != k - 1)) Dk[l] = Dc;
+                    if ((Dc > FLOAT_MIN) || (l != k - 1)) Dk[l] = Dc;
 
-					break;
+                    break;
                 }
             }
         }
 
         R = (FLOAT)sqrt(Dk[k - 1]); 
 
-		if (q >= k) R *= (FLOAT)exp(log((k + (FLOAT)1.0) / (q + (FLOAT)2.0)) / d);
+        if (q >= k) R *= (FLOAT)exp(log((k + (FLOAT)1.0) / (q + (FLOAT)2.0)) / d);
 
         V = Vn * (FLOAT)exp(d * log(R));
 
@@ -1331,17 +1334,17 @@ int PreprocessingPW(FLOAT *h,   /* Sides of the hypersquare. */
     int i, j, k;
     int Error = n < 1;
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
-	for (i = 0; i < n; i++) {
-		Y[i][d] = (FLOAT)1.0; Y[i][d + 1] = (FLOAT)0.0;
-	}
+    for (i = 0; i < n; i++) {
+        Y[i][d] = (FLOAT)1.0; Y[i][d + 1] = (FLOAT)0.0;
+    }
 
     for (i = 0; i < n; i++) {
         for (j = i; j < n; j++) {
             for (k = 0; k < d; k++) if ((FLOAT)fabs(Y[i][k] - Y[j][k]) > (FLOAT)0.5 * h[k]) goto S0;
             
-			Y[i][d + 1] += (FLOAT)1.0; if (i != j) Y[j][d + 1] += (FLOAT)1.0;
+            Y[i][d + 1] += (FLOAT)1.0; if (i != j) Y[j][d + 1] += (FLOAT)1.0;
 S0:;    }
     }
 
@@ -1362,7 +1365,7 @@ int PreprocessingH(FLOAT           *h,          /* Sides of the hypersquare. */
     int i, j, l, m = *k - 1;
     int Error = n < 1;
 
-	if (Error) goto E0;
+    if (Error) goto E0;
 
     *k = 0;
 
@@ -1375,7 +1378,7 @@ int PreprocessingH(FLOAT           *h,          /* Sides of the hypersquare. */
                 if (l < 0) l = 0; else if (l > m) l = m;
 
                 break;
-			case vtDiscrete:
+            case vtDiscrete:
                 break;
             }
 
@@ -1525,47 +1528,6 @@ int RoughLognormalParameters(FLOAT ym,
 E0: return (Error);
 } /* RoughLognormalParameters */
 
-/* Returns rough lognormal parameters. */
-
-int RoughLognormalParametersOld(FLOAT ym,   
-                                FLOAT fm,
-                                FLOAT *Mean,
-                                FLOAT *Stdev)
-{
-    FLOAT dStdev, Prd, Tmp;
-    int   i;
-    int   Error = 0;
-
-    Error = ym <= FLOAT_MIN; if (Error) goto E0;
-
-    *Stdev = (FLOAT)1.0;
-
-    i = 1; Prd = Sqrt2Pi * ym * fm; Error = 1;
-    while ((i <= ItMax) && Error) {
-        Tmp = (FLOAT)exp(-(FLOAT)0.5 * (*Stdev) * (*Stdev));
-
-        dStdev = (Prd * (*Stdev) - Tmp) / (Prd + (*Stdev) * Tmp);
-
-        (*Stdev) -= dStdev;
-
-        #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dStdev) || IsInf(dStdev) || (*Stdev <= FLOAT_MIN)) {
-            Error = 1; goto E0;
-        }
-        #endif
-
-        if ((FLOAT)fabs(dStdev / (*Stdev)) < Eps) Error = 0;
-
-        i++;
-    }
-
-    if (Error) goto E0;
-
-    *Mean = (FLOAT)log(ym) + (*Stdev) * (*Stdev);
-
-E0: return (Error);
-} /* RoughLognormalParametersOld */
-
 /* Returns rough Weibull parameters. */
 
 int RoughWeibullParameters(FLOAT ym,   
@@ -1617,47 +1579,6 @@ int RoughWeibullParameters(FLOAT ym,
 
 E0: return (Error);
 } /* RoughWeibullParameters */
-
-/* Returns rough Weibull parameters. */
-
-int RoughWeibullParametersOld(FLOAT ym,   
-                              FLOAT fm,
-                              FLOAT *Theta,
-                              FLOAT *Beta)
-{
-    FLOAT Cor, dBeta, Prd, Tmp;
-    int   i;
-    int   Error = 0;
-
-    Error = ym <= FLOAT_MIN; if (Error) goto E0;
-
-    *Beta = (FLOAT)1.0;
-
-    i = 1; Prd = (FLOAT)exp((FLOAT)1.0) * ym * fm; Error = 1;
-    while ((i <= ItMax) && Error) {
-        Tmp = (FLOAT)exp((FLOAT)1.0 / (*Beta)); Cor = *Beta - (FLOAT)1.0;
-
-        dBeta = (Cor * Tmp - Prd) / (Tmp * ((FLOAT)1.0 - Cor / (*Beta) / (*Beta)));
-
-        *Beta -= dBeta;
-
-        #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= FLOAT_MIN)) {
-            Error = 1; goto E0;
-        }
-        #endif
-
-        if ((FLOAT)fabs(dBeta / (*Beta)) < Eps) Error = 0; 
-
-        i++;
-    }
-
-    if (Error) goto E0;
-
-    *Theta = ym * (FLOAT)exp(log((*Beta) / ((*Beta) - (FLOAT)1.0)) / (*Beta));
-
-E0: return (Error);
-} /* RoughWeibullParametersOld */
 
 /* Returns rough Gamma parameters. */
 
@@ -1714,49 +1635,6 @@ int RoughGammaParameters(FLOAT ym,
 E0: return (Error);
 } /* RoughGammaParameters */
 
-int RoughGammaParametersOld(FLOAT ym,   
-                            FLOAT fm,
-                            FLOAT *Theta,
-                            FLOAT *Beta)
-{
-    FLOAT Cor, dBeta, Prd, Tmp, Psi;
-    int   i;
-    int   Error = 0;
-
-    Error = ym <= FLOAT_MIN; if (Error) goto E0;
-
-    *Beta = (FLOAT)1.0 + Eps;
-
-    i = 1; Prd = ym * fm; Error = 1;
-    while ((i <= ItMax) && Error) {
-		Cor = *Beta - (FLOAT)1.0;
-		
-        Tmp = (FLOAT)exp(*Beta * (FLOAT)log(Cor) - Cor - (FLOAT)Gammaln(*Beta)); 
-		
-		if (Digamma(*Beta, &Psi)) goto E0;
-
-        dBeta = (Tmp - Prd) / (Tmp * ((FLOAT)log(Cor) + (*Beta) / Cor - (FLOAT)1.0 - Psi));
-
-        *Beta -= dBeta;
-
-        #if (_REBMIXEXE || _REBMIXR)
-        if (IsNan(dBeta) || IsInf(dBeta) || (*Beta <= FLOAT_MIN)) {
-            Error = 1; goto E0;
-        }
-        #endif
-
-        if ((FLOAT)fabs(dBeta / (*Beta)) < Eps) Error = 0; 
-
-        i++;
-    }
-
-    if (Error) goto E0;
-
-    *Theta = ym / (*Beta - (FLOAT)1.0);
-
-E0: return (Error);
-} /* RoughGammaParametersOld */
-
 /* Returns rough binomial parameters. */
 
 int RoughBinomialParameters(FLOAT ym,
@@ -1792,7 +1670,7 @@ int RoughPoissonParameters(FLOAT ym,
         *Theta = (fm < (FLOAT)1.0) ? -(FLOAT)log(fm) : (FLOAT)0.0;
     }
     else {
-		*Theta = ym;
+        *Theta = ym;
     }
 
     return (Error);
@@ -1810,31 +1688,22 @@ int RoughEstimationKNN(int                      n,             /* Total number o
                        MarginalDistributionType *MrgDistType,  /* Marginal distribution type. */
                        PestraintsType_e         ResType)       /* Restraints type. */  
 {
-    const int nf = 15;
-    const int ny = 5;
-
-    int                      i, j, l, o, p;
-    RoughParameterType       *Mode = NULL;
-    FLOAT                    CmpMrgDist, Dc, epsilon, emax, f_lm, dP, Tmp, R;
-    MarginalDistributionType *TmpDistType = NULL;
-    FLOAT                    CP[15], CM[15];
-    int                      Error = 0, Stop = 0;
+    int                i, j, l, o, p;
+    RoughParameterType *Mode = NULL;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, Dlm, Dlmin, Dlmax, Dc, R;
+    int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    TmpDistType = (MarginalDistributionType*)malloc(d * sizeof(MarginalDistributionType));
-
-    Error = NULL == TmpDistType; if (Error) goto E0;
-
     /* Rigid restraints. */
 
-    f_lm = (FLOAT)1.0;
+    flm = (FLOAT)1.0;
 
     for (i = 0; i < d; i++) {
         if (d > 1) {
-            Mode[i].k_lm = (FLOAT)0.0;
+            Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n; j++) {
                 Dc = (FLOAT)0.0;
@@ -1847,387 +1716,183 @@ int RoughEstimationKNN(int                      n,             /* Total number o
 
                 if (R > Y[m][d + 2]) goto S0;
 
-                Mode[i].k_lm += Y[j][d];
+                Mode[i].klm += Y[j][d];
 S0:;        }
         }
         else
-            Mode[i].k_lm = nl;
+            Mode[i].klm = nl;
 
-        Mode[i].ym = Y[m][i]; Mode[i].f_lm = Y[m][d] * k / (Mode[i].k_lm * (FLOAT)2.0 * Y[m][d + 2] * h[i]); f_lm *= Mode[i].f_lm;
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d] * k / (Mode[i].klm * (FLOAT)2.0 * Y[m][d + 2] * h[i]); flm *= Mode[i].flm;
     }
 
-    epsilon = (FLOAT)exp(log(Y[m][d] * k / (nl * Y[m][d + 1] * f_lm)) / d);
+    epsilon = (FLOAT)exp(log(Y[m][d] * k / (nl * Y[m][d + 1] * flm)) / d);
 
     for (i = 0; i < d; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].f_lm *= epsilon;
+        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
         switch (MrgDistType[i].ParFamType) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = Y[m][d + 2] * h[i];
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = Y[m][d + 2] * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = Y[m][d + 2] * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
-		case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+        case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = Y[m][d + 2] * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
-
-			break;
+            break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
+            break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
-		case pfDirac:
-			MrgDistType[i].Par0 = Mode[i].ym; Stop = 1;
+            break;
+        case pfDirac:
+            MrgDistType[i].Par0 = Mode[i].ym;
         }
     }
 
-    if (Stop || (ResType == rtRigid)) goto E0;
+    if (ResType == rtRigid) goto E0;
 
     /* Loose restraints. */
 
-    if (nl > Y[m][d] * k) {
-        memcpy(TmpDistType, MrgDistType, d * sizeof(MarginalDistributionType));
+    for (i = 0; i < d; i++) {
+        if (MrgDistType[i].ParFamType == pfDirac) goto E1;
 
-        for (i = 0; i < d; i++) {
-            /* Mode position optimisation. */
+        /* Bracketing. */
 
-            Mode[i].ymin = Mode[i].ym - Mode[i].dy; Mode[i].ymax = Mode[i].ym + Mode[i].dy;
+        Dlm = (FLOAT)0.0; 
 
-            Mode[i].y = Mode[i].ymin; Mode[i].dy = (FLOAT)2.0 * Mode[i].dy / (ny - (FLOAT)1.0);
+        for (o = 0; o < n; o++) if (Y[o][d] > FLOAT_MIN) {
+            Dc = (FLOAT)0.0;
 
-            if (Mode[i].dy != (FLOAT)0.0) {
-	            j = 0; Tmp = FLOAT_MAX;
+            for (p = 0; p < d; p++) if (i != p) {
+                R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
+            }
 
-		        for (l = 0; l < ny; l++) {
-			        CP[l] = (FLOAT)0.0;
+            R = (FLOAT)sqrt(Dc);
 
-				    switch (TmpDistType[i].ParFamType) {
-					case pfNormal:
-						Error = RoughNormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            if (R > Y[m][d + 2]) goto S1;
 
-						if (Error) goto E0;
+            Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
 
-						Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-						Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
+            if (Error) goto E0;
 
-						break;
-					case pfLognormal:
-						Error = RoughLognormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            Dlm -= CmpMrgDist * (FLOAT)2.0 * Y[o][d + 2] * h[i] / k;
+S1:;    } 
 
-						if (Error) goto E0;
+        Dlm += (FLOAT)0.998;
 
-						Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
-						Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1);
+        if (Dlm > (FLOAT)0.0) goto E1; 
 
-						break;
-					case pfWeibull:
-						Error = RoughWeibullParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
+        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
 
-						if (Error) goto E0;
+        /* Bisection. */
 
-						Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-						Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
+        Stop = 0;
 
-						break;
-					case pfGamma:
-						Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+        while (!Stop) {
+            flm = (flmax + flmin) / (FLOAT)2.0;
 
-						if (Error) goto E0;
+            switch (MrgDistType[i].ParFamType) {
+            case pfNormal:
+                Error = RoughNormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
-						Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
+                if (Error) goto E0;
+                
+                break;
+            case pfLognormal:
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
-						if (Error) goto E0;
+                if (Error) goto E0;
 
-						Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
+                break;
+            case pfWeibull:
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
-						if (Error) goto E0;
+                if (Error) goto E0;
 
-						break;
-					case pfBinomial:
-						Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                break;
+            case pfGamma:
+                Error = RoughGammaParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+
+                if (Error) goto E0;
+
+                break;
+            case pfBinomial:
+                Error = RoughBinomialParameters(Mode[i].ym, flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
                                                        
-						if (Error) goto E0;
+                if (Error) goto E0;
 
-						Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-						Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-						break;
-					case pfPoisson:
-						Error = RoughPoissonParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0);
+                break;
+            case pfPoisson:
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &MrgDistType[i].Par0);
                                                        
-						if (Error) goto E0;
+                if (Error) goto E0;
 
-						Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-						Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
+                break;
+            case pfDirac:
+                break;
+            }
 
-						break;
-					case pfDirac:
-						break;
-					}
+            Dlm = (FLOAT)0.0; 
 
-					for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-						Dc = (FLOAT)0.0;
-
-						for (p = 0; p < d; p++) if (i != p) {
-							R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
-						}
-
-						R = (FLOAT)sqrt(Dc);
-
-						if (R > Y[m][d + 2]) goto S1;
-
-						Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-						if (Error) goto E0;
-
-						dP = (FLOAT)1.0 - Mode[i].k_lm * (FLOAT)2.0 * Y[o][d + 2] * h[i] * CmpMrgDist / Y[o][d] / k;
-
-						if (dP > CP[l]) CP[l] = dP;
-S1:;	            } 
-
-			        if (CP[l] < Tmp) {
-				        j = l; Tmp = CP[l];
-					}
-
-					Mode[i].y += Mode[i].dy;
-				}
-
-	            if ((j == 0) || (j == ny - 1))
-		            Mode[i].y = Mode[i].ym;
-			    else
-				if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-					Mode[i].y = (FLOAT)0.5 * Mode[i].dy * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]) + Mode[i].ymin + Mode[i].dy * j;
-			}
-
-            /* Mode empirical density optimisation. */
-
-            Mode[i].y_lmin = FLOAT_MAX; Mode[i].y_lmax = -FLOAT_MAX;
-
-            for (j = 0; j < n; j++) if (Y[j][d] > FLOAT_MIN) {
+            for (o = 0; o < n; o++) if (Y[o][d] > FLOAT_MIN) {
                 Dc = (FLOAT)0.0;
 
-                for (l = 0; l < d; l++) if (i != l) {
-                    R = (Y[j][l] - Y[m][l]) / h[l]; Dc += R * R;
+                for (p = 0; p < d; p++) if (i != p) {
+                    R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
                 }
 
                 R = (FLOAT)sqrt(Dc);
 
                 if (R > Y[m][d + 2]) goto S2;
 
-                if (Y[j][i] < Mode[i].y_lmin) Mode[i].y_lmin = Y[j][i];
-                if (Y[j][i] > Mode[i].y_lmax) Mode[i].y_lmax = Y[j][i];
+                Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
+
+                if (Error) goto E0;
+
+                Dlm -= CmpMrgDist * (FLOAT)2.0 * Y[o][d + 2] * h[i] / k;
 S2:;        } 
 
-            if ((FLOAT)fabs(Mode[i].y_lmax - Mode[i].y_lmin) <= FLOAT_MIN) goto E0;
+            Dlm += (FLOAT)0.998;
 
-            Mode[i].f_lmin = (FLOAT)1.0 / (Mode[i].y_lmax - Mode[i].y_lmin); Mode[i].f_lmax = Mode[i].f_lm;
-
-            if (Mode[i].f_lmax < Mode[i].f_lmin) goto E0;
-
-            Mode[i].f = Mode[i].f_lmax; Mode[i].df = (Mode[i].f_lmax - Mode[i].f_lmin) / (nf - (FLOAT)1.0); emax = (FLOAT)0.0;
-
-            j = 0; Tmp = FLOAT_MAX;
-
-            for (l = 0; l < nf; l++) {
-                CP[l] = (FLOAT)0.0; CM[l] = (FLOAT)0.0;
-
-                switch (TmpDistType[i].ParFamType) {
-                case pfNormal:
-                    Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                    Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-
-                    break;
-                case pfLognormal:
-                    Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - 3.09023230616779 * TmpDistType[i].Par1);
-                    Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + 3.09023230616779 * TmpDistType[i].Par1);
-
-                    break;
-                case pfWeibull:
-                    Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                    Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
-
-                    break;
-		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
-
-					if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
-
-					if (Error) goto E0;
-
-			        break;
-                case pfBinomial:
-                    Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-     				Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-					break;
-				case pfPoisson:
-                    Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-     				Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
-
-					break;
-				case pfDirac:
-					break;
-                }
-
-                for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                    Dc = (FLOAT)0.0;
-
-                    for (p = 0; p < d; p++) if (i != p) {
-                        R = (Y[o][p] - Y[m][p]) / h[p]; Dc += R * R;
-                    }
-
-                    R = (FLOAT)sqrt(Dc);
-
-                    if (R > Y[m][d + 2]) goto S3;
-
-                    Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-                    if (Error) goto E0;
-
-                    dP = (FLOAT)1.0 - Mode[i].k_lm * (FLOAT)2.0 * Y[o][d + 2] * h[i] * CmpMrgDist / Y[o][d] / k;
-
-                    if (dP > CP[l])
-                        CP[l] = dP;
-                    else
-                    if (dP < CM[l])
-                        CM[l] = dP;
-S3:;            } 
-
-                CM[l] = -CM[l];
-
-                if (CP[l] > emax) emax = CP[l];
-
-                if (CP[l] < Tmp) {
-                    j = l; Tmp = CP[l];
-                }
-
-                if (CM[l] >= emax / ((FLOAT)1.0 - emax)) {
-                    if (j == l) j = 0; break;
-                }
-
-                Mode[i].f -= Mode[i].df;
+            if (((FLOAT)fabs(Dlm) < Eps) || ((flmax - flmin) / (FLOAT)2.0 < Eps)) {
+                Stop = 1;
             }
-
-            if ((j == 0) || (j == nf - 1))
-                Mode[i].f = Mode[i].f_lmax;
-            else
-            if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                Mode[i].f = Mode[i].f_lmax - Mode[i].df * j - (FLOAT)0.5 * Mode[i].df * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]);
-
-            switch (MrgDistType[i].ParFamType) {
-            case pfNormal:
-                Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                if (Error) goto E0;
-
-                break;
-            case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                if (Error) goto E0;
-
-                break;
-            case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                if (Error) goto E0;
-
-                break;
-		    case pfGamma:
-                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                if (Error) goto E0;
-
-			    break;
-            case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                if (Error) goto E0;
-
-				break;
-			case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
-                                                       
-                if (Error) goto E0;
-					
-				break;
-			case pfDirac:
-				break;
+            else {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
+                    flmin = flm; Dlmin = Dlm; 
+                }
+                else {
+                    flmax = flm; Dlmax = Dlm;
+                }
             }
         }
+E1:;}
 
-		memcpy(MrgDistType, TmpDistType, d * sizeof(MarginalDistributionType));
-    }
-
-E0: if (TmpDistType) free(TmpDistType);
-
-    if (Mode) free(Mode);
+E0: if (Mode) free(Mode);
 
     return (Error);
 } /* RoughEstimationKNN */
@@ -2243,394 +1908,189 @@ int RoughEstimationPW(int                      n,             /* Total number of
                       MarginalDistributionType *MrgDistType,  /* Marginal distribution type. */
                       PestraintsType_e         ResType)       /* Restraints type. */  
 {
-    const int nf = 15;
-    const int ny = 5;
-
-    int                      i, j, l, o, p;
-    RoughParameterType       *Mode = NULL;
-    FLOAT                    CmpMrgDist, epsilon, emax, f_lm, dP, Tmp, V;
-    MarginalDistributionType *TmpDistType = NULL;
-    FLOAT                    CP[15], CM[15];
-    int                      Error = 0, Stop = 0;
+    int                i, j, l, o, p;
+    RoughParameterType *Mode = NULL;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Dlmax;
+    int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    TmpDistType = (MarginalDistributionType*)malloc(d * sizeof(MarginalDistributionType));
-
-    Error = NULL == TmpDistType; if (Error) goto E0;
-
     /* Rigid restraints. */
 
-    f_lm = (FLOAT)1.0; V = (FLOAT)1.0;
+    flm = (FLOAT)1.0; V = (FLOAT)1.0;
 
     for (i = 0; i < d; i++) {
         V *= h[i];
 
         if (d > 1) {
-            Mode[i].k_lm = (FLOAT)0.0;
+            Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n; j++) {
                 for (l = 0; l < d; l++) if ((i != l) && ((FLOAT)fabs(Y[j][l] - Y[m][l]) > (FLOAT)0.5 * h[l])) goto S0;
 
-                Mode[i].k_lm += Y[j][d];
+                Mode[i].klm += Y[j][d];
 S0:;        }
         }
         else
-            Mode[i].k_lm = nl;
+            Mode[i].klm = nl;
 
-        Mode[i].ym = Y[m][i]; Mode[i].f_lm = Y[m][d] * Y[m][d + 1] / (Mode[i].k_lm * h[i]); f_lm *= Mode[i].f_lm;
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d] * Y[m][d + 1] / (Mode[i].klm * h[i]); flm *= Mode[i].flm;
     }
 
-    epsilon = (FLOAT)exp(log(Y[m][d] * Y[m][d + 1] / (nl * V * f_lm)) / d);
+    epsilon = (FLOAT)exp(log(Y[m][d] * Y[m][d + 1] / (nl * V * flm)) / d);
 
     for (i = 0; i < d; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].f_lm *= epsilon;
+        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
         switch (MrgDistType[i].ParFamType) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = (FLOAT)0.5 * h[i];
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = (FLOAT)0.5 * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = (FLOAT)0.5 * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
-		case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+        case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.5 * h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
-
-			break;
+            break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
+            break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
-		case pfDirac:
-			MrgDistType[i].Par0 = Mode[i].ym; Stop = 1;
+            break;
+        case pfDirac:
+            MrgDistType[i].Par0 = Mode[i].ym;
         }
     }
 
-    if (Stop || (ResType == rtRigid)) goto E0;
+    if (ResType == rtRigid) goto E0;
 
     /* Loose restraints. */
 
-    if (nl > Y[m][d] * Y[m][d + 1]) {
-        memcpy(TmpDistType, MrgDistType, d * sizeof(MarginalDistributionType));
+    for (i = 0; i < d; i++) {
+        if (MrgDistType[i].ParFamType == pfDirac) goto E1;
 
-        for (i = 0; i < d; i++) {
-            /* Mode position optimisation. */
+        /* Bracketing. */
 
-            Mode[i].ymin = Mode[i].ym - Mode[i].dy; Mode[i].ymax = Mode[i].ym + Mode[i].dy;
+        Dlm = (FLOAT)0.0;
 
-            Mode[i].y = Mode[i].ymin; Mode[i].dy = (FLOAT)2.0 * Mode[i].dy / (ny - (FLOAT)1.0);
+        for (o = 0; o < n; o++) if (Y[o][d] > FLOAT_MIN) {
+            for (p = 0; p < d; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) > (FLOAT)0.5 * h[p])) goto S1;
 
-            if (Mode[i].dy != (FLOAT)0.0) {
-                j = 0; Tmp = FLOAT_MAX;
+            Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
 
-                for (l = 0; l < ny; l++) {
-                    CP[l] = (FLOAT)0.0;
+            if (Error) goto E0;
 
-                    switch (TmpDistType[i].ParFamType) {
-                    case pfNormal:
-                        Error = RoughNormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            Dlm -= CmpMrgDist * h[i] / Y[o][d + 1];
+S1:;    }
 
-                        if (Error) goto E0;
+        Dlm += (FLOAT)0.998;
 
-                        Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                        Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
+        if (Dlm > (FLOAT)0.0) goto E1; 
 
-                        break;
-                    case pfLognormal:
-                        Error = RoughLognormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
+        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
 
-                        if (Error) goto E0;
+        /* Bisection. */
 
-                        Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - 3.09023230616779 * TmpDistType[i].Par1);
-                        Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + 3.09023230616779 * TmpDistType[i].Par1);
+        Stop = 0;
 
-                        break;
-                    case pfWeibull:
-                        Error = RoughWeibullParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                        Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
-
-                        break;
-		            case pfGamma:
-                        Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                        if (Error) goto E0;
-
-					    Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
-
-					    if (Error) goto E0;
-
-					    Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
-
-					    if (Error) goto E0;
-
-			            break;
-                    case pfBinomial:
-                        Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-						Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-						break;
-				    case pfPoisson:
-                        Error = RoughPoissonParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0);
-                                                       
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-						Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
-
-						break;
-					case pfDirac:
-						break;
-                    }
-
-                    for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                        for (p = 0; p < d; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) > (FLOAT)0.5 * h[p])) goto S1;
-
-                        Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-                        if (Error) goto E0;
-
-                        dP = (FLOAT)1.0 - Mode[i].k_lm * h[i] * CmpMrgDist / Y[o][d] / Y[o][d + 1];
-
-                        if (dP > CP[l]) CP[l] = dP;
-S1:;                }
-
-                    if (CP[l] < Tmp) {
-                        j = l; Tmp = CP[l];
-                    }
-
-                    Mode[i].y += Mode[i].dy;
-                }
-
-                if ((j == 0) || (j == ny - 1))
-                    Mode[i].y = Mode[i].ym;
-                else
-                if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                    Mode[i].y = (FLOAT)0.5 * Mode[i].dy * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]) + Mode[i].ymin + Mode[i].dy * j;
-            }
-
-            /* Mode empirical density optimisation. */
-
-            Mode[i].y_lmin = FLOAT_MAX; Mode[i].y_lmax = -FLOAT_MAX;
-
-            for (j = 0; j < n; j++) if (Y[j][d] > FLOAT_MIN) {
-                for (l = 0; l < d; l++) if ((i != l) && ((FLOAT)fabs(Y[j][l] - Y[m][l]) > (FLOAT)0.5 * h[l])) goto S2;
-
-                if (Y[j][i] < Mode[i].y_lmin) Mode[i].y_lmin = Y[j][i];
-                if (Y[j][i] > Mode[i].y_lmax) Mode[i].y_lmax = Y[j][i];
-S2:;        }
-
-            if ((FLOAT)fabs(Mode[i].y_lmax - Mode[i].y_lmin) <= FLOAT_MIN) goto E0;
-
-            Mode[i].f_lmin = (FLOAT)1.0 / (Mode[i].y_lmax - Mode[i].y_lmin); Mode[i].f_lmax = Mode[i].f_lm;
-
-            if (Mode[i].f_lmax < Mode[i].f_lmin) goto E0;
-
-            Mode[i].f = Mode[i].f_lmax; Mode[i].df = (Mode[i].f_lmax - Mode[i].f_lmin) / (nf - (FLOAT)1.0); emax = (FLOAT)0.0;
-
-            j = 0; Tmp = FLOAT_MAX;
-
-            for (l = 0; l < nf; l++) {
-                CP[l] = (FLOAT)0.0; CM[l] = (FLOAT)0.0;
-
-                switch (TmpDistType[i].ParFamType) {
-                case pfNormal:
-                    Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                    Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-
-                    break;
-                case pfLognormal:
-                    Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - 3.09023230616779 * TmpDistType[i].Par1);
-                    Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + 3.09023230616779 * TmpDistType[i].Par1);
-
-                    break;
-                case pfWeibull:
-                    Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                    Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
-
-                    break;
-		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
-
-					if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
-
-					if (Error) goto E0;
-
-			        break;
-                case pfBinomial:
-                    Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-     				Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-					break;
-				case pfPoisson:
-                    Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-     				Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
-
-					break;
-				case pfDirac:
-					break;
-                }
-
-                for (o = 0; o < n; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                    for (p = 0; p < d; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) > (FLOAT)0.5 * h[p])) goto S3;
-
-                    Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-                    if (Error) goto E0;
-
-                    dP = (FLOAT)1.0 - Mode[i].k_lm * h[i] * CmpMrgDist / Y[o][d] / Y[o][d + 1];
-
-                    if (dP > CP[l])
-                        CP[l] = dP;
-                    else
-                    if (dP < CM[l])
-                        CM[l] = dP;
-S3:;            }
-
-                CM[l] = -CM[l];
-
-                if (CP[l] > emax) emax = CP[l];
-
-                if (CP[l] < Tmp) {
-                    j = l; Tmp = CP[l];
-                }
-
-                if (CM[l] >= emax / ((FLOAT)1.0 - emax)) {
-                    if (j == l) j = 0; break;
-                }
-
-                Mode[i].f -= Mode[i].df;
-            }
-
-            if ((j == 0) || (j == nf - 1))
-                Mode[i].f = Mode[i].f_lmax;
-            else
-            if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                Mode[i].f = Mode[i].f_lmax - Mode[i].df * j - (FLOAT)0.5 * Mode[i].df * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]);
+        while (!Stop) {
+            flm = (flmax + flmin) / (FLOAT)2.0;
 
             switch (MrgDistType[i].ParFamType) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughNormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
-
+                
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
                 break;
-		    case pfGamma:
-                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            case pfGamma:
+                Error = RoughGammaParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
-			    break;
+                break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughBinomialParameters(Mode[i].ym, flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
                                                        
                 if (Error) goto E0;
 
-				break;
-			case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
+                break;
+            case pfPoisson:
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &MrgDistType[i].Par0);
                                                        
                 if (Error) goto E0;
 
-				break;
-			case pfDirac:
-				break;
+                break;
+            case pfDirac:
+                break;
+            }
+
+            Dlm = (FLOAT)0.0; 
+
+            for (o = 0; o < n; o++) if (Y[o][d] > FLOAT_MIN) {
+                for (p = 0; p < d; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) > (FLOAT)0.5 * h[p])) goto S2;
+
+                Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
+
+                if (Error) goto E0;
+
+                Dlm -= CmpMrgDist * h[i] / Y[o][d + 1];
+S2:;        }
+
+            Dlm += (FLOAT)0.998;
+
+            if (((FLOAT)fabs(Dlm) < Eps) || ((flmax - flmin) / (FLOAT)2.0 < Eps)) {
+                Stop = 1;
+            }
+            else {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
+                    flmin = flm; Dlmin = Dlm; 
+                }
+                else {
+                    flmax = flm; Dlmax = Dlm;
+                }
             }
         }
+E1:;}
 
-		memcpy(MrgDistType, TmpDistType, d * sizeof(MarginalDistributionType));
-    }
-
-E0: if (TmpDistType) free(TmpDistType);
-
-    if (Mode) free(Mode);
+E0: if (Mode) free(Mode);
 
     return (Error);
 } /* RoughEstimationPW */
@@ -2646,394 +2106,189 @@ int RoughEstimationH(int                      k,             /* Total number of 
                      MarginalDistributionType *MrgDistType,  /* Marginal distribution type. */
                      PestraintsType_e         ResType)       /* Restraints type. */  
 {
-    const int nf = 15;
-    const int ny = 5;
-
-    int                      i, j, l, o, p;
-    RoughParameterType       *Mode = NULL;
-    FLOAT                    CmpMrgDist, epsilon, emax, f_lm, dP, Tmp, V;
-    MarginalDistributionType *TmpDistType = NULL;
-    FLOAT                    CP[15], CM[15];
-    int                      Error = 0, Stop = 0;
+    int                i, j, l, o, p;
+    RoughParameterType *Mode = NULL;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Dlmax;
+    int                Error = 0, Stop;
 
     Mode = (RoughParameterType*)malloc(d * sizeof(RoughParameterType));
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    TmpDistType = (MarginalDistributionType*)malloc(d * sizeof(MarginalDistributionType));
-
-    Error = NULL == TmpDistType; if (Error) goto E0;
-
     /* Rigid restraints. */
 
-    f_lm = (FLOAT)1.0; V = (FLOAT)1.0;
+    flm = (FLOAT)1.0; V = (FLOAT)1.0;
 
     for (i = 0; i < d; i++) {
         V *= h[i];
 
         if (d > 1) {
-            Mode[i].k_lm = (FLOAT)0.0;
+            Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < k; j++) {
                 for (l = 0; l < d; l++) if ((i != l) && (Y[j][l] != Y[m][l])) goto S0;
 
-                Mode[i].k_lm += Y[j][d];
+                Mode[i].klm += Y[j][d];
 S0:;        }
         }
         else
-            Mode[i].k_lm = nl;
+            Mode[i].klm = nl;
 
-        Mode[i].ym = Y[m][i]; Mode[i].f_lm = Y[m][d] / (Mode[i].k_lm * h[i]); f_lm *= Mode[i].f_lm;
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d] / (Mode[i].klm * h[i]); flm *= Mode[i].flm;
     }
 
-    epsilon = (FLOAT)exp(log(Y[m][d] / (nl * V * f_lm)) / d);
+    epsilon = (FLOAT)exp(log(Y[m][d] / (nl * V * flm)) / d);
 
     for (i = 0; i < d; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].f_lm *= epsilon;
+        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
         switch (MrgDistType[i].ParFamType) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = h[i];
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
-
-            Mode[i].dy = h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
 
             break;
-		case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
+        case pfGamma:
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = h[i]; Tmp = Mode[i].ym - Mode[i].dy;
-
-            if (Tmp <= (FLOAT)0.0) Mode[i].dy = Mode[i].ym * ((FLOAT)1.0 - Eps);
-
-			break;
+            break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].f_lm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
-		case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].f_lm, &MrgDistType[i].Par0);
+            break;
+        case pfPoisson:
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &MrgDistType[i].Par0);
 
             if (Error) goto E0;
 
-            Mode[i].dy = (FLOAT)0.0;
-
-			break;
-		case pfDirac:
-			MrgDistType[i].Par0 = Mode[i].ym; Stop = 1;
+            break;
+        case pfDirac:
+            MrgDistType[i].Par0 = Mode[i].ym;
         }
     }
 
-    if (Stop || (ResType == rtRigid)) goto E0;
+    if (ResType == rtRigid) goto E0;
 
     /* Loose restraints. */
 
-    if (nl > Y[m][d]) {
-        memcpy(TmpDistType, MrgDistType, d * sizeof(MarginalDistributionType));
+    for (i = 0; i < d; i++) {
+        if (MrgDistType[i].ParFamType == pfDirac) goto E1;
 
-        for (i = 0; i < d; i++) {
-            /* Mode position optimisation. */
+        /* Bracketing. */
 
-            Mode[i].ymin = Mode[i].ym - Mode[i].dy; Mode[i].ymax = Mode[i].ym + Mode[i].dy;
+        Dlm = (FLOAT)0.0; 
 
-            Mode[i].y = Mode[i].ymin; Mode[i].dy = (FLOAT)2.0 * Mode[i].dy / (ny - (FLOAT)1.0);
+        for (o = 0; o < k; o++) if (Y[o][d] > FLOAT_MIN) {
+            for (p = 0; p < d; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S1;
 
-            if (Mode[i].dy != (FLOAT)0.0) {
-                j = 0; Tmp = FLOAT_MAX;
+            Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
 
-                for (l = 0; l < ny; l++) {
-                    CP[l] = (FLOAT)0.0;
+            if (Error) goto E0;
 
-                    switch (TmpDistType[i].ParFamType) {
-                    case pfNormal:
-                        Error = RoughNormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            Dlm -= CmpMrgDist * h[i];
+S1:;    }
 
-                        if (Error) goto E0;
+        Dlm += (FLOAT)0.998;
 
-                        Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                        Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
+        if (Dlm > (FLOAT)0.0) goto E1; 
 
-                        break;
-                    case pfLognormal:
-                        Error = RoughLognormalParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)0.998;
+        flmax = (FLOAT)Mode[i].flm; Dlmax = Dlm;
 
-                        if (Error) goto E0;
+        /* Bisection. */
 
-                        Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - 3.09023230616779 * TmpDistType[i].Par1);
-                        Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + 3.09023230616779 * TmpDistType[i].Par1);
+        Stop = 0;
 
-                        break;
-                    case pfWeibull:
-                        Error = RoughWeibullParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                        Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
-
-                        break;
-		            case pfGamma:
-                        Error = RoughGammaParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                        if (Error) goto E0;
-
-					    Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
-
-					    if (Error) goto E0;
-
-					    Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
-
-					    if (Error) goto E0;
-
-			            break;
-                    case pfBinomial:
-                        Error = RoughBinomialParameters(Mode[i].y, Mode[i].f_lm, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-						Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-						break;
-					case pfPoisson:
-                        Error = RoughPoissonParameters(Mode[i].y, Mode[i].f_lm, &TmpDistType[i].Par0);
-                                                       
-                        if (Error) goto E0;
-
-                        Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-						Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
-
-						break;
-					case pfDirac:
-						break;
-                    }
-
-                    for (o = 0; o < k; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                        for (p = 0; p < d; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S1;
-
-                        Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-                        if (Error) goto E0;
-
-                        dP = (FLOAT)1.0 - Mode[i].k_lm * h[i] * CmpMrgDist / Y[o][d];
-
-                        if (dP > CP[l]) CP[l] = dP;
-S1:;                }
-
-                    if (CP[l] < Tmp) {
-                        j = l; Tmp = CP[l];
-                    }
-
-                    Mode[i].y += Mode[i].dy;
-                }
-
-                if ((j == 0) || (j == ny - 1))
-                    Mode[i].y = Mode[i].ym;
-                else
-                if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                    Mode[i].y = (FLOAT)0.5 * Mode[i].dy * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]) + Mode[i].ymin + Mode[i].dy * j;
-            }
-
-            /* Mode empirical density optimisation. */
-
-            Mode[i].y_lmin = FLOAT_MAX; Mode[i].y_lmax = -FLOAT_MAX;
-
-            for (j = 0; j < k; j++) if (Y[j][d] > FLOAT_MIN) {
-                for (l = 0; l < d; l++) if ((i != l) && (Y[j][l] != Y[m][l])) goto S2;
-
-                if (Y[j][i] < Mode[i].y_lmin) Mode[i].y_lmin = Y[j][i];
-                if (Y[j][i] > Mode[i].y_lmax) Mode[i].y_lmax = Y[j][i];
-S2:;        }
-
-            if ((FLOAT)fabs(Mode[i].y_lmax - Mode[i].y_lmin) <= FLOAT_MIN) goto E0;
-
-            Mode[i].f_lmin = (FLOAT)1.0 / (Mode[i].y_lmax - Mode[i].y_lmin); Mode[i].f_lmax = Mode[i].f_lm;
-
-            if (Mode[i].f_lmax < Mode[i].f_lmin) goto E0;
-
-            Mode[i].f = Mode[i].f_lmax; Mode[i].df = (Mode[i].f_lmax - Mode[i].f_lmin) / (nf - (FLOAT)1.0); emax = (FLOAT)0.0;
-
-            j = 0; Tmp = FLOAT_MAX;
-
-            for (l = 0; l < nf; l++) {
-                CP[l] = (FLOAT)0.0; CM[l] = (FLOAT)0.0;
-
-                switch (TmpDistType[i].ParFamType) {
-                case pfNormal:
-                    Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 - (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-                    Mode[i].b_lmax = TmpDistType[i].Par0 + (FLOAT)3.09023230616779 * TmpDistType[i].Par1;
-
-                    break;
-                case pfLognormal:
-                    Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = (FLOAT)exp(TmpDistType[i].Par0 - 3.09023230616779 * TmpDistType[i].Par1);
-                    Mode[i].b_lmax = (FLOAT)exp(TmpDistType[i].Par0 + 3.09023230616779 * TmpDistType[i].Par1);
-
-                    break;
-                case pfWeibull:
-                    Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = TmpDistType[i].Par0 * (FLOAT)exp(log(0.00100050033358) / TmpDistType[i].Par1);
-                    Mode[i].b_lmax = TmpDistType[i].Par0 * (FLOAT)exp(log(6.90775527898214) / TmpDistType[i].Par1);
-
-                    break;
-		        case pfGamma:
-                    Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
-
-                    if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmin); 
-
-					if (Error) goto E0;
-
-					Error = GammaInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1, &Mode[i].b_lmax); 
-
-					if (Error) goto E0;
-
-			        break;
-                case pfBinomial:
-                    Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = BinomialInv((FLOAT)0.001, TmpDistType[i].Par0, TmpDistType[i].Par1); 
-					Mode[i].b_lmax = BinomialInv((FLOAT)0.999, TmpDistType[i].Par0, TmpDistType[i].Par1);
-
-					break;
-				case pfPoisson:
-                    Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
-                                                       
-                    if (Error) goto E0;
-
-                    Mode[i].b_lmin = PoissonInv((FLOAT)0.001, TmpDistType[i].Par0); 
-		    		Mode[i].b_lmax = PoissonInv((FLOAT)0.999, TmpDistType[i].Par0);
-
-					break;
-				case pfDirac:
-					break;
-                }
-
-                for (o = 0; o < k; o++) if ((Y[o][d] > FLOAT_MIN) && (Y[o][i] > Mode[i].b_lmin) && (Y[o][i] < Mode[i].b_lmax)) {
-                    for (p = 0; p < d; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S3;
-
-                    Error = ComponentMarginalDist(i, Y[o], TmpDistType, &CmpMrgDist, 0);
-
-                    if (Error) goto E0;
-
-                    dP = (FLOAT)1.0 - Mode[i].k_lm * h[i] * CmpMrgDist / Y[o][d];
-
-                    if (dP > CP[l])
-                        CP[l] = dP;
-                    else
-                    if (dP < CM[l])
-                        CM[l] = dP;
-S3:;            }
-
-                CM[l] = -CM[l];
-
-                if (CP[l] > emax) emax = CP[l];
-
-                if (CP[l] < Tmp) {
-                    j = l; Tmp = CP[l];
-                }
-
-                if (CM[l] >= emax / ((FLOAT)1.0 - emax)) {
-                    if (j == l) j = 0; break;
-                }
-
-                Mode[i].f -= Mode[i].df;
-            }
-
-            if ((j == 0) || (j == nf - 1))
-                Mode[i].f = Mode[i].f_lmax;
-            else
-            if ((CP[j + 1] > CP[j]) && (CP[j - 1] > CP[j]))
-                Mode[i].f = Mode[i].f_lmax - Mode[i].df * j - (FLOAT)0.5 * Mode[i].df * (CP[j - 1] - CP[j + 1]) / (CP[j + 1] - (FLOAT)2.0 * CP[j] + CP[j - 1]);
+        while (!Stop) {
+            flm = (flmax + flmin) / (FLOAT)2.0;
 
             switch (MrgDistType[i].ParFamType) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughNormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
-
+                
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
                 break;
-		    case pfGamma:
-                Error = RoughGammaParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0, &TmpDistType[i].Par1);
+            case pfGamma:
+                Error = RoughGammaParameters(Mode[i].ym, flm, &MrgDistType[i].Par0, &MrgDistType[i].Par1);
 
                 if (Error) goto E0;
 
-			    break;
+                break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].y, Mode[i].f, TmpDistType[i].Par0, &TmpDistType[i].Par1);
+                Error = RoughBinomialParameters(Mode[i].ym, flm, MrgDistType[i].Par0, &MrgDistType[i].Par1);
                                                        
                 if (Error) goto E0;
 
-				break;
-			case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].y, Mode[i].f, &TmpDistType[i].Par0);
+                break;
+            case pfPoisson:
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &MrgDistType[i].Par0);
                                                        
                 if (Error) goto E0;
 
-				break;
-			case pfDirac:
-				break;
+                break;
+            case pfDirac:
+                break;
+            }
+
+            Dlm = (FLOAT)0.0; 
+
+            for (o = 0; o < k; o++) if (Y[o][d] > FLOAT_MIN) {
+                for (p = 0; p < d; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S2;
+
+                Error = ComponentMarginalDist(i, Y[o], MrgDistType, &CmpMrgDist, 0);
+
+                if (Error) goto E0;
+
+                Dlm -= CmpMrgDist * h[i];
+S2:;        }
+
+            Dlm += (FLOAT)0.998;
+
+            if (((FLOAT)fabs(Dlm) < Eps) || ((flmax - flmin) / (FLOAT)2.0 < Eps)) {
+                Stop = 1;
+            }
+            else {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
+                    flmin = flm; Dlmin = Dlm; 
+                }
+                else {
+                    flmax = flm; Dlmax = Dlm;
+                }
             }
         }
+E1:;}
 
-		memcpy(MrgDistType, TmpDistType, d * sizeof(MarginalDistributionType));
-    }
-
-E0: if (TmpDistType) free(TmpDistType);
-
-    if (Mode) free(Mode);
+E0: if (Mode) free(Mode);
 
     return (Error);
 } /* RoughEstimationH */
@@ -3081,8 +2336,8 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
 
             TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -3110,11 +2365,11 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
 
             TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
-			TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
-			MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -3169,18 +2424,18 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
-			TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
-			MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
             break;
-		case pfGamma:
+        case pfGamma:
             TmpDistType[i].ParFamType = pfGamma;
 
             TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
@@ -3198,7 +2453,7 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+                if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
 
                 dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
 
@@ -3225,14 +2480,14 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
+            break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -3241,8 +2496,8 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
             for (j = 0; j < n; j++) if (Y[j][d] > FLOAT_MIN) {
                 T[0] += Y[j][d] * Y[j][i];
             }
-			
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
 
             TmpDistType[i].Par1 = T[0] / TmpDistType[i].Par0 / nl;
 
@@ -3250,14 +2505,14 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
+            break;
         case pfPoisson:
             TmpDistType[i].ParFamType = pfPoisson;
 
@@ -3269,24 +2524,24 @@ int EnhancedEstimationKNN(int                      n,             /* Total numbe
 
             TmpDistType[i].Par0 = T[0] / nl;
 
-			TmpDistType[i].Par1 = (FLOAT)0.0;
+            TmpDistType[i].Par1 = (FLOAT)0.0;
 
             if (TmpDistType[i].Par0 < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
-		case pfDirac:
-			TmpDistType[i].ParFamType = pfDirac;
+            break;
+        case pfDirac:
+            TmpDistType[i].ParFamType = pfDirac;
 
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
         }
     }
 
@@ -3338,10 +2593,10 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
+            TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -3369,11 +2624,11 @@ int EnhancedEstimationPW(int                      n,             /* Total number
 
             TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
-			TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
-			MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -3428,18 +2683,18 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
-			TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
-			MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
             break;
-		case pfGamma:
+        case pfGamma:
             TmpDistType[i].ParFamType = pfGamma;
 
             TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
@@ -3457,7 +2712,7 @@ int EnhancedEstimationPW(int                      n,             /* Total number
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+                if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
 
                 dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
 
@@ -3484,14 +2739,14 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
+            break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -3500,8 +2755,8 @@ int EnhancedEstimationPW(int                      n,             /* Total number
             for (j = 0; j < n; j++) if (Y[j][d] > FLOAT_MIN) {
                 T[0] += Y[j][d] * Y[j][i];
             }
-			
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
 
             TmpDistType[i].Par1 = T[0] / TmpDistType[i].Par0 / nl;
 
@@ -3509,14 +2764,14 @@ int EnhancedEstimationPW(int                      n,             /* Total number
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
+            break;
         case pfPoisson:
             TmpDistType[i].ParFamType = pfPoisson;
 
@@ -3528,24 +2783,24 @@ int EnhancedEstimationPW(int                      n,             /* Total number
 
             TmpDistType[i].Par0 = T[0] / nl;
 
-			TmpDistType[i].Par1 = (FLOAT)0.0;
+            TmpDistType[i].Par1 = (FLOAT)0.0;
 
             if (TmpDistType[i].Par0 < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
-		case pfDirac:
-			TmpDistType[i].ParFamType = pfDirac;
+            break;
+        case pfDirac:
+            TmpDistType[i].ParFamType = pfDirac;
 
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
         }
     }
 
@@ -3597,15 +2852,15 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
+            TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
-			
+            
             break;
         case pfLognormal:
             TmpDistType[i].ParFamType = pfLognormal;
@@ -3628,11 +2883,11 @@ int EnhancedEstimationH(int                      k,             /* Total number 
 
             TmpDistType[i].Par1 = (FLOAT)sqrt(TmpDistType[i].Par1);
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par1;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par1;
 
-			TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
-			MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * TmpDistType[i].Par0 + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * MrgDistType[i].Par0 + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -3687,18 +2942,18 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 Error = 1; if (Error) goto E0;
             }
             
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
-			TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
-			MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / TmpDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / TmpDistType[i].Par1)); 
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1)) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / MrgDistType[i].Par1)); 
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
             break;
-		case pfGamma:
+        case pfGamma:
             TmpDistType[i].ParFamType = pfGamma;
 
             TmpDistType[i].Par1 = (FLOAT)1.0 + Eps;
@@ -3716,7 +2971,7 @@ int EnhancedEstimationH(int                      k,             /* Total number 
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-				if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
+                if (Digamma(TmpDistType[i].Par1, &T[0]) || Digamma(TmpDistType[i].Par1 + Eps, &T[1])) goto E0;
 
                 dP = ((FLOAT)log(TmpDistType[i].Par1) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / TmpDistType[i].Par1 - (T[1] - T[0]) / Eps);
 
@@ -3743,14 +2998,14 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par1 * TmpDistType[i].Par0 * TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
+            break;
         case pfBinomial:
             TmpDistType[i].ParFamType = pfBinomial;
 
@@ -3760,7 +3015,7 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 T[0] += Y[j][d] * Y[j][i];
             }
 
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
 
             TmpDistType[i].Par1 = T[0] / TmpDistType[i].Par0 / nl;
 
@@ -3768,15 +3023,15 @@ int EnhancedEstimationH(int                      k,             /* Total number 
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
-			MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
+            TmpVar = TmpDistType[i].Par0 * TmpDistType[i].Par1 * ((FLOAT)1.0 - TmpDistType[i].Par1);
+            MrgVar = MrgDistType[i].Par0 * MrgDistType[i].Par1 * ((FLOAT)1.0 - MrgDistType[i].Par1);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
-	    case pfPoisson:
+            break;
+        case pfPoisson:
             TmpDistType[i].ParFamType = pfPoisson;
 
             T[0] = (FLOAT)0.0;
@@ -3787,24 +3042,24 @@ int EnhancedEstimationH(int                      k,             /* Total number 
 
             TmpDistType[i].Par0 = T[0] / nl;
 
-			TmpDistType[i].Par1 = (FLOAT)0.0;
+            TmpDistType[i].Par1 = (FLOAT)0.0;
 
             if (TmpDistType[i].Par0 < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-			TmpVar = TmpDistType[i].Par0;
-			MrgVar = MrgDistType[i].Par0;
+            TmpVar = TmpDistType[i].Par0;
+            MrgVar = MrgDistType[i].Par0;
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
             }
 
-			break;
-		case pfDirac:
-			TmpDistType[i].ParFamType = pfDirac;
+            break;
+        case pfDirac:
+            TmpDistType[i].ParFamType = pfDirac;
 
-			TmpDistType[i].Par0 = MrgDistType[i].Par0;
+            TmpDistType[i].Par0 = MrgDistType[i].Par0;
         }
     }
 
@@ -3845,25 +3100,25 @@ int MomentsCalculation(int                      d,            /* Number of indep
             SecondM[i] = MrgDistType[i].Par0 * MrgDistType[i].Par0 * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / MrgDistType[i].Par1));
 
             break;
-		case pfGamma:
+        case pfGamma:
             FirstM[i] = MrgDistType[i].Par1 * MrgDistType[i].Par0;
 
             SecondM[i] = MrgDistType[i].Par1 * MrgDistType[i].Par0 * MrgDistType[i].Par0 * ((FLOAT)1.0 + MrgDistType[i].Par1);
 
-			break;
+            break;
         case pfBinomial:
             FirstM[i] = MrgDistType[i].Par0 * MrgDistType[i].Par1;
 
             SecondM[i] = (FLOAT)0.0;
 
-			break;
-		case pfPoisson:
+            break;
+        case pfPoisson:
             FirstM[i] = MrgDistType[i].Par0;
 
             SecondM[i] = (FLOAT)0.0;
 
-			break;
-		case pfDirac:
+            break;
+        case pfDirac:
             FirstM[i] = MrgDistType[i].Par0;
 
             SecondM[i] = (FLOAT)0.0;
@@ -4003,22 +3258,22 @@ int BayesClassificationKNN(int                      n,             /* Total numb
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
-		case pfGamma:
-			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+        case pfGamma:
+            MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+            MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
 
-			break;
+            break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
-			break;
+            break;
         case pfPoisson:
             MrgDistType[i][j].Par0 = FirstM[i][j];
 
-			break;
-		case pfDirac:
-			break;
+            break;
+        case pfDirac:
+            break;
         }
     }
 
@@ -4091,22 +3346,22 @@ int BayesClassificationPW(int                      n,             /* Total numbe
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
-		case pfGamma:
-			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+        case pfGamma:
+            MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+            MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
 
-			break;
+            break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
-			break;
+            break;
         case pfPoisson:
             MrgDistType[i][j].Par0 = FirstM[i][j];
 
-			break;
-		case pfDirac:
-			break;
+            break;
+        case pfDirac:
+            break;
         }
     }
 
@@ -4180,22 +3435,22 @@ int BayesClassificationH(int                      k,             /* Total number
             BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MrgDistType[i][j]);
 
             break;
-		case pfGamma:
-			MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+        case pfGamma:
+            MrgDistType[i][j].Par1 = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-			MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
+            MrgDistType[i][j].Par0 = FirstM[i][j] / MrgDistType[i][j].Par1;
 
-			break;
+            break;
         case pfBinomial:
             MrgDistType[i][j].Par1 = FirstM[i][j] / MrgDistType[i][j].Par0;
 
-			break;
+            break;
         case pfPoisson:
             MrgDistType[i][j].Par0 = FirstM[i][j];
 
-			break;
-		case pfDirac:
-			break;
+            break;
+        case pfDirac:
+            break;
         }
     }
 
@@ -4206,7 +3461,7 @@ E0: return (Error);
 
 int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
               OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
-			  HistoryREBMIXParameterType *HisParType)  /* Output parameters. */ 
+              HistoryREBMIXParameterType *HisParType)  /* Output parameters. */ 
 {
     FLOAT                      **Y = NULL;
     FLOAT                      *h = NULL;
@@ -4214,14 +3469,16 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
     FLOAT                      *W = NULL;
     MarginalDistributionType   **Theta = NULL; 
     FLOAT                      **FirstM = NULL, **SecondM = NULL;
-	HistoryREBMIXParameterType TmpParType;
+    HistoryREBMIXParameterType TmpParType;
     int                        c = 0, i, I, j, J, l, m, M;
     FLOAT                      Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-	clock_t                    Start;
-	FLOAT                      TimeLeft;
+    #if (_TIME_LEFT_SWITCH)
+    clock_t                    Start;
+    FLOAT                      TimeLeft;
+    #endif
     int                        Error = 0, Stop = 0, Found = 0;
 
-	memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
+    memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
 
     /* Allocation and initialisation. */
 
@@ -4243,33 +3500,33 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
     Error = NULL == h; if (Error) goto E0;
 
-	if (InpParType.ymin == NULL) {
-	    InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymin == NULL) {
+        InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-	    Error = NULL == InpParType.ymin; if (Error) goto E0;
+        Error = NULL == InpParType.ymin; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymin[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymin[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
-			}
-	    }
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
-	if (InpParType.ymax == NULL) {
-		InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymax == NULL) {
+        InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-		Error = NULL == InpParType.ymax; if (Error) goto E0;
+        Error = NULL == InpParType.ymax; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymax[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymax[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
-			}
-		}
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
     for (i = 0; i < InpParType.d; i++) {
         h[i] = InpParType.ymax[i] - InpParType.ymin[i];
@@ -4357,43 +3614,45 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
         Error = NULL == OutParType->Theta[i]; if (Error) goto E0;
     }
 
-	HisParType->Imax = ItMax;
+    HisParType->Imax = ItMax;
 
-	HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
+    HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
 
-	Error = NULL == HisParType->c; if (Error) goto E0;
+    Error = NULL == HisParType->c; if (Error) goto E0;
 
     HisParType->IC = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->IC; if (Error) goto E0;
+    Error = NULL == HisParType->IC; if (Error) goto E0;
 
     HisParType->logL = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->logL; if (Error) goto E0;
+    Error = NULL == HisParType->logL; if (Error) goto E0;
 
     HisParType->D = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->D; if (Error) goto E0;
+    Error = NULL == HisParType->D; if (Error) goto E0;
 
     TmpParType.Imax = ItMax;
 
     TmpParType.c = (int*)malloc(TmpParType.Imax * sizeof(int));
 
-	Error = NULL == TmpParType.c; if (Error) goto E0;
+    Error = NULL == TmpParType.c; if (Error) goto E0;
 
     TmpParType.IC = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.IC; if (Error) goto E0;
+    Error = NULL == TmpParType.IC; if (Error) goto E0;
 
     TmpParType.logL = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.logL; if (Error) goto E0;
+    Error = NULL == TmpParType.logL; if (Error) goto E0;
 
     TmpParType.D = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.D; if (Error) goto E0;
+    Error = NULL == TmpParType.D; if (Error) goto E0;
 
+    #if (_TIME_LEFT_SWITCH)
     Start = clock();
+    #endif
 
     for (i = 0; i < InpParType.kmax; i++) {
         /* Preprocessing of observations. */
@@ -4411,7 +3670,7 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
             /* Middle loop. */
 
-			while (nl / OutParType->n > (FLOAT)2.0 * Dmin * (FLOAT)(InpParType.b * l + (FLOAT)1.0)) {
+            while (nl / OutParType->n > (FLOAT)2.0 * Dmin * l) {
                 /* Global mode detection. */
 
                 Error = GlobalModeKNN(&m, OutParType->n, InpParType.d, Y);
@@ -4454,7 +3713,7 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                         }
                     }
 
-                    Dl = elp / nl; epsilonlmax *= ((FLOAT)1.0 - InpParType.ar);
+                    Dl = elp / nl; epsilonlmax -= InpParType.ar;
 
                     if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
@@ -4510,7 +3769,7 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
             if (Error) goto E0;
 
             if (IC < OutParType->IC) {
-				Found = 1;
+                Found = 1;
 
                 OutParType->k = InpParType.K[i];
 
@@ -4525,56 +3784,60 @@ int REBMIXKNN(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                 }
             }
 
-			j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
+            j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
 
             Stop |= (D <= InpParType.D) || (D <= FLOAT_MIN) || (J >= ItMax); Dmin *= c / (c + (FLOAT)1.0); J++;
         }
         while (!Stop);
 
-		TmpParType.Imax = J - 1;
+        TmpParType.Imax = J - 1;
 
-		if (Found) {
-			HisParType->Imax = TmpParType.Imax;
+        if (Found) {
+            HisParType->Imax = TmpParType.Imax;
 
-			memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
-			memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
-		}
+            memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
+            memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
+        }
 
-		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+        #if (_TIME_LEFT_SWITCH)
+        ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
         printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
         Rprintf("\r%s\r", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
         #endif
-		
+        
         TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
 
-		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+        sprintf(Progress, "Time left %2.1f sec", TimeLeft);
 
         #if (_REBMIXEXE)
         printf("%s", Progress); 
         #elif (_REBMIXR)
         Rprintf("%s", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
+        #endif
         #endif
     }
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
-	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+    #if (_TIME_LEFT_SWITCH)
+    ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
     #if (_REBMIXEXE)
     printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
     Rprintf("\r%s\r", Progress);
     R_FlushConsole();
-	R_ProcessEvents();
+    R_ProcessEvents();
+    #endif
     #endif
 
     if (OutParType->Theta) {
@@ -4585,7 +3848,7 @@ E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT)
         OutParType->Theta = (MarginalDistributionType**)realloc(OutParType->Theta, OutParType->c * sizeof(MarginalDistributionType*));
     }
 
-	if (TmpParType.D) free(TmpParType.D);
+    if (TmpParType.D) free(TmpParType.D);
 
     if (TmpParType.logL) free(TmpParType.logL);
 
@@ -4642,7 +3905,7 @@ E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT)
 
 int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
              OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
-			 HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
+             HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
 {
     FLOAT                      **Y = NULL;
     FLOAT                      *h = NULL;
@@ -4650,14 +3913,16 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
     FLOAT                      *W = NULL;
     MarginalDistributionType   **Theta = NULL; 
     FLOAT                      **FirstM = NULL, **SecondM = NULL;
-	HistoryREBMIXParameterType TmpParType;
+    HistoryREBMIXParameterType TmpParType;
     int                        c = 0, i, I, j, J, l, m, M;
     FLOAT                      V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-	clock_t                    Start;
-	FLOAT                      TimeLeft;
+    #if (_TIME_LEFT_SWITCH)
+    clock_t                    Start;
+    FLOAT                      TimeLeft;
+    #endif
     int                        Error = 0, Stop = 0, Found = 0;
 
-	memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
+    memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
 
     /* Allocation and initialisation. */
 
@@ -4679,33 +3944,33 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
     Error = NULL == h; if (Error) goto E0;
 
-	if (InpParType.ymin == NULL) {
-		InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymin == NULL) {
+        InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-		Error = NULL == InpParType.ymin; if (Error) goto E0;
+        Error = NULL == InpParType.ymin; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymin[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymin[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
-			}
-		}
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
-	if (InpParType.ymax == NULL) {
-	    InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymax == NULL) {
+        InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-		Error = NULL == InpParType.ymax; if (Error) goto E0;
+        Error = NULL == InpParType.ymax; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymax[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymax[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
-			}
-		}
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
     R = (FLOAT*)malloc(OutParType->n * sizeof(FLOAT));
 
@@ -4789,43 +4054,45 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
         Error = NULL == OutParType->Theta[i]; if (Error) goto E0;
     }
 
-	HisParType->Imax = ItMax;
+    HisParType->Imax = ItMax;
 
-	HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
+    HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
 
-	Error = NULL == HisParType->c; if (Error) goto E0;
+    Error = NULL == HisParType->c; if (Error) goto E0;
 
     HisParType->IC = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->IC; if (Error) goto E0;
+    Error = NULL == HisParType->IC; if (Error) goto E0;
 
     HisParType->logL = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->logL; if (Error) goto E0;
+    Error = NULL == HisParType->logL; if (Error) goto E0;
 
     HisParType->D = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->D; if (Error) goto E0;
+    Error = NULL == HisParType->D; if (Error) goto E0;
 
     TmpParType.Imax = ItMax;
 
     TmpParType.c = (int*)malloc(TmpParType.Imax * sizeof(int));
 
-	Error = NULL == TmpParType.c; if (Error) goto E0;
+    Error = NULL == TmpParType.c; if (Error) goto E0;
 
     TmpParType.IC = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.IC; if (Error) goto E0;
+    Error = NULL == TmpParType.IC; if (Error) goto E0;
 
     TmpParType.logL = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.logL; if (Error) goto E0;
+    Error = NULL == TmpParType.logL; if (Error) goto E0;
 
     TmpParType.D = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.D; if (Error) goto E0;
+    Error = NULL == TmpParType.D; if (Error) goto E0;
 
-	Start = clock();
+    #if (_TIME_LEFT_SWITCH)
+    Start = clock();
+    #endif
 
     for (i = 0; i < InpParType.kmax; i++) {
         /* Preprocessing of observations. */
@@ -4835,17 +4102,17 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
         for (j = 0; j < InpParType.d; j++) {
             switch (InpParType.VarType[j]) {
             case vtContinuous:
-				h[j] = (InpParType.ymax[j] - InpParType.ymin[j]) / InpParType.K[i]; V *= h[j]; 
+                h[j] = (InpParType.ymax[j] - InpParType.ymin[j]) / InpParType.K[i]; V *= h[j]; 
 
                 break;
             case vtDiscrete:
-				h[j] = (FLOAT)1.0;
+                h[j] = (FLOAT)1.0;
             }
         }
 
         Error = PreprocessingPW(h, OutParType->n, InpParType.d, Y);
 
-		if (Error) goto E0;
+        if (Error) goto E0;
 
         Found = 0; Dmin = (FLOAT)0.25; J = 1;
 
@@ -4856,7 +4123,7 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
             /* Middle loop. */
 
-			while (nl / OutParType->n > (FLOAT)2.0 * Dmin * (FLOAT)(InpParType.b * l + (FLOAT)1.0)) {
+            while (nl / OutParType->n > (FLOAT)2.0 * Dmin * l) {
                 /* Global mode detection. */
 
                 Error = GlobalModePW(&m, OutParType->n, InpParType.d, Y);
@@ -4899,7 +4166,7 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                         }
                     }
 
-                    Dl = elp / nl; epsilonlmax *= ((FLOAT)1.0 - InpParType.ar);
+                    Dl = elp / nl; epsilonlmax -= InpParType.ar;
 
                     if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
@@ -4955,7 +4222,7 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
             if (Error) goto E0;
 
             if (IC < OutParType->IC) {
-				Found = 1;
+                Found = 1;
 
                 OutParType->k = InpParType.K[i];
 
@@ -4970,56 +4237,60 @@ int REBMIXPW(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                 }
             }
 
-			j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
+            j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
 
-			Stop |= (D <= InpParType.D) || (D <= FLOAT_MIN) || (J >= ItMax); Dmin *= c / (c + (FLOAT)1.0); J++; 
+            Stop |= (D <= InpParType.D) || (D <= FLOAT_MIN) || (J >= ItMax); Dmin *= c / (c + (FLOAT)1.0); J++; 
         }
         while (!Stop);
 
-		TmpParType.Imax = J - 1;
+        TmpParType.Imax = J - 1;
 
-		if (Found) {
-			HisParType->Imax = TmpParType.Imax;
+        if (Found) {
+            HisParType->Imax = TmpParType.Imax;
 
-			memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
-			memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
-		}
- 
-		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+            memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
+            memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
+        }
+
+        #if (_TIME_LEFT_SWITCH)
+        ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
         printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
         Rprintf("\r%s\r", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
         #endif
-		
+        
         TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
 
-		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+        sprintf(Progress, "Time left %2.1f sec", TimeLeft);
 
         #if (_REBMIXEXE)
         printf("%s", Progress); 
         #elif (_REBMIXR)
         Rprintf("%s", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
+        #endif
         #endif
     }
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
-	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+    #if (_TIME_LEFT_SWITCH)
+    ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
     #if (_REBMIXEXE)
     printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
     Rprintf("\r%s\r", Progress);
     R_FlushConsole();
-	R_ProcessEvents();
+    R_ProcessEvents();
+    #endif
     #endif
 
     if (OutParType->Theta) {
@@ -5030,7 +4301,7 @@ E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT)
         OutParType->Theta = (MarginalDistributionType**)realloc(OutParType->Theta, OutParType->c * sizeof(MarginalDistributionType*));
     }
 
-	if (TmpParType.D) free(TmpParType.D);
+    if (TmpParType.D) free(TmpParType.D);
 
     if (TmpParType.logL) free(TmpParType.logL);
 
@@ -5087,7 +4358,7 @@ E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT)
 
 int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
             OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
-			HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
+            HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
 {
     FLOAT                      **Y = NULL;
     FLOAT                      *h = NULL, *y0 = NULL;
@@ -5096,14 +4367,16 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
     FLOAT                      *W = NULL;
     MarginalDistributionType   **Theta = NULL; 
     FLOAT                      **FirstM = NULL, **SecondM = NULL;
-	HistoryREBMIXParameterType TmpParType;
+    HistoryREBMIXParameterType TmpParType;
     int                        c = 0, i, I, j, J, k, l, m, M;
     FLOAT                      V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-	clock_t                    Start;
-	FLOAT                      TimeLeft;
+    #if (_TIME_LEFT_SWITCH)
+    clock_t                    Start;
+    FLOAT                      TimeLeft;
+    #endif
     int                        Error = 0, Stop = 0, Found = 0;
 
-	memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
+    memset(&TmpParType, 0, sizeof(HistoryREBMIXParameterType));
 
     /* Allocation and initialisation. */
 
@@ -5127,33 +4400,33 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
     Error = NULL == y0; if (Error) goto E0;
 
-	if (InpParType.ymin == NULL) {
-	    InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymin == NULL) {
+        InpParType.ymin = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-		Error = NULL == InpParType.ymin; if (Error) goto E0;
+        Error = NULL == InpParType.ymin; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymin[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymin[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
-			}
-		}
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] < InpParType.ymin[i]) InpParType.ymin[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
-	if (InpParType.ymax == NULL) {
-	    InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (InpParType.ymax == NULL) {
+        InpParType.ymax = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-		Error = NULL == InpParType.ymax; if (Error) goto E0;
+        Error = NULL == InpParType.ymax; if (Error) goto E0;
 
-		for (i = 0; i < InpParType.d; i++) {
-			InpParType.ymax[i] = OutParType->X[0][i];
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.ymax[i] = OutParType->X[0][i];
 
-			for (j = 1; j < OutParType->n; j++) {
-				if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
-			}
-		}
-	}
+            for (j = 1; j < OutParType->n; j++) {
+                if (OutParType->X[j][i] > InpParType.ymax[i]) InpParType.ymax[i] = OutParType->X[j][i];
+            }
+        }
+    }
 
     R = (FLOAT*)malloc(OutParType->n * sizeof(FLOAT));
 
@@ -5241,46 +4514,48 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
         Error = NULL == OutParType->Theta[i]; if (Error) goto E0;
     }
 
-	HisParType->Imax = ItMax;
+    HisParType->Imax = ItMax;
 
-	HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
+    HisParType->c = (int*)malloc(HisParType->Imax * sizeof(int));
 
-	Error = NULL == HisParType->c; if (Error) goto E0;
+    Error = NULL == HisParType->c; if (Error) goto E0;
 
     HisParType->IC = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->IC; if (Error) goto E0;
+    Error = NULL == HisParType->IC; if (Error) goto E0;
 
     HisParType->logL = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->logL; if (Error) goto E0;
+    Error = NULL == HisParType->logL; if (Error) goto E0;
 
     HisParType->D = (FLOAT*)malloc(HisParType->Imax * sizeof(FLOAT));
 
-	Error = NULL == HisParType->D; if (Error) goto E0;
+    Error = NULL == HisParType->D; if (Error) goto E0;
 
     TmpParType.Imax = ItMax;
 
     TmpParType.c = (int*)malloc(TmpParType.Imax * sizeof(int));
 
-	Error = NULL == TmpParType.c; if (Error) goto E0;
+    Error = NULL == TmpParType.c; if (Error) goto E0;
 
     TmpParType.IC = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.IC; if (Error) goto E0;
+    Error = NULL == TmpParType.IC; if (Error) goto E0;
 
     TmpParType.logL = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.logL; if (Error) goto E0;
+    Error = NULL == TmpParType.logL; if (Error) goto E0;
 
     TmpParType.D = (FLOAT*)malloc(TmpParType.Imax * sizeof(FLOAT));
 
-	Error = NULL == TmpParType.D; if (Error) goto E0;
+    Error = NULL == TmpParType.D; if (Error) goto E0;
 
-	Start = clock();
+    #if (_TIME_LEFT_SWITCH)
+    Start = clock();
+    #endif
 
     for (i = 0; i < InpParType.kmax; i++) {
-		/* Preprocessing of observations. */
+        /* Preprocessing of observations. */
 
         k = InpParType.K[i]; V = (FLOAT)1.0; 
         
@@ -5310,7 +4585,7 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
             /* Middle loop. */
 
-			while (nl / OutParType->n > (FLOAT)2.0 * Dmin * (FLOAT)(InpParType.b * l + (FLOAT)1.0)) {
+            while (nl / OutParType->n > (FLOAT)2.0 * Dmin * l) {
                 /* Global mode detection. */
 
                 Error = GlobalModeH(&m, InpParType.K[i], InpParType.d, Y);
@@ -5353,9 +4628,9 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                         }
                     }
 
-                    Dl = elp / nl; epsilonlmax *= ((FLOAT)1.0 - InpParType.ar);
-
-					if (Dl <= Dmin / W[l]) {
+                    Dl = elp / nl; epsilonlmax -= InpParType.ar;
+                    
+                    if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
 
                         EnhancedEstimationH(InpParType.K[i], InpParType.d, Y, nl, Theta[l]);
@@ -5387,7 +4662,7 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
 
                 if (Error) goto E0;
 
-				c = ++l;
+                c = ++l;
 
                 r -= nl; nl = r; for (j = 0; j < InpParType.K[i]; j++) Y[j][InpParType.d] = R[j];
 
@@ -5396,7 +4671,7 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                 if (Stop) break;
             }
 
-			/* Bayes classification of the remaining observations. */
+            /* Bayes classification of the remaining observations. */
 
             Error = BayesClassificationH(InpParType.K[i], OutParType->n, InpParType.d, Y, c, W, Theta, FirstM, SecondM);
 
@@ -5409,7 +4684,7 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
             if (Error) goto E0;
 
             if (IC < OutParType->IC) {
-				Found = 1; 
+                Found = 1; 
 
                 OutParType->k = k;
 
@@ -5426,58 +4701,62 @@ int REBMIXH(InputREBMIXParameterType   InpParType,   /* Input parameters. */
                 }
             }
 
-			j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
+            j = J - 1; TmpParType.c[j] = c; TmpParType.IC[j] = IC; TmpParType.logL[j] = logL; TmpParType.D[j] = D;
 
             Stop |= (D <= InpParType.D) || (D <= FLOAT_MIN) || (J >= ItMax); Dmin *= c / (c + (FLOAT)1.0); J++;
         }
         while (!Stop);
 
-		TmpParType.Imax = J - 1;
+        TmpParType.Imax = J - 1;
 
-		if (Found) {
-			HisParType->Imax = TmpParType.Imax;
+        if (Found) {
+            HisParType->Imax = TmpParType.Imax;
 
-			memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
-			memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
-			memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
-		}
+            memcpy(HisParType->c, TmpParType.c, HisParType->Imax * sizeof(int));  
+            memcpy(HisParType->IC, TmpParType.IC, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->logL, TmpParType.logL, HisParType->Imax * sizeof(FLOAT));  
+            memcpy(HisParType->D, TmpParType.D, HisParType->Imax * sizeof(FLOAT));  
+        }
 
         InpParType.K[i] = k;
 
-		ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+        #if (_TIME_LEFT_SWITCH)
+        ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
         #if (_REBMIXEXE)
         printf("\r%s\r", Progress); 
         #elif (_REBMIXR)
         Rprintf("\r%s\r", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
         #endif
-		
+        
         TimeLeft = (FLOAT)(InpParType.kmax - i) * (clock() - Start) / CLOCKS_PER_SEC / (i + 1);
 
-		sprintf(Progress, "Time left %2.1f sec", TimeLeft);
+        sprintf(Progress, "Time left %2.1f sec", TimeLeft);
 
-		#if (_REBMIXEXE)
+        #if (_REBMIXEXE)
         printf("%s", Progress); 
         #elif (_REBMIXR)
         Rprintf("%s", Progress);
         R_FlushConsole();
-		R_ProcessEvents();
+        R_ProcessEvents();
+        #endif
         #endif
     }
 
 E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT));
 
-	ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
+    #if (_TIME_LEFT_SWITCH)
+    ProgressLength = (int)strlen(Progress); for (j = 0; j < ProgressLength; j++) Progress[j] = ' '; Progress[ProgressLength] = '\0';
 
     #if (_REBMIXEXE)
     printf("\r%s\r", Progress); 
     #elif (_REBMIXR)
     Rprintf("\r%s\r", Progress);
     R_FlushConsole();
-	R_ProcessEvents();
+    R_ProcessEvents();
+    #endif
     #endif
 
     if (OutParType->Theta) {
@@ -5488,7 +4767,7 @@ E0: OutParType->W = (FLOAT*)realloc(OutParType->W, OutParType->c * sizeof(FLOAT)
         OutParType->Theta = (MarginalDistributionType**)realloc(OutParType->Theta, OutParType->c * sizeof(MarginalDistributionType*));
     }
 
-	if (TmpParType.D) free(TmpParType.D);
+    if (TmpParType.D) free(TmpParType.D);
 
     if (TmpParType.logL) free(TmpParType.logL);
 
@@ -5625,7 +4904,7 @@ E0: if (fp) fclose(fp);
 
 /* Writes input and output parameters into the file stream. */
 
-int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input parameters. */ 
+int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,  /* Input parameters. */ 
                              OutputREBMIXParameterType OutParType)  /* Output parameters. */
 {
     int  i, j;
@@ -5685,7 +4964,7 @@ int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input pa
                                                            "ar",
                                                            "Restraints", 
                                                            "c",
-													       "b");
+                                                           "b");
 
         switch (InpParType.PreType) {
         case poHistogram:
@@ -5743,20 +5022,20 @@ int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input pa
                                "w");
 
         for (i = 0; i < InpParType.d; i++) {
-			switch (InpParType.IniFamType[i]) {
-			case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial:
+            switch (InpParType.IniFamType[i]) {
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial:
                 if (InpParType.d == 1)
                     fprintf(fp1, "\t%s\t%s\t%s", "pdf", "theta1", "theta2");
                 else
                     fprintf(fp1, "\t%s%d\t%s%d\t%s%d", "pdf", i + 1, "theta1.", i + 1, "theta2.", i + 1);
 
-				break;
-			case pfPoisson: case pfDirac:
+                break;
+            case pfPoisson: case pfDirac:
                 if (InpParType.d == 1)
                     fprintf(fp1, "\t%s\t%s", "pdf", "theta1");
                 else
                     fprintf(fp1, "\t%s%d\t%s%d", "pdf", i + 1, "theta1.", i + 1);
-			}
+            }
         }
 
         fprintf(fp1, "\n");
@@ -5854,11 +5133,11 @@ int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input pa
     case icICLBIC:
         strcpy(line, "ICL-BIC");
 
-		break;
+        break;
     case icD:
         strcpy(line, "D");
-		
-		break;
+        
+        break;
     case icSSE:
         strcpy(line, "SSE");
     }
@@ -5989,7 +5268,7 @@ E0: if (fp0) fclose(fp0);
 
 int REBMIX(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
            OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
-		   HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
+           HistoryREBMIXParameterType *HisParType)  /* History parameters. */ 
 {
     int  Error = 0;
 
@@ -6033,9 +5312,9 @@ int RunREBMIXTemplateFile(char *file)
 
     /* Recommended values. */
 
-	InpParType.D = (FLOAT)0.025;
-	InpParType.cmax = 15;
-	InpParType.ICType = icAIC;
+    InpParType.D = (FLOAT)0.025;
+    InpParType.cmax = 15;
+    InpParType.ICType = icAIC;
     InpParType.b = (FLOAT)1.0;
     InpParType.ar = (FLOAT)0.1;
     InpParType.ResType = rtLoose;
@@ -6048,7 +5327,7 @@ int RunREBMIXTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.5.1\n");
+    printf("REBMIX Version 2.6.0\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -6202,13 +5481,13 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             else
             if (!strcmp(pchar, "ICL-BIC"))
                 InpParType.ICType = icICLBIC;
-			else
+            else
             if (!strcmp(pchar, "D"))
                 InpParType.ICType = icD;
-			else
+            else
             if (!strcmp(pchar, "SSE"))
                 InpParType.ICType = icSSE;
-			else {
+            else {
                 Error = 1; goto E0;
             }
         } else
@@ -6470,5 +5749,5 @@ E0: if (fp) fclose(fp);
 
     if (HisParType.c) free(HisParType.c);
 
-	return (Error);
+    return (Error);
 } /* RunREBMIXTemplateFile */

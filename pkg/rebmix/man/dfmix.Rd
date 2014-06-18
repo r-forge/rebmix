@@ -50,8 +50,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "BIC",
   Variables = c("continuous", "continuous"),
   pdf = c("normal", "Weibull"),
-  K = 8,
-  b = 0.0)
+  K = 8)
 
 ## Preprocess and plot finite mixtures.
 

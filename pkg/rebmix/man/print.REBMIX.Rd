@@ -47,8 +47,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Variables = "discrete",
   pdf = "binomial", 
   Theta1 = 10,
-  K = 1, 
-  b = 1.0)
+  K = 1)
   
 ## Print and plot finite mixture.  
 

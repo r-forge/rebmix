@@ -42,8 +42,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "AIC", 
   Variables = "discrete",
   pdf = "Poisson", 
-  K = 1, 
-  b = 1.0)
+  K = 1)
   
 ## Print and plot finite mixture.    
 

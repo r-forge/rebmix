@@ -114,9 +114,9 @@ plot.REBMIX <- function(x,
     item[[20]] <- "$\\; = \\;$"
     item[[21]] <- paste("$", x$summary[pos, "c"], "$, ", sep = "")
 
-    item[[22]] <- "$b$"
-    item[[23]] <- "$\\; = \\;$"
-    item[[24]] <- paste("$", as.number(x$summary[pos, "b"]), "$, ", sep = "")
+    item[[22]] <- ""
+    item[[23]] <- ""
+    item[[24]] <- ""
 
     if (C == .rebmix$Preprocessing[1]) {
       item[[25]] <- "$v$"
@@ -188,9 +188,9 @@ plot.REBMIX <- function(x,
     item[[20]] <- " = "
     item[[21]] <- paste(x$summary[pos, "c"], ", ", sep = "")
 
-    item[[22]] <- "b"
-    item[[23]] <- " = "
-    item[[24]] <- paste(as.number(x$summary[pos, "b"]), ", ", sep = "")
+    item[[22]] <- ""
+    item[[23]] <- ""
+    item[[24]] <- ""
 
     if (C == .rebmix$Preprocessing[1]) {
       item[[25]] <- "v"
@@ -246,8 +246,6 @@ plot.REBMIX <- function(x,
   py <- list(d)
 
   Variables <- x$Variables
-
-  b <- as.numeric(x$summary[pos, "b"])
 
   for (i in 1:d) {
     if (C == .rebmix$Preprocessing[1]) {

@@ -134,8 +134,7 @@ for (i in c(1:14)) {
     pdf = pdf[i],
     K = K[[i]],
     ymin = ymin[i],
-    ymax = ymax[i],
-    b = 0.0)
+    ymax = ymax[i])
 
     plot(adultest[[i]], pos = 1, nrow = 1, ncol = 1)
     plot(adultest[[i]], pos = 2, nrow = 1, ncol = 1)

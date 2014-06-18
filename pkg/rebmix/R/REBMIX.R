@@ -10,9 +10,8 @@
   K = NULL,
   ymin = NULL,
   ymax = NULL,
-  b = 1.0,
   ar = 0.1,
-  Restraints = "loose")
+  Restraints = "loose", ...)
 {
   REBMIX <- NULL
   REBMIX$Dataset <- Dataset
@@ -103,7 +102,7 @@
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),
       ymax = as.double(ymax),
-      b = as.double(b),
+      b = as.double(1.0),
       ar = as.double(ar),
       ResType = as.character(Restraints),
       n = as.integer(n),
@@ -203,7 +202,6 @@
         output$ar,
         output$ResType,
         output$c,
-        output$b,
         output$k,
         output$y0,
         output$h,
@@ -221,7 +219,6 @@
         output$ar,
         output$ResType,
         output$c,
-        output$b,
         output$k,
         output$h,
         output$IC,
@@ -237,7 +234,6 @@
         output$ar,
         output$ResType,
         output$c,
-        output$b,
         output$k,
         output$h,
         output$IC,
@@ -263,7 +259,6 @@
       "ar", 
       "Restraints", 
       "c", 
-      "b",
       "v/k", 
       paste("y0", if (d > 1) 1:d else "", sep = ""), 
       paste("h", if (d > 1) 1:d else "", sep = ""), 
@@ -281,7 +276,6 @@
       "ar", 
       "Restraints", 
       "c", 
-      "b", 
       "v/k", 
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
@@ -297,7 +291,6 @@
       "ar", 
       "Restraints", 
       "c", 
-      "b",
       "v/k", 
       paste("h", if (d > 1) 1:d else "", sep = ""),
       "IC", 
@@ -324,13 +317,12 @@ REBMIX <- function(Dataset = NULL,
   K = NULL,
   ymin = NULL,
   ymax = NULL,
-  b = 1.0,
   ar = 0.1,
   Restraints = "loose")
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.5.1");
+  message("REBMIX Version 2.6.0");
   flush.console()
 
   if (is.null(Dataset)) {
@@ -436,14 +428,6 @@ REBMIX <- function(Dataset = NULL,
     }
   }
 
-  if (!is.numeric(b)) {
-    stop(sQuote("b"), " numeric is requested!", call. = FALSE)
-  }
-
-  if ((b < 0.0) || (b > 1.0)) {
-    stop(sQuote("b"), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
-  }
-
   if (!is.numeric(ar)) {
     stop(sQuote("ar"), " numeric is requested!", call. = FALSE)
   }
@@ -488,7 +472,6 @@ REBMIX <- function(Dataset = NULL,
         K = if (is.list(K)) K[[i]] else K,
         ymin = ymin,
         ymax = ymax,
-        b = b,
         ar = ar,
         Restraints = Restraints)
 
