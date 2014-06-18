@@ -11,7 +11,7 @@
   ymin = NULL,
   ymax = NULL,
   ar = 0.1,
-  Restraints = "loose", ...)
+  Restraints = "loose")
 {
   REBMIX <- NULL
   REBMIX$Dataset <- Dataset
