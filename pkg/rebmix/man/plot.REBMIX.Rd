@@ -93,6 +93,7 @@ can be passed as an argument to \code{\link[graphics]{par}} to restore the param
 Bishop CM (1995). \emph{Neural Networks for Pattern Recognition}. Clarendon Press, Oxford.
 }
 \examples{
+\dontrun{
 data("wine")
 
 colnames(wine)
@@ -130,6 +131,7 @@ wineest <- REBMIX(Dataset = list(wine = wine),
 
 plot(wineest, what = c("density", "marginal", "c", "IC", "logL", "D", 
   "distribution"), nrow = 4, ncol = 5, npts = 500, pty = "s")
+}
 }
 \keyword{plot}
 

@@ -8,6 +8,10 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef _MEMORY_LEAK_SWITCH
+#define _MEMORY_LEAK_SWITCH 0 
+#endif
+
 #ifndef _TIME_LEFT_SWITCH
 #define _TIME_LEFT_SWITCH 0 
 #endif
@@ -166,13 +170,6 @@ typedef struct historyrebmixparametertype {
     FLOAT *D;     /* Totals of positive relative deviations. */ 
 } HistoryREBMIXParameterType;
 
-#if (_REBMIXDLL)
-/* Reads input data from the file stream. */
-
-int ReadREBMIXDataFile(InputREBMIXParameterType  InpParType,   /* Input parameters. */ 
-                       OutputREBMIXParameterType *OutParType); /* Output parameters. */
-#endif
-
 /* Returns the value log(Gamma(y)) for y > 0. See http://www.nrbook.com/a/bookcpdf/c6-1.pdf */
 
 FLOAT Gammaln(FLOAT y);
@@ -205,19 +202,19 @@ int MixtureDist(int                      d,             /* Number of independent
 
 /* REBMIX algorithm. */
 
-int REBMIX(InputREBMIXParameterType   InpParType,   /* Input parameters. */ 
+int REBMIX(InputREBMIXParameterType   *InpParType,  /* Input parameters. */ 
            OutputREBMIXParameterType  *OutParType,  /* Output parameters. */
            HistoryREBMIXParameterType *HisParType); /* History parameters. */ 
 
 /* Reads input data from the file stream. */
 
-int ReadREBMIXDataFile(InputREBMIXParameterType  InpParType,   /* Input parameters. */ 
+int ReadREBMIXDataFile(InputREBMIXParameterType  *InpParType,  /* Input parameters. */ 
                        OutputREBMIXParameterType *OutParType); /* Output parameters. */
 
 /* Writes input and output parameters into the file stream. */
 
-int WriteREBMIXParameterFile(InputREBMIXParameterType  InpParType,   /* Input parameters. */ 
-                             OutputREBMIXParameterType OutParType);  /* Output parameters. */
+int WriteREBMIXParameterFile(InputREBMIXParameterType  *InpParType,   /* Input parameters. */ 
+                             OutputREBMIXParameterType *OutParType);  /* Output parameters. */
 
 /* Runs REBMIX template file stream. */
 

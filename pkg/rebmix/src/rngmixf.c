@@ -1,3 +1,9 @@
+#if (_MEMORY_LEAK_SWITCH)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -51,33 +57,33 @@ FLOAT Ran1(int *IDum)
 
 /* Writes output data into the file stream. */
 
-int WriteRNGMIXDataFile(InputRNGMIXParameterType  InpParType,  /* Input parameters. */ 
-                        OutputRNGMIXParameterType OutParType)  /* Output parameters. */
+int WriteRNGMIXDataFile(InputRNGMIXParameterType  *InpParType,  /* Input parameters. */ 
+                        OutputRNGMIXParameterType *OutParType)  /* Output parameters. */
 {
     int  i, j;
     FILE *fp = NULL;
     int  Error = 0;
 
-    if ((fp = fopen(InpParType.curr, "w")) == NULL) {
+    if ((fp = fopen(InpParType->curr, "w")) == NULL) {
         Error = 1; goto E0;
     }
 
-    for (i = 0; i < OutParType.n; i++) {
-        fprintf(fp, "%E", OutParType.X[i][0]); 
+    for (i = 0; i < OutParType->n; i++) {
+        fprintf(fp, "%E", OutParType->X[i][0]); 
         
-        for (j = 1; j < InpParType.d; j++) fprintf(fp, "\t%E", OutParType.X[i][j]); 
+        for (j = 1; j < InpParType->d; j++) fprintf(fp, "\t%E", OutParType->X[i][j]); 
         
         fprintf(fp, "\n");
     }
 
 E0: if (fp) fclose(fp);
 
-    if (OutParType.X) {
-        for (i = 0; i < OutParType.n; i++) {
-            if (OutParType.X[i]) free(OutParType.X[i]);
+    if (OutParType->X) {
+        for (i = 0; i < OutParType->n; i++) {
+            if (OutParType->X[i]) free(OutParType->X[i]);
         }
 
-        free(OutParType.X);
+        free(OutParType->X);
     }
 
     return (Error);
@@ -85,7 +91,7 @@ E0: if (fp) fclose(fp);
 
 /* Writes input parameters into the file stream. */
 
-int WriteRNGMIXParameterFile(InputRNGMIXParameterType InpParType)  /* Input parameters. */ 
+int WriteRNGMIXParameterFile(InputRNGMIXParameterType *InpParType)  /* Input parameters. */ 
 {
     char path[FILENAME_MAX];
     char ext[FILENAME_MAX];
@@ -93,7 +99,7 @@ int WriteRNGMIXParameterFile(InputRNGMIXParameterType InpParType)  /* Input para
     FILE *fp = NULL;
     int  Error = 0;
 
-    strcpy(path, InpParType.save); 
+    strcpy(path, InpParType->save); 
         
     pchar = strrchr(path, '.'); 
         
@@ -112,7 +118,7 @@ int WriteRNGMIXParameterFile(InputRNGMIXParameterType InpParType)  /* Input para
 
     fprintf(fp, "%s\n", "rseed");
 
-    fprintf(fp, "%d\n", InpParType.IDum);
+    fprintf(fp, "%d\n", InpParType->IDum);
 
 E0: if (fp) fclose(fp);
 
@@ -121,7 +127,7 @@ E0: if (fp) fclose(fp);
 
 /* Returns random sample of independent observations. */
 
-int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */ 
+int RNGMIX(InputRNGMIXParameterType  *InpParType, /* Input parameters. */ 
            OutputRNGMIXParameterType *OutParType) /* Output parameters. */      
 {
     FLOAT C[8];
@@ -129,28 +135,28 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
     int   i, j, k, l, m;
     int   Error = 0;
     
-    OutParType->n = 0; for (i = 0; i < InpParType.c; i++) OutParType->n += InpParType.N[i];
+    OutParType->n = 0; for (i = 0; i < InpParType->c; i++) OutParType->n += InpParType->N[i];
     
     OutParType->X = (FLOAT**)malloc(OutParType->n * sizeof(FLOAT*));
 
     Error = NULL == OutParType->X; if (Error) goto E0;
 
     for (i = 0; i < OutParType->n; i++) {
-        OutParType->X[i] = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+        OutParType->X[i] = (FLOAT*)malloc(InpParType->d * sizeof(FLOAT));
 
         Error = NULL == OutParType->X[i]; if (Error) goto E0;
     }
 
     l = 0;
-    for (i = 0; i < InpParType.c; i++) {
-        for (j = 0; j < InpParType.N[i]; j++) {
-            for (k = 0; k < InpParType.d; k++) {
-                switch (InpParType.Theta[i][k].ParFamType) {
+    for (i = 0; i < InpParType->c; i++) {
+        for (j = 0; j < InpParType->N[i]; j++) {
+            for (k = 0; k < InpParType->d; k++) {
+                switch (InpParType->Theta[i][k].ParFamType) {
                 case pfNormal:
                     if (NDevISet == 0) {
                         do {
-                            C[0] = (FLOAT)2.0 * Ran1(&InpParType.IDum) - (FLOAT)1.0;
-                            C[1] = (FLOAT)2.0 * Ran1(&InpParType.IDum) - (FLOAT)1.0;
+                            C[0] = (FLOAT)2.0 * Ran1(&InpParType->IDum) - (FLOAT)1.0;
+                            C[1] = (FLOAT)2.0 * Ran1(&InpParType->IDum) - (FLOAT)1.0;
 
                             C[2] = C[0] * C[0] + C[1] * C[1];
                         }
@@ -166,15 +172,15 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
                         y = NDevVSet; NDevISet = 0;
                     }
 
-                    OutParType->X[l][k] = InpParType.Theta[i][k].Par1 * y + 
-                                          InpParType.Theta[i][k].Par0;
+                    OutParType->X[l][k] = InpParType->Theta[i][k].Par1 * y + 
+                                          InpParType->Theta[i][k].Par0;
 
                     break;
                 case pfLognormal:
                     if (LDevISet == 0) {
                         do {
-                            C[0] = (FLOAT)2.0 * Ran1(&InpParType.IDum) - (FLOAT)1.0;
-                            C[1] = (FLOAT)2.0 * Ran1(&InpParType.IDum) - (FLOAT)1.0;
+                            C[0] = (FLOAT)2.0 * Ran1(&InpParType->IDum) - (FLOAT)1.0;
+                            C[1] = (FLOAT)2.0 * Ran1(&InpParType->IDum) - (FLOAT)1.0;
 
                             C[2] = C[0] * C[0] + C[1] * C[1];
                         }
@@ -190,18 +196,18 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
                         y = LDevVSet; LDevISet = 0;
                     }
 
-                    OutParType->X[l][k] = (FLOAT)exp(InpParType.Theta[i][k].Par1 * y + 
-                                          InpParType.Theta[i][k].Par0);
+                    OutParType->X[l][k] = (FLOAT)exp(InpParType->Theta[i][k].Par1 * y + 
+                                          InpParType->Theta[i][k].Par0);
 
                     break;
                 case pfWeibull:
-                    OutParType->X[l][k] = InpParType.Theta[i][k].Par0 * 
-                                          (FLOAT)exp(log(log((FLOAT)1.0 / Ran1(&InpParType.IDum))) / 
-                                          InpParType.Theta[i][k].Par1);
+                    OutParType->X[l][k] = InpParType->Theta[i][k].Par0 * 
+                                          (FLOAT)exp(log(log((FLOAT)1.0 / Ran1(&InpParType->IDum))) / 
+                                          InpParType->Theta[i][k].Par1);
 
                     break;
                 case pfGamma:
-                    Error = GammaInv(Ran1(&InpParType.IDum), InpParType.Theta[i][k].Par0, InpParType.Theta[i][k].Par1, &y);
+                    Error = GammaInv(Ran1(&InpParType->IDum), InpParType->Theta[i][k].Par0, InpParType->Theta[i][k].Par1, &y);
 
                     if (Error) goto E0;
 
@@ -209,41 +215,41 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
 
                     break;
                 case pfBinomial:
-                    if (InpParType.Theta[i][k].Par1 < (FLOAT)0.5) {
-                        p = InpParType.Theta[i][k].Par1;
+                    if (InpParType->Theta[i][k].Par1 < (FLOAT)0.5) {
+                        p = InpParType->Theta[i][k].Par1;
                     }
                     else {
-                        p = (FLOAT)1.0 - InpParType.Theta[i][k].Par1;
+                        p = (FLOAT)1.0 - InpParType->Theta[i][k].Par1;
                     }
 
-                    C[0] = InpParType.Theta[i][k].Par0 * p;
-                    if ((int)InpParType.Theta[i][k].Par0 < 25) {
+                    C[0] = InpParType->Theta[i][k].Par0 * p;
+                    if ((int)InpParType->Theta[i][k].Par0 < 25) {
                         OutParType->X[l][k] = (FLOAT)0.0;
                         
-                        for (m = 0; m < (int)InpParType.Theta[i][k].Par0; m++) {
-                            if (Ran1(&InpParType.IDum) < p) ++OutParType->X[l][k];
+                        for (m = 0; m < (int)InpParType->Theta[i][k].Par0; m++) {
+                            if (Ran1(&InpParType->IDum) < p) ++OutParType->X[l][k];
                         }
                     }
                     else 
                     if (C[0] < (FLOAT)1.0) {
                         C[1] = (FLOAT)exp(-C[0]); C[2] = (FLOAT)1.0;
 
-                        for (m = 0; m < (int)InpParType.Theta[i][k].Par0; m++) {
-                            C[2] *= Ran1(&InpParType.IDum); if (C[2] < C[1]) break;
+                        for (m = 0; m < (int)InpParType->Theta[i][k].Par0; m++) {
+                            C[2] *= Ran1(&InpParType->IDum); if (C[2] < C[1]) break;
                         }
 
-                        if (m > (int)InpParType.Theta[i][k].Par0) {
-                            OutParType->X[l][k] = InpParType.Theta[i][k].Par0;
+                        if (m > (int)InpParType->Theta[i][k].Par0) {
+                            OutParType->X[l][k] = InpParType->Theta[i][k].Par0;
                         }
                         else {
                             OutParType->X[l][k] = m;
                         }
                     }
                     else {
-                        if (InpParType.Theta[i][k].Par0 != Bn) {
-                            Be = InpParType.Theta[i][k].Par0;
+                        if (InpParType->Theta[i][k].Par0 != Bn) {
+                            Be = InpParType->Theta[i][k].Par0;
                             Bg = Gammaln(Be + (FLOAT)1.0);
-                            Bn = InpParType.Theta[i][k].Par0;
+                            Bn = InpParType->Theta[i][k].Par0;
                         }
 
                         if (p != Bp) {
@@ -257,7 +263,7 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
 
                         do {
                             do {
-                                C[4] = Pi * Ran1(&InpParType.IDum);
+                                C[4] = Pi * Ran1(&InpParType->IDum);
 
                                 C[5] = (FLOAT)tan(C[4]);
 
@@ -272,59 +278,59 @@ int RNGMIX(InputRNGMIXParameterType  InpParType,  /* Input parameters. */
                                    Gammaln(Be - C[6] + (FLOAT)1.0) + 
                                    C[6] * Bplog + (Be - C[6]) * Bpclog);
 
-                        } while (Ran1(&InpParType.IDum) > C[7]);
+                        } while (Ran1(&InpParType->IDum) > C[7]);
 
                         OutParType->X[l][k] = C[6];
                     }
 
-                    if (p != InpParType.Theta[i][k].Par1) {
-                        OutParType->X[l][k] = InpParType.Theta[i][k].Par0 - OutParType->X[l][k];
+                    if (p != InpParType->Theta[i][k].Par1) {
+                        OutParType->X[l][k] = InpParType->Theta[i][k].Par0 - OutParType->X[l][k];
                     }
 
                     break;
                 case pfPoisson:
-                    if (InpParType.Theta[i][k].Par0 < (FLOAT)12.0) {
-                        if (InpParType.Theta[i][k].Par0 != PTheta) {
-                            PTheta = InpParType.Theta[i][k].Par0;
+                    if (InpParType->Theta[i][k].Par0 < (FLOAT)12.0) {
+                        if (InpParType->Theta[i][k].Par0 != PTheta) {
+                            PTheta = InpParType->Theta[i][k].Par0;
 
-                            Pg = (FLOAT)exp(-InpParType.Theta[i][k].Par0);
+                            Pg = (FLOAT)exp(-InpParType->Theta[i][k].Par0);
                         }
 
                         C[0] = -(FLOAT)1.0; C[1] = (FLOAT)1.0;
 
                         do {
-                            ++C[0];    C[1] *= Ran1(&InpParType.IDum);
+                            ++C[0];    C[1] *= Ran1(&InpParType->IDum);
                         } while (C[1] > Pg);
                     }
                     else {
-                        if (InpParType.Theta[i][k].Par0 != PTheta) {
-                            PTheta = InpParType.Theta[i][k].Par0;
+                        if (InpParType->Theta[i][k].Par0 != PTheta) {
+                            PTheta = InpParType->Theta[i][k].Par0;
 
-                            Psq = (FLOAT)sqrt((FLOAT)2.0 * InpParType.Theta[i][k].Par0);
+                            Psq = (FLOAT)sqrt((FLOAT)2.0 * InpParType->Theta[i][k].Par0);
 
-                            PalTheta = (FLOAT)log(InpParType.Theta[i][k].Par0);
+                            PalTheta = (FLOAT)log(InpParType->Theta[i][k].Par0);
 
-                            Pg = InpParType.Theta[i][k].Par0 * PalTheta - Gammaln(InpParType.Theta[i][k].Par0 + (FLOAT)1.0);
+                            Pg = InpParType->Theta[i][k].Par0 * PalTheta - Gammaln(InpParType->Theta[i][k].Par0 + (FLOAT)1.0);
                         }
 
                         do {
                             do {
-                                C[2] = (FLOAT)tan(Pi * Ran1(&InpParType.IDum));
+                                C[2] = (FLOAT)tan(Pi * Ran1(&InpParType->IDum));
 
-                                C[0] = Psq * C[2] + InpParType.Theta[i][k].Par0;
+                                C[0] = Psq * C[2] + InpParType->Theta[i][k].Par0;
                             } while (C[0] < (FLOAT)0.0);
 
                             C[0] = (FLOAT)floor(C[0]);
 
                             C[1] = (FLOAT)0.9 * ((FLOAT)1.0 + C[2] * C[2]) * (FLOAT)exp(C[0] * PalTheta - Gammaln(C[0] + (FLOAT)1.0) - Pg);
-                        } while (Ran1(&InpParType.IDum) > C[1]);
+                        } while (Ran1(&InpParType->IDum) > C[1]);
                     }
 
                     OutParType->X[l][k] = C[0];
 
                     break;
                 case pfDirac:
-                    OutParType->X[l][k] = InpParType.Theta[i][k].Par0;
+                    OutParType->X[l][k] = InpParType->Theta[i][k].Par0;
                 }
             }
 
@@ -347,6 +353,11 @@ int RunRNGMIXTemplateFile(char *file)  /* File stream. */
     char                      *pchar = NULL;
     FILE                      *fp = NULL;
     int                       Error = 0;
+    #if (_MEMORY_LEAK_SWITCH)
+    _CrtMemState              s1, s2, s3;
+
+    _CrtMemCheckpoint(&s1);
+    #endif
 
     memset(&InpParType, 0, sizeof(InputRNGMIXParameterType));
 
@@ -411,7 +422,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(list, "\t");
 
         if (!strcmp(ident, "RUN")) {
-            Error = WriteRNGMIXParameterFile(InpParType);
+            Error = WriteRNGMIXParameterFile(&InpParType);
 
             if (Error) goto E0;
 
@@ -422,11 +433,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 printf("Dataset = %s\n", InpParType.curr);
                 #endif
 
-                Error = RNGMIX(InpParType, &OutParType);
+                Error = RNGMIX(&InpParType, &OutParType);
 
                 if (Error) goto E0;
 
-                Error = WriteRNGMIXDataFile(InpParType, OutParType);
+                Error = WriteRNGMIXDataFile(&InpParType, &OutParType);
 
                 if (Error) goto E0;
 
@@ -609,6 +620,12 @@ E0: if (fp) fclose(fp);
     }
 
     if (InpParType.save) free(InpParType.save);
+
+    #if (_MEMORY_LEAK_SWITCH)
+    _CrtMemCheckpoint(&s2);
+
+    if (_CrtMemDifference(&s3, &s1, &s2)) _CrtMemDumpStatistics(&s3);
+    #endif
 
     return (Error);
 } /* RunRNGMIXTemplateFile */

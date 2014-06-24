@@ -9,4 +9,5 @@ Description: R functions for random univariate and multivariate finite mixture g
 License: GPL (>= 2)
 Author: Marko Nagode [aut, cre]
 Maintainer: Marko Nagode <marko.nagode@fs.uni-lj.si>
+Repository: CRAN
 

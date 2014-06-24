@@ -25,6 +25,6 @@ E0:
     #if (_REBMIXEXE)
     printf("\n%s%d\n", "Error: ", Error);
     #endif
-    
+
     return (Error);
 } /* main */

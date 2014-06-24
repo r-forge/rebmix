@@ -56,15 +56,9 @@ typedef struct outputrngmixparametertype {
     FLOAT **X; /* Pointer to the output observations [x0,...,xd-1]. */
 } OutputRNGMIXParameterType;
 
-#if (_REBMIXDLL)
-/* Writes input parameters into the file stream. */
-
-int WriteRNGMIXParameterFile(InputRNGMIXParameterType InpParType); /* Input parameters. */ 
-#endif
-
 /* Returns random sample of independent observations. */
 
-int RNGMIX(InputRNGMIXParameterType  InpParType,   /* Input parameters. */ 
+int RNGMIX(InputRNGMIXParameterType  *InpParType,  /* Input parameters. */ 
            OutputRNGMIXParameterType *OutParType); /* Output parameters. */  
 
 /* Runs RNGMIX template file stream. */

@@ -112,7 +112,7 @@ void RRNGMIX(int    *IDum,        /* Random seed. */
         }
     }
 
-    *Error = RNGMIX(InpParType, &OutParType);
+    *Error = RNGMIX(&InpParType, &OutParType);
 
     if (*Error) goto E0;
 
@@ -437,7 +437,7 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
         }
     }
 
-    *Error = REBMIX(InpParType, &OutParType, &HisParType);
+    *Error = REBMIX(&InpParType, &OutParType, &HisParType);
 
      if (*Error) goto E0;
 
@@ -1376,7 +1376,7 @@ void RPreprocessingH(double *h,        /* Sides of the hypersquare. */
 
     *k = OutParType.k;
 
-E0:    if (Y) {
+E0: if (Y) {
         for (i = 0; i < OutParType.n; i++) {
             if (Y[i]) free(Y[i]);
         }

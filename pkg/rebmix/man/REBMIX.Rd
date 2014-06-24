@@ -140,6 +140,7 @@ Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Multivariate Finite Mix
 Estimation. \emph{Communications in Statistics - Theory and Methods}. 40(11), 2022-2034.
 }
 \examples{
+\dontrun{
 ## Generate the complex 1 dataset.
 
 n <- c(998, 263, 1086, 487, 213, 1076, 232, 
@@ -185,5 +186,6 @@ complex1est
 ## Plot the finite mixture.
 
 plot(complex1est, npts = 1000)
+}
 }
 \keyword{parameter estimation}
