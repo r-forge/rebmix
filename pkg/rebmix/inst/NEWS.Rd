@@ -6,6 +6,7 @@
 \item Simplified treatment of loose restraints in C functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
 \item Fixed bug in C functions \code{REBMIXKNN()}, \code{REBMIXPW()} and \code{REBMIXH()}.
 \item Minimum weight multiplier \code{b} is eliminated.
+\item Fixed source and destination overlap in memcpy bug in C code.
 }
 }
 \section{Changes in version 2.5.1}{ 
