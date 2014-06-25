@@ -556,7 +556,7 @@ E0: if (InpParType.save) free(InpParType.save);
     }
 
     if (OutParType.Theta) {
-        for (i = 0; i < OutParType.c; i++) {
+        for (i = 0; i < InpParType.cmax; i++) {
             if (OutParType.Theta[i]) free(OutParType.Theta[i]);
         }
          
