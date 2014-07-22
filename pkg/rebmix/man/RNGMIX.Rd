@@ -54,8 +54,8 @@ a vector of length \eqn{d} containing maximum observations.
 }
 }
 \references{
-Press WH, Teukolsky SA, Vetterling VT, Flannery BP (1992). \emph{Numerical Recipes in C: The Art
-of Scientific Computing}. Cambridge University Press, Cambridge.
+W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Recipes in C: The Art
+of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 }
 \examples{
 ## Generate and print simulated dataset.

@@ -12,17 +12,20 @@ galaxy
 \code{galaxy} is a data frame with 82 cases (rows) and 1 continuous variable (columns) called \code{Velocity}.
 }
 \source{
-Roeder K (1990). Density Estimation with Confidence Sets Exemplified by Superclusters
-and Voids in the Galaxies. \emph{Journal of American Statistical Association}, 85, 617-624.
+K. Roeder. Density estimation with confidence sets exemplified by superclusters and voids
+in the galaxies. Journal of American Statistical Association, 85(411):617{624, 1990. URL
+http://www.jstor.org/stable/2289993.
 }
 \references{
-Richardson S, Green PJ (1997). On Bayesian Analysis of Mixtures with an Unknown Number
-of Components. \emph{Journal of the Royal Statistical Society B}, 59, 731-792.\cr\cr
-McLachlan GJ, Peel D (1997). Contribution to the Discussion of Paper by S. Richardson
-and P.J. Green. \emph{Journal of the Royal Statistical Society B}, 59, 779-780.\cr\cr
-Stephens M (2000). Bayesian Analysis of Mixture Models with an Unknown Number of
-Components - An Alternative to Reversible Jump Methods. \emph{The Annals of Statistics}, 28, 40-74.
-}
+S. Richardson and P. J. Green. On bayesian analysis of mixtures with an unknown number
+of components. Journal of the Royal Statistical Society B, 59(4):731-792, 1997. URL
+http://www.jstor.org/stable/2985194.\cr\cr
+G. McLachlan and D. Peel. Contribution to the discussion of paper by s. richardson
+and p.j. green. Journal of the Royal Statistical Society B, 59(4):779-780, 1997. URL
+http://www.jstor.org/stable/2985194.\cr\cr
+M. Stephens. Bayesian analysis of mixture models with an unknown number of components -
+an alternative to reversible jump methods. The Annals of Statistics, 28(1):40-74, 2000. URL
+http://www.jstor.org/stable/2673981.
 \examples{
 data("galaxy")
 

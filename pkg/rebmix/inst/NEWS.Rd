@@ -1,5 +1,13 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6.1}{ 
+\itemize{
+\item Renewed vignette. 
+\item Renewed references in Reference manual.
+\item Method \code{PD} is added.  
+\item Fixed bug in C functions \code{REBMIXKNN()}, \code{REBMIXPW()} and \code{REBMIXH()}.
+}
+}
 \section{Changes in version 2.6.0}{ 
 \itemize{ 
 \item Switch \code{_TIME_LEFT_SWITCH} introduced in C code.

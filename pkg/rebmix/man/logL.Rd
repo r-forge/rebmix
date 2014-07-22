@@ -23,6 +23,6 @@ currently not used.
 }
 }
 \references{
-McLachlan GJ, Peel D (2000). \emph{Finite Mixture Models}. John Wiley & Sons, New York.
+G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 2000.
 }
 \keyword{information criterion}

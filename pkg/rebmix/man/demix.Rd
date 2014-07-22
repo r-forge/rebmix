@@ -62,9 +62,11 @@ y1y2f <- demix(x = simulated$Dataset[[1]],
 y1y2f
 }
 \references{
-Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Univariate Finite Mixture
-Estimation. \emph{Communications in Statistics - Theory and Methods}, 40(5), 876-892.\cr\cr
-Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Multivariate Finite Mixture
-Estimation. \emph{Communications in Statistics - Theory and Methods}, 40(11), 2022-2034. 
+M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
+Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. doi:
+10.1080/03610920903480890.\cr\cr
+M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. doi:
+10.1080/03610921003725788. 
 }
 \keyword{distributions}

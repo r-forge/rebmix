@@ -28,8 +28,8 @@ currently not used.
 }
 }
 \references{
-Liang Z (1992). Parameter Estimation of Finite Mixture Using the EM-Algorithm and
-Information Criteria with Applications to Medical Image Processing. \emph{IEEE: Nuclear
-Science}, 39(4), 11-26.
+M. H. Hansen and B. Yu. Model selection and the principle of minimum description
+length. Journal of the American Statistical Association, 96(454):746-774, 2001. URL
+http://www.jstor.org/stable/2670311.
 }
 \keyword{information criterion}

@@ -90,7 +90,7 @@ further arguments to \code{\link[graphics]{par}}.
 can be passed as an argument to \code{\link[graphics]{par}} to restore the parameter values.
 }
 \references{
-Bishop CM (1995). \emph{Neural Networks for Pattern Recognition}. Clarendon Press, Oxford.
+C. M. Bishop. Neural Networks for Pattern Recognition. Clarendon Press, Oxford, 1995.
 }
 \examples{
 \dontrun{

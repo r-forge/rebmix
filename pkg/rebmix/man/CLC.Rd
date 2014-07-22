@@ -23,7 +23,7 @@ currently not used.
 }
 }
 \references{
-Biernacki C, Govaert G (1997). Using the Classification Likelihood to Choose the Number
-of Clusters. \emph{Computing Science and Statistics}, 29, 451-457.
+C. Biernacki and G. Govaert. Using the classification likelihood to choose the number of clusters. In
+E. J. Wegman and S. P. Azen, editors, Computing Science and Statistics, 1997.
 }
 \keyword{information criterion}

@@ -17,7 +17,7 @@ weibull
 }
 }
 \references{
-Murthy DNP, Jiang MXR (2004). \emph{Weibull Models}. John Wiley & Sons, New York.
+D. N. P. Murthy, M. Xie, and R. Jiang. Weibull Models. John Wiley & Sons, New York, 2003.
 }
 \examples{
 data("weibull")

@@ -29,7 +29,8 @@ further arguments to \code{\link[stats]{predict}}.
 predictive classes.
 }
 \references{
-Duda RO, Hart PE (1973). \emph{Pattern Classification and Scene Analysis}. John Wiley & Sons, New York.
+R. O. Duda and P. E. Hart. Pattern Classification and Scene Analysis. John Wiley & Sons, New
+York, 1973.
 }
 \examples{
 \dontrun{

@@ -37,12 +37,13 @@ currently not used.
 }
 }
 \references{
-Akaike H (1974). A New Look at the Statistical Model Identification. \emph{IEEE Transactions
-on Automatic Control}, 19, 716-723.\cr\cr
-Smith AFM, Spiegelhalter DJ (1980). Bayes Factors and Choice Criteria for Linear Models. \emph{Journal 
-of the Royal Statistical Society B}, 42, 213-220.\cr\cr
-Hurvich CM, Tsai CL (1989). Regression and Time Series Model Selection in Small Samples. \emph{Biometrika}, 76, 297-307.\cr\cr
-Bozdogan H (1987). Model Selection and Akaike's Information Criterion (AIC): The General Theory
-and its Analytical Extensions. \emph{Psychometrika}, 52, 345-370.
+H. Akaike. A new look at the statistical model identification. IEEE Transactions on Automatic Control, 19(51):716-723, 1974.\cr\cr
+A. F. M. Smith and D. J. Spiegelhalter. Bayes factors and choice criteria for linear
+models. Journal of the Royal Statistical Society. Series B, 42(2):213-220, 1980. URL
+http://www.jstor.org/stable/2984964.\cr\cr
+C. M. Hurvich and C.-L. Tsai. Regression and time series model selection in small samples. Biometrika,
+76(2):297-307, 1989. URL http://www.jstor.org/stable/2336663.\cr\cr
+H. Bozdogan. Model selection and akaike's information criterion (aic): The general theory and its
+analytical extensions. Psychometrika, 52(3):345-370, 1987. doi: 10.1007/BF02294361.
 }
 \keyword{information criterion}

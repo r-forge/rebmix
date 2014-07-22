@@ -21,6 +21,6 @@ currently not used.
 }
 }
 \references{
-Schwarz G (1978). Estimating the Dimension of a Model. \emph{Annals of Statistics}, 6, 461-464.
+G. Schwarz. Estimating the dimension of the model. The Annals of Statistics, 6(2):461-464, 1978.
 }
 \keyword{information criterion}

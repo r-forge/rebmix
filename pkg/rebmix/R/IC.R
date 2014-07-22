@@ -521,3 +521,31 @@ SSE.REBMIX <- function(object,
   
   output
 } ## SSE.REBMIX
+
+PC <- function(object, pos = 1, ...) 
+UseMethod("PC")
+
+PC.default <- function(object, pos = 1, ...)
+{
+  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
+} ## PC.default
+
+PC.REBMIX <- function(object, 
+  pos = 1, ...)
+{
+  digits <- getOption("digits"); options(digits = 15)
+
+  output <- .IC(object = object, Criterion = "PC", pos = pos, ...)
+  
+  output <- output$IC
+  
+  options(digits = digits)
+  
+  rm(list = ls()[!(ls() %in% c("output"))])
+  
+  output
+} ## PC.REBMIX
+
+
+
+

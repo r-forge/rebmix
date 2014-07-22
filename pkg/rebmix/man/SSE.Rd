@@ -23,6 +23,6 @@ currently not used.
 }
 }
 \references{
-Bishop CM (1995). \emph{Neural Networks for Pattern Recognition}. Clarendon Press, Oxford.
+C. M. Bishop. Neural Networks for Pattern Recognition. Clarendon Press, Oxford, 1995.
 }
 \keyword{information criterion}

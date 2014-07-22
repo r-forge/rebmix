@@ -46,8 +46,4 @@ y1y2F <- pemix(x = simulated$Dataset[[1]])
   
 y1y2F
 }
-\references{
-Maia C (2011). Multivariate Empirical Cumulative Distribution Functions. \url{http://CRAN.R-project.org/package=
-mecdf}.
-}
 \keyword{distributions}

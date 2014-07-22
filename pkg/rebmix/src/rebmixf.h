@@ -66,7 +66,6 @@ extern "C" {
 
 #define IsNan(x) ((x) != (x)) 
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x))) 
-#define Angle(b, x) ((x > 1) ? b * x : 1)
 
 typedef enum {
     poHistogram,         /* Histogram approach. */

@@ -3722,8 +3722,8 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
                             }
                         }
                     }
-
-                    Dl = elp / nl; epsilonlmax -= InpParType->ar;
+                    
+                    Dl = elp / nl; epsilonlmax *= (FLOAT)1.0 - InpParType->ar;
 
                     if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
@@ -4172,7 +4172,7 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
                         }
                     }
 
-                    Dl = elp / nl; epsilonlmax -= InpParType->ar;
+                    Dl = elp / nl; epsilonlmax *= (FLOAT)1.0 - InpParType->ar;
 
                     if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
@@ -4632,7 +4632,7 @@ int REBMIXH(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
                         }
                     }
 
-                    Dl = elp / nl; epsilonlmax -= InpParType->ar;
+                    Dl = elp / nl; epsilonlmax *= (FLOAT)1.0 - InpParType->ar;
                     
                     if (Dl <= Dmin / W[l]) {
                         /* Enhanced component parameter estimation. */
@@ -5302,7 +5302,7 @@ int RunREBMIXTemplateFile(char *file)
     memset(&HisParType, 0, sizeof(HistoryREBMIXParameterType));
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.6.0\n");
+    printf("REBMIX Version 2.6.1\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {

@@ -124,20 +124,25 @@ a list of all totals of positive relative deviations.
 }
 }
 \references{
-Sturges HA (1926). The choice of a class interval. \emph{Journal of American Statistical Association},
-21, 65-66.\cr\cr
-Nagode M, Fajdiga M (1998). A General Multi-Modal Probability Density Function Suitable for 
-the Rainflow Ranges of Stationary Random Processes. \emph{International Journal of Fatigue}, 20, 211-223.\cr\cr
-Nagode M, Fajdiga M (2000). An Improved Algorithm for Parameter Estimation Suitable
-for Mixed Weibull Distributions. \emph{International Journal of Fatigue}, 22, 75-80.\cr\cr
-Nagode M, Klemenc J, Fajdiga M (2001). Parametric Modelling and Scatter Prediction of
-Rainflow Matrices. \emph{International Journal of Fatigue}, 23, 525-532.\cr\cr
-Nagode M, Fajdiga M (2006). An Alternative Perspective on the Mixture Estimation Problem. 
-\emph{Reliability Engineering & System Safety}, 91, 388-397.\cr\cr
-Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Univariate Finite Mixture
-Estimation. \emph{Communications in Statistics - Theory and Methods}, 40(5), 876-892.\cr\cr
-Nagode M, Fajdiga M (2011). The REBMIX Algorithm for the Multivariate Finite Mixture
-Estimation. \emph{Communications in Statistics - Theory and Methods}. 40(11), 2022-2034.
+H. A. Sturges. The choice of a class interval. Journal of American Statistical Association, 21(153):
+65-66, 1926. URL http://www.jstor.org/stable/2965501.\cr\cr
+M. Nagode and M. Fajdiga. A general multi-modal probability density function suitable for the
+rainflow ranges of stationary random processes. International Journal of Fatigue, 20(3):211-223,
+1998. doi: 10.1016/S0142-1123(97)00106-0.\cr\cr
+M. Nagode and M. Fajdiga. An improved algorithm for parameter estimation suitable for mixed
+weibull distributions. International Journal of Fatigue, 22(1):75-80, 2000. doi: 10.1016/S0142-
+1123(99)00112-7.\cr\cr
+M. Nagode, J. Klemenc, and M. Fajdiga. Parametric modelling and scatter prediction of rainflow
+matrices. International Journal of Fatigue, 23(6):525-532, 2001. doi: 10.1016/S0142-1123(01)00007-
+X.\cr\cr
+M. Nagode and M. Fajdiga. An alternative perspective on the mixture estimation problem. Reliability
+Engineering & System Safety, 91(4):388-397, 2006. doi: 10.1016/j.ress.2005.02.005.\cr\cr
+M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
+Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. doi:
+10.1080/03610920903480890.\cr\cr
+M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. doi:
+10.1080/03610921003725788.
 }
 \examples{
 \dontrun{

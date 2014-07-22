@@ -23,7 +23,7 @@ currently not used.
 }
 }
 \references{
-Biernacki C, Celeux G, Govaert G (1998). Assessing a Mixture Model for Clustering with
-the Integrated Classification Likelihood. \emph{Technical Report 3521}, INRIA, Rhone-Alpes.
+C. Biernacki, G. Celeux, and G. Govaert. Assessing a mixture model for clustering with the integrated
+classification likelihood. Technical Report 3521, INRIA, Rhône-Alpes, 1998.
 }
 \keyword{information criterion}
