@@ -59,12 +59,11 @@ wine
 }
 }
 \source{
-A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. URL
-http://www.ics.uci.edu/ mlearn/MLRepository.html.
+A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml}.
 }
 \references{
 S. J. Roberts, R. Everson, and I. Rezek. Maximum certainty data partitioning. Pattern Recognition,
-33(5):833-839, 2000. doi: 10.1016/S0031-3203(99)00086-2.
+33(5):833-839, 2000. \url{http://dx.doi.org/10.1016/S0031-3203(99)00086-2}.
 }
 \examples{
 data("wine")

@@ -23,7 +23,7 @@ a desired row number in \code{x$summary} to be bootstrapped. The default value i
 a character vector giving the bootstrap type. One of default \code{"parametric"} or \code{"nonparametric"}.
 }
 \item{B}{
-number of bootstrap samples. The default value is \code{100}.
+number of bootstrap datasets. The default value is \code{100}.
 }
 \item{n}{
 number of observations. The default value is \code{NULL}.
@@ -40,7 +40,7 @@ further arguments to \code{\link[base]{sample}}.
 }
 \value{
 \item{c}{
-a data frame containing numbers of components for \eqn{B} bootstrap samples.
+a data frame containing numbers of components for \eqn{B} bootstrap datasets.
 }
 \item{c.se}{
 standard error of numbers of components \code{c}.
@@ -55,7 +55,7 @@ mode of numbers of components \code{c}.
 probability of mode \code{c.mode}.
 }
 \item{w}{
-a data frame containing component weights for \eqn{\leq B} bootstrap samples.
+a data frame containing component weights for \eqn{\leq B} bootstrap datasets.
 }
 \item{w.se}{
 a vector containing standard errors of component weights \code{w}.
@@ -64,7 +64,7 @@ a vector containing standard errors of component weights \code{w}.
 a vector containing coefficients of variation of component weights \code{w}.
 }
 \item{theta1.i}{
-data frames containing component parameters \code{theta1.i} for \eqn{\leq B} bootstrap samples.
+data frames containing component parameters \code{theta1.i} for \eqn{\leq B} bootstrap datasets.
 }
 \item{theta1.i.se}{
 vectors containing standard errors of component parameters \code{theta1.i}.
@@ -73,7 +73,7 @@ vectors containing standard errors of component parameters \code{theta1.i}.
 vectors containing coefficients of variation of component parameters \code{theta1.i}.
 }
 \item{theta2.i}{
-data frames containing component parameters \code{theta2.i} for \eqn{\leq B} bootstrap samples.
+data frames containing component parameters \code{theta2.i} for \eqn{\leq B} bootstrap datasets.
 }
 \item{theta2.i.se}{
 vectors containing standard errors of component parameters \code{theta2.i}.

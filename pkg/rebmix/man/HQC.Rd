@@ -24,7 +24,6 @@ currently not used.
 }
 \references{
 E. J. Hannan and B. G. Quinn. The determination of the order of an autoregression.
-Journal of the Royal Statistical Society. Series B, 41(2):190-195, 1979. URL
-http://www.jstor.org/stable/2985032.
+Journal of the Royal Statistical Society. Series B, 41(2):190-195, 1979. \url{http://www.jstor.org/stable/2985032}.
 }
 \keyword{information criterion}

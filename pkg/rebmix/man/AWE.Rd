@@ -24,6 +24,6 @@ currently not used.
 }
 \references{
 J. D. Banfield and A. E. Raftery. Model-based gaussian and non-gaussian clustering. Biometrics, 49
-(3):803-821, 1993. doi: 10.2307/2532201.
+(3):803-821, 1993. \url{http://dx.doi.org/10.2307/2532201}.
 }
 \keyword{information criterion}

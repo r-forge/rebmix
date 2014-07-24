@@ -159,10 +159,10 @@ adult
 }
 }
 \source{
-A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. URL http://www.ics.uci.edu/ mlearn/MLRepository.html.
+A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml}.
 }
 \references{
-A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. URL http://www.ics.uci.edu/ mlearn/MLRepository.html.
+A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml}.
 }
 \examples{
 data("adult")
