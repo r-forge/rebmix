@@ -28,6 +28,10 @@ extern "C" {
 #define FLOAT_MAX DBL_MAX 
 #endif
 
+#ifndef FLOAT_EPSILON
+#define FLOAT_EPSILON DBL_EPSILON  
+#endif
+
 #ifndef Sqrt2
 #define Sqrt2 (FLOAT)1.4142135623730950488016887242097
 #endif               
@@ -134,11 +138,12 @@ typedef struct inputrebmixparametertype {
     InformationCriterionType_e ICType;      /* Information criterion types. */
     int                        d;           /* Number of independent random variables. */ 
     VariablesType_e            *VarType;    /* Types of variables. */
-    ParametricFamilyType_e     *IniFamType; /* Initial parametric family types. */
-    FLOAT                      *Ini0;       /* Initial component parameters. */
-    FLOAT                      *Ini1;       /* Initial component parameters. */
+    ParametricFamilyType_e     *ParFamType; /* Parametric family types. */
+    FLOAT                      *Par0;       /* Initial component parameters. */
+    FLOAT                      *Par1;       /* Initial component parameters. */
     int                        kmax;        /* Number of classes or k-nearest neighbours to be processed. */
     int                        *K;          /* Number of classes or k-nearest neighbours. */
+    FLOAT                      *y0;         /* Origins. */
     FLOAT                      *ymin;       /* Minimum observations. */
     FLOAT                      *ymax;       /* Maximum observations. */
     FLOAT                      b;           /* Minimum weight multiplier. */
@@ -150,7 +155,7 @@ typedef struct inputrebmixparametertype {
 typedef struct outputrebmixparametertype {
     int                      k;         /* Optimal number of classes or k-nearest neighbours. */
     FLOAT                    *h;        /* Optimal class widths. */ 
-    FLOAT                    *y0;       /* Origins. */
+    FLOAT                    *y0;       /* Optimal origins. */
     FLOAT                    IC;        /* Optimal information criterion. */
     FLOAT                    logL;      /* Log-likelihood. */
     int                      M;         /* Degrees of freedom. */
@@ -236,14 +241,14 @@ int PreprocessingPW(FLOAT *h,   /* Sides of the hypersquare. */
 
 /* Preprocessing of observations for histogram. */
 
-int PreprocessingH(FLOAT           *h,          /* Sides of the hypersquare. */
-                   FLOAT           *y0,         /* Origin. */
-                   VariablesType_e *VarType,    /* Types of variables. */
-                   int             *k,          /* Total number of bins. */
-                   int             n,           /* Total number of independent observations. */
-                   int             d,           /* Number of independent random variables. */ 
-                   FLOAT           **X,         /* Pointer to the input points [x0,...,xd-1]. */
-                   FLOAT           **Y);        /* Pointer to the input array [y0,...,yd-1,kl]. */
+int PreprocessingH(FLOAT                  *h,          /* Sides of the hypersquare. */
+                   FLOAT                  *y0,         /* Origins. */
+                   ParametricFamilyType_e *ParFamType, /* Parametric family types. */
+                   int                    *k,          /* Total number of bins. */
+                   int                    n,           /* Total number of independent observations. */
+                   int                    d,           /* Number of independent random variables. */ 
+                   FLOAT                  **X,         /* Pointer to the input points [x0,...,xd-1]. */
+                   FLOAT                  **Y);        /* Pointer to the input array [y0,...,yd-1,kl]. */
 
 /* Returns information criterion for k-nearest neighbour. */ 
 

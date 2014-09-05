@@ -9,8 +9,8 @@ Returns the REBMIX algorithm output for mixtures of conditionally independent no
 \usage{
 REBMIX(Dataset = NULL, Preprocessing = NULL, D = 0.025, cmax = 15, 
        Criterion = "AIC", Variables = NULL, pdf = NULL,
-       Theta1 = NULL, Theta2 = NULL, K = NULL, ymin = NULL, 
-       ymax = NULL, ar = 0.1, Restraints = "loose", ...)
+       Theta1 = NULL, Theta2 = NULL, K = NULL, y0 = NULL, 
+       ymin = NULL, ymax = NULL, ar = 0.1, Restraints = "loose", ...)
 }
 \arguments{
 \item{Dataset}{
@@ -21,7 +21,7 @@ represents one random variable. Number of observations \eqn{n} equals the number
 a character vector, giving the preprocessing types. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
 }
 \item{D}{
-a total of positive relative deviations standing for the maximum acceptable measure of
+total of positive relative deviations standing for the maximum acceptable measure of
 distance between predictive and empirical densities. It satisfies the relation \eqn{0 \leq D \leq 1}.
 The default value is \code{0.025}. However, if components with a low probability of occurrence are expected, it has to
 decrease. If \eqn{D = 0} the mixture tends to \eqn{c = c_{\mathrm{max}}} components.
@@ -56,6 +56,9 @@ minimizing the information criterion. The Sturges rule \eqn{v = 1 + \mathrm{log_
 rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bins
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours.
 }
+\item{y0}{
+a vector of length \eqn{d} containing origins. The default value is \code{NULL}.
+}
 \item{ymin}{
 a vector of length \eqn{d} containing minimum observations. The default value is \code{NULL}.
 }
@@ -86,27 +89,14 @@ a list of data frames each containing  \eqn{c} parametric family types \code{pdf
 Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
 Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
-\item{Variables}{
-a character vector containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
-}
-\item{pdf}{
-a character vector containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-}
-\item{Theta1}{
-a vector containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
-}
-\item{Theta2}{
-a vector containing initial component parameters. The value is \code{NULL}.
-}
 \item{summary}{
 a data frame with additional information about dataset, preprocessing, \eqn{D}, \eqn{c_{\mathrm{max}}}, information criterion type, 
-\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
+\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
 information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
 }
 \item{pos}{
 position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.
 }
-
 \item{all.Imax}{
 a list of all numbers of iterations.
 }
@@ -121,6 +111,9 @@ a list of all log lekelihoods.
 }
 \item{all.D}{
 a list of all totals of positive relative deviations.
+}
+\item{call}{
+a function call used to create the object.
 }
 }
 \references{
@@ -185,6 +178,8 @@ complex1est <- REBMIX(Dataset = complex1$Dataset,
   K = K)
                  
 complex1est
+
+AIC(complex1est)
 
 ## Plot the finite mixture.
 

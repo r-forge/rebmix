@@ -114,7 +114,7 @@ plot(weibullest, what = c("density", "distribution", "c", "IC", "logL", "D"),
 
 ## Bootstrap finite mixture.  
 
-weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric")
+weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric", B = 10)
 
 weibullboot
 }

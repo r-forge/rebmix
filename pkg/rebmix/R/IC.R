@@ -64,6 +64,7 @@
   d <- d - 1
 
   pdf <- pdf[1:d, ]; dim(pdf) <- c(d, ncol)
+  
   theta1 <- theta1[1:d, ]; dim(theta1) <- c(d, ncol)
   theta2 <- theta2[1:d, ]; dim(theta2) <- c(d, ncol)
 
@@ -75,7 +76,7 @@
     output <- .C("RInformationCriterionH",
       h = as.double(h),
       y0 = as.double(y0),
-      VarType = as.character(object$Variables),
+      IniParFamType = as.character(object$call$pdf),
       k = as.integer(object$summary[pos, "v/k"]),
       n = as.integer(n),
       d = as.integer(d),

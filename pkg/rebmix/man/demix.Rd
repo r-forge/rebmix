@@ -10,7 +10,7 @@ and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessi
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} and \eqn{\bar{\bm{y}} = (\bar{y}_{1}, \ldots, \bar{y}_{d})^{\top}}.
 }
 \usage{
-demix(x = NULL, Preprocessing = NULL, Variables = NULL,
+demix(x = NULL, Preprocessing = NULL, Variables = NULL, pdf = NULL,
       k = NULL, xmin = NULL, xmax = NULL, ...)
 }
 \arguments{
@@ -22,6 +22,9 @@ a preprocessing type. One of \code{"histogram"}, \code{"Parzen window"} or \code
 }
 \item{Variables}{
 a character vector of length \eqn{\leq d} containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
+}
+\item{pdf}{
+a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
 }
 \item{k}{
 a number of bins \eqn{v} for the histogram and the Parzen window or number of nearest
@@ -57,6 +60,7 @@ simulated <- RNGMIX(Dataset = "simulated",
 y1y2f <- demix(x = simulated$Dataset[[1]],
   Preprocessing = "histogram",
   Variables = c("continuous", "continuous"),
+  pdf = c("normal", "normal"),
   k = 6)
   
 y1y2f

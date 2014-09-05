@@ -1,14 +1,14 @@
-#if (_MEMORY_LEAK_SWITCH)
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
-
 #include <math.h>
 #include <stdio.h>
 #include <ctype.h>
 
 #include "rngmixf.h"
+
+#if (_MEMORY_LEAK_SWITCH)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 int   NDevISet = 0;
 FLOAT NDevVSet = (FLOAT)0.0;
@@ -366,7 +366,7 @@ int RunRNGMIXTemplateFile(char *file)  /* File stream. */
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.6.1\n");
+    printf("RNGMIX Version 2.6.2\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {

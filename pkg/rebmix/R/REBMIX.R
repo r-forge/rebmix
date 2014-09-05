@@ -8,6 +8,7 @@
   Theta1 = NULL,
   Theta2 = NULL,
   K = NULL,
+  y0 = NULL,
   ymin = NULL,
   ymax = NULL,
   ar = 0.1,
@@ -17,10 +18,6 @@
   REBMIX$Dataset <- Dataset
   REBMIX$w <- list()
   REBMIX$Theta <- list()
-  REBMIX$Variables <- Variables
-  REBMIX$pdf <- pdf
-  REBMIX$Theta1 <- Theta1
-  REBMIX$Theta2 <- Theta2
   REBMIX$summary <- list()
   REBMIX$pos <- 1
   REBMIX$all.Imax <- list()
@@ -67,6 +64,14 @@
         stop("lengths of ", sQuote("Theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
       }
     }
+    
+    if (!is.null(y0)) {
+      y0[is.na(y0)] <- 0
+      
+      if (length(y0) != d) {
+        stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      }      
+    }    
 
     if (!is.null(ymin)) {
       ymin[is.na(ymin)] <- 0
@@ -91,13 +96,15 @@
       ICType = as.character(Criterion),
       d = as.integer(d),
       VarType = as.character(Variables),
-      IniFamType = as.character(pdf),
-      length.Ini0 = as.integer(length(Theta1)),
-      Ini0 = as.double(Theta1),
-      length.Ini1 = as.integer(length(Theta2)),
-      Ini1 = as.double(Theta2),
+      IniParFamType = as.character(pdf),
+      length.IniPar0 = as.integer(length(Theta1)),
+      IniPar0 = as.double(Theta1),
+      length.IniPar1 = as.integer(length(Theta2)),
+      IniPar1 = as.double(Theta2),
       kmax = as.integer(length(K)),
       K = as.integer(K),
+      length.Iniy0 = as.integer(length(y0)),
+      Iniy0 = as.double(y0),      
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),
@@ -109,7 +116,7 @@
       X = as.double(X),
       k = integer(1),
       h = double(d),
-      y0 = double(d),
+      y0 = double(d),      
       IC = double(1),
       logL = double(1),
       df = integer(1), 
@@ -133,7 +140,6 @@
     c <- output$c
 
     length(output$h) <- d
-    length(output$y0) <- d
     length(output$W) <- c
     length(output$ParFamType) <- c * d
     length(output$Par0) <- c * d
@@ -192,8 +198,12 @@
     }
 
     colnames(REBMIX$Theta[[i]]) <- paste("comp", if (c > 1) 1:c else "", sep = "")
-
+    
+    output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
+    
     if (Preprocessing == .rebmix$Preprocessing[1]) {
+      length(output$y0) <- d    
+    
       REBMIX$summary[[i]] <- c(DatasetName, 
         output$PreType, 
         output$D,
@@ -203,6 +213,7 @@
         output$ResType,
         output$c,
         output$k,
+        output$K,
         output$y0,
         output$h,
         output$IC,
@@ -220,6 +231,7 @@
         output$ResType,
         output$c,
         output$k,
+        output$K,
         output$h,
         output$IC,
         output$logL,
@@ -235,6 +247,7 @@
         output$ResType,
         output$c,
         output$k,
+        output$K,
         output$h,
         output$IC,
         output$logL,
@@ -260,6 +273,7 @@
       "Restraints", 
       "c", 
       "v/k", 
+      "K",       
       paste("y0", if (d > 1) 1:d else "", sep = ""), 
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
@@ -276,7 +290,8 @@
       "ar", 
       "Restraints", 
       "c", 
-      "v/k", 
+      "v/k",
+      "K", 
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
       "logL",
@@ -291,7 +306,8 @@
       "ar", 
       "Restraints", 
       "c", 
-      "v/k", 
+      "v/k",
+      "K",        
       paste("h", if (d > 1) 1:d else "", sep = ""),
       "IC", 
       "logL",
@@ -315,6 +331,7 @@ REBMIX <- function(Dataset = NULL,
   Theta1 = NULL,
   Theta2 = NULL,
   K = NULL,
+  y0 = NULL,
   ymin = NULL,
   ymax = NULL,
   ar = 0.1,
@@ -322,7 +339,7 @@ REBMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.6.1");
+  message("REBMIX Version 2.6.2");
   flush.console()
 
   if (is.null(Dataset)) {
@@ -446,10 +463,6 @@ REBMIX <- function(Dataset = NULL,
   REBMIX$Dataset <- Dataset
   REBMIX$w <- list()
   REBMIX$Theta <- list()
-  REBMIX$Variables <- Variables
-  REBMIX$pdf <- pdf
-  REBMIX$Theta1 <- Theta1
-  REBMIX$Theta2 <- Theta2  
   REBMIX$summary <- NULL
   REBMIX$pos <- 1
   REBMIX$all.Imax <- list()
@@ -457,6 +470,22 @@ REBMIX <- function(Dataset = NULL,
   REBMIX$all.IC <- list()
   REBMIX$all.logL <- list()
   REBMIX$all.D <- list()
+  
+  REBMIX$call <- list( 
+    Preprocessing = Preprocessing, 
+    D = D, 
+    cmax = cmax,
+    Criterion = Criterion,
+    Variables = Variables,
+    pdf = pdf,
+    Theta1 = Theta1,
+    Theta2 = Theta2,
+    K = K,
+    y0 = y0,
+    ymin = ymin,
+    ymax = ymax,
+    ar = ar,
+    Restraints = Restraints)
 
   for (i in 1:length(Preprocessing)) {
     for (j in 1:length(Criterion)) {
@@ -470,6 +499,7 @@ REBMIX <- function(Dataset = NULL,
         Theta1 = Theta1,
         Theta2 = Theta2,
         K = if (is.list(K)) K[[i]] else K,
+        y0 = y0,        
         ymin = ymin,
         ymax = ymax,
         ar = ar,

@@ -71,7 +71,7 @@ boot.REBMIX <- function(x,
   
   if (Bootstrap == .rebmix.boot$Bootstrap[1]) {
     bsample <- RNGMIX(Dataset = paste("bsample_", 1:B, sep = ""),
-      n = rbind(round(n * as.numeric(x$w[[pos]]))),
+      n = rbind(ceiling(n * as.numeric(x$w[[pos]]))),
       Theta = x$Theta[[pos]], ...)
   }
   else
@@ -95,48 +95,21 @@ boot.REBMIX <- function(x,
     bsample$ymin <- range[1, ]; bsample$ymax <- range[2, ]
   }
     
-  d <- length(x$pdf)
+  d <- length(x$call$pdf)
   
-  C <- x$summary[pos, "Preprocessing"]
-  
-  if (C == .rebmix$Preprocessing[1]) {
-    h <- as.numeric(x$summary[pos, paste("h", if (d > 1) 1:d, sep = "")])    
-
-    k <- ceiling((bsample$ymax - bsample$ymin) / h)
-    
-    k <- max(k)
-    
-    ymin <- bsample$ymin; ymax <- ymin + h * k
-  }
-  else
-  if (C == .rebmix$Preprocessing[2]) {
-    h <- as.numeric(x$summary[pos, paste("h", if (d > 1) 1:d, sep = "")])    
-
-    k <- ceiling((bsample$ymax - bsample$ymin) / h)
-    
-    k <- max(k)
-    
-    ymin <- bsample$ymin; ymax <- ymin + h * k
-  }
-  else
-  if (C == .rebmix$Preprocessing[3]) {
-    k <- as.numeric(x$summary[pos, "v/k"])
-
-    ymin <- bsample$ymin; ymax <- bsample$ymax
-  }
-
   bsampleest <- REBMIX(Dataset = bsample$Dataset,
     Preprocessing = as.character(x$summary[pos, "Preprocessing"]),
     D = as.numeric(x$summary[pos, "D"]),
     cmax = as.numeric(x$summary[pos, "cmax"]),
     Criterion = as.character(x$summary[pos, "Criterion"]),
-    Variables = as.character(x$Variables),
-    pdf = as.character(x$pdf),
-    Theta1 = if (is.null(x$Theta1)) NULL else as.numeric(x$Theta1),
-    Theta2 = if (is.null(x$Theta2)) NULL else as.numeric(x$Theta2),
-    K = k,
-    ymin = if (is.null(ymin)) NULL else as.numeric(ymin),
-    ymax = if (is.null(ymax)) NULL else as.numeric(ymax),
+    Variables = x$call$Variables,
+    pdf = x$call$pdf,
+    Theta1 = x$call$Theta1,
+    Theta2 = x$call$Theta2,
+    K = eval(parse(text = as.character(x$summary[pos, "K"]))),
+    y0 = x$call$y0,    
+    ymin = x$call$ymin,
+    ymax = x$call$ymax,
     ar = as.numeric(x$summary[pos, "ar"]),
     Restraints = as.character(x$summary[pos, "Restraints"]))
 

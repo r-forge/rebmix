@@ -5,7 +5,7 @@ RNGMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.6.1");
+  message("RNGMIX Version 2.6.2");
   flush.console()
   
   if (is.null(Dataset)) {
@@ -189,7 +189,12 @@ RNGMIX <- function(Dataset = NULL,
 
   RNGMIX$ymin <- xmin
   RNGMIX$ymax <- xmax
-  
+  RNGMIX$call <- list(
+    Dataset = Dataset,
+    rseed = rseed,
+    n = n,
+    Theta = Theta)  
+    
   options(digits = digits)  
 
   rm(list = ls()[!(ls() %in% c("RNGMIX"))])

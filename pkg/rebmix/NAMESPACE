@@ -60,4 +60,5 @@ export(RNGMIX,
        boot.default,
        boot.REBMIX,
        print.boot.REBMIX,
-       summary.boot.REBMIX) 
+       summary.boot.REBMIX,
+       kseq) 

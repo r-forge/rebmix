@@ -61,6 +61,7 @@ par(opar)
 y1f <- demix(x = simulatedest$Dataset[[1]][, 1, drop = FALSE],
   Preprocessing = "Parzen window",
   Variables = "continuous",
+  pdf = "normal",
   k = 8)
 
 y1 <- seq(from = min(y1f[, 1]), to = max(y1f[, 1]), length.out = 200)
@@ -70,6 +71,7 @@ f1 <- dfmix(x = cbind(y1), w = simulatedest$w[[1]], simulatedest$Theta[[1]][1:3,
 y2f <- demix(x = simulatedest$Dataset[[1]][, 2, drop = FALSE],
   Preprocessing = "Parzen window",
   Variables = "continuous",
+  pdf = "Weibull",  
   k = 8)
 
 y2 <- seq(from = min(y2f[, 1]), to = max(y2f[, 1]), length.out = 200)

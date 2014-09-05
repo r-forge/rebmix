@@ -1,4 +1,4 @@
-.densHistogram.xy <- function(k, x, y, x0, y0, hx, hy, cx, cy)
+.densHistogram.xy <- function(k, x, y, x0, y0, hx, hy, cx, cy, px, py)
 {
   output <- .C("RdensHistogramXY",
     k = as.integer(k),
@@ -12,6 +12,8 @@
     hy = as.double(hy),
     cx = as.integer(cx == .rebmix$Variables[2]),
     cy = as.integer(cy == .rebmix$Variables[2]),
+    px = as.character(px),
+    py = as.character(py),        
     error = integer(1),
     PACKAGE = "rebmix")
 

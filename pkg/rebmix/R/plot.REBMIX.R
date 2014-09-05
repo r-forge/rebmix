@@ -245,8 +245,10 @@ plot.REBMIX <- function(x,
 
   py <- list(d)
 
-  Variables <- x$Variables
-
+  Variables <- match.arg(x$call$Variables, .rebmix$Variables, several.ok = TRUE)
+  
+  pdf <- match.arg(x$call$pdf, .rebmix$pdf, several.ok = TRUE)
+  
   for (i in 1:d) {
     if (C == .rebmix$Preprocessing[1]) {
       k <- as.numeric(x$summary[pos, "v/k"])
@@ -294,7 +296,7 @@ plot.REBMIX <- function(x,
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
           if (C == .rebmix$Preprocessing[1]) {
-            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], y0[j], h[i], h[j], Variables[i], Variables[j])
+            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], y0[j], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
@@ -583,7 +585,7 @@ plot.REBMIX <- function(x,
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, 1], y0[1], h[1], Variables[1])
+        edens <- .densHistogram.x(k, ey[, 1], y0[1], h[1], Variables[1], pdf[1])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
@@ -733,7 +735,7 @@ plot.REBMIX <- function(x,
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, i], y0[i], h[i], Variables[i])
+        edens <- .densHistogram.x(k, ey[, i], y0[i], h[i], Variables[i], pdf[i])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {

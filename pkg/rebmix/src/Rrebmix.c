@@ -27,7 +27,7 @@ void RRNGMIX(int    *IDum,        /* Random seed. */
 {
     InputRNGMIXParameterType  InpParType;
     OutputRNGMIXParameterType OutParType;
-    int                       i, j, k, l;
+    int                       i, j, k;
 
     memset(&InpParType, 0, sizeof(InputRNGMIXParameterType));
     memset(&OutParType, 0, sizeof(OutputRNGMIXParameterType));
@@ -54,53 +54,49 @@ void RRNGMIX(int    *IDum,        /* Random seed. */
         *Error = NULL == InpParType.Theta[j]; if (*Error) goto E0;
 
         for (k = 0; k < InpParType.d; k++) {
-            for (l = 0; l < (int)strlen(ParFamType[i]); l++) {
-                ParFamType[i][l] = (char)toupper(ParFamType[i][l]);
-            }
-
-            if (!strcmp(ParFamType[i], "NORMAL")) {
-                InpParType.Theta[j][k].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");                
+            if (!strcmp(ParFamType[i], "normal")) {
+                InpParType.Theta[j][k].ParFamType = pfNormal;            
                 
                 InpParType.Theta[j][k].Par0 = Par0[i];
                 InpParType.Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                InpParType.Theta[j][k].ParFamType = pfLognormal; strcpy(ParFamType[i], "lognormal");
+            if (!strcmp(ParFamType[i], "lognormal")) {
+                InpParType.Theta[j][k].ParFamType = pfLognormal;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
                 InpParType.Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "WEIBULL")) {
-                InpParType.Theta[j][k].ParFamType = pfWeibull; strcpy(ParFamType[i], "Weibull");
+            if (!strcmp(ParFamType[i], "Weibull")) {
+                InpParType.Theta[j][k].ParFamType = pfWeibull;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
                 InpParType.Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "GAMMA")) {
-                InpParType.Theta[j][k].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
+            if (!strcmp(ParFamType[i], "gamma")) {
+                InpParType.Theta[j][k].ParFamType = pfGamma;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
                 InpParType.Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                InpParType.Theta[j][k].ParFamType = pfBinomial; strcpy(ParFamType[i], "binomial");
+            if (!strcmp(ParFamType[i], "binomial")) {
+                InpParType.Theta[j][k].ParFamType = pfBinomial;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
                 InpParType.Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "POISSON")) {
-                InpParType.Theta[j][k].ParFamType = pfPoisson; strcpy(ParFamType[i], "Poisson");
+            if (!strcmp(ParFamType[i], "Poisson")) {
+                InpParType.Theta[j][k].ParFamType = pfPoisson;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
             }
             else
-            if (!strcmp(ParFamType[i], "DIRAC")) {
-                InpParType.Theta[j][k].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+            if (!strcmp(ParFamType[i], "Dirac")) {
+                InpParType.Theta[j][k].ParFamType = pfDirac;
 
                 InpParType.Theta[j][k].Par0 = Par0[i];
             }
@@ -145,45 +141,47 @@ E0:    if (OutParType.X) {
 
 /* Runs REBMIX in R. */
 
-void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
-             double *D,           /* Total of positive relative deviations. */
-             int    *cmax,        /* Maximum number of components. */
-             char   **ICType,     /* Information criterion types. */
-             int    *d,           /* Number of independent random variables. */ 
-             char   **VarType,    /* Types of variables. */
-             char   **IniFamType, /* Initial parametric family types. */
-             int    *length_Ini0, /* Length of Ini0. */
-             double *Ini0,        /* Initial component parameters. */
-             int    *length_Ini1, /* Length of Ini1. */
-             double *Ini1,        /* Initial component parameters. */
-             int    *kmax,        /* Number of classes or k-nearest neighbours to be processed. */
-             int    *K,           /* Number of classes or k-nearest neighbours. */
-             int    *length_ymin, /* Length of ymin. */
-             double *ymin,        /* Minimum observations. */
-             int    *length_ymax, /* Length of ymax. */
-             double *ymax,        /* Maximum observations. */
-             double *b,           /* Minimum weight multiplier. */
-             double *ar,          /* Acceleration rate. */
-             char   **ResType,    /* Restraints type. */
-             int    *n,           /* Total number of independent observations. */
-             double *X,           /* Pointer to the input array X. */
-             int    *k,           /* Optimal number of classes or k-nearest neighbours. */
-             double *h,           /* Optimal class widths. */ 
-             double *y0,          /* Origins. */
-             double *IC,          /* Optimal information criterion. */
-             double *logL,        /* Log-likelihood. */
-             int    *M,           /* Degrees of freedom. */ 
-             int    *c,           /* Optimal number of components. */ 
-             double *W,           /* Optimal component weights. */
-             char   **ParFamType, /* Parametric family types. */
-             double *Par0,        /* Component parameters. */
-             double *Par1,        /* Component parameters. */
-             int    *all_Imax,    /* Number of iterations. */
-             int    *all_c,       /* All numbers of components. */ 
-             double *all_IC,      /* All information criteria. */  
-             double *all_logL,    /* All log-likelihoods. */
-             double *all_D,       /* All totals of positive relative deviations. */ 
-             int    *Error)       /* Error code. */
+void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
+             double *D,              /* Total of positive relative deviations. */
+             int    *cmax,           /* Maximum number of components. */
+             char   **ICType,        /* Information criterion types. */
+             int    *d,              /* Number of independent random variables. */ 
+             char   **VarType,       /* Types of variables. */
+             char   **IniParFamType, /* Initial parametric family types. */
+             int    *length_IniPar0, /* Length of IniPar0. */
+             double *IniPar0,        /* Initial component parameters. */
+             int    *length_IniPar1, /* Length of IniPar1. */
+             double *IniPar1,        /* Initial component parameters. */
+             int    *kmax,           /* Number of classes or k-nearest neighbours to be processed. */
+             int    *K,              /* Number of classes or k-nearest neighbours. */
+             int    *length_Iniy0,   /* Length of Iniy0. */
+             double *Iniy0,          /* Initial origins. */
+             int    *length_ymin,    /* Length of ymin. */
+             double *ymin,           /* Minimum observations. */
+             int    *length_ymax,    /* Length of ymax. */
+             double *ymax,           /* Maximum observations. */
+             double *b,              /* Minimum weight multiplier. */
+             double *ar,             /* Acceleration rate. */
+             char   **ResType,       /* Restraints type. */
+             int    *n,              /* Total number of independent observations. */
+             double *X,              /* Pointer to the input array X. */
+             int    *k,              /* Optimal number of classes or k-nearest neighbours. */
+             double *h,              /* Optimal class widths. */ 
+             double *y0,             /* Optimal origins. */ 
+             double *IC,             /* Optimal information criterion. */
+             double *logL,           /* Log-likelihood. */
+             int    *M,              /* Degrees of freedom. */ 
+             int    *c,              /* Optimal number of components. */ 
+             double *W,              /* Optimal component weights. */
+             char   **ParFamType,    /* Parametric family types. */
+             double *Par0,           /* Component parameters. */
+             double *Par1,           /* Component parameters. */
+             int    *all_Imax,       /* Number of iterations. */
+             int    *all_c,          /* All numbers of components. */ 
+             double *all_IC,         /* All information criteria. */  
+             double *all_logL,       /* All log-likelihoods. */
+             double *all_D,          /* All totals of positive relative deviations. */ 
+             int    *Error)          /* Error code. */
 {
     InputREBMIXParameterType   InpParType;
     OutputREBMIXParameterType  OutParType;
@@ -194,20 +192,16 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
     memset(&OutParType, 0, sizeof(OutputREBMIXParameterType));
     memset(&HisParType, 0, sizeof(HistoryREBMIXParameterType));
 
-    for (i = 0; i < (int)strlen(PreType[0]); i++) {
-        PreType[0][i] = (char)toupper(PreType[0][i]);
-    }
-
-    if (!strcmp(PreType[0], "HISTOGRAM")) {
-        InpParType.PreType = poHistogram; strcpy(PreType[0], "histogram");
+    if (!strcmp(PreType[0], "histogram")) {
+        InpParType.PreType = poHistogram;
     }
     else
-    if (!strcmp(PreType[0], "PARZEN WINDOW")) {
-        InpParType.PreType = poParzenWindow; strcpy(PreType[0], "Parzen window");
+    if (!strcmp(PreType[0], "Parzen window")) {
+        InpParType.PreType = poParzenWindow;
     }
     else
-    if (!strcmp(PreType[0], "K-NEAREST NEIGHBOUR")) {
-        InpParType.PreType = poKNearestNeighbour; strcpy(PreType[0], "k-nearest neighbour");
+    if (!strcmp(PreType[0], "k-nearest neighbour")) {
+        InpParType.PreType = poKNearestNeighbour;
     }
     else {
         *Error = 1; goto E0;
@@ -216,10 +210,6 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
     InpParType.D = *D;
 
     InpParType.cmax = *cmax;
-
-    for (i = 0; i < (int)strlen(ICType[0]); i++) {
-        ICType[0][i] = (char)toupper(ICType[0][i]);
-    }
 
     if (!strcmp(ICType[0], "AIC"))
         InpParType.ICType = icAIC; 
@@ -230,8 +220,8 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
     if (!strcmp(ICType[0], "AIC4"))
         InpParType.ICType = icAIC4;
     else
-    if (!strcmp(ICType[0], "AICC")) {
-        InpParType.ICType = icAICc; strcpy(ICType[0], "AICc");
+    if (!strcmp(ICType[0], "AICc")) {
+        InpParType.ICType = icAICc;
     }
     else
     if (!strcmp(ICType[0], "BIC"))
@@ -280,87 +270,79 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
     *Error = NULL == InpParType.VarType; if (*Error) goto E0;
 
     for (i = 0; i < InpParType.d; i++) {
-        for (j = 0; j < (int)strlen(VarType[i]); j++) {
-            VarType[i][j] = (char)toupper(VarType[i][j]);
-        }
-
-        if (!strcmp(VarType[i], "CONTINUOUS")) {
-            InpParType.VarType[i] = vtContinuous; strcpy(VarType[i], "continuous");
+        if (!strcmp(VarType[i], "continuous")) {
+            InpParType.VarType[i] = vtContinuous;
         }
         else
-        if (!strcmp(VarType[i], "DISCRETE")) {
-            InpParType.VarType[i] = vtDiscrete; strcpy(VarType[i], "discrete");
+        if (!strcmp(VarType[i], "discrete")) {
+            InpParType.VarType[i] = vtDiscrete;
         }
         else {
             *Error = 1; goto E0;
         }
     }
 
-    InpParType.IniFamType =    (ParametricFamilyType_e*)malloc(InpParType.d * sizeof(ParametricFamilyType_e));
+    InpParType.ParFamType = (ParametricFamilyType_e*)malloc(InpParType.d * sizeof(ParametricFamilyType_e));
 
-    *Error = NULL == InpParType.IniFamType; if (*Error) goto E0;
+    *Error = NULL == InpParType.ParFamType; if (*Error) goto E0;
 
     for (i = 0; i < InpParType.d; i++) {
-        for (j = 0; j < (int)strlen(IniFamType[i]); j++) {
-            IniFamType[i][j] = (char)toupper(IniFamType[i][j]);
-        }
-
-        if (!strcmp(IniFamType[i], "NORMAL")) {
-            InpParType.IniFamType[i] = pfNormal; strcpy(IniFamType[i], "normal");
+        if (!strcmp(IniParFamType[i], "normal")) {
+            InpParType.ParFamType[i] = pfNormal;
         }
         else
-        if (!strcmp(IniFamType[i], "LOGNORMAL")) {
-            InpParType.IniFamType[i] = pfLognormal;    strcpy(IniFamType[i], "lognormal");
+        if (!strcmp(IniParFamType[i], "lognormal")) {
+            InpParType.ParFamType[i] = pfLognormal;
         }
         else
-        if (!strcmp(IniFamType[i], "WEIBULL")) {
-            InpParType.IniFamType[i] = pfWeibull; strcpy(IniFamType[i], "Weibull");
+        if (!strcmp(IniParFamType[i], "Weibull")) {
+            InpParType.ParFamType[i] = pfWeibull;
         }
         else
-        if (!strcmp(IniFamType[i], "GAMMA")) {
-            InpParType.IniFamType[i] = pfGamma; strcpy(IniFamType[i], "gamma");
+        if (!strcmp(IniParFamType[i], "gamma")) {
+            InpParType.ParFamType[i] = pfGamma;
         }
         else
-        if (!strcmp(IniFamType[i], "BINOMIAL")) {
-            InpParType.IniFamType[i] = pfBinomial; strcpy(IniFamType[i], "binomial");
+        if (!strcmp(IniParFamType[i], "binomial")) {
+            InpParType.ParFamType[i] = pfBinomial;
         }
         else
-        if (!strcmp(IniFamType[i], "POISSON")) {
-            InpParType.IniFamType[i] = pfPoisson; strcpy(IniFamType[i], "Poisson");
+        if (!strcmp(IniParFamType[i], "Poisson")) {
+            InpParType.ParFamType[i] = pfPoisson;
         }
         else
-        if (!strcmp(IniFamType[i], "DIRAC")) {
-            InpParType.IniFamType[i] = pfDirac; strcpy(IniFamType[i], "Dirac");
+        if (!strcmp(IniParFamType[i], "Dirac")) {
+            InpParType.ParFamType[i] = pfDirac;
         }
         else {
             *Error = 1; goto E0;
         }
     }
 
-    if (*length_Ini0 > 0) {
-        InpParType.Ini0 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (*length_IniPar0 > 0) {
+        InpParType.Par0 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-        *Error = NULL == InpParType.Ini0; if (*Error) goto E0;
+        *Error = NULL == InpParType.Par0; if (*Error) goto E0;
 
         for (i = 0; i < InpParType.d; i++) {
-            InpParType.Ini0[i] = Ini0[i];
+            InpParType.Par0[i] = IniPar0[i];
         }
     }
     else {
-        InpParType.Ini0 = NULL;
+        InpParType.Par0 = NULL;
     }
 
-    if (*length_Ini1 > 0) {
-        InpParType.Ini1 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+    if (*length_IniPar1 > 0) {
+        InpParType.Par1 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
 
-        *Error = NULL == InpParType.Ini1; if (*Error) goto E0;
+        *Error = NULL == InpParType.Par1; if (*Error) goto E0;
 
         for (i = 0; i < InpParType.d; i++) {
-            InpParType.Ini1[i] = Ini1[i];
+            InpParType.Par1[i] = IniPar1[i];
         }
     }
     else {
-        InpParType.Ini1 = NULL;
+        InpParType.Par1 = NULL;
     }
 
     InpParType.kmax = *kmax;
@@ -371,6 +353,19 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
 
     for (i = 0; i < InpParType.kmax; i++) {
         InpParType.K[i] = K[i];
+    }
+
+    if (*length_Iniy0 > 0) {
+        InpParType.y0 = (FLOAT*)malloc(InpParType.d * sizeof(FLOAT));
+
+        *Error = NULL == InpParType.y0; if (*Error) goto E0;
+
+        for (i = 0; i < InpParType.d; i++) {
+            InpParType.y0[i] = Iniy0[i];
+        }
+    }
+    else {
+        InpParType.y0 = NULL;
     }
 
     if (*length_ymin > 0) {
@@ -402,16 +397,12 @@ void RREBMIX(char   **PreType,    /* Preprocessing of observations. */
     InpParType.b = *b;
     InpParType.ar = *ar;
 
-    for (i = 0; i < (int)strlen(ResType[0]); i++) {
-        ResType[0][i] = (char)toupper(ResType[0][i]);
-    }
-
-    if (!strcmp(ResType[0], "RIGID")) {
-        InpParType.ResType = rtRigid; strcpy(ResType[0], "rigid");
+    if (!strcmp(ResType[0], "rigid")) {
+        InpParType.ResType = rtRigid;
     }
     else
-    if (!strcmp(ResType[0], "LOOSE")) {
-        InpParType.ResType = rtLoose; strcpy(ResType[0], "loose");
+    if (!strcmp(ResType[0], "loose")) {
+        InpParType.ResType = rtLoose;
     }
     else {
         *Error = 1; goto E0;
@@ -529,13 +520,15 @@ E0: if (InpParType.save) free(InpParType.save);
 
     if (InpParType.ymin) free(InpParType.ymin);
 
+    if (InpParType.y0) free(InpParType.y0);
+
     if (InpParType.K) free(InpParType.K);
 
-    if (InpParType.Ini1) free(InpParType.Ini1);
+    if (InpParType.Par1) free(InpParType.Par1);
 
-    if (InpParType.Ini0) free(InpParType.Ini0);
+    if (InpParType.Par0) free(InpParType.Par0);
 
-    if (InpParType.IniFamType) free(InpParType.IniFamType);
+    if (InpParType.ParFamType) free(InpParType.ParFamType);
 
     if (InpParType.VarType) free(InpParType.VarType);
     
@@ -676,13 +669,78 @@ void RdensHistogramXY(int    *k,     /* Total number of bins. */
                       double *hy,    /* Side of the hypersquare. */
                       int    *cx,    /* If x discrete then cx = 1 else cx = 0. */
                       int    *cy,    /* If y discrete then cy = 1 else cy = 0. */
+                      char   **px,   /* Parametric family type. */
+                      char   **py,   /* Parametric family type. */
                       int    *Error) /* Error code. */
 {
-    int   i, j, m = *k - 1;
-    FLOAT C, rx, ry;
+    int                    i, j;
+    ParametricFamilyType_e pdfx, pdfy;
+    FLOAT                  C, rx, ry;
 
     *Error = *n < 1; if (*Error) return;
-    
+
+    if (!strcmp(px[0], "normal")) {
+        pdfx = pfNormal;
+    }
+    else
+    if (!strcmp(px[0], "lognormal")) {
+        pdfx = pfLognormal;
+    }
+    else
+    if (!strcmp(px[0], "Weibull")) {
+        pdfx = pfWeibull;
+    }
+    else
+    if (!strcmp(px[0], "gamma")) {
+        pdfx = pfGamma;
+    }
+    else
+    if (!strcmp(px[0], "binomial")) {
+        pdfx = pfBinomial;
+    }
+    else
+    if (!strcmp(px[0], "Poisson")) {
+        pdfx = pfPoisson;
+    }
+    else
+    if (!strcmp(px[0], "Dirac")) {
+        pdfx = pfDirac;
+    }
+    else {
+      *Error = 1; return;
+    }
+
+    if (!strcmp(py[0], "normal")) {
+        pdfy = pfNormal;
+    }
+    else
+    if (!strcmp(py[0], "lognormal")) {
+        pdfy = pfLognormal;
+    }
+    else
+    if (!strcmp(py[0], "Weibull")) {
+        pdfy = pfWeibull;
+    }
+    else
+    if (!strcmp(py[0], "gamma")) {
+        pdfy = pfGamma;
+    }
+    else
+    if (!strcmp(py[0], "binomial")) {
+        pdfy = pfBinomial;
+    }
+    else
+    if (!strcmp(py[0], "Poisson")) {
+        pdfy = pfPoisson;
+    }
+    else
+    if (!strcmp(py[0], "Dirac")) {
+        pdfy = pfDirac;
+    }
+    else {
+      *Error = 1; return;
+    }
+
     C = (FLOAT)1.0 / (*hx) / (*hy) / (*n); rx = (FLOAT)0.5 * (*hx); ry = (FLOAT)0.5 * (*hy);
 
     *k = 0;
@@ -690,19 +748,25 @@ void RdensHistogramXY(int    *k,     /* Total number of bins. */
     for (i = 0; i < *n; i++) {
         j = (int)floor((x[i] - (*x0)) / (*hx) + (FLOAT)0.5); 
         
-        if (*cx == 0) {
-            if (j < 0) j = 0; else if (j > m) j = m;
-        }
-
         x[*k] = (*x0) + j * (*hx);
+
+        switch (pdfx) {
+        default:
+            break;
+        case pfLognormal: case pfWeibull: case pfGamma:
+            if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
+        }
 
         j = (int)floor((y[i] - (*y0)) / (*hy) + (FLOAT)0.5); 
 
-        if (*cy == 0) {
-            if (j < 0) j = 0; else if (j > m) j = m;
-        }
-
         y[*k] = (*y0) + j * (*hy);
+
+        switch (pdfy) {
+        default:
+            break;
+        case pfLognormal: case pfWeibull: case pfGamma:
+            if (y[*k] <= FLOAT_MIN) y[*k] += (*hy);
+        }
 
         for (j = 0; j < *k; j++) {
             if (((FLOAT)fabs(x[j] - x[*k]) > rx) || ((FLOAT)fabs(y[j] - y[*k]) > ry)) goto S0;
@@ -803,12 +867,45 @@ void RdensHistogramX(int    *k,     /* Total number of bins. */
                      double *x0,    /* Origin. */ 
                      double *hx,    /* Side of the hypersquare. */
                      int    *cx,    /* If x discrete then cx = 1 else cx = 0. */
+                     char   **px,   /* Parametric family type. */
                      int    *Error) /* Error code. */
 {
-    int   i, j, m = *k - 1;
-    FLOAT C, rx;
+    int                    i, j;
+    ParametricFamilyType_e pdfx;
+    FLOAT                  C, rx;
 
     *Error = *n < 1; if (*Error) return;
+
+    if (!strcmp(px[0], "normal")) {
+        pdfx = pfNormal;
+    }
+    else
+    if (!strcmp(px[0], "lognormal")) {
+        pdfx = pfLognormal;
+    }
+    else
+    if (!strcmp(px[0], "Weibull")) {
+        pdfx = pfWeibull;
+    }
+    else
+    if (!strcmp(px[0], "gamma")) {
+        pdfx = pfGamma;
+    }
+    else
+    if (!strcmp(px[0], "binomial")) {
+        pdfx = pfBinomial;
+    }
+    else
+    if (!strcmp(px[0], "Poisson")) {
+        pdfx = pfPoisson;
+    }
+    else
+    if (!strcmp(px[0], "Dirac")) {
+        pdfx = pfDirac;
+    }
+    else {
+      *Error = 1; return;
+    }
     
     C = (FLOAT)1.0 / (*hx) / (*n); rx = (FLOAT)0.5 * (*hx);
 
@@ -817,11 +914,14 @@ void RdensHistogramX(int    *k,     /* Total number of bins. */
     for (i = 0; i < *n; i++) {
         j = (int)floor((x[i] - (*x0)) / (*hx) + (FLOAT)0.5); 
         
-        if (*cx == 0) {
-            if (j < 0) j = 0; else if (j > m) j = m;
-        }
-
         x[*k] = (*x0) + j * (*hx);
+
+        switch (pdfx) {
+        default:
+            break;
+        case pfLognormal: case pfWeibull: case pfGamma:
+            if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
+        }
 
         for (j = 0; j < *k; j++) {
             if ((FLOAT)fabs(x[j] - x[*k]) > rx) goto S0;
@@ -854,7 +954,7 @@ void RCLSMIX(int    *n,           /* Total number of independent observations. *
     FLOAT                    *Y = NULL;
     MarginalDistributionType ****Theta = NULL; 
     FLOAT                    CmpDist, MixDist, MaxMixDist;
-    int                      i, j, k, l, m, q;
+    int                      i, j, k, l, m;
 
     C = (int**)malloc(*s * sizeof(int*));
 
@@ -916,53 +1016,49 @@ void RCLSMIX(int    *n,           /* Total number of independent observations. *
                 *Error = NULL == Theta[j][k][l]; if (*Error) goto E0;
 
                 for (m = 0; m < d[k]; m++) {
-                    for (q = 0; q < (int)strlen(ParFamType[i]); q++) {
-                        ParFamType[i][q] = (char)toupper(ParFamType[i][q]);
-                    }
-
-                    if (!strcmp(ParFamType[i], "NORMAL")) {
-                        Theta[j][k][l][m].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");
+                    if (!strcmp(ParFamType[i], "normal")) {
+                        Theta[j][k][l][m].ParFamType = pfNormal;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                         Theta[j][k][l][m].Par1 = Par1[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                        Theta[j][k][l][m].ParFamType = pfLognormal; strcpy(ParFamType[i], "lognormal");
+                    if (!strcmp(ParFamType[i], "lognormal")) {
+                        Theta[j][k][l][m].ParFamType = pfLognormal;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                         Theta[j][k][l][m].Par1 = Par1[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "WEIBULL")) {
-                        Theta[j][k][l][m].ParFamType = pfWeibull; strcpy(ParFamType[i], "Weibull");
+                    if (!strcmp(ParFamType[i], "Weibull")) {
+                        Theta[j][k][l][m].ParFamType = pfWeibull;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                         Theta[j][k][l][m].Par1 = Par1[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "GAMMA")) {
-                        Theta[j][k][l][m].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
+                    if (!strcmp(ParFamType[i], "gamma")) {
+                        Theta[j][k][l][m].ParFamType = pfGamma;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                         Theta[j][k][l][m].Par1 = Par1[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                        Theta[j][k][l][m].ParFamType = pfBinomial; strcpy(ParFamType[i], "binomial");
+                    if (!strcmp(ParFamType[i], "binomial")) {
+                        Theta[j][k][l][m].ParFamType = pfBinomial;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                         Theta[j][k][l][m].Par1 = Par1[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "POISSON")) {
-                        Theta[j][k][l][m].ParFamType = pfPoisson; strcpy(ParFamType[i], "Poisson");
+                    if (!strcmp(ParFamType[i], "Poisson")) {
+                        Theta[j][k][l][m].ParFamType = pfPoisson;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                     }
                     else
-                    if (!strcmp(ParFamType[i], "DIRAC")) {
-                        Theta[j][k][l][m].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+                    if (!strcmp(ParFamType[i], "Dirac")) {
+                        Theta[j][k][l][m].ParFamType = pfDirac;
 
                         Theta[j][k][l][m].Par0 = Par0[i];
                     }
@@ -1067,7 +1163,7 @@ void RCLRMIX(int    *n,           /* Total number of independent observations. *
     FLOAT                    *Y = NULL;
     MarginalDistributionType **Theta = NULL; 
     FLOAT                    CmpDist, MaxCmpDist;
-    int                      i, j, k, l;
+    int                      i, j, k;
 
     Theta = (MarginalDistributionType**)malloc(*c * sizeof(MarginalDistributionType*));
 
@@ -1081,53 +1177,49 @@ void RCLRMIX(int    *n,           /* Total number of independent observations. *
         *Error = NULL == Theta[j]; if (*Error) goto E0;
 
         for (k = 0; k < *d; k++) {
-            for (l = 0; l < (int)strlen(ParFamType[i]); l++) {
-                ParFamType[i][l] = (char)toupper(ParFamType[i][l]);
-            }
-
-            if (!strcmp(ParFamType[i], "NORMAL")) {
-                Theta[j][k].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");
+            if (!strcmp(ParFamType[i], "normal")) {
+                Theta[j][k].ParFamType = pfNormal;
 
                 Theta[j][k].Par0 = Par0[i];
                 Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                Theta[j][k].ParFamType = pfLognormal; strcpy(ParFamType[i], "lognormal");
+            if (!strcmp(ParFamType[i], "lognormal")) {
+                Theta[j][k].ParFamType = pfLognormal;
 
                 Theta[j][k].Par0 = Par0[i];
                 Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "WEIBULL")) {
-                Theta[j][k].ParFamType = pfWeibull; strcpy(ParFamType[i], "Weibull");
+            if (!strcmp(ParFamType[i], "Weibull")) {
+                Theta[j][k].ParFamType = pfWeibull;
 
                 Theta[j][k].Par0 = Par0[i];
                 Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "GAMMA")) {
-                Theta[j][k].ParFamType = pfGamma; strcpy(ParFamType[i], "gamma");
+            if (!strcmp(ParFamType[i], "gamma")) {
+                Theta[j][k].ParFamType = pfGamma;
 
                 Theta[j][k].Par0 = Par0[i];
                 Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                Theta[j][k].ParFamType = pfBinomial; strcpy(ParFamType[i], "binomial");
+            if (!strcmp(ParFamType[i], "binomial")) {
+                Theta[j][k].ParFamType = pfBinomial;
 
                 Theta[j][k].Par0 = Par0[i];
                 Theta[j][k].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "POISSON")) {
-                Theta[j][k].ParFamType = pfPoisson; strcpy(ParFamType[i], "Poisson");
+            if (!strcmp(ParFamType[i], "Poisson")) {
+                Theta[j][k].ParFamType = pfPoisson;
 
                 Theta[j][k].Par0 = Par0[i];
             }
             else
-            if (!strcmp(ParFamType[i], "DIRAC")) {
-                Theta[j][k].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+            if (!strcmp(ParFamType[i], "Dirac")) {
+                Theta[j][k].ParFamType = pfDirac;
 
                 Theta[j][k].Par0 = Par0[i];
             }
@@ -1289,15 +1381,15 @@ E0: if (OutParType.X) {
     }
 } /* RPreprocessingPW */
 
-void RPreprocessingH(double *h,        /* Sides of the hypersquare. */
-                     double *y0,       /* Origin. */
-                     char   **VarType, /* Types of variables. */
-                     int    *k,        /* Total number of bins. */
-                     int    *n,        /* Total number of independent observations. */
-                     int    *d,        /* Number of independent random variables. */ 
-                     double *x,        /* Pointer to the input array x. */
-                     double *y,        /* Pointer to the output array y. */
-                     int    *Error)    /* Error code. */
+void RPreprocessingH(double *h,           /* Sides of the hypersquare. */
+                     double *y0,          /* Origins. */
+                     char   **ParFamType, /* Parametric family types. */
+                     int    *k,           /* Total number of bins. */
+                     int    *n,           /* Total number of independent observations. */
+                     int    *d,           /* Number of independent random variables. */ 
+                     double *x,           /* Pointer to the input array x. */
+                     double *y,           /* Pointer to the output array y. */
+                     int    *Error)       /* Error code. */
 {
     InputREBMIXParameterType  InpParType;
     OutputREBMIXParameterType OutParType;
@@ -1309,21 +1401,37 @@ void RPreprocessingH(double *h,        /* Sides of the hypersquare. */
 
     InpParType.d = *d;
 
-    InpParType.VarType = (VariablesType_e*)malloc(InpParType.d * sizeof(VariablesType_e));
+    InpParType.ParFamType = (ParametricFamilyType_e*)malloc(InpParType.d * sizeof(ParametricFamilyType_e));
 
-    *Error = NULL == InpParType.VarType; if (*Error) goto E0;
+    *Error = NULL == InpParType.ParFamType; if (*Error) goto E0;
 
     for (i = 0; i < InpParType.d; i++) {
-        for (j = 0; j < (int)strlen(VarType[i]); j++) {
-            VarType[i][j] = (char)toupper(VarType[i][j]);
-        }
-
-        if (!strcmp(VarType[i], "CONTINUOUS")) {
-            InpParType.VarType[i] = vtContinuous; strcpy(VarType[i], "continuous");
+        if (!strcmp(ParFamType[i], "normal")) {
+            InpParType.ParFamType[i] = pfNormal;
         }
         else
-        if (!strcmp(VarType[i], "DISCRETE")) {
-            InpParType.VarType[i] = vtDiscrete; strcpy(VarType[i], "discrete");
+        if (!strcmp(ParFamType[i], "lognormal")) {
+            InpParType.ParFamType[i] = pfLognormal;
+        }
+        else
+        if (!strcmp(ParFamType[i], "Weibull")) {
+            InpParType.ParFamType[i] = pfWeibull;
+        }
+        else
+        if (!strcmp(ParFamType[i], "gamma")) {
+            InpParType.ParFamType[i] = pfGamma;
+        }
+        else
+        if (!strcmp(ParFamType[i], "binomial")) {
+            InpParType.ParFamType[i] = pfBinomial;
+        }
+        else
+        if (!strcmp(ParFamType[i], "Poisson")) {
+            InpParType.ParFamType[i] = pfPoisson;
+        }
+        else
+        if (!strcmp(ParFamType[i], "Dirac")) {
+            InpParType.ParFamType[i] = pfDirac;
         }
         else {
             *Error = 1; goto E0;
@@ -1362,7 +1470,7 @@ void RPreprocessingH(double *h,        /* Sides of the hypersquare. */
 
     OutParType.k = *k;
 
-    *Error = PreprocessingH(h, y0, InpParType.VarType, &OutParType.k, OutParType.n, InpParType.d, OutParType.X, Y);
+    *Error = PreprocessingH(h, y0, InpParType.ParFamType, &OutParType.k, OutParType.n, InpParType.d, OutParType.X, Y);
 
     if (*Error) goto E0;
 
@@ -1392,7 +1500,7 @@ E0: if (Y) {
         free(OutParType.X);
     }
 
-    if (InpParType.VarType) free(InpParType.VarType);
+    if (InpParType.ParFamType) free(InpParType.ParFamType);
 } /* RPreprocessingH */
 
 void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
@@ -1414,7 +1522,7 @@ void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
 {
     InputREBMIXParameterType  InpParType;
     OutputREBMIXParameterType OutParType;
-    int                       i, j, l, m;
+    int                       i, j, l;
     
     memset(&InpParType, 0, sizeof(InputREBMIXParameterType));
     memset(&OutParType, 0, sizeof(OutputREBMIXParameterType));
@@ -1446,10 +1554,6 @@ void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
 
     if (*Error) goto E0;
 
-    for (i = 0; i < (int)strlen(ICType[0]); i++) {
-        ICType[0][i] = (char)toupper(ICType[0][i]);
-    }
-
     if (!strcmp(ICType[0], "AIC"))
         InpParType.ICType = icAIC;
     else
@@ -1459,8 +1563,8 @@ void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
     if (!strcmp(ICType[0], "AIC4"))
         InpParType.ICType = icAIC4;
     else
-    if (!strcmp(ICType[0], "AICC")) {
-        InpParType.ICType = icAICc; strcpy(ICType[0], "AICc");
+    if (!strcmp(ICType[0], "AICc")) {
+        InpParType.ICType = icAICc;
     }
     else
     if (!strcmp(ICType[0], "BIC"))
@@ -1518,53 +1622,49 @@ void RInformationCriterionKNN(int    *k,           /* Total number of bins. */
         *Error = NULL == OutParType.Theta[j]; if (*Error) goto E0;
 
         for (l = 0; l < InpParType.d; l++) {
-            for (m = 0; m < (int)strlen(ParFamType[i]); m++) {
-                ParFamType[i][m] = (char)toupper(ParFamType[i][m]);
-            }
-
-            if (!strcmp(ParFamType[i], "NORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");
+            if (!strcmp(ParFamType[i], "normal")) {
+                OutParType.Theta[j][l].ParFamType = pfNormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfLognormal;  strcpy(ParFamType[i], "lognormal");
+            if (!strcmp(ParFamType[i], "lognormal")) {
+                OutParType.Theta[j][l].ParFamType = pfLognormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "WEIBULL")) {
-                OutParType.Theta[j][l].ParFamType = pfWeibull;  strcpy(ParFamType[i], "Weibull");
+            if (!strcmp(ParFamType[i], "Weibull")) {
+                OutParType.Theta[j][l].ParFamType = pfWeibull;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "GAMMA")) {
-                OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
+            if (!strcmp(ParFamType[i], "gamma")) {
+                OutParType.Theta[j][l].ParFamType = pfGamma;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                OutParType.Theta[j][l].ParFamType = pfBinomial;  strcpy(ParFamType[i], "binomial");
+            if (!strcmp(ParFamType[i], "binomial")) {
+                OutParType.Theta[j][l].ParFamType = pfBinomial;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "POISSON")) {
-                OutParType.Theta[j][l].ParFamType = pfPoisson;  strcpy(ParFamType[i], "Poisson");
+            if (!strcmp(ParFamType[i], "Poisson")) {
+                OutParType.Theta[j][l].ParFamType = pfPoisson;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
             else
-            if (!strcmp(ParFamType[i], "DIRAC")) {
-                OutParType.Theta[j][l].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+            if (!strcmp(ParFamType[i], "Dirac")) {
+                OutParType.Theta[j][l].ParFamType = pfDirac;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
@@ -1606,8 +1706,6 @@ E0:    if (OutParType.Theta) {
          
         free(OutParType.X);
     }
-
-    if (InpParType.VarType) free(InpParType.VarType);
 } /* RInformationCriterionKNN */
 
 void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. */
@@ -1629,7 +1727,7 @@ void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. *
     InputREBMIXParameterType  InpParType;
     OutputREBMIXParameterType OutParType;
     FLOAT                     V;
-    int                       i, j, l, m;
+    int                       i, j, l;
     
     memset(&InpParType, 0, sizeof(InputREBMIXParameterType));
     memset(&OutParType, 0, sizeof(OutputREBMIXParameterType));
@@ -1659,10 +1757,6 @@ void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. *
 
     if (*Error) goto E0;
 
-    for (i = 0; i < (int)strlen(ICType[0]); i++) {
-        ICType[0][i] = (char)toupper(ICType[0][i]);
-    }
-
     if (!strcmp(ICType[0], "AIC"))
         InpParType.ICType = icAIC;
     else
@@ -1672,8 +1766,8 @@ void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. *
     if (!strcmp(ICType[0], "AIC4"))
         InpParType.ICType = icAIC4;
     else
-    if (!strcmp(ICType[0], "AICC")) {
-        InpParType.ICType = icAICc; strcpy(ICType[0], "AICc");
+    if (!strcmp(ICType[0], "AICc")) {
+        InpParType.ICType = icAICc;
     }
     else
     if (!strcmp(ICType[0], "BIC"))
@@ -1731,53 +1825,49 @@ void RInformationCriterionPW(double *h,           /* Sides of the hypersquare. *
         *Error = NULL == OutParType.Theta[j]; if (*Error) goto E0;
 
         for (l = 0; l < InpParType.d; l++) {
-            for (m = 0; m < (int)strlen(ParFamType[i]); m++) {
-                ParFamType[i][m] = (char)toupper(ParFamType[i][m]);
-            }
-
-            if (!strcmp(ParFamType[i], "NORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");
+            if (!strcmp(ParFamType[i], "normal")) {
+                OutParType.Theta[j][l].ParFamType = pfNormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfLognormal;  strcpy(ParFamType[i], "lognormal");
+            if (!strcmp(ParFamType[i], "lognormal")) {
+                OutParType.Theta[j][l].ParFamType = pfLognormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "WEIBULL")) {
-                OutParType.Theta[j][l].ParFamType = pfWeibull;  strcpy(ParFamType[i], "Weibull");
+            if (!strcmp(ParFamType[i], "Weibull")) {
+                OutParType.Theta[j][l].ParFamType = pfWeibull;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "GAMMA")) {
-                OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
+            if (!strcmp(ParFamType[i], "gamma")) {
+                OutParType.Theta[j][l].ParFamType = pfGamma;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                OutParType.Theta[j][l].ParFamType = pfBinomial;  strcpy(ParFamType[i], "binomial");
+            if (!strcmp(ParFamType[i], "binomial")) {
+                OutParType.Theta[j][l].ParFamType = pfBinomial;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "POISSON")) {
-                OutParType.Theta[j][l].ParFamType = pfPoisson;  strcpy(ParFamType[i], "Poisson");
+            if (!strcmp(ParFamType[i], "Poisson")) {
+                OutParType.Theta[j][l].ParFamType = pfPoisson;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
             else
-            if (!strcmp(ParFamType[i], "DIRAC")) {
-                OutParType.Theta[j][l].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+            if (!strcmp(ParFamType[i], "Dirac")) {
+                OutParType.Theta[j][l].ParFamType = pfDirac;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
@@ -1827,51 +1917,67 @@ E0:    if (OutParType.Theta) {
     }
 } /* RInformationCriterionPW */
 
-void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
-                            double *y0,          /* Origin. */
-                            char   **VarType,    /* Types of variables. */
-                            int    *k,           /* Total number of bins. */
-                            int    *n,           /* Total number of independent observations. */
-                            int    *d,           /* Number of independent random variables. */ 
-                            double *x,           /* Pointer to the input array x. */
-                            char   **ICType,     /* Information criterion type. */ 
-                            int    *c,           /* Number of components. */
-                            double *W,           /* Component weights. */
-                            char   **ParFamType, /* Parametric family types. */
-                            double *Par0,        /* Component parameters. */
-                            double *Par1,        /* Component parameters. */
-                            double *IC,          /* Information criterion. */
-                            double *logL,        /* log-likelihood. */
-                            int    *M,           /* Degrees of freedom. */
-                            double *D,           /* Total of positive relative deviations. */
-                            int    *Error)       /* Error code. */
+void RInformationCriterionH(double *h,              /* Sides of the hypersquare. */
+                            double *y0,             /* Origins. */
+                            char   **IniParFamType, /* Initial parametric family types. */
+                            int    *k,              /* Total number of bins. */
+                            int    *n,              /* Total number of independent observations. */
+                            int    *d,              /* Number of independent random variables. */ 
+                            double *x,              /* Pointer to the input array x. */
+                            char   **ICType,        /* Information criterion type. */ 
+                            int    *c,              /* Number of components. */
+                            double *W,              /* Component weights. */
+                            char   **ParFamType,    /* Parametric family types. */
+                            double *Par0,           /* Component parameters. */
+                            double *Par1,           /* Component parameters. */
+                            double *IC,             /* Information criterion. */
+                            double *logL,           /* log-likelihood. */
+                            int    *M,              /* Degrees of freedom. */
+                            double *D,              /* Total of positive relative deviations. */
+                            int    *Error)          /* Error code. */
 {
     InputREBMIXParameterType  InpParType;
     OutputREBMIXParameterType OutParType;
     FLOAT                     **Y = NULL;
     FLOAT                     V;
-    int                       i, j, l, m;
+    int                       i, j, l;
     
     memset(&InpParType, 0, sizeof(InputREBMIXParameterType));
     memset(&OutParType, 0, sizeof(OutputREBMIXParameterType));
 
     InpParType.d = *d;
 
-    InpParType.VarType = (VariablesType_e*)malloc(InpParType.d * sizeof(VariablesType_e));
+    InpParType.ParFamType = (ParametricFamilyType_e*)malloc(InpParType.d * sizeof(ParametricFamilyType_e));
 
-    *Error = NULL == InpParType.VarType; if (*Error) goto E0;
+    *Error = NULL == InpParType.ParFamType; if (*Error) goto E0;
 
     for (i = 0; i < InpParType.d; i++) {
-        for (j = 0; j < (int)strlen(VarType[i]); j++) {
-            VarType[i][j] = (char)toupper(VarType[i][j]);
-        }
-
-        if (!strcmp(VarType[i], "CONTINUOUS")) {
-            InpParType.VarType[i] = vtContinuous; strcpy(VarType[i], "continuous");
+        if (!strcmp(IniParFamType[i], "normal")) {
+            InpParType.ParFamType[i] = pfNormal;
         }
         else
-        if (!strcmp(VarType[i], "DISCRETE")) {
-            InpParType.VarType[i] = vtDiscrete; strcpy(VarType[i], "discrete");
+        if (!strcmp(IniParFamType[i], "lognormal")) {
+            InpParType.ParFamType[i] = pfLognormal;
+        }
+        else
+        if (!strcmp(IniParFamType[i], "Weibull")) {
+            InpParType.ParFamType[i] = pfWeibull;
+        }
+        else
+        if (!strcmp(IniParFamType[i], "gamma")) {
+            InpParType.ParFamType[i] = pfGamma;
+        }
+        else
+        if (!strcmp(IniParFamType[i], "binomial")) {
+            InpParType.ParFamType[i] = pfBinomial;
+        }
+        else
+        if (!strcmp(IniParFamType[i], "Poisson")) {
+            InpParType.ParFamType[i] = pfPoisson;
+        }
+        else
+        if (!strcmp(IniParFamType[i], "Dirac")) {
+            InpParType.ParFamType[i] = pfDirac;
         }
         else {
             *Error = 1; goto E0;
@@ -1910,15 +2016,11 @@ void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
 
     OutParType.k = *k;
 
-    *Error = PreprocessingH(h, y0, InpParType.VarType, &OutParType.k, OutParType.n, InpParType.d, OutParType.X, Y);
+    *Error = PreprocessingH(h, y0, InpParType.ParFamType, &OutParType.k, OutParType.n, InpParType.d, OutParType.X, Y);
 
     if (*Error) goto E0;
 
     *k = OutParType.k;
-
-    for (i = 0; i < (int)strlen(ICType[0]); i++) {
-        ICType[0][i] = (char)toupper(ICType[0][i]);
-    }
 
     if (!strcmp(ICType[0], "AIC"))
         InpParType.ICType = icAIC;
@@ -1929,8 +2031,8 @@ void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
     if (!strcmp(ICType[0], "AIC4"))
         InpParType.ICType = icAIC4;
     else
-    if (!strcmp(ICType[0], "AICC")) {
-        InpParType.ICType = icAICc; strcpy(ICType[0], "AICc");
+    if (!strcmp(ICType[0], "AICc")) {
+        InpParType.ICType = icAICc;
     }
     else
     if (!strcmp(ICType[0], "BIC"))
@@ -1988,53 +2090,49 @@ void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
         *Error = NULL == OutParType.Theta[j]; if (*Error) goto E0;
 
         for (l = 0; l < InpParType.d; l++) {
-            for (m = 0; m < (int)strlen(ParFamType[i]); m++) {
-                ParFamType[i][m] = (char)toupper(ParFamType[i][m]);
-            }
-
-            if (!strcmp(ParFamType[i], "NORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfNormal; strcpy(ParFamType[i], "normal");
+            if (!strcmp(ParFamType[i], "normal")) {
+                OutParType.Theta[j][l].ParFamType = pfNormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "LOGNORMAL")) {
-                OutParType.Theta[j][l].ParFamType = pfLognormal;  strcpy(ParFamType[i], "lognormal");
+            if (!strcmp(ParFamType[i], "lognormal")) {
+                OutParType.Theta[j][l].ParFamType = pfLognormal;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "WEIBULL")) {
-                OutParType.Theta[j][l].ParFamType = pfWeibull;  strcpy(ParFamType[i], "Weibull");
+            if (!strcmp(ParFamType[i], "Weibull")) {
+                OutParType.Theta[j][l].ParFamType = pfWeibull;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "GAMMA")) {
-                OutParType.Theta[j][l].ParFamType = pfGamma;  strcpy(ParFamType[i], "gamma");
+            if (!strcmp(ParFamType[i], "gamma")) {
+                OutParType.Theta[j][l].ParFamType = pfGamma;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "BINOMIAL")) {
-                OutParType.Theta[j][l].ParFamType = pfBinomial;  strcpy(ParFamType[i], "binomial");
+            if (!strcmp(ParFamType[i], "binomial")) {
+                OutParType.Theta[j][l].ParFamType = pfBinomial;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
                 OutParType.Theta[j][l].Par1 = Par1[i];
             }
             else
-            if (!strcmp(ParFamType[i], "POISSON")) {
-                OutParType.Theta[j][l].ParFamType = pfPoisson;  strcpy(ParFamType[i], "Poisson");
+            if (!strcmp(ParFamType[i], "Poisson")) {
+                OutParType.Theta[j][l].ParFamType = pfPoisson;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
             else
-            if (!strcmp(ParFamType[i], "DIRAC")) {
-                OutParType.Theta[j][l].ParFamType = pfDirac; strcpy(ParFamType[i], "Dirac");
+            if (!strcmp(ParFamType[i], "Dirac")) {
+                OutParType.Theta[j][l].ParFamType = pfDirac;
 
                 OutParType.Theta[j][l].Par0 = Par0[i];
             }
@@ -2068,7 +2166,7 @@ void RInformationCriterionH(double *h,           /* Sides of the hypersquare. */
 
     if (*Error) goto E0;
 
-E0:    if (OutParType.Theta) {
+E0: if (OutParType.Theta) {
         for (i = 0; i < OutParType.c; i++) {
             if (OutParType.Theta[i]) free(OutParType.Theta[i]);
         }
@@ -2092,8 +2190,5 @@ E0:    if (OutParType.Theta) {
         free(OutParType.X);
     }
 
-    if (InpParType.VarType) free(InpParType.VarType);
+    if (InpParType.ParFamType) free(InpParType.ParFamType);
 } /* RInformationCriterionH */
-
-
-

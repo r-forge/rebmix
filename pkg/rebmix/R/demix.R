@@ -1,6 +1,7 @@
 demix <- function(x = NULL, 
   Preprocessing = NULL, 
   Variables = NULL,
+  pdf = NULL,
   k = NULL, 
   xmin = NULL, 
   xmax = NULL, ...)
@@ -39,6 +40,16 @@ demix <- function(x = NULL,
   }
 
   Variables <- match.arg(Variables, .rebmix$Variables, several.ok = TRUE)
+  
+  if (is.null(pdf)) {
+    stop(sQuote("pdf"), " must not be NULL!", call. = FALSE)
+  }
+
+  if (!is.character(pdf)) {
+    stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
+  }
+
+  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
   
   if (is.null(k)) {
     stop(sQuote("k"), " must not be NULL!", call. = FALSE)
@@ -83,7 +94,7 @@ demix <- function(x = NULL,
     output <- .C("RPreprocessingH",
       h = as.double(h),
       y0 = as.double(y0),
-      VarType = as.character(Variables),
+      ParFamType = as.character(pdf),
       k = as.integer(k),
       n = as.integer(n),
       d = as.integer(d),

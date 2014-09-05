@@ -1,5 +1,17 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.6.2}{ 
+\itemize{
+\item Demos \code{rebmix.galaxy}, \code{rebmix.univariate.normal}, \code{rebmix.mixed.continuous.discrete}, 
+\code{rebmix.multivariate.normal}, \code{rebmix.weibullnormal} and \code{rebmix.truck} are added. 
+\item Datasets \code{weibullnormal} and \code{truck} are added. 
+\item Method \code{boot.REBMIX} for bootstrap is improved. 
+\item Function \code{kseq} for sequence of bins or nearest neighbours generation is added. 
+\item Additional argument \code{y0} enters function \code{REBMIX}.
+\item Improved treatment of accuracy \code{Eps} in C functions.
+\item Fixed bug in C functions \code{EnhancedEstimationKNN()}, \code{EnhancedEstimationPW()} and \code{EnhancedEstimationH()}.
+}
+}
 \section{Changes in version 2.6.1}{ 
 \itemize{
 \item Renewed vignette. 

@@ -52,6 +52,9 @@ a vector of length \eqn{d} containing minimum observations.
 \item{ymax}{
 a vector of length \eqn{d} containing maximum observations.
 }
+\item{call}{
+a function call used to create the object.
+}
 }
 \references{
 W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Recipes in C: The Art
