@@ -142,7 +142,6 @@ E0:    if (OutParType.X) {
 /* Runs REBMIX in R. */
 
 void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
-             double *D,              /* Total of positive relative deviations. */
              int    *cmax,           /* Maximum number of components. */
              char   **ICType,        /* Information criterion types. */
              int    *d,              /* Number of independent random variables. */ 
@@ -160,7 +159,6 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
              double *ymin,           /* Minimum observations. */
              int    *length_ymax,    /* Length of ymax. */
              double *ymax,           /* Maximum observations. */
-             double *b,              /* Minimum weight multiplier. */
              double *ar,             /* Acceleration rate. */
              char   **ResType,       /* Restraints type. */
              int    *n,              /* Total number of independent observations. */
@@ -176,21 +174,26 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
              char   **ParFamType,    /* Parametric family types. */
              double *Par0,           /* Component parameters. */
              double *Par1,           /* Component parameters. */
-             int    *all_Imax,       /* Number of iterations. */
-             int    *all_c,          /* All numbers of components. */ 
-             double *all_IC,         /* All information criteria. */  
-             double *all_logL,       /* All log-likelihoods. */
-             double *all_D,          /* All totals of positive relative deviations. */ 
+             int    *opt_Imax,       /* Number of iterations for optimal number of classes or k-nearest neighbours. */
+             int    *opt_c,          /* Numbers of components for optimal number of classes or k-nearest neighbours. */ 
+             double *opt_IC,         /* Information criteria for optimal number of classes or k-nearest neighbours. */  
+             double *opt_logL,       /* Log-likelihoods for optimal number of classes or k-nearest neighbours. */
+             double *opt_D,          /* Totals of positive relative deviations for optimal number of classes or k-nearest neighbours. */ 
+             int    *all_kmax,       /* Number of all processed classes or k-nearest neighbours. */
+             int    *all_K,          /* Numbers of all processed classes or k-nearest neighbours. */
+             double *all_IC,         /* Information criteria for all processed classes or k-nearest neighbours. */  
              int    *Error)          /* Error code. */
 {
     InputREBMIXParameterType   InpParType;
     OutputREBMIXParameterType  OutParType;
-    HistoryREBMIXParameterType HisParType;
+    OptREBMIXParameterType     OptParType;
+    AllREBMIXParameterType     AllParType;
     int                        i, j, l;
 
     memset(&InpParType, 0, sizeof(InputREBMIXParameterType));
     memset(&OutParType, 0, sizeof(OutputREBMIXParameterType));
-    memset(&HisParType, 0, sizeof(HistoryREBMIXParameterType));
+    memset(&OptParType, 0, sizeof(OptREBMIXParameterType));
+    memset(&AllParType, 0, sizeof(AllREBMIXParameterType));
 
     if (!strcmp(PreType[0], "histogram")) {
         InpParType.PreType = poHistogram;
@@ -206,8 +209,6 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
     else {
         *Error = 1; goto E0;
     }
-
-    InpParType.D = *D;
 
     InpParType.cmax = *cmax;
 
@@ -394,7 +395,6 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
         InpParType.ymax = NULL;
     }
 
-    InpParType.b = *b;
     InpParType.ar = *ar;
 
     if (!strcmp(ResType[0], "rigid")) {
@@ -428,7 +428,7 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
         }
     }
 
-    *Error = REBMIX(&InpParType, &OutParType, &HisParType);
+    *Error = REBMIX(&InpParType, &OutParType, &OptParType, &AllParType);
 
      if (*Error) goto E0;
 
@@ -505,14 +505,22 @@ void RREBMIX(char   **PreType,       /* Preprocessing of observations. */
         }
     }
 
-    *all_Imax = HisParType.Imax;
+    *opt_Imax = OptParType.Imax;
 
-    for (i = 0; i < HisParType.Imax; i++) {
-        all_c[i] = HisParType.c[i];
-        all_IC[i] = HisParType.IC[i];
-        all_logL[i] = HisParType.logL[i];
-        all_D[i] = HisParType.D[i];
+    for (i = 0; i < OptParType.Imax; i++) {
+        opt_c[i] = OptParType.c[i];
+        opt_IC[i] = OptParType.IC[i];
+        opt_logL[i] = OptParType.logL[i];
+        opt_D[i] = OptParType.D[i];
     }
+
+    i = 0;
+
+    for (j = 0; j < AllParType.kmax; j++) if (AllParType.K[j]) {
+        all_K[i] = AllParType.K[j]; all_IC[i] = AllParType.IC[j]; i++;
+    }
+
+    *all_kmax = i;
 
 E0: if (InpParType.save) free(InpParType.save);
 
@@ -562,13 +570,17 @@ E0: if (InpParType.save) free(InpParType.save);
 
     if (OutParType.h) free(OutParType.h);
 
-    if (HisParType.D) free(HisParType.D);
+    if (OptParType.D) free(OptParType.D);
 
-    if (HisParType.logL) free(HisParType.logL);
+    if (OptParType.logL) free(OptParType.logL);
 
-    if (HisParType.IC) free(HisParType.IC);
+    if (OptParType.IC) free(OptParType.IC);
 
-    if (HisParType.c) free(HisParType.c);
+    if (OptParType.c) free(OptParType.c);
+
+    if (AllParType.IC) free(AllParType.IC);
+
+    if (AllParType.K) free(AllParType.K);
 } /* RREBMIX */
 
 /* Returns k-nearest neighbour empirical densities in R. */

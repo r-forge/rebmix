@@ -1,4 +1,4 @@
-.densKNearestNeighbour.xy <- function(x, y, k, hx, hy)
+.densKNearestNeighbour.xy <- function(x, y, k, hx, hy, npts)
 {
   output <- .C("RdensKNearestNeighbourXY",
     n = as.integer(length(x)),
@@ -14,12 +14,22 @@
   if (output$error == 1) {
     stop("in densKNearestNeighbour.xy!", call. = FALSE); return(NA)
   }
+  
+  i <- !duplicated(data.frame(output$x, output$y))
 
-  i <- order(output$z)
-
-  output$x <- output$x[i]
+  output$x <- output$x[i] 
   output$y <- output$y[i]
-  output$z <- output$z[i]
+  output$z <- output$z[i]  
+  
+  n <- length(output$z)
+  
+  if (n > npts) {
+    i <- sample.int(n, npts, replace = FALSE, prob = NULL)  
+  
+    output$x <- output$x[i]
+    output$y <- output$y[i]
+    output$z <- output$z[i]
+  }  
 
   rm(list = ls()[!(ls() %in% c("output"))])
 

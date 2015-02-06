@@ -28,8 +28,8 @@ kseq <- function(from = NULL, to = NULL, f = 0.05, ...)
     stop(sQuote("f"), " numeric is requested!", call. = FALSE)
   }
 
-  if ((f < 0.0) || (f > 1.0)) {
-    stop(sQuote("f"), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
+  if ((f <= 0.0) || (f >= 1.0)) {
+    stop(sQuote("f"), " must be greater than 0.0 and less than 1.0!", call. = FALSE)
   }  
 
   K <- array(0)
@@ -37,8 +37,10 @@ kseq <- function(from = NULL, to = NULL, f = 0.05, ...)
   i <- 1; K[i] <- from
 
   while (to > K[i]) {
-    K[i + 1] <- max(K[i] + 1, ceiling(K[1] / (1.0 - f)^i)); i <- i + 1
+    K[i + 1] <- ceiling(K[i] / (1.0 - f)); i <- i + 1
   }
+  
+  K[i] <- to
 
   rm(list = ls()[!(ls() %in% c("K"))])
   

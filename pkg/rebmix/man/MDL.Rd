@@ -14,7 +14,6 @@ Returns the minimum desription length at \code{pos} for class REBMIX.
 \usage{
 \method{MDL2}{REBMIX}(object, pos = 1, ...)
 \method{MDL5}{REBMIX}(object, pos = 1, ...)
-
 }
 \arguments{
 \item{object}{

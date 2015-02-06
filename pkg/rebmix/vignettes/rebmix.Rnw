@@ -16,7 +16,11 @@
 \begin{document}
 \SweaveOpts{engine = R}
 %\VignetteIndexEntry{rebmix: The Rebmix Package}
-%\VignetteKeyword{continuous variable, discrete variable, finite mixture, parameter estimation, R software, REBMIX algorithm}
+%\VignetteKeyword{continuous variable}
+%\VignetteKeyword{discrete variable}
+%\VignetteKeyword{finite mixture}
+%\VignetteKeyword{parameter estimation}
+%\VignetteKeyword{REBMIX algorithm}
 %\VignettePackage{rebmix}
 \bibliographystyle{abbrvnat}
 \title{\pkg{rebmix}: The Rebmix Package}
@@ -545,7 +549,7 @@ plot(poissonest, pos = 58, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2
 rm(list = ls())
 @
 \section{Summary}\label{sec:summary}
-The article presents the REBMIX algorithm and the \pkg{rebmix} package. Four datasets are studied on the x64 architecture. By applying the \pkg{tikzDevice} package \citep{tikzDevice_2013}, \LaTeX\ plots with legends can be obtained. The REBMIX algorithm can be used to assess the initial set of the unknown parameters and number of components for, e.g., the EM algorithm or as a standalone procedure that is a good compromise between the nonparametric and parametric methods to the finite mixture estimation. Its major advantages are robustness and time efficiency especially with the histogram preprocessing for all datasets sizes. The Parzen window and $k$-nearest neighbour preprocessing are more suitable for smaller datasets. Its advantages are more stressed if mixtures are composed of larger number of components. The \pkg{rebmix} package can be broadened to other parametric family types. The \texttt{predict} method that enables class membership prediction is  available in the \pkg{rebmix} package, too. See \texttt{help("predict.list")} for details. The REBMIX can thus also be used for pattern recognition.
+The article presents the REBMIX algorithm and the \pkg{rebmix} package. Four datasets are studied on the x64 architecture. By applying the \pkg{tikzDevice} package \citep{tikzDevice_2013}, \LaTeX\ plots with legends can be obtained. The REBMIX algorithm can be used to assess the initial set of the unknown parameters and number of components for, e.g., the EM algorithm or as a standalone procedure that is a good compromise between the nonparametric and parametric methods to the finite mixture estimation. Its major advantages are robustness and time efficiency especially with the histogram preprocessing for all datasets sizes. The Parzen window and $k$-nearest neighbour preprocessing are more suitable for smaller datasets. Its advantages are more stressed if mixtures are composed of larger number of components. The \pkg{rebmix} package can be broadened to other parametric family types. The \texttt{RCLSMIX} method that enables class membership prediction is  available in the \pkg{rebmix} package, too. See \texttt{help("RCLSMIX")} for details. The REBMIX can thus also be used for pattern recognition.
 \bibliography{rebmix}
 \vspace{\baselineskip}\noindent\emph{Marko Nagode\\
 University of Ljubljana\\

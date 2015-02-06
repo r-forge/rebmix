@@ -10,7 +10,7 @@ densities follow the histogram, Parzen window or \emph{k}-nearest neighbour appr
 }
 \usage{
 \method{plot}{REBMIX}(x, pos = 1, what = c("density"),
-     nrow = 1, ncol = 1, npts = 200, cex = 0.8, fg = "black",
+     nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
      lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
@@ -24,7 +24,7 @@ an object of class \code{REBMIX}.
 a desired row number in \code{x$summary} to be ploted. The default value is \code{1}.
 }
 \item{what}{
-a character vector, giving the plot types. One of \code{"density"}, \code{"marginal"}, \code{"c"}, \code{"IC"}, \code{"logL"}, \code{"D"} or \code{"distribution"}.
+a character vector, giving the plot types. One of \code{"density"}, \code{"marginal"}, \code{"IC"}, \code{"logL"}, \code{"D"} or \code{"distribution"}.
 The default value is \code{"density"}.
 }
 \item{nrow}{
@@ -35,6 +35,9 @@ a desired number of columns in which the empirical and predictive densities are 
 }
 \item{npts}{
 a number of points at which the predictive densities are to be ploted. The default value is \code{200}.
+}
+\item{n}{
+a number of observations to be ploted. The default value is \code{200}.
 }
 \item{cex}{
 a numerical value giving the amount by which the plotting text and symbols should be magnified
@@ -129,7 +132,7 @@ wineest <- REBMIX(Dataset = list(wine = wine),
 
 ## Plot finite mixture.
 
-plot(wineest, what = c("density", "marginal", "c", "IC", "logL", "D", 
+plot(wineest, what = c("density", "marginal", "IC", "logL", "D", 
   "distribution"), nrow = 4, ncol = 5, npts = 500, pty = "s")
 }
 }

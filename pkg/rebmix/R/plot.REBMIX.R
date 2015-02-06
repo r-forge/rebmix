@@ -4,6 +4,7 @@ plot.REBMIX <- function(x,
   nrow = 1,
   ncol = 1,
   npts = 200,
+  n = 200,
   cex = 0.8,
   fg = "black",
   lty = "solid",
@@ -58,6 +59,14 @@ plot.REBMIX <- function(x,
   if (npts < 1) {
     stop(sQuote("npts"), " must be greater than 0!", call. = FALSE)
   }
+  
+  if (!is.wholenumber(n)) {
+    stop(sQuote("n"), " integer is requested!", call. = FALSE)
+  }
+
+  if (n < 1) {
+    stop(sQuote("n"), " must be greater than 0!", call. = FALSE)
+  }  
 
   ni <- ncol(x$summary)
 
@@ -68,7 +77,7 @@ plot.REBMIX <- function(x,
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
-  n <- d * (d - 1) / 2;
+  N <- d * (d - 1) / 2;
   
   opar <- par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -99,8 +108,8 @@ plot.REBMIX <- function(x,
     item[[9]] <- paste("$\\textrm{", x$summary[pos, "Restraints"], "}$, ", sep = "")
 
     item[[10]] <- "$D$"
-    item[[11]] <- "$\\; = \\;$"
-    item[[12]] <- paste("$", as.number(x$summary[pos, "D"]), "$, ", sep = "")
+    item[[11]] <- ""
+    item[[12]] <- ""
 
     item[[13]] <- "$c_{\\mathrm{max}}$"
     item[[14]] <- "$\\; = \\;$"
@@ -146,7 +155,7 @@ plot.REBMIX <- function(x,
 
     i <- 1; legend <- list(); legend[[i]] <- item[[1]]
 
-    for (j in 2:33) {
+    for (j in c(2:9, 13:21, 25:33)) {
       legendwidth <- strwidth(paste(legend[[i]], item[[j]], sep = ""), units = "figure", cex = 1.0)
 
       if (legendwidth > ncol) {
@@ -173,8 +182,8 @@ plot.REBMIX <- function(x,
     item[[9]] <- paste(x$summary[pos, "Restraints"], ", ", sep = "")
 
     item[[10]] <- "D"
-    item[[11]] <- " = "
-    item[[12]] <- paste(as.number(x$summary[pos, "D"]), ", ", sep = "")
+    item[[11]] <- ""
+    item[[12]] <- ""
 
     item[[13]] <- bquote(c[max])
     item[[14]] <- " = "
@@ -220,7 +229,7 @@ plot.REBMIX <- function(x,
 
     i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
 
-    for (j in 2:33) {
+    for (j in c(2:9, 13:21, 25:33)) {
       legendwidth <- strwidth(bquote(paste(.(legend[[i]]), .(item[[j]]), sep = "")), units = "figure", cex = 1.0)
 
       if (legendwidth > ncol) {
@@ -279,13 +288,13 @@ plot.REBMIX <- function(x,
       py[[i]] <- seq(from = lim[1, i], to = lim[2, i], by = 1.0)
     }
     else {
-      py[[i]] <- seq(from = lim[1, i], to = lim[2, i], length.out = npts / ncol)
+      py[[i]] <- seq(from = lim[1, i], to = lim[2, i], length.out = npts)
     }
   }
 
   w <- as.numeric(x$w[[pos]])
 
-  if (n > 0) {
+  if (N > 0) {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {  
       figno <- 0
     
@@ -300,11 +309,11 @@ plot.REBMIX <- function(x,
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
-            edens <- .densParzenWindow.xy(ey[, i], ey[, j], h[i], h[j])
+            edens <- .densParzenWindow.xy(ey[, i], ey[, j], h[i], h[j], n)
           }
           else
           if (C == .rebmix$Preprocessing[3]) {
-            edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j])
+            edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
           }
 
           pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i, ], Theta[j, ])
@@ -406,7 +415,7 @@ plot.REBMIX <- function(x,
             padj = 1.0)
 
           if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "} - y_{", j, "}$", sep = "")
+            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
           }
           else {
             text <- bquote(y[.(i)] - y[.(j)])
@@ -439,7 +448,7 @@ plot.REBMIX <- function(x,
       }
     }
     
-    if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {  
+    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {  
       figno <- 0
     
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
@@ -448,7 +457,7 @@ plot.REBMIX <- function(x,
 
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
-          edist <- .dist.xy(ey[, i], ey[, j])
+          edist <- .dist.xy(ey[, i], ey[, j], n)
 
           pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i, ], Theta[j, ])
  
@@ -549,7 +558,7 @@ plot.REBMIX <- function(x,
             padj = 1.0)
 
           if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "} - y_{", j, "}$", sep = "")
+            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
           }
           else {
             text <- bquote(y[.(i)] - y[.(j)])
@@ -589,11 +598,11 @@ plot.REBMIX <- function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, 1], h[1])
+        edens <- .densParzenWindow.x(ey[, 1], h[1], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1])
+        edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
       }
 
       pdens <- .dfmix.x(py[[1]], w, Theta[1, ])
@@ -636,7 +645,7 @@ plot.REBMIX <- function(x,
         padj = 1.0)
 
       if (.Device == "tikz output") {
-        text <- "$y_{1} - f(y_{1})$"
+        text <- paste("$y_{1}$", "$\\; - \\;$", "$f(y_{1})$", sep = "")
       }
       else {
         text <- bquote(y[1] - f(y[1]))
@@ -661,8 +670,8 @@ plot.REBMIX <- function(x,
       }        
     }
     
-    if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
-      edist <- .dist.x(ey[, 1])
+    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+      edist <- .dist.x(ey[, 1], n)
 
       pdist <- .pfmix.x(py[[1]], w, Theta[1, ])
 
@@ -704,7 +713,7 @@ plot.REBMIX <- function(x,
         padj = 1.0)
 
       if (.Device == "tikz output") {
-        text <- "$y_{1} - F(y_{1})$"
+        text <- paste("$y_{1}$", "$\\; - \\;$", "$F(y_{1})$", sep = "")
       }
       else {
         text <- bquote(y[1] - F(y[1]))
@@ -730,7 +739,7 @@ plot.REBMIX <- function(x,
     }
   }
   
-  m <- nrow * ncol * ceiling(n / nrow / ncol) - n  
+  m <- nrow * ncol * ceiling(N / nrow / ncol) - N  
   
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
@@ -739,11 +748,11 @@ plot.REBMIX <- function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, i], h[i])
+        edens <- .densParzenWindow.x(ey[, i], h[i], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, i], k, h[i])
+        edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
       }
 
       pdens <- .dfmix.x(py[[i]], w, Theta[i, ])
@@ -786,7 +795,7 @@ plot.REBMIX <- function(x,
         padj = 1.0)
 
       if (.Device == "tikz output") {
-        text <- paste("$y_{", i, "} - f(y_{", i, "})$", sep = "")
+        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$f(y_{", i, "})$", sep = "")
       }
       else {
         text <- bquote(y[.(i)] - f(y[.(i)]))
@@ -820,10 +829,10 @@ plot.REBMIX <- function(x,
   }
   
   if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
-    ylim <- range(x$all.c[[pos]], finite = TRUE)
+    ylim <- range(x$opt.IC[[pos]], finite = TRUE)
   
-    plot(x = 1:x$all.Imax[[pos]],
-      y = x$all.c[[pos]],
+    plot(x = x$opt.c[[pos]],
+      y = x$opt.IC[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -853,76 +862,10 @@ plot.REBMIX <- function(x,
       padj = 1.0)
 
     if (.Device == "tikz output") {
-      text <- paste("$I - ", item[[19]], "$", sep = "")
+      text <- paste("$c$", "$\\; - \\;$", item[[28]], sep = "")
     }
     else {
-      text <- bquote(I - .(item[[19]]))
-    }
-
-    mtext(text = text,
-      side = 1,
-      line = 0,
-      outer = FALSE,
-      adj = 0.5,
-      padj = 0.2,
-      cex = cex)
-      
-    if (m <= 0) {
-      for (l in 1:length(legend)) {
-        mtext(text = legend[[l]],
-          side = 1,
-          line = l - 1,
-          outer = TRUE,
-          adj = 0.5,
-          padj = 0.2,
-          cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
-    }
-    else {
-      m <- m - 1
-    }
-  }
-  
-  if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
-    ylim <- range(x$all.IC[[pos]], finite = TRUE)
-  
-    plot(x = 1:x$all.Imax[[pos]],
-      y = x$all.IC[[pos]],
-      type = "o",
-      main = "",
-      sub = "",
-      xlab = "",
-      ylab = "",
-      ylim = ylim,
-      col = "black",
-      axes = FALSE,
-      lwd = 1,
-      cex = plot.cex,
-      pch = plot.pch)
-
-    box(col = fg, lty = "solid", lwd = 1)
-
-    axis(side = 3,
-      outer = FALSE,
-      lty = "solid",
-      lwd = 1,
-      hadj = 0.5,
-      padj = 1.0)
-
-    axis(side = 2,
-      outer = FALSE,
-      lty = "solid",
-      lwd = 1,
-      hadj = 0.5,
-      padj = 1.0)
-
-    if (.Device == "tikz output") {
-      text <- paste("$I - ", item[[28]], "$", sep = "")
-    }
-    else {
-      text <- bquote(I - .(item[[28]]))
+      text <- bquote(c - .(item[[28]]))
     }
 
     mtext(text = text,
@@ -951,11 +894,11 @@ plot.REBMIX <- function(x,
     }      
   }
   
-  if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
-    ylim <- range(x$all.logL[[pos]], finite = TRUE)
+  if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
+    ylim <- range(x$opt.logL[[pos]], finite = TRUE)
   
-    plot(x = 1:x$all.Imax[[pos]],
-      y = x$all.logL[[pos]],
+    plot(x = x$opt.c[[pos]],
+      y = x$opt.logL[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -985,10 +928,10 @@ plot.REBMIX <- function(x,
       padj = 1.0)
 
     if (.Device == "tikz output") {
-      text <- paste("$I - ", item[[31]], "$", sep = "")
+      text <- paste("$c$", "$\\; - \\;$", item[[31]], sep = "")
     }
     else {
-      text <- bquote(I - .(item[[31]]))
+      text <- bquote(c - .(item[[31]]))
     }
 
     mtext(text = text,
@@ -1017,11 +960,11 @@ plot.REBMIX <- function(x,
     }      
   }  
   
-  if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-    ylim <- range(x$all.D[[pos]], finite = TRUE)
+  if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
+    ylim <- range(x$opt.D[[pos]], finite = TRUE)
   
-    plot(x = 1:x$all.Imax[[pos]],
-      y = x$all.D[[pos]],
+    plot(x = x$opt.c[[pos]],
+      y = x$opt.D[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -1051,10 +994,10 @@ plot.REBMIX <- function(x,
       padj = 1.0)
 
     if (.Device == "tikz output") {
-      text <- paste("$I - ", item[[10]], "$", sep = "")
+      text <- paste("$c$", "$\\; - \\;$", item[[10]], sep = "")
     }
     else {
-      text <- bquote(I - .(item[[10]]))
+      text <- bquote(c - .(item[[10]]))
     }
 
     mtext(text = text,

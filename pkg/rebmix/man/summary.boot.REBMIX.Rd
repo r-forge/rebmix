@@ -4,7 +4,7 @@
 Prints Univariate or Multivariate boot.REBMIX Summary
 }
 \description{
-Returns the \code{boot.summary} output for class boot.REBMIX.
+Returns the \code{summary} output for class boot.REBMIX.
 }
 \usage{
 \method{summary}{boot.REBMIX}(object, ...)
@@ -33,7 +33,6 @@ simulated <- RNGMIX(Dataset = "simulated",
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
-  D = 0.025, 
   cmax = 8, 
   Criterion = "AIC", 
   Variables = "continuous",

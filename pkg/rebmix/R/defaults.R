@@ -9,7 +9,7 @@ Restraints = c("rigid", "loose")),
 .Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints"))
 
 .rebmix.plot <- structure(list(
-what = c("density", "marginal", "c", "IC", "logL", "D", "distribution")),
+what = c("density", "marginal", "IC", "logL", "D", "distribution")),
 .Names = c("what"))
 
 .rebmix.boot <- structure(list(

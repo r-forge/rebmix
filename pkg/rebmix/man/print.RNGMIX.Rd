@@ -37,7 +37,6 @@ print(simulated, pos = 3)
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
-  D = 0.025, 
   cmax = 4, 
   Criterion = "AIC", 
   Variables = "discrete",

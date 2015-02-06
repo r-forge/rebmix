@@ -1,5 +1,22 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7.0}{ 
+\itemize{
+\item Fixed title field in \code{DESCRIPTION} file.
+\item Fixed S3 generic/method consistency bug in \code{NAMESPACE} file.
+\item Fixed line endings in \code{Makevars} file.
+\item Fixed \code{\\VignetteKeyword} entries bug in vignette.
+\item Method \code{predict.list} is converted to function \code{RCLSMIX}.
+\item Method \code{boot} is converted to function \code{boot.REBMIX}.
+\item Method \code{plot} is improved.
+\item Function \code{kseq} is improved.
+\item Function \code{REBMIX} is improved.
+\item Total of positive relative deviations \code{D} is eliminated from \code{REBMIX} arguments.
+\item Value \code{"c"} is eliminated from \code{what} argument.
+\item Fixed bug in C functions \code{InformationCriterionKNN()}, \code{InformationCriterionPW()} and \code{InformationCriterionH()}.
+\item Renewed vignette.
+}
+}
 \section{Changes in version 2.6.2}{ 
 \itemize{
 \item Demos \code{rebmix.galaxy}, \code{rebmix.univariate.normal}, \code{rebmix.mixed.continuous.discrete}, 
@@ -25,7 +42,7 @@
 \item Switch \code{_TIME_LEFT_SWITCH} introduced in C code.
 \item Simplified treatment of loose restraints in C functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
 \item Fixed bug in C functions \code{REBMIXKNN()}, \code{REBMIXPW()} and \code{REBMIXH()}.
-\item Minimum weight multiplier \code{b} is eliminated.
+\item Minimum weight multiplier \code{b} is eliminated from \code{REBMIX} arguments.
 \item Fixed source and destination overlap in memcpy bug in C code.
 }
 }

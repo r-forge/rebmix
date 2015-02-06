@@ -7,7 +7,7 @@ REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
 }
 \usage{
-REBMIX(Dataset = NULL, Preprocessing = NULL, D = 0.025, cmax = 15, 
+REBMIX(Dataset = NULL, Preprocessing = NULL, cmax = 15, 
        Criterion = "AIC", Variables = NULL, pdf = NULL,
        Theta1 = NULL, Theta2 = NULL, K = NULL, y0 = NULL, 
        ymin = NULL, ymax = NULL, ar = 0.1, Restraints = "loose", ...)
@@ -19,12 +19,6 @@ represents one random variable. Number of observations \eqn{n} equals the number
 }
 \item{Preprocessing}{
 a character vector, giving the preprocessing types. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
-}
-\item{D}{
-total of positive relative deviations standing for the maximum acceptable measure of
-distance between predictive and empirical densities. It satisfies the relation \eqn{0 \leq D \leq 1}.
-The default value is \code{0.025}. However, if components with a low probability of occurrence are expected, it has to
-decrease. If \eqn{D = 0} the mixture tends to \eqn{c = c_{\mathrm{max}}} components.
 }
 \item{cmax}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
@@ -90,27 +84,36 @@ Component parameters \code{theta1.i} follow the parametric family types. One of 
 Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
 \item{summary}{
-a data frame with additional information about dataset, preprocessing, \eqn{D}, \eqn{c_{\mathrm{max}}}, information criterion type, 
+a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, information criterion type, 
 \eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
 information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
 }
 \item{pos}{
 position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.
 }
-\item{all.Imax}{
-a list of all numbers of iterations.
+\item{opt.c}{
+a list of vectors containing numbers of components for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
-\item{all.c}{
-a list of all numbers of components.
+\item{opt.IC}{
+a list of vectors containing information criteria for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
+}
+\item{opt.logL}{
+a list of vectors containing log likelihoods for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
+}
+\item{opt.D}{
+a list of vectors containing totals of positive relative deviations for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
+}
+\item{all.K}{
+a list of vectors containing all processed numbers of bins \eqn{v} for the histogram and the Parzen window or all processed numbers of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{all.IC}{
-a list of all information criteria.
-}
-\item{all.logL}{
-a list of all log lekelihoods.
-}
-\item{all.D}{
-a list of all totals of positive relative deviations.
+a list of vectors containing information criteria for all processed numbers of bins \eqn{v} for the histogram and the Parzen window or for all processed numbers of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{call}{
 a function call used to create the object.
@@ -170,7 +173,6 @@ K <- c(v[1], as.integer((v[1] + 1) * (1 + 1 / v[1])^(0:N)))
 
 complex1est <- REBMIX(Dataset = complex1$Dataset, 
   Preprocessing = "histogram", 
-  D = 0.0025, 
   cmax = 30, 
   Criterion = "BIC", 
   Variables = "continuous",

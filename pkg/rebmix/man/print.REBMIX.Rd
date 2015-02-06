@@ -35,13 +35,12 @@ simulated <- RNGMIX(Dataset = "simulated",
   n = c(40, 60, 50),
   Theta = Theta)
   
-simulated
+print(simulated)
 
 ## Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
-  D = 0.025, 
   cmax = 6, 
   Criterion = "AIC", 
   Variables = "discrete",
@@ -51,7 +50,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   
 ## Print and plot finite mixture.  
 
-simulatedest
+print(simulatedest)
 
 plot(simulatedest)
 }

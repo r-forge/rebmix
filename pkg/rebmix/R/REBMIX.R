@@ -1,6 +1,5 @@
 .REBMIX <- function(Dataset = NULL, 
   Preprocessing = NULL, 
-  D = 0.025, 
   cmax = 15,
   Criterion = "AIC",
   Variables = NULL,
@@ -20,11 +19,13 @@
   REBMIX$Theta <- list()
   REBMIX$summary <- list()
   REBMIX$pos <- 1
-  REBMIX$all.Imax <- list()
-  REBMIX$all.c <- list()
-  REBMIX$all.IC <- list()
-  REBMIX$all.logL <- list()
-  REBMIX$all.D <- list()
+  REBMIX$opt.c <- list()
+  REBMIX$opt.IC <- list()
+  REBMIX$opt.logL <- list()
+  REBMIX$opt.D <- list()
+  REBMIX$all.kmax <- list()  
+  REBMIX$all.K <- list()
+  REBMIX$all.IC <- list()  
 
   for (i in 1:length(Dataset)) {
     DatasetName <- names(Dataset)[i]
@@ -88,10 +89,9 @@
         stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
       }      
     }
-
+    
     output <- .C("RREBMIX",
       PreType = as.character(Preprocessing), 
-      D = as.double(D),
       cmax = as.integer(cmax),
       ICType = as.character(Criterion),
       d = as.integer(d),
@@ -109,7 +109,6 @@
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),
       ymax = as.double(ymax),
-      b = as.double(1.0),
       ar = as.double(ar),
       ResType = as.character(Restraints),
       n = as.integer(n),
@@ -125,11 +124,14 @@
       ParFamType = as.character(rep("THE_LONGEST_PARAMETRIC_FAMILY_TYPE", cmax * d)),
       Par0 = double(cmax * d),        
       Par1 = double(cmax * d),  
-      all.Imax = integer(1),
-      all.c = integer(1000), ## 1000 = ItMax see rebmixf.h
-      all.IC = double(1000),
-      all.logL = double(1000),
-      all.D = double(1000),
+      opt.Imax = integer(1),
+      opt.c = integer(1000), ## 1000 = ItMax see rebmixf.h
+      opt.IC = double(1000),
+      opt.logL = double(1000),
+      opt.D = double(1000),
+      all.kmax = integer(1),
+      all.K = integer(max(K) - min(K) + 1),
+      all.IC = double(max(K) - min(K) + 1),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -149,10 +151,27 @@
     dim(output$Par0) <- c(d, c)
     dim(output$Par1) <- c(d, c)
     
-    length(output$all.c) <- output$all.Imax 
-    length(output$all.IC) <- output$all.Imax   
-    length(output$all.logL) <- output$all.Imax 
-    length(output$all.D) <- output$all.Imax 
+    length(output$opt.c) <- output$opt.Imax 
+    length(output$opt.IC) <- output$opt.Imax   
+    length(output$opt.logL) <- output$opt.Imax 
+    length(output$opt.D) <- output$opt.Imax
+    
+    j <- order(output$opt.c, output$opt.logL)
+
+    output$opt.c <- output$opt.c[j]
+    output$opt.IC <- output$opt.IC[j]  
+    output$opt.logL <- output$opt.logL[j]
+    output$opt.D <- output$opt.D[j]
+
+    j <- !duplicated(output$opt.c, fromLast = TRUE)
+
+    output$opt.c <- output$opt.c[j]
+    output$opt.IC <- output$opt.IC[j]  
+    output$opt.logL <- output$opt.logL[j]
+    output$opt.D <- output$opt.D[j]
+    
+    length(output$all.K) <- output$all.kmax 
+    length(output$all.IC) <- output$all.kmax         
 
     REBMIX$w[[i]] <- as.data.frame(rbind(output$W), stringsAsFactors = FALSE)
 
@@ -206,7 +225,6 @@
     
       REBMIX$summary[[i]] <- c(DatasetName, 
         output$PreType, 
-        output$D,
         output$cmax, 
         output$ICType, 
         output$ar,
@@ -224,7 +242,6 @@
     if (Preprocessing == .rebmix$Preprocessing[2]) {
       REBMIX$summary[[i]] <- c(DatasetName, 
         output$PreType, 
-        output$D,
         output$cmax, 
         output$ICType, 
         output$ar,
@@ -240,7 +257,6 @@
     if (Preprocessing == .rebmix$Preprocessing[3]) {
       REBMIX$summary[[i]] <- c(DatasetName, 
         output$PreType, 
-        output$D,
         output$cmax, 
         output$ICType, 
         output$ar,
@@ -254,11 +270,13 @@
         output$df)        
     }
     
-    REBMIX$all.Imax[[i]] <- output$all.Imax;
-    REBMIX$all.c[[i]] <- output$all.c;
-    REBMIX$all.IC[[i]] <- output$all.IC;
-    REBMIX$all.logL[[i]] <- output$all.logL;
-    REBMIX$all.D[[i]] <- output$all.D;     
+    REBMIX$opt.c[[i]] <- output$opt.c;
+    REBMIX$opt.IC[[i]] <- output$opt.IC;
+    REBMIX$opt.logL[[i]] <- output$opt.logL;
+    REBMIX$opt.D[[i]] <- output$opt.D;    
+    REBMIX$all.kmax[[i]] <- output$all.kmax;
+    REBMIX$all.K[[i]] <- output$all.K;
+    REBMIX$all.IC[[i]] <- output$all.IC;     
   }
 
   REBMIX$summary <- as.data.frame(do.call("rbind", REBMIX$summary), stringsAsFactors = FALSE)
@@ -266,7 +284,6 @@
   if (Preprocessing == .rebmix$Preprocessing[1]) {
     colnames(REBMIX$summary) <- c("Dataset", 
       "Preprocessing", 
-      "D", 
       "cmax", 
       "Criterion", 
       "ar", 
@@ -284,7 +301,6 @@
   if (Preprocessing == .rebmix$Preprocessing[2]) {
     colnames(REBMIX$summary) <- c("Dataset", 
       "Preprocessing", 
-      "D", 
       "cmax", 
       "Criterion", 
       "ar", 
@@ -300,7 +316,6 @@
   if (Preprocessing == .rebmix$Preprocessing[3]) {
     colnames(REBMIX$summary) <- c("Dataset", 
       "Preprocessing", 
-      "D", 
       "cmax", 
       "Criterion", 
       "ar", 
@@ -323,7 +338,6 @@
 
 REBMIX <- function(Dataset = NULL, 
   Preprocessing = NULL, 
-  D = 0.025, 
   cmax = 15,
   Criterion = "AIC",
   Variables = NULL,
@@ -339,7 +353,7 @@ REBMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.6.2");
+  message("REBMIX Version 2.7.0");
   flush.console()
 
   if (is.null(Dataset)) {
@@ -373,14 +387,6 @@ REBMIX <- function(Dataset = NULL,
   }
 
   Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = TRUE)
-
-  if (!is.numeric(D)) {
-    stop(sQuote("D"), " numeric is requested!", call. = FALSE)
-  }
-
-  if ((D < 0.0) || (D > 1.0)) {
-    stop(sQuote("D"), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
-  }
 
   if (!is.wholenumber(cmax)) {
     stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
@@ -465,15 +471,16 @@ REBMIX <- function(Dataset = NULL,
   REBMIX$Theta <- list()
   REBMIX$summary <- NULL
   REBMIX$pos <- 1
-  REBMIX$all.Imax <- list()
-  REBMIX$all.c <- list()
-  REBMIX$all.IC <- list()
-  REBMIX$all.logL <- list()
-  REBMIX$all.D <- list()
+  REBMIX$opt.c <- list()
+  REBMIX$opt.IC <- list()
+  REBMIX$opt.logL <- list()
+  REBMIX$opt.D <- list()
+  REBMIX$all.kmax <- list()
+  REBMIX$all.K <- list()
+  REBMIX$all.IC <- list()  
   
   REBMIX$call <- list( 
     Preprocessing = Preprocessing, 
-    D = D, 
     cmax = cmax,
     Criterion = Criterion,
     Variables = Variables,
@@ -491,7 +498,6 @@ REBMIX <- function(Dataset = NULL,
     for (j in 1:length(Criterion)) {
       output <- .REBMIX(Dataset = Dataset, 
         Preprocessing = Preprocessing[i], 
-        D = D, 
         cmax = cmax,
         Criterion = Criterion[j],
         Variables = Variables,
@@ -518,11 +524,13 @@ REBMIX <- function(Dataset = NULL,
       }
       
       for (k in (1:length(Dataset))) {
-        REBMIX$all.Imax[[length(REBMIX$all.Imax) + 1]] <- output$all.Imax[[k]] 
-        REBMIX$all.c[[length(REBMIX$all.c) + 1]] <- output$all.c[[k]] 
+        REBMIX$opt.c[[length(REBMIX$opt.c) + 1]] <- output$opt.c[[k]] 
+        REBMIX$opt.IC[[length(REBMIX$opt.IC) + 1]] <- output$opt.IC[[k]] 
+        REBMIX$opt.logL[[length(REBMIX$opt.logL) + 1]] <- output$opt.logL[[k]] 
+        REBMIX$opt.D[[length(REBMIX$opt.D) + 1]] <- output$opt.D[[k]] 
+        REBMIX$all.kmax[[length(REBMIX$all.kmax) + 1]] <- output$all.kmax[[k]] 
+        REBMIX$all.K[[length(REBMIX$all.K) + 1]] <- output$all.K[[k]] 
         REBMIX$all.IC[[length(REBMIX$all.IC) + 1]] <- output$all.IC[[k]] 
-        REBMIX$all.logL[[length(REBMIX$all.logL) + 1]] <- output$all.logL[[k]] 
-        REBMIX$all.D[[length(REBMIX$all.D) + 1]] <- output$all.D[[k]] 
       }      
     }
   }

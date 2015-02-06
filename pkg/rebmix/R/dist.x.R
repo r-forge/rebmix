@@ -1,4 +1,4 @@
-.dist.x <- function(x)
+.dist.x <- function(x, npts)
 {
   n <- length(x)
   
@@ -9,13 +9,25 @@
   }
   
   y <- y / n
-
-  i <- order(y)
   
+  i <- !duplicated(x) 
+
+  x <- x[i] 
+  y <- y[i]
+  
+  n <- length(y)
+  
+  if (n > npts) {
+    i <- sample.int(n, npts, replace = FALSE, prob = NULL)  
+  
+    x <- x[i]
+    y <- y[i]
+  }
+
   output <- list()
 
-  output$x <- x[i]
-  output$y <- y[i]
+  output$x <- x
+  output$y <- y
 
   rm(list = ls()[!(ls() %in% c("output"))])
 

@@ -1,64 +1,66 @@
 useDynLib(rebmix)
 
 export(RNGMIX,
-       print.RNGMIX,
        REBMIX,
-       print.REBMIX,
-       coef.REBMIX,
-       summary.REBMIX,
-       plot.REBMIX,
-       predict.list,
+       boot.REBMIX,
+       RCLSMIX,
        logL,
-       logL.default,
-       logL.REBMIX,
        AIC.REBMIX,
        AIC3,
-       AIC3.default,
-       AIC3.REBMIX,
        AIC4,
-       AIC4.default,
-       AIC4.REBMIX,
        AICc,
-       AICc.default,
-       AICc.REBMIX,
-       BIC.REBMIX,
        CAIC,
-       CAIC.default,
-       CAIC.REBMIX,
+       BIC.REBMIX,
        HQC,
-       HQC.default,
-       HQC.REBMIX,
        MDL2,
-       MDL2.default,
-       MDL2.REBMIX,
        MDL5,
-       MDL5.default,
-       MDL5.REBMIX,
        AWE,
-       AWE.default,
-       AWE.REBMIX,
        CLC,
-       CLC.default,
-       CLC.REBMIX,
        ICL,
-       ICL.default,
-       ICL.REBMIX,
        ICLBIC,
-       ICLBIC.default,
-       ICLBIC.REBMIX,
        PRD,
-       PRD.default,
-       PRD.REBMIX,
        SSE,
-       SSE.default,
-       SSE.REBMIX,
+       PC,
        demix,
        pemix,
        dfmix,
        pfmix,
-       boot,
-       boot.default,
-       boot.REBMIX,
-       print.boot.REBMIX,
-       summary.boot.REBMIX,
-       kseq) 
+       kseq)
+
+S3method(print, RNGMIX)
+S3method(print, REBMIX)
+S3method(summary, REBMIX)
+S3method(plot, REBMIX)
+S3method(coef, REBMIX)
+S3method(print, boot.REBMIX)
+S3method(summary, boot.REBMIX)
+S3method(logL, default)
+S3method(logL, REBMIX)
+S3method(AIC3, default)
+S3method(AIC3, REBMIX)
+S3method(AIC4, default)
+S3method(AIC4, REBMIX)
+S3method(AICc, default)
+S3method(AICc, REBMIX)
+S3method(CAIC, default)
+S3method(CAIC, REBMIX)
+S3method(HQC, default)
+S3method(HQC, REBMIX)
+S3method(MDL2, default)
+S3method(MDL2, REBMIX)
+S3method(MDL5, default)
+S3method(MDL5, REBMIX)
+S3method(AWE, default)
+S3method(AWE, REBMIX)
+S3method(CLC, default)
+S3method(CLC, REBMIX)
+S3method(ICL, default)
+S3method(ICL, REBMIX)
+S3method(ICLBIC, default)
+S3method(ICLBIC, REBMIX)
+S3method(PRD, default)
+S3method(PRD, REBMIX)
+S3method(SSE, default)
+S3method(SSE, REBMIX)
+S3method(PC, default)
+S3method(PC, REBMIX)

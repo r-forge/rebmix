@@ -1,4 +1,4 @@
-.dist.xy <- function(x, y)
+.dist.xy <- function(x, y, npts)
 {
   n <- length(x)
   
@@ -9,14 +9,28 @@
   }
   
   z <- z / n
-
-  i <- order(z)
   
+  i <- !duplicated(data.frame(x, y))
+
+  x <- x[i] 
+  y <- y[i]
+  z <- z[i]  
+  
+  n <- length(z)
+  
+  if (n > npts) {
+    i <- sample.int(n, npts, replace = FALSE, prob = NULL)  
+  
+    x <- x[i]
+    y <- y[i]
+    z <- z[i]
+  }
+
   output <- list()
 
-  output$x <- x[i]
-  output$y <- y[i]
-  output$z <- z[i]
+  output$x <- x
+  output$y <- y
+  output$z <- z
 
   rm(list = ls()[!(ls() %in% c("output"))])
 

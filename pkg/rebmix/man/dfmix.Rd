@@ -45,7 +45,6 @@ simulated <- RNGMIX(Dataset = "simulated",
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Preprocessing = "Parzen window",
-  D = 0.025,
   cmax = 4,
   Criterion = "BIC",
   Variables = c("continuous", "continuous"),

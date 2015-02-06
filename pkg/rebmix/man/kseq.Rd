@@ -18,7 +18,7 @@ starting value of the sequence. The default value is \code{NULL}.
 end value of the sequence. The default value is \code{NULL}.
 }
 \item{f}{
-number specifying the fraction by which the bins or numbers of nearest neighbours should be separated \eqn{0.0 \leq f \leq 1.0}. The default value is \code{0.05}.
+number specifying the fraction by which the bins or nearest neighbours should be separated \eqn{0.0 < f < 1.0}. The default value is \code{0.05}.
 }
 \item{\dots}{
 currently not used.

@@ -36,7 +36,6 @@ simulated <- RNGMIX(Dataset = "simulated",
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
-  D = 0.025, 
   cmax = 4, 
   Criterion = "AIC", 
   Variables = "continuous",
@@ -47,7 +46,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
 
 simulatedboot <- boot.REBMIX(x = simulatedest, Bootstrap = "nonparametric", B = 20)
 
-simulatedboot
+print(simulatedboot)
 }
 \keyword{print}
 
