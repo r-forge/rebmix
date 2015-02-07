@@ -26,27 +26,61 @@ int  ProgressLength = 0;
 
 /* Adds number of classes or k-nearest neighbours to be processed. Returns 0 if none is added. Otherwise 1 is returned. */
 
-int Golden(AllREBMIXParameterType *AllParType)
+int Golden(AllREBMIXParameterType *AllParType)  /* All parameters. */ 
 {
-    int Stop;
+    FLOAT ICopt;
+    int   i, iopt, Stop = 0;
 
-    if (AllParType->IC[AllParType->c] > AllParType->IC[AllParType->b]) {
-        AllParType->d = AllParType->c;
-        AllParType->c = AllParType->b;
-        AllParType->b = AllParType->d - (int)ceil((AllParType->d - AllParType->a) / Phi);
+    if (AllParType->Bracket) {
+        ICopt = FLOAT_MAX; iopt = 0;
+
+        for (i = 0; i < AllParType->kmax; i++) if (AllParType->K[i]) {
+            if (AllParType->IC[i] < ICopt) {
+                ICopt = AllParType->IC[i]; iopt = i;
+            }
+        }
+
+        AllParType->a = 0; AllParType->d = AllParType->kmax - 1;
+
+        for (i = 0; i < AllParType->kmax; i++) if (AllParType->K[i]) {
+            if (i < iopt) {
+                AllParType->a = i;
+            }
+            else
+            if (i > iopt) {
+                AllParType->d = i; break;
+            }
+        }
+
+        AllParType->b = Max(AllParType->a, AllParType->d - (int)ceil((AllParType->d - AllParType->a) / Phi));
+        AllParType->c = Min(AllParType->d, AllParType->a + (int)ceil((AllParType->d - AllParType->a) / Phi));
 
         AllParType->K[AllParType->b] = AllParType->b + AllParType->K[0];
-
-        Stop = AllParType->IC[AllParType->b] < FLOAT_MAX;
-    }
-    else {
-        AllParType->a = AllParType->b;
-        AllParType->b = AllParType->c;
-        AllParType->c = AllParType->a + (int)ceil((AllParType->d - AllParType->a) / Phi);
-
         AllParType->K[AllParType->c] = AllParType->c + AllParType->K[0];
 
-        Stop = AllParType->IC[AllParType->c] < FLOAT_MAX;
+        AllParType->Bracket = 0;
+    }
+    else {
+        if (AllParType->IC[AllParType->c] > AllParType->IC[AllParType->b]) {
+            AllParType->d = AllParType->c;
+            AllParType->c = AllParType->b;
+            AllParType->b = Max(AllParType->a, AllParType->d - (int)ceil((AllParType->d - AllParType->a) / Phi));
+
+            AllParType->K[AllParType->b] = AllParType->b + AllParType->K[0];
+        }
+        else {
+            AllParType->a = AllParType->b;
+            AllParType->b = AllParType->c;
+            AllParType->c = Min(AllParType->d, AllParType->a + (int)ceil((AllParType->d - AllParType->a) / Phi));
+
+            AllParType->K[AllParType->c] = AllParType->c + AllParType->K[0];
+        }
+
+        Stop = AllParType->d - AllParType->a < 4;
+
+        if (Stop) for (i = AllParType->a + 1; i < AllParType->d; i++) if (AllParType->IC[i] == FLOAT_MAX) {
+            AllParType->K[i] = i + AllParType->K[0]; Stop = 0;
+        }
     }
 
     return (Stop);
@@ -4473,7 +4507,7 @@ int REBMIXH(InputREBMIXParameterType  *InpParType,  /* Input parameters. */
     clock_t                    Start;
     FLOAT                      TimeLeft;
     #endif
-    int                        Error = 0, Stop = 0, FoundGlobal = 0;
+    int                        Error = 0, Stop = 0, Found = 0;
 
     /* InpParType allocation and initialisation. */
 
@@ -4563,13 +4597,7 @@ int REBMIXH(InputREBMIXParameterType  *InpParType,  /* Input parameters. */
         AllParType->K[InpParType->K[i] - InpParType->K[0]] = InpParType->K[i];
     }
 
-    AllParType->a = 0; 
-    AllParType->d = AllParType->kmax - 1;
-    AllParType->b = AllParType->d - (int)floor(AllParType->d / Phi);
-    AllParType->c = (int)ceil(AllParType->d / Phi);
-
-    AllParType->K[AllParType->b] = AllParType->b + InpParType->K[0];
-    AllParType->K[AllParType->c] = AllParType->c + InpParType->K[0];
+    AllParType->Bracket = 1;
 
     AllParType->IC = (FLOAT*)malloc(AllParType->kmax * sizeof(FLOAT));
 
@@ -4743,7 +4771,7 @@ int REBMIXH(InputREBMIXParameterType  *InpParType,  /* Input parameters. */
 
         for (j = 0; j < AllParType->K[i]; j++) K[j] = Y[j][InpParType->d];
 
-        FoundGlobal = 0; Dmin = (FLOAT)0.25; J = 1;
+        Found = 0; Dmin = (FLOAT)0.25; J = 1;
 
         /* Outer loop. */
 
@@ -4853,7 +4881,7 @@ int REBMIXH(InputREBMIXParameterType  *InpParType,  /* Input parameters. */
             if (IC < AllParType->IC[i]) AllParType->IC[i] = IC;
 
             if (IC < OutParType->IC) {
-                FoundGlobal = 1; 
+                Found = 1; 
 
                 OutParType->k = k;
 
@@ -4879,7 +4907,7 @@ int REBMIXH(InputREBMIXParameterType  *InpParType,  /* Input parameters. */
 
         TmpParType.Imax = J - 1;
 
-        if (FoundGlobal) {
+        if (Found) {
             OptParType->Imax = TmpParType.Imax;
 
             memmove(OptParType->c, TmpParType.c, OptParType->Imax * sizeof(int));  
