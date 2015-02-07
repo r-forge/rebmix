@@ -72,6 +72,8 @@ extern "C" {
 #define BufInc 1000
 #endif
 
+#define Min(x, y) ((x < y) ? x : y) 
+#define Max(x, y) ((x > y) ? x : y) 
 #define IsNan(x) ((x) != (x)) 
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x))) 
 
@@ -177,13 +179,14 @@ typedef struct optrebmixparametertype {
 } OptREBMIXParameterType;
 
 typedef struct allrebmixparametertype {
-    int   a;      /* Golden section constant. */
-    int   b;      /* Golden section constant. */
-    int   c;      /* Golden section constant. */
-    int   d;      /* Golden section constant. */
-    int   kmax;   /* Number of classes or k-nearest neighbours. */
-    int   *K;     /* Numbers of classes or k-nearest neighbours. */
-    FLOAT *IC;    /* Information criteria for numbers of classes or k-nearest neighbours. */  
+    int   Bracket; /* 1 for bracketing and 0 for golden section.*/
+    int   a;       /* Golden section constant. */
+    int   b;       /* Golden section constant. */
+    int   c;       /* Golden section constant. */
+    int   d;       /* Golden section constant. */
+    int   kmax;    /* Number of classes or k-nearest neighbours. */
+    int   *K;      /* Numbers of classes or k-nearest neighbours. */
+    FLOAT *IC;     /* Information criteria for numbers of classes or k-nearest neighbours. */  
 } AllREBMIXParameterType;
 
 /* Returns the value log(Gamma(y)) for y > 0. See http://www.nrbook.com/a/bookcpdf/c6-1.pdf */
@@ -314,3 +317,4 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
 #ifdef __cplusplus /* If this is a C++ compiler, end C linkage. */
 }
 #endif
+
