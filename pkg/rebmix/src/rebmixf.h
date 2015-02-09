@@ -317,4 +317,3 @@ int InformationCriterionH(InformationCriterionType_e ICType,        /* Informati
 #ifdef __cplusplus /* If this is a C++ compiler, end C linkage. */
 }
 #endif
-

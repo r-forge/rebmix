@@ -48,7 +48,7 @@ neighbours \eqn{k} for the \emph{k}-nearest neighbour. There is no genuine rule 
 the REBMIX algorithm identifies them from the set \code{K} of input values by
 minimizing the information criterion. The Sturges rule \eqn{v = 1 + \mathrm{log_{2}}(n)}, \eqn{\mathrm{Log}_{10}} rule \eqn{v = 10 \mathrm{log_{10}}(n)} or RootN 
 rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bins
-or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours.
+or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. 
 }
 \item{y0}{
 a vector of length \eqn{d} containing origins. The default value is \code{NULL}.

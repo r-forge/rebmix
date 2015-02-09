@@ -306,7 +306,7 @@ m_{il} = \theta_{il}
 distributions are calculated to enable the classification of the remaining observations.
 \subsection{Bayes classification of the remaining observations}\label{subsec:bayes_classification_of_the_remaining_observations}
 With the increase of the number of components, the number $n_{l}$ of the remaining observations decreases. When the component weight attains the minimum weight \begin{equation}
-w_{l} \leq w_{\mathrm{min}} = 2 D_{\mathrm{min}} (l - 1)
+w_{l} \leq w_{\mathrm{min}} = D_{\mathrm{min}} (l - 1)
 \end{equation}
 it is assumed that remaining observations $k_{lj}$ belong to the existing classes and do not form the new ones. The classification of the remaining observations is accomplished by the Bayes decision rule \citep{Duda_and_Hart_1973}
 \begin{gather}
@@ -319,7 +319,7 @@ $n$ observations are processed, the predictive mixture parameters are gained by 
 \includegraphics[width = \textwidth]{algorithm}
 \caption{REBMIX algorithm.}\label{figure:algorithm}
 \end{figure}
-The REBMIX is listed in Figure~\ref{figure:algorithm}. It requires fifteen arguments, whereby depending on the parametric families five or six of them are mandatory, the rest is optional. It consists of three main loops: the inner $9 \rightarrow 37$, the middle $6 \rightarrow 41$ and the outer loop $4 \rightarrow 47$. The numbers are line indices. In line 2 the observations are preprocessed as described in Section~\nameref{subsec:preprocessing_of_observations}. In line 3, counter $I_{1}$, constant $D_{\mathrm{min}}$ and frequencies $k_{lj}$ are initiated. Next, the outer loop begins. Line 5 presumes that the mixture consists of one component, then the number $r$ of observations to separate is set to $n$ and $n_{l}$ to $n$. If ratio $n_{l} / n$ is greater than the minimum weight introduced in Section~\nameref{subsec:bayes_classification_of_the_remaining_observations}, the middle loop enters. Otherwise, the finite mixture parameter estimation for $v \in K$ is completed.
+The REBMIX is listed in Figure~\ref{figure:algorithm}. It requires fourteen arguments, whereby depending on the parametric families five or six of them are mandatory, the rest is optional. It consists of three main loops: the inner $9 \rightarrow 37$, the middle $6 \rightarrow 41$ and the outer loop $4 \rightarrow 47$. The numbers are line indices. In line 2 the observations are preprocessed as described in Section~\nameref{subsec:preprocessing_of_observations}. In line 3, counter $I_{1}$, constant $D_{\mathrm{min}}$ and frequencies $k_{lj}$ are initiated. Next, the outer loop begins. Line 5 presumes that the mixture consists of one component, then the number $r$ of observations to separate is set to $n$ and $n_{l}$ to $n$. If ratio $n_{l} / n$ is greater than the minimum weight introduced in Section~\nameref{subsec:bayes_classification_of_the_remaining_observations}, the middle loop enters. Otherwise, the finite mixture parameter estimation for $v \in K$ is completed.
 
 In lines 7 and 8, global mode argument $m$ is detected as explained in Section~\nameref{subsec:global_mode_detection}, counter $I_{2}$ is initiated, component weight $w_{l}$ is calculated and frequencies $r_{j}$ are all set to zero. If $I_{2} \leq I_{\mathrm{max}}$, the inner loop enters, otherwise in line 38 the first and the second moments are calculated (see Section~\nameref{subsec:first_and_second_moment_calculation}). Next, number of components $c$ is set to $l$, number of observations $r$ is decreased by $n_{l}$, $l$ is incremented, number $r$ of the remaining observations joins $n_{l}$, residue frequencies $r_{j}$ are all moved to $k_{lj}$, and the Stop criterion is determined.
 
@@ -349,7 +349,7 @@ Parzen window or $k$-nearest neighbour
 \begin{equation}
 D = \sum_{j = 1}^{n} \left \langle \frac{1}{n} - \frac{f(\bm{y}_{j} | c, \bm{w}, \bm{\Theta}) V_{j}}{k_{j}} \right \rangle
 \end{equation}
-is calculated, where $\langle x \rangle = x$ if $x > 0$ and $\langle x \rangle = 0$ if $x \leq 0$. This way global optimum $\mathrm{IC_{opt}}$ corresponding to the optimal number $c_{\mathrm{opt}}$ of components, weights $\bm{w}_{\mathrm{opt}}$ and parameters $\bm{\Theta}_{\mathrm{opt}}$ can always be found. In line 46, the Stop criterion is redetermined and $D_{\mathrm{min}}$ is decreased in such a way that total of positive relative deviations
+is calculated, where $\langle x \rangle = x$ if $x > 0$ and $\langle x \rangle = 0$ if $x \leq 0$. This way global optimum $\mathrm{IC_{opt}}$ corresponding to the optimal number $c_{\mathrm{opt}}$ of components, weights $\bm{w}_{\mathrm{opt}}$ and parameters $\bm{\Theta}_{\mathrm{opt}}$ can always be found. In line 46, $D_{\mathrm{min}}$ is decreased in such a way that total of positive relative deviations
 \begin{eqnarray}
 c D_{{\mathrm{min}}}^{{\mathrm{old}}} = (c + 1) D_{{\mathrm{min}}}^{{\mathrm{new}}} \nonumber
 \end{eqnarray}
@@ -463,7 +463,7 @@ gamma3est <- REBMIX(Dataset = gamma3$Dataset,
 @
 See \texttt{help("REBMIX")} in \pkg{rebmix} for details about specifying arguments for the function returning an object of class \texttt{REBMIX}. List of data frames \texttt{w} contains component weights $w_{l}$ summing to $1$, \texttt{Theta} stands for a list of data frames containing parametric family types \texttt{pdfi}. One of \texttt{"normal"}, \texttt{"lognormal"}, \texttt{"Weibull"}, \texttt{"gamma"}, \texttt{"binomial"}, \texttt{"Poisson"} or \texttt{"Dirac"}. Component parameters \texttt{theta1.i} follow the parametric family types. One of $\mu_{il}$ for normal and lognormal distributions and $\theta_{il}$ for Weibull, gamma, binomial, Poisson and Dirac distributions. Component parameters \texttt{theta2.i} follow \texttt{theta1.i}. One of $\sigma_{il}$ for normal and lognormal distributions, $\beta_{il}$ for Weibull and gamma distributions and $p_{il}$ for binomial distribution. Character vector \texttt{Variables} contains types of variables. One of \texttt{"continuous"} or \texttt{"discrete"}.
 
-In the \texttt{summary} data frame additional information about dataset, preprocessing, $D$, $c_{\mathrm{max}}$, information criterion type, $a_{\mathrm{r}}$, restraints type, optimal $c$, optimal $k$, $\bar{y}_{i0}$, optimal $h_{i}$, information criterion $\mathrm{IC}$ and log likelihood $\operatorname{log} L$ is stored. Position \texttt{pos} in the \texttt{summary} data frame at which log likelihood $\mathrm{log}\, L$ attains its maximum is available, too. See \texttt{help("summary.REBMIX")} for details.
+In the \texttt{summary} data frame additional information about dataset, preprocessing, $c_{\mathrm{max}}$, information criterion type, $a_{\mathrm{r}}$, restraints type, optimal $c$, optimal $k$, $\bar{y}_{i0}$, optimal $h_{i}$, information criterion $\mathrm{IC}$ and log likelihood $\operatorname{log} L$ is stored. Position \texttt{pos} in the \texttt{summary} data frame at which log likelihood $\mathrm{log}\, L$ attains its maximum is available, too. See \texttt{help("summary.REBMIX")} for details.
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(gamma1est)
 @

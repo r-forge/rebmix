@@ -1025,6 +1025,88 @@ plot.REBMIX <- function(x,
       m <- m - 1
     }      
   }
+  
+  if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
+    ylim <- range(x$all.IC[[pos]], finite = TRUE)
+  
+    plot(x = x$all.K[[pos]],
+      y = x$all.IC[[pos]],
+      type = "o",
+      main = "",
+      sub = "",
+      xlab = "",
+      ylab = "",
+      ylim = ylim,
+      col = "black",
+      axes = FALSE,
+      lwd = 1,
+      cex = plot.cex,
+      pch = plot.pch)
+
+    box(col = fg, lty = "solid", lwd = 1)
+
+    axis(side = 3,
+      outer = FALSE,
+      lty = "solid",
+      lwd = 1,
+      hadj = 0.5,
+      padj = 1.0)
+
+    axis(side = 2,
+      outer = FALSE,
+      lty = "solid",
+      lwd = 1,
+      hadj = 0.5,
+      padj = 1.0)
+
+    if (.Device == "tikz output") {
+      text <- paste("$K$", "$\\; - \\;$", item[[28]], sep = "")
+    }
+    else {
+      text <- bquote(K - .(item[[28]]))
+    }
+
+    mtext(text = text,
+      side = 1,
+      line = 0,
+      outer = FALSE,
+      adj = 0.5,
+      padj = 0.2,
+      cex = cex)
+      
+    if (m <= 0) {
+      for (l in 1:length(legend)) {
+        mtext(text = legend[[l]],
+          side = 1,
+          line = l - 1,
+          outer = TRUE,
+          adj = 0.5,
+          padj = 0.2,
+          cex = cex)
+      } 
+      
+      m <- nrow * ncol - 1       
+    }
+    else {
+      m <- m - 1
+    }      
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   rm(list = ls()[!(ls() %in% c("opar"))])
 

@@ -3635,6 +3635,28 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
 
     Error = NULL == OptParType->D; if (Error) goto E0;
 
+    /* AllParType allocation and initialisation. */ 
+
+    AllParType->kmax = InpParType->K[InpParType->kmax - 1] - InpParType->K[0] + 1;
+
+    AllParType->K = (int*)calloc(AllParType->kmax, sizeof(int));
+
+    Error = NULL == AllParType->K; if (Error) goto E0;
+
+    for (i = 0; i < InpParType->kmax; i++) {
+        AllParType->K[InpParType->K[i] - InpParType->K[0]] = InpParType->K[i];
+    }
+
+    AllParType->Bracket = 1;
+
+    AllParType->IC = (FLOAT*)malloc(AllParType->kmax * sizeof(FLOAT));
+
+    Error = NULL == AllParType->IC; if (Error) goto E0;
+
+    for (i = 0; i < AllParType->kmax; i++) {
+        AllParType->IC[i] = FLOAT_MAX;
+    }
+
     /* Allocation and initialisation. */
 
     Y = (FLOAT**)malloc(OutParType->n * sizeof(FLOAT*));
@@ -3761,10 +3783,10 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
     Start = clock();
     #endif
 
-    for (i = 0; i < InpParType->kmax; i++) {
+    do for (i = 0; i < AllParType->kmax; i++) if (AllParType->K[i] && (AllParType->IC[i] == FLOAT_MAX)) {
         /* Preprocessing of observations. */
 
-        Error = PreprocessingKNN(InpParType->K[i], h, OutParType->n, InpParType->d, Y);
+        Error = PreprocessingKNN(AllParType->K[i], h, OutParType->n, InpParType->d, Y);
 
         if (Error) goto E0;
 
@@ -3791,7 +3813,7 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
                 while (I <= ItMax) {
                     /* Rough component parameter estimation. */
 
-                    Error = RoughEstimationKNN(OutParType->n, InpParType->d, Y, InpParType->K[i], h, nl, m, RigidTheta[l], LooseTheta[l], InpParType->ResType);
+                    Error = RoughEstimationKNN(OutParType->n, InpParType->d, Y, AllParType->K[i], h, nl, m, RigidTheta[l], LooseTheta[l], InpParType->ResType);
 
                     if (Error) goto E0;
 
@@ -3805,7 +3827,7 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
 
                             if (Error) goto E0;
 
-                            E[j] = Y[j][InpParType->d] - nl * fl * Y[j][InpParType->d + 1] / InpParType->K[i];
+                            E[j] = Y[j][InpParType->d] - nl * fl * Y[j][InpParType->d + 1] / AllParType->K[i];
 
                             if (E[j] > (FLOAT)0.0) {
                                 Epsilon[j] = E[j] / Y[j][InpParType->d]; 
@@ -3871,14 +3893,16 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
 
             for (j = 0; j < OutParType->n; j++) Y[j][InpParType->d] = (FLOAT)1.0;
 
-            Error = InformationCriterionKNN(InpParType->ICType, InpParType->K[i], OutParType->n, InpParType->d, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
+            Error = InformationCriterionKNN(InpParType->ICType, AllParType->K[i], OutParType->n, InpParType->d, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
             
             if (Error) goto E0;
+
+            if (IC < AllParType->IC[i]) AllParType->IC[i] = IC;
 
             if (IC < OutParType->IC) {
                 Found = 1;
 
-                OutParType->k = InpParType->K[i];
+                OutParType->k = AllParType->K[i];
 
                 memmove(OutParType->h, h, InpParType->d * sizeof(FLOAT));  
                 
@@ -3933,6 +3957,7 @@ int REBMIXKNN(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
         #endif
         #endif
     }
+    while (!Golden(AllParType));
 
 E0:;
 
@@ -4103,6 +4128,28 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
 
     Error = NULL == OptParType->D; if (Error) goto E0;
 
+    /* AllParType allocation and initialisation. */ 
+
+    AllParType->kmax = InpParType->K[InpParType->kmax - 1] - InpParType->K[0] + 1;
+
+    AllParType->K = (int*)calloc(AllParType->kmax, sizeof(int));
+
+    Error = NULL == AllParType->K; if (Error) goto E0;
+
+    for (i = 0; i < InpParType->kmax; i++) {
+        AllParType->K[InpParType->K[i] - InpParType->K[0]] = InpParType->K[i];
+    }
+
+    AllParType->Bracket = 1;
+
+    AllParType->IC = (FLOAT*)malloc(AllParType->kmax * sizeof(FLOAT));
+
+    Error = NULL == AllParType->IC; if (Error) goto E0;
+
+    for (i = 0; i < AllParType->kmax; i++) {
+        AllParType->IC[i] = FLOAT_MAX;
+    }
+
     /* Allocation and initialisation. */
 
     Y = (FLOAT**)malloc(OutParType->n * sizeof(FLOAT*));
@@ -4225,7 +4272,7 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
     Start = clock();
     #endif
 
-    for (i = 0; i < InpParType->kmax; i++) {
+    do for (i = 0; i < AllParType->kmax; i++) if (AllParType->K[i] && (AllParType->IC[i] == FLOAT_MAX)) {
         /* Preprocessing of observations. */
 
         V = (FLOAT)1.0;
@@ -4233,7 +4280,7 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
         for (j = 0; j < InpParType->d; j++) {
             switch (InpParType->VarType[j]) {
             case vtContinuous:
-                h[j] = (InpParType->ymax[j] - InpParType->ymin[j]) / InpParType->K[i]; V *= h[j]; 
+                h[j] = (InpParType->ymax[j] - InpParType->ymin[j]) / AllParType->K[i]; V *= h[j]; 
 
                 break;
             case vtDiscrete:
@@ -4352,10 +4399,12 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
             
             if (Error) goto E0;
 
+            if (IC < AllParType->IC[i]) AllParType->IC[i] = IC;
+
             if (IC < OutParType->IC) {
                 Found = 1;
 
-                OutParType->k = InpParType->K[i];
+                OutParType->k = AllParType->K[i];
 
                 memmove(OutParType->h, h, InpParType->d * sizeof(FLOAT));  
                 
@@ -4410,6 +4459,7 @@ int REBMIXPW(InputREBMIXParameterType   *InpParType,  /* Input parameters. */
         #endif
         #endif
     }
+    while (!Golden(AllParType));
 
 E0:; 
     
