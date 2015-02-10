@@ -5,12 +5,12 @@ export(RNGMIX,
        boot.REBMIX,
        RCLSMIX,
        logL,
-       AIC.REBMIX,
+       AIC,
        AIC3,
        AIC4,
        AICc,
        CAIC,
-       BIC.REBMIX,
+       BIC,
        HQC,
        MDL2,
        MDL5,
@@ -34,33 +34,3 @@ S3method(plot, REBMIX)
 S3method(coef, REBMIX)
 S3method(print, boot.REBMIX)
 S3method(summary, boot.REBMIX)
-S3method(logL, default)
-S3method(logL, REBMIX)
-S3method(AIC3, default)
-S3method(AIC3, REBMIX)
-S3method(AIC4, default)
-S3method(AIC4, REBMIX)
-S3method(AICc, default)
-S3method(AICc, REBMIX)
-S3method(CAIC, default)
-S3method(CAIC, REBMIX)
-S3method(HQC, default)
-S3method(HQC, REBMIX)
-S3method(MDL2, default)
-S3method(MDL2, REBMIX)
-S3method(MDL5, default)
-S3method(MDL5, REBMIX)
-S3method(AWE, default)
-S3method(AWE, REBMIX)
-S3method(CLC, default)
-S3method(CLC, REBMIX)
-S3method(ICL, default)
-S3method(ICL, REBMIX)
-S3method(ICLBIC, default)
-S3method(ICLBIC, REBMIX)
-S3method(PRD, default)
-S3method(PRD, REBMIX)
-S3method(SSE, default)
-S3method(SSE, REBMIX)
-S3method(PC, default)
-S3method(PC, REBMIX)

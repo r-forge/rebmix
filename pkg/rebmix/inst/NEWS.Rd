@@ -13,7 +13,10 @@
 \item Function \code{REBMIX} is improved.
 \item Total of positive relative deviations \code{D} is eliminated from \code{REBMIX} arguments.
 \item Value \code{"c"} is eliminated from \code{what} argument.
+\item Value \code{"K"} is added to \code{what} argument.
 \item Fixed bug in C functions \code{InformationCriterionKNN()}, \code{InformationCriterionPW()} and \code{InformationCriterionH()}.
+\item Fixed bug Illegal characters found in URL.
+\item Methods \code{AIC}, \code{AIC3}, \code{AIC4}, \code{AICc}, \code{CAIC}, \code{BIC}, \code{HQC}, \code{MDL2}, \code{MDL5}, \code{AWE}, \code{CLC}, \code{ICL}, \code{ICLBIC}, \code{PRD}, \code{SSE} and \code{PC} are converted to functions with the same names.
 \item Renewed vignette.
 }
 }

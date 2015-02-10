@@ -1,10 +1,6 @@
 \name{MDL}
 \alias{MDL2}
-\alias{MDL2.default}
-\alias{MDL2.REBMIX}
 \alias{MDL5}
-\alias{MDL5.default}
-\alias{MDL5.REBMIX}
 \title{
 Minimum Description Length
 }
@@ -12,8 +8,8 @@ Minimum Description Length
 Returns the minimum desription length at \code{pos} for class REBMIX.
 }
 \usage{
-\method{MDL2}{REBMIX}(object, pos = 1, ...)
-\method{MDL5}{REBMIX}(object, pos = 1, ...)
+MDL2(object, pos = 1, ...)
+MDL5(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

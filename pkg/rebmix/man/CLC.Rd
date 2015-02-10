@@ -1,7 +1,5 @@
 \name{CLC}
 \alias{CLC}
-\alias{CLC.default}
-\alias{CLC.REBMIX}
 \title{
 Classification Likelihood Criterion
 }
@@ -9,7 +7,7 @@ Classification Likelihood Criterion
 Returns the classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{CLC}{REBMIX}(object, pos = 1, ...)
+CLC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

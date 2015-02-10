@@ -1,5 +1,5 @@
 \name{AIC}
-\alias{AIC.REBMIX}
+\alias{AIC}
 \alias{AIC3}
 \alias{AIC3.default}
 \alias{AIC3.REBMIX}
@@ -19,11 +19,11 @@ Akaike Information Criterion
 Returns the Akaike information criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{AIC}{REBMIX}(object, pos = 1, ...)
-\method{AIC3}{REBMIX}(object, pos = 1, ...)
-\method{AIC4}{REBMIX}(object, pos = 1, ...)
-\method{AICc}{REBMIX}(object, pos = 1, ...)
-\method{CAIC}{REBMIX}(object, pos = 1, ...)
+AIC(object, pos = 1, ...)
+AIC3(object, pos = 1, ...)
+AIC4(object, pos = 1, ...)
+AICc(object, pos = 1, ...)
+CAIC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

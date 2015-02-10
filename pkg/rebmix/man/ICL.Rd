@@ -1,7 +1,5 @@
 \name{ICL}
 \alias{ICL}
-\alias{ICL.default}
-\alias{ICL.REBMIX}
 \title{
 Integrated Classification Likelihood Criterion
 }
@@ -9,7 +7,7 @@ Integrated Classification Likelihood Criterion
 Returns the integrated classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{ICL}{REBMIX}(object, pos = 1, ...)
+ICL(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

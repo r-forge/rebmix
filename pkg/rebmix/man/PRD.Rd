@@ -1,7 +1,5 @@
 \name{PRD}
 \alias{PRD}
-\alias{PRD.default}
-\alias{PRD.REBMIX}
 \title{
 Total of Positive Relative Deviations
 }
@@ -9,7 +7,7 @@ Total of Positive Relative Deviations
 Returns the total of positive relative deviations \code{D} at \code{pos} for class REBMIX.
 }
 \usage{
-\method{PRD}{REBMIX}(object, pos = 1, ...)
+PRD(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

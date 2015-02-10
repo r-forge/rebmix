@@ -1,7 +1,5 @@
 \name{SSE}
 \alias{SSE}
-\alias{SSE.default}
-\alias{SSE.REBMIX}
 \title{
 Sum of Squares Error
 }
@@ -9,7 +7,7 @@ Sum of Squares Error
 Returns the sum of squares error at \code{pos} for class REBMIX.
 }
 \usage{
-\method{SSE}{REBMIX}(object, pos = 1, ...)
+SSE(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

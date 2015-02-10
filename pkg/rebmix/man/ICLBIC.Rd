@@ -1,7 +1,5 @@
 \name{ICLBIC}
 \alias{ICLBIC}
-\alias{ICLBIC.default}
-\alias{ICLBIC.REBMIX}
 \title{
 Approximate Integrated Classification Likelihood Criterion
 }
@@ -9,7 +7,7 @@ Approximate Integrated Classification Likelihood Criterion
 Returns the approximate integrated classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{ICLBIC}{REBMIX}(object, pos = 1, ...)
+ICLBIC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

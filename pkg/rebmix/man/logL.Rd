@@ -1,7 +1,5 @@
 \name{logL}
 \alias{logL}
-\alias{logL.default}
-\alias{logL.REBMIX}
 \title{
 Log Likelihood
 }
@@ -9,7 +7,7 @@ Log Likelihood
 Returns the log likelihood at \code{pos} for class REBMIX.
 }
 \usage{
-\method{logL}{REBMIX}(object, pos = 1, ...)
+logL(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

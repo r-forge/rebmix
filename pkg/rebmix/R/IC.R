@@ -155,15 +155,7 @@
   invisible(output)
 } ## .IC
 
-logL <- function(object, pos = 1, ...) 
-UseMethod("logL")
-
-logL.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## logL.default
-
-logL.REBMIX <- function(object, 
+logL <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -177,9 +169,9 @@ logL.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## logL.REBMIX
+} ## logL
 
-AIC.REBMIX <- function(object, 
+AIC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -193,17 +185,9 @@ AIC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## AIC.REBMIX
+} ## AIC
 
-AIC3 <- function(object, pos = 1, ...) 
-UseMethod("AIC3")
-
-AIC3.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## AIC3.default
-
-AIC3.REBMIX <- function(object, 
+AIC3 <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -217,17 +201,9 @@ AIC3.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## AIC3.REBMIX
+} ## AIC3
 
-AIC4 <- function(object, pos = 1, ...) 
-UseMethod("AIC4")
-
-AIC4.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## AIC4.default
-
-AIC4.REBMIX <- function(object, 
+AIC4 <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -241,17 +217,9 @@ AIC4.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## AIC4.REBMIX
+} ## AIC4
 
-AICc <- function(object, pos = 1, ...) 
-UseMethod("AICc")
-
-AICc.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## AICc.default
-
-AICc.REBMIX <- function(object, 
+AICc <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -265,9 +233,9 @@ AICc.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## AICc.REBMIX
+} ## AICc
 
-BIC.REBMIX <- function(object, 
+BIC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -281,17 +249,9 @@ BIC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## BIC.REBMIX
+} ## BIC
 
-CAIC <- function(object, pos = 1, ...) 
-UseMethod("CAIC")
-
-CAIC.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## CAIC.default
-
-CAIC.REBMIX <- function(object, 
+CAIC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -305,17 +265,9 @@ CAIC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## CAIC.REBMIX
+} ## CAIC
 
-HQC <- function(object, pos = 1, ...) 
-UseMethod("HQC")
-
-HQC.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## HQC.default
-
-HQC.REBMIX <- function(object, 
+HQC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -329,17 +281,9 @@ HQC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## HQC.REBMIX
+} ## HQC
 
-MDL2 <- function(object, pos = 1, ...) 
-UseMethod("MDL2")
-
-MDL2.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## MDL2.default
-
-MDL2.REBMIX <- function(object, 
+MDL2 <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -353,17 +297,9 @@ MDL2.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## MDL2.REBMIX
+} ## MDL2
 
-MDL5 <- function(object, pos = 1, ...) 
-UseMethod("MDL5")
-
-MDL5.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## MDL5.default
-
-MDL5.REBMIX <- function(object, 
+MDL5 <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -377,17 +313,9 @@ MDL5.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## MDL5.REBMIX
+} ## MDL5
 
-AWE <- function(object, pos = 1, ...) 
-UseMethod("AWE")
-
-AWE.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## AWE.default
-
-AWE.REBMIX <- function(object, 
+AWE <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -401,17 +329,9 @@ AWE.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## AWE.REBMIX
+} ## AWE
 
-CLC <- function(object, pos = 1, ...) 
-UseMethod("CLC")
-
-CLC.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## CLC.default
-
-CLC.REBMIX <- function(object, 
+CLC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -425,17 +345,9 @@ CLC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## CLC.REBMIX
+} ## CLC
 
-ICL <- function(object, pos = 1, ...) 
-UseMethod("ICL")
-
-ICL.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## ICL.default
-
-ICL.REBMIX <- function(object, 
+ICL <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -449,17 +361,9 @@ ICL.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## ICL.REBMIX
+} ## ICL
 
-ICLBIC <- function(object, pos = 1, ...) 
-UseMethod("ICLBIC")
-
-ICLBIC.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## ICLBIC.default
-
-ICLBIC.REBMIX <- function(object, 
+ICLBIC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -473,17 +377,9 @@ ICLBIC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## ICLBIC.REBMIX
+} ## ICLBIC
 
-PRD <- function(object, pos = 1, ...) 
-UseMethod("PRD")
-
-PRD.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## PRD.default
-
-PRD.REBMIX <- function(object, 
+PRD <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -497,17 +393,9 @@ PRD.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## PRD.REBMIX
+} ## PRD
 
-SSE <- function(object, pos = 1, ...) 
-UseMethod("SSE")
-
-SSE.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## SSE.default
-
-SSE.REBMIX <- function(object, 
+SSE <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -521,17 +409,9 @@ SSE.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## SSE.REBMIX
+} ## SSE
 
-PC <- function(object, pos = 1, ...) 
-UseMethod("PC")
-
-PC.default <- function(object, pos = 1, ...)
-{
-  stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
-} ## PC.default
-
-PC.REBMIX <- function(object, 
+PC <- function(object, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
@@ -545,7 +425,7 @@ PC.REBMIX <- function(object,
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-} ## PC.REBMIX
+} ## PC
 
 
 

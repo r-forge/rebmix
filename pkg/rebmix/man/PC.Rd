@@ -1,7 +1,5 @@
 \name{PC}
 \alias{PC}
-\alias{PC.default}
-\alias{PC.REBMIX}
 \title{
 Partition Coefficient
 }
@@ -9,7 +7,7 @@ Partition Coefficient
 Returns the partition coefficient of Bezdek at \code{pos} for class REBMIX.
 }
 \usage{
-\method{PC}{REBMIX}(object, pos = 1, ...)
+PC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

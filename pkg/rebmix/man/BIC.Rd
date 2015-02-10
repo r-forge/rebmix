@@ -1,5 +1,5 @@
 \name{BIC}
-\alias{BIC.REBMIX}
+\alias{BIC}
 \title{
 Bayesian Information Criterion
 }
@@ -7,7 +7,7 @@ Bayesian Information Criterion
 Returns the Bayesian information criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{BIC}{REBMIX}(object, pos = 1, ...)
+BIC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

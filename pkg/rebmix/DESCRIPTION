@@ -1,6 +1,6 @@
 Package: rebmix
 Version: 2.7.0
-Date: 2015-02-04
+Date: 2015-02-10
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si"))
 Title: Rough - Enhanced - Bayesian Finite Mixture Modeling

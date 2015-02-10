@@ -109,16 +109,10 @@ pdf <- c("normal", "Dirac", "normal", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac")
 
-K <- list(13:44, 1, 13:44, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+K <- list(kseq(6, 20, 0.05), 1, kseq(6, 20, 0.05), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 ymin <- as.numeric(apply(trainall, 2, min))
 ymax <- as.numeric(apply(trainall, 2, max))
-
-## In case of zero occurrences for discrete and integer variables 
-## Laplace smoothing is applied.
-
-LS <- list(NA, 0:7, NA, 0:15, ymin[5]:ymax[5], 0:6, 0:13, 
-  0:5, 0:4, 0:1, NA, NA, ymin[13]:ymax[13], 0:40)
 
 adultest <- list()
 
@@ -134,8 +128,8 @@ for (i in c(1:14)) {
     ymin = ymin[i],
     ymax = ymax[i])
 
-    plot(adultest[[i]], pos = 1, nrow = 1, ncol = 1)
-    plot(adultest[[i]], pos = 2, nrow = 1, ncol = 1)
+    plot(adultest[[i]], pos = 1, nrow = 1, ncol = 2, what = c("den", "IC"))
+    plot(adultest[[i]], pos = 2, nrow = 1, ncol = 2, what = c("den", "IC"))
 }
 
 ## Best-first feature subset selection.

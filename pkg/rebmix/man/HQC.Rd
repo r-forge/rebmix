@@ -1,7 +1,5 @@
 \name{HQC}
 \alias{HQC}
-\alias{HQC.default}
-\alias{HQC.REBMIX}
 \title{
 Hannan-Quinn Information Criterion
 }
@@ -9,7 +7,7 @@ Hannan-Quinn Information Criterion
 Returns the Hannan-Quinn information criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{HQC}{REBMIX}(object, pos = 1, ...)
+HQC(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{

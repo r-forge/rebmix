@@ -1,7 +1,5 @@
 \name{AWE}
 \alias{AWE}
-\alias{AWE.default}
-\alias{AWE.REBMIX}
 \title{
 Approximate Weight of Evidence Criterion
 }
@@ -9,7 +7,7 @@ Approximate Weight of Evidence Criterion
 Returns the approximate weight of evidence criterion at \code{pos} for class REBMIX.
 }
 \usage{
-\method{AWE}{REBMIX}(object, pos = 1, ...)
+AWE(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{
