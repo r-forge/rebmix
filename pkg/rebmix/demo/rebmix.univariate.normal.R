@@ -1,8 +1,7 @@
 ##############################################
 ## R sources for reproducing the results in ##
 ##   Marko Nagode:                          ##
-##   rebmix: An R Package for Continuous    ##
-##   and Discrete Finite Mixture Models     ##
+##   Finite Mixture Modeling via REBMIX     ##
 ##############################################
 
 options(prompt = "> ", continue = "+ ", width = 70,
@@ -148,17 +147,6 @@ for (j in 1:length(n)) {
 
     table[i, j * 2 - 1] <- mean(as.numeric(normalest[[i, j]]$summary$c))  
     table[i, j * 2] <- sd(as.numeric(normalest[[i, j]]$summary$c))
-  }
-}
-
-table
-
-table <- array(data = 0, dim = c(15, 6))
-
-for (j in 1:length(n)) {
-  for (i in 1:15) {
-    table[i, j * 2 - 1] <- min(as.numeric(normalest[[i, j]]$summary$v))  
-    table[i, j * 2] <- max(as.numeric(normalest[[i, j]]$summary$v))
   }
 }
 

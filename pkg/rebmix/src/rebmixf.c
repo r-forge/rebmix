@@ -5551,7 +5551,7 @@ int RunREBMIXTemplateFile(char *file)
     memset(&AllParType, 0, sizeof(AllREBMIXParameterType));
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.7.0\n");
+    printf("REBMIX Version 2.7.1\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {

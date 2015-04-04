@@ -1,8 +1,7 @@
 ##############################################
 ## R sources for reproducing the results in ##
 ##   Marko Nagode:                          ##
-##   rebmix: An R Package for Continuous    ##
-##   and Discrete Finite Mixture Models     ##
+##   Finite Mixture Modeling via REBMIX     ##
 ##############################################
 
 options(prompt = "> ", continue = "+ ", width = 70,
@@ -45,7 +44,10 @@ mixedest <- REBMIX(Dataset = mixed$Dataset, Preprocessing = "histogram", cmax = 
   pdf = c("lognormal", "Poisson", "binomial", "Weibull"),
   Theta1 = c(NA, NA, 10, NA), K = kseq(Sturges, Log10, 0.1))
 
-plot(mixedest, what = c("dens", "marg", "IC", "D"), nrow = 4, ncol = 3, npts = 1000)
+#library("tikzDevice") # Uncomment to use tikzDevice package.
+#tikz("mixed.tex", width = 4.5, height = 4.5) # Uncomment to use tikzDevice package.
+plot(mixedest, what = c("dens", "marg", "IC", "logL"), nrow = 4, ncol = 3, npts = 200)
+#dev.off() # Uncomment to use tikzDevice package.
 
 ## Bootstrap finite mixture.
 

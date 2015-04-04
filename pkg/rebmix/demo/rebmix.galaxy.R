@@ -1,8 +1,7 @@
 ##############################################
 ## R sources for reproducing the results in ##
 ##   Marko Nagode:                          ##
-##   rebmix: An R Package for Continuous    ##
-##   and Discrete Finite Mixture Models     ##
+##   Finite Mixture Modeling via REBMIX     ##
 ##############################################
 
 options(prompt = "> ", continue = "+ ", width = 70,
@@ -45,6 +44,9 @@ summary(galaxyest$lognormal)
 summary(galaxyest$Weibull)
 summary(galaxyest$gamma)
 
-plot(galaxyest$Weibull, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+#library("tikzDevice") # Uncomment to use tikzDevice package.
+#tikz("galaxy.tex", width = 4.5, height = 2.25) # Uncomment to use tikzDevice package.
+plot(galaxyest$lognormal, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+#dev.off() # Uncomment to use tikzDevice package.
 
-coef(galaxyest$Weibull, pos = 1)
+coef(galaxyest$lognormal, pos = 1)

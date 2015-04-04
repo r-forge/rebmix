@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7.1}{ 
+\itemize{
+\item Demos \code{rebmix.galaxy}, \code{rebmix.univariate.normal}, \code{rebmix.mixed.continuous.discrete} and 
+\code{rebmix.multivariate.normal} are changed. 
+}
+}
 \section{Changes in version 2.7.0}{ 
 \itemize{
 \item Fixed title field in \code{DESCRIPTION} file.

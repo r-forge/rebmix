@@ -1,8 +1,7 @@
 ##############################################
 ## R sources for reproducing the results in ##
 ##   Marko Nagode:                          ##
-##   rebmix: An R Package for Continuous    ##
-##   and Discrete Finite Mixture Models     ##
+##   Finite Mixture Modeling via REBMIX     ##
 ##############################################
 
 options(prompt = "> ", continue = "+ ", width = 70,

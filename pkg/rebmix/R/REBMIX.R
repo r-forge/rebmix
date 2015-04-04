@@ -353,7 +353,7 @@ REBMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.7.0");
+  message("REBMIX Version 2.7.1");
   flush.console()
 
   if (is.null(Dataset)) {
