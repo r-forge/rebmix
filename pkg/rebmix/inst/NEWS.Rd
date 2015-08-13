@@ -5,6 +5,7 @@
 \item Switch \code{_TIME_LEFT_SWITCH} eliminated from C code.
 \item C code converted into object-oriented C++ code.
 \item Fixed no visible global function definition bug in \code{NAMESPACE} file.
+\item Renewed vignette.
 }
 }
 \section{Changes in version 2.7.1}{ 
