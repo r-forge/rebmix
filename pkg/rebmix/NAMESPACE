@@ -1,5 +1,7 @@
 useDynLib(rebmix)
 
+import("stats", "utils", "graphics", "grDevices")
+
 export(RNGMIX,
        REBMIX,
        boot.REBMIX,

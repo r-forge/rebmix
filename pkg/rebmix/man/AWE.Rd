@@ -7,10 +7,10 @@ Approximate Weight of Evidence Criterion
 Returns the approximate weight of evidence criterion at \code{pos} for class REBMIX.
 }
 \usage{
-AWE(object, pos = 1, ...)
+AWE(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

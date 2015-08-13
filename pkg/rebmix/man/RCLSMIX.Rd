@@ -7,10 +7,10 @@ Predicts Class Membership Based Upon a Model Trained by REBMIX
 Takes a list of objects of class \code{REBMIX}, prior probabilities \code{P} and data frame \code{Dataset} with test classes and returns predictive classes.
 }
 \usage{
-RCLSMIX(object, P = NULL, Dataset = NULL, ...)      
+RCLSMIX(x, P = NULL, Dataset = NULL, ...)      
 }
 \arguments{
-\item{object}{
+\item{x}{
 a list of objects of class \code{REBMIX} containing outputs for a finite set of size \eqn{s} of classes \eqn{\Omega_g}.
 }
 \item{P}{

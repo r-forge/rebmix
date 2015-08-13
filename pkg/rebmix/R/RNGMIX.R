@@ -5,7 +5,7 @@ RNGMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.7.1");
+  message("RNGMIX Version 2.7.2");
   flush.console()
   
   if (is.null(Dataset)) {
@@ -108,11 +108,11 @@ RNGMIX <- function(Dataset = NULL,
       d = as.integer(d),
       c = as.integer(c),
       N = as.integer(n),
-      ParFamType = as.character(pdf),
-      Par0 = as.double(theta1),
-      Par1 = as.double(theta2),
+      pdf = as.character(pdf),
+      Theta1 = as.double(theta1),
+      Theta2 = as.double(theta2),
       n = integer(1),
-      X = double(sum(n) * d),
+      Y = double(sum(n) * d),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -120,12 +120,12 @@ RNGMIX <- function(Dataset = NULL,
       stop("in RNGMIX!", call. = FALSE); return(NA)
     }
 
-    dim(output$X) <- c(output$n, d)
+    dim(output$Y) <- c(output$n, d)
 
-    xmin <- as.numeric(apply(rbind(xmin, output$X), 2, min))
-    xmax <- as.numeric(apply(rbind(xmax, output$X), 2, max))
+    xmin <- as.numeric(apply(rbind(xmin, output$Y), 2, min))
+    xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
-    RNGMIX$Dataset[[i]] <- as.data.frame(output$X, stringsAsFactors = FALSE)
+    RNGMIX$Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
 
     IDum <- IDum - 1
   }

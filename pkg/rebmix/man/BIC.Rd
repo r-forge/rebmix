@@ -7,10 +7,10 @@ Bayesian Information Criterion
 Returns the Bayesian information criterion at \code{pos} for class REBMIX.
 }
 \usage{
-BIC(object, pos = 1, ...)
+BIC(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

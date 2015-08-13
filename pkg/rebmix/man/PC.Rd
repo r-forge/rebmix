@@ -7,10 +7,10 @@ Partition Coefficient
 Returns the partition coefficient of Bezdek at \code{pos} for class REBMIX.
 }
 \usage{
-PC(object, pos = 1, ...)
+PC(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

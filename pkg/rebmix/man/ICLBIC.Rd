@@ -7,10 +7,10 @@ Approximate Integrated Classification Likelihood Criterion
 Returns the approximate integrated classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-ICLBIC(object, pos = 1, ...)
+ICLBIC(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

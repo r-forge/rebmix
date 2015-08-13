@@ -7,10 +7,10 @@ Integrated Classification Likelihood Criterion
 Returns the integrated classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-ICL(object, pos = 1, ...)
+ICL(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

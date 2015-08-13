@@ -35,3 +35,20 @@ citEntry(entry = "Article",
         "Communications in Statistics - Theory and Methods, 40(11), 2022-2034.",
         "URL http://www.informaworld.com/smpp/content~db=all~content=a935984004~frm=titlelink.")
 )
+
+citEntry(entry = "Article",
+  title = "Finite Mixture Modeling via REBMIX",
+  author  = personList(as.person("Marko Nagode")),
+  journal  = "Journal of Algorithms and Optimization",
+  year = "2015",
+  volume = "3",
+  number = "2",
+  pages = "14-28",
+  url = "http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625",
+
+  textVersion  =
+  paste("Marko Nagode (2015).",
+        "Finite Mixture Modeling via REBMIX.",
+        "Journal of Algorithms and Optimization, 3(2), 14-28.",
+        "URL http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625.")
+)

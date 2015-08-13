@@ -7,10 +7,10 @@ Sum of Squares Error
 Returns the sum of squares error at \code{pos} for class REBMIX.
 }
 \usage{
-SSE(object, pos = 1, ...)
+SSE(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

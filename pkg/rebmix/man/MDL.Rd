@@ -8,11 +8,11 @@ Minimum Description Length
 Returns the minimum desription length at \code{pos} for class REBMIX.
 }
 \usage{
-MDL2(object, pos = 1, ...)
-MDL5(object, pos = 1, ...)
+MDL2(x, pos = 1, ...)
+MDL5(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

@@ -7,10 +7,10 @@ Classification Likelihood Criterion
 Returns the classification likelihood criterion at \code{pos} for class REBMIX.
 }
 \usage{
-CLC(object, pos = 1, ...)
+CLC(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

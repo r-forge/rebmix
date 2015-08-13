@@ -1,30 +1,30 @@
-RCLSMIX <- function(object,
+RCLSMIX <- function(x,
   P = NULL,
   Dataset = NULL, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  if (missing(object)) {
-    stop(sQuote("object"), " object or list of classes REBMIX is requested!", call. = FALSE)
+  if (missing(x)) {
+    stop(sQuote("x"), " object or list of classes REBMIX is requested!", call. = FALSE)
   }
 
-  if (class(object) == "list") {
-    o <- length(object)
+  if (class(x) == "list") {
+    o <- length(x)
 
     for (i in 1:o) {
-      if (class(object[[i]]) != "REBMIX") {
-        stop(sQuote("object"), " list of classes REBMIX is requested!", call. = FALSE)
+      if (class(x[[i]]) != "REBMIX") {
+        stop(sQuote("x"), " list of classes REBMIX is requested!", call. = FALSE)
       }
     }
   }
   else
-  if (class(object) == "REBMIX") {
+  if (class(x) == "REBMIX") {
     o <- 1;
 
-    object[[1]] <- object
+    x[[1]] <- x
   }
   else {
-    stop(sQuote("object"), " object or list of classes REBMIX is requested!", call. = FALSE)
+    stop(sQuote("x"), " object or list of classes REBMIX is requested!", call. = FALSE)
   }
 
   if (is.null(Dataset)) {
@@ -33,12 +33,12 @@ RCLSMIX <- function(object,
 
   Dataset <- as.data.frame(Dataset)
 
-  s <- nrow(object[[1]]$summary)
+  s <- nrow(x[[1]]$summary)
 
   if (o > 1) {
     for (i in 2:o) {
-      if (s != nrow(object[[i]]$summary)) {
-        stop(sQuote("object"), " list of classes REBMIX with equal number of classes is requested!", call. = FALSE)
+      if (s != nrow(x[[i]]$summary)) {
+        stop(sQuote("x"), " list of classes REBMIX with equal number of classes is requested!", call. = FALSE)
       }
     }
   }
@@ -49,7 +49,7 @@ RCLSMIX <- function(object,
     }
 
     if (s != length(P)) {
-      stop(sQuote("object"), " and ", sQuote("P"), " must be of the same length!", call. = FALSE)
+      stop(sQuote("x"), " and ", sQuote("P"), " must be of the same length!", call. = FALSE)
     }
   }
 
@@ -67,34 +67,34 @@ RCLSMIX <- function(object,
 
   for (io in 1:o) {
     for (is in 1:s) {
-      nrow <- nrow(object[[io]]$Theta[[is]])
-      ncol <- ncol(object[[io]]$Theta[[is]])
+      nrow <- nrow(x[[io]]$Theta[[is]])
+      ncol <- ncol(x[[io]]$Theta[[is]])
 
       c[[io, is]] <- ncol
 
-      w[[io, is]] <- as.numeric(object[[io]]$w[[is]])
+      w[[io, is]] <- as.numeric(x[[io]]$w[[is]])
 
       pdf[[io, is]] <- array(data = NA, dim = c(nrow, ncol), dimnames = NULL)
       theta1[[io, is]] <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
       theta2[[io, is]] <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
 
       for (j in 1:ncol) {
-        M <- match(object[[io]]$Theta[[is]][, j], .rebmix$pdf)
+        M <- match(x[[io]]$Theta[[is]][, j], .rebmix$pdf)
 
         d[io] <- 1;
 
         for (l in 1:length(M)) {
           if (M[l] %in% which(.rebmix$pdf.nargs == 2)) {
-            pdf[[io, is]][d[io], j] <- object[[io]]$Theta[[is]][l, j]
-            theta1[[io, is]][d[io], j] <- as.numeric(object[[io]]$Theta[[is]][l + 1, j])
-            theta2[[io, is]][d[io], j] <- as.numeric(object[[io]]$Theta[[is]][l + 2, j])
+            pdf[[io, is]][d[io], j] <- x[[io]]$Theta[[is]][l, j]
+            theta1[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 1, j])
+            theta2[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 2, j])
 
             d[io] <- d[io] + 1
           }
           else
           if (M[l] %in% which(.rebmix$pdf.nargs == 1)) {
-            pdf[[io, is]][d[io], j] <- object[[io]]$Theta[[is]][l, j]
-            theta1[[io, is]][d[io], j] <- as.numeric(object[[io]]$Theta[[is]][l + 1, j])
+            pdf[[io, is]][d[io], j] <- x[[io]]$Theta[[is]][l, j]
+            theta1[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 1, j])
 
             d[io] <- d[io] + 1
           }
@@ -110,7 +110,7 @@ RCLSMIX <- function(object,
   }
 
   if (s > 1) {
-    message("RCLSMIX Version 2.7.1");
+    message("RCLSMIX Version 2.7.2");
     flush.console()
 
     output <- .C("RCLSMIX",

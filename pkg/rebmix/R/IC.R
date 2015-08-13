@@ -1,9 +1,9 @@
-.IC <- function(object, 
+.IC <- function(x, 
   Criterion = "AIC",
   pos = 1, ...)
 {
-  if (missing(object) || (class(object) != "REBMIX")) {
-    stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
+  if (missing(x) || (class(x) != "REBMIX")) {
+    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
   }
   
   if (!is.character(Criterion)) {
@@ -16,21 +16,21 @@
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
 
-  if ((pos < 1) || (pos > nrow(object$summary))) {
-    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object$summary), "!", call. = FALSE)
+  if ((pos < 1) || (pos > nrow(x$summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x$summary), "!", call. = FALSE)
   }
 
-  Dataset <- as.character(object$summary[pos, "Dataset"])
+  Dataset <- as.character(x$summary[pos, "Dataset"])
 
-  X <- as.matrix(object$Dataset[[which(names(object$Dataset) == object$summary[pos, "Dataset"])]])
+  X <- as.matrix(x$Dataset[[which(names(x$Dataset) == x$summary[pos, "Dataset"])]])
 
   n <- nrow(X)
   d <- ncol(X)
 
-  h <- as.double(object$summary[pos, paste("h", if (d > 1) 1:d else "", sep = "")])
+  h <- as.double(x$summary[pos, paste("h", if (d > 1) 1:d else "", sep = "")])
   
-  nrow <- nrow(object$Theta[[pos]])
-  ncol <- ncol(object$Theta[[pos]])
+  nrow <- nrow(x$Theta[[pos]])
+  ncol <- ncol(x$Theta[[pos]])
 
   c <- ncol
 
@@ -39,22 +39,22 @@
   theta2 <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
 
   for (j in 1:ncol) {
-    M <- match(object$Theta[[pos]][, j], .rebmix$pdf)
+    M <- match(x$Theta[[pos]][, j], .rebmix$pdf)
 
     d <- 1;
 
     for (l in 1:length(M)) {
       if (M[l] %in% which(.rebmix$pdf.nargs == 2)) {
-        pdf[d, j] <- object$Theta[[pos]][l, j]
-        theta1[d, j] <- as.numeric(object$Theta[[pos]][l + 1, j])
-        theta2[d, j] <- as.numeric(object$Theta[[pos]][l + 2, j])
+        pdf[d, j] <- x$Theta[[pos]][l, j]
+        theta1[d, j] <- as.numeric(x$Theta[[pos]][l + 1, j])
+        theta2[d, j] <- as.numeric(x$Theta[[pos]][l + 2, j])
 
         d <- d + 1
       }
       else
       if (M[l] %in% which(.rebmix$pdf.nargs == 1)) {
-        pdf[d, j] <- object$Theta[[pos]][l, j]
-        theta1[d, j] <- as.numeric(object$Theta[[pos]][l + 1, j])
+        pdf[d, j] <- x$Theta[[pos]][l, j]
+        theta1[d, j] <- as.numeric(x$Theta[[pos]][l + 1, j])
 
         d <- d + 1
       }
@@ -68,25 +68,25 @@
   theta1 <- theta1[1:d, ]; dim(theta1) <- c(d, ncol)
   theta2 <- theta2[1:d, ]; dim(theta2) <- c(d, ncol)
 
-  C <- object$summary[pos, "Preprocessing"]
+  C <- x$summary[pos, "Preprocessing"]
 
   if (C == .rebmix$Preprocessing[1]) {
-    y0 <- as.double(object$summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
+    y0 <- as.double(x$summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
 
     output <- .C("RInformationCriterionH",
       h = as.double(h),
       y0 = as.double(y0),
-      IniParFamType = as.character(object$call$pdf),
-      k = as.integer(object$summary[pos, "v/k"]),
+      pdf = as.character(x$call$pdf),
+      k = as.integer(x$summary[pos, "v/k"]),
       n = as.integer(n),
       d = as.integer(d),
-      object = as.double(X),
-      ICType = as.character(Criterion),
+      x = as.double(X),
+      Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(object$w[[pos]]),
-      ParFamType = as.character(pdf),
-      Par0 = as.double(theta1),
-      Par1 = as.double(theta2),      
+      W = as.double(x$w[[pos]]),
+      Theta.pdf = as.character(pdf),
+      Theta.Theta1 = as.double(theta1),
+      Theta.Theta2 = as.double(theta2),      
       IC = double(1),
       logL = double(1),
       M = integer(1),
@@ -104,13 +104,13 @@
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),
-      object = as.double(X),
-      ICType = as.character(Criterion),
+      x = as.double(X),
+      Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(object$w[[pos]]),
-      ParFamType = as.character(pdf),
-      Par0 = as.double(theta1),
-      Par1 = as.double(theta2),      
+      W = as.double(x$w[[pos]]),
+      Theta.pdf = as.character(pdf),
+      Theta.Theta1 = as.double(theta1),
+      Theta.Theta2 = as.double(theta2),      
       IC = double(1),
       logL = double(1),
       M = integer(1),
@@ -124,20 +124,20 @@
   } 
   else
   if (C == .rebmix$Preprocessing[3]) {
-    k <- as.integer(object$summary[pos, "v/k"]) 
+    k <- as.integer(x$summary[pos, "v/k"]) 
 
     output <- .C("RInformationCriterionKNN",
-      k = as.integer(object$summary[pos, "v/k"]),
+      k = as.integer(x$summary[pos, "v/k"]),
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),
-      object = as.double(X),
-      ICType = as.character(Criterion),
+      x = as.double(X),
+      Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(object$w[[pos]]),
-      ParFamType = as.character(pdf),
-      Par0 = as.double(theta1),
-      Par1 = as.double(theta2),      
+      W = as.double(x$w[[pos]]),
+      Theta.pdf = as.character(pdf),
+      Theta.Theta1 = as.double(theta1),
+      Theta.Theta2 = as.double(theta2),      
       IC = double(1),
       logL = double(1),
       M = integer(1),
@@ -155,12 +155,12 @@
   invisible(output)
 } ## .IC
 
-logL <- function(object, 
+logL <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC", pos = pos, ...)
 
   output <- output$logL
   
@@ -171,12 +171,12 @@ logL <- function(object,
   output
 } ## logL
 
-AIC <- function(object, 
+AIC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -187,12 +187,12 @@ AIC <- function(object,
   output
 } ## AIC
 
-AIC3 <- function(object, 
+AIC3 <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AIC3", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC3", pos = pos, ...)
   
   output <- output$IC
   
@@ -203,12 +203,12 @@ AIC3 <- function(object,
   output
 } ## AIC3
 
-AIC4 <- function(object, 
+AIC4 <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AIC4", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC4", pos = pos, ...)
   
   output <- output$IC
   
@@ -219,12 +219,12 @@ AIC4 <- function(object,
   output
 } ## AIC4
 
-AICc <- function(object, 
+AICc <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AICc", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AICc", pos = pos, ...)
   
   output <- output$IC
   
@@ -235,12 +235,12 @@ AICc <- function(object,
   output
 } ## AICc
 
-BIC <- function(object, 
+BIC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "BIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "BIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -251,12 +251,12 @@ BIC <- function(object,
   output
 } ## BIC
 
-CAIC <- function(object, 
+CAIC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "CAIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "CAIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -267,12 +267,12 @@ CAIC <- function(object,
   output
 } ## CAIC
 
-HQC <- function(object, 
+HQC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "HQC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "HQC", pos = pos, ...)
   
   output <- output$IC
   
@@ -283,12 +283,12 @@ HQC <- function(object,
   output
 } ## HQC
 
-MDL2 <- function(object, 
+MDL2 <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "MDL2", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "MDL2", pos = pos, ...)
   
   output <- output$IC
   
@@ -299,12 +299,12 @@ MDL2 <- function(object,
   output
 } ## MDL2
 
-MDL5 <- function(object, 
+MDL5 <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "MDL5", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "MDL5", pos = pos, ...)
   
   output <- output$IC
   
@@ -315,12 +315,12 @@ MDL5 <- function(object,
   output
 } ## MDL5
 
-AWE <- function(object, 
+AWE <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "AWE", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AWE", pos = pos, ...)
   
   output <- output$IC
   
@@ -331,12 +331,12 @@ AWE <- function(object,
   output
 } ## AWE
 
-CLC <- function(object, 
+CLC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "CLC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "CLC", pos = pos, ...)
   
   output <- output$IC
   
@@ -347,12 +347,12 @@ CLC <- function(object,
   output
 } ## CLC
 
-ICL <- function(object, 
+ICL <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "ICL", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "ICL", pos = pos, ...)
   
   output <- output$IC
   
@@ -363,12 +363,12 @@ ICL <- function(object,
   output
 } ## ICL
 
-ICLBIC <- function(object, 
+ICLBIC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "ICL-BIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "ICL-BIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -379,12 +379,12 @@ ICLBIC <- function(object,
   output
 } ## ICLBIC
 
-PRD <- function(object, 
+PRD <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "D", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "D", pos = pos, ...)
   
   output <- output$IC
   
@@ -395,12 +395,12 @@ PRD <- function(object,
   output
 } ## PRD
 
-SSE <- function(object, 
+SSE <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "SSE", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "SSE", pos = pos, ...)
 
   output <- output$IC
   
@@ -411,12 +411,12 @@ SSE <- function(object,
   output
 } ## SSE
 
-PC <- function(object, 
+PC <- function(x, 
   pos = 1, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- .IC(object = object, Criterion = "PC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "PC", pos = pos, ...)
   
   output <- output$IC
   

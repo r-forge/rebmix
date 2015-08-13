@@ -7,10 +7,10 @@ Total of Positive Relative Deviations
 Returns the total of positive relative deviations \code{D} at \code{pos} for class REBMIX.
 }
 \usage{
-PRD(object, pos = 1, ...)
+PRD(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

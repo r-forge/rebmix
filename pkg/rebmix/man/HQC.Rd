@@ -7,10 +7,10 @@ Hannan-Quinn Information Criterion
 Returns the Hannan-Quinn information criterion at \code{pos} for class REBMIX.
 }
 \usage{
-HQC(object, pos = 1, ...)
+HQC(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

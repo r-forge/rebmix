@@ -1,5 +1,12 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7.2}{ 
+\itemize{
+\item Switch \code{_TIME_LEFT_SWITCH} eliminated from C code.
+\item C code converted into object-oriented C++ code.
+\item Fixed no visible global function definition bug in \code{NAMESPACE} file.
+}
+}
 \section{Changes in version 2.7.1}{ 
 \itemize{
 \item Demos \code{rebmix.galaxy}, \code{rebmix.univariate.normal}, \code{rebmix.mixed.continuous.discrete} and 
