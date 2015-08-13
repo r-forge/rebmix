@@ -1575,9 +1575,15 @@ void RInformationCriterionKNN(int    *k,            // Total number of bins.
         *Error = 1; goto E0;
     }
 
-    rebmix->summary_.c = *c;
+    rebmix->summary_.c = rebmix->cmax_ = *c;
 
-    rebmix->W_ = W;
+    rebmix->W_ = (FLOAT*)malloc(rebmix->summary_.c * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->W_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->summary_.c; i++) {
+        rebmix->W_[i] = W[i];
+    }
 
     rebmix->Theta_ = (ComponentDistributionType*)malloc(rebmix->summary_.c * sizeof(ComponentDistributionType));
 
@@ -1776,9 +1782,15 @@ void RInformationCriterionPW(double *h,            // Sides of the hypersquare.
         *Error = 1; goto E0;
     }
 
-    rebmix->summary_.c = *c;
+    rebmix->summary_.c = rebmix->cmax_ = *c;
 
-    rebmix->W_ = W;
+    rebmix->W_ = (FLOAT*)malloc(rebmix->summary_.c * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->W_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->summary_.c; i++) {
+        rebmix->W_[i] = W[i];
+    }
 
     rebmix->Theta_ = (ComponentDistributionType*)malloc(rebmix->summary_.c * sizeof(ComponentDistributionType));
 
@@ -2038,9 +2050,15 @@ void RInformationCriterionH(double *h,            // Sides of the hypersquare.
         *Error = 1; goto E0;
     }
 
-    rebmix->summary_.c = *c;
+    rebmix->summary_.c = rebmix->cmax_ = *c;
 
-    rebmix->W_ = W;
+    rebmix->W_ = (FLOAT*)malloc(rebmix->summary_.c * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->W_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->summary_.c; i++) {
+        rebmix->W_[i] = W[i];
+    }
 
     rebmix->Theta_ = (ComponentDistributionType*)malloc(rebmix->summary_.c * sizeof(ComponentDistributionType));
 

@@ -3299,7 +3299,7 @@ int Rebmix::REBMIXKNN()
 
     W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
 
-    Error = NULL ==W_; if (Error) goto E0;
+    Error = NULL == W_; if (Error) goto E0;
 
     Theta_ = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
 
@@ -3782,7 +3782,7 @@ int Rebmix::REBMIXPW()
 
     W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
 
-    Error = NULL ==W_; if (Error) goto E0;
+    Error = NULL == W_; if (Error) goto E0;
 
     Theta_ = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
 
@@ -5139,8 +5139,7 @@ int Rebmix::WriteDataFile()
                                summary_.logL);
 
     for (i = 0; i < summary_.c; i++) {
-        fprintf(fp1, "%s\t%E", path,
-                              W_[i]);
+        fprintf(fp1, "%s\t%E", path, W_[i]);
 
         for (j = 0; j < d_; j++) switch (Theta_[i].pdf[j]) {
             case pfNormal:
