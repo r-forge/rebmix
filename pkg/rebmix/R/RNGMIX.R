@@ -5,7 +5,7 @@ RNGMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.7.2");
+  message("RNGMIX Version 2.7.3");
   flush.console()
   
   if (is.null(Dataset)) {
@@ -108,8 +108,11 @@ RNGMIX <- function(Dataset = NULL,
       d = as.integer(d),
       c = as.integer(c),
       N = as.integer(n),
+      length.pdf = as.integer(d),
       pdf = as.character(pdf),
+      length.Theta1 = as.integer(d),
       Theta1 = as.double(theta1),
+      length.Theta2 = as.integer(d),
       Theta2 = as.double(theta2),
       n = integer(1),
       Y = double(sum(n) * d),

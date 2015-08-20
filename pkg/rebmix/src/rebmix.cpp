@@ -27,6 +27,8 @@ int main(int argc, char* argv[])
     if (!strcmp(argv[2], "RNGMIX")) {
         rngmix = new Rngmix;
 
+        Error = NULL == rngmix; if (Error) goto E0;
+
         Error = rngmix->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
@@ -34,14 +36,16 @@ int main(int argc, char* argv[])
     else
     if (!strcmp(argv[2], "REBMIX")) {
         rebmix = new Rebmix;
+
+        Error = NULL == rebmix; if (Error) goto E0;
  
         Error = rebmix->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
     }
 
-E0: if (rngmix) delete(rngmix);
-    if (rebmix) delete(rebmix);
+E0: if (rngmix) delete rngmix;
+    if (rebmix) delete rebmix;
 
     #if (_MEMORY_LEAK_SWITCH)
     _CrtMemCheckpoint(&s2);

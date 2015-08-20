@@ -113,7 +113,7 @@ typedef enum {
     pfDirac,     // Dirac distribution.
 } ParametricFamilyType_e;
 
-typedef struct componentdistributiontype {
+typedef struct componetdistributiontype {
     ParametricFamilyType_e *pdf;    // Parametric family types.
     FLOAT                  *Theta1; // Component parameters.
     FLOAT                  *Theta2; // Component parameters.
@@ -172,5 +172,12 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
 
 int ErrorF(FLOAT y,     // Variable y.
            FLOAT *ErF); // Error function.
+
+// Returns the determinant and the inverse matrix of A. See http://www.nr.com/
+
+int LUinvdet(int   n,      // Size of square matrix.
+             FLOAT *A,     // Pointer to the square matrix A.
+             FLOAT *Ainv,  // Pointer to the inverse matrix of A.
+             FLOAT *Adet); // Pointer to the determinant of A.
 
 #endif

@@ -38,7 +38,7 @@ typedef enum {
     icPC,     // PC - Partition coefficient Bezdek (1981).
     icICLBIC, // ICL-BIC - Integrated classification likelihood criterion Biernacki et al.(1998).
     icD,      // D - Total of positive relative deviations Nagode & Fajdiga (2011).
-    icSSE,    // SSE - Sum of squares error Bishop (1998).
+    icSSE     // SSE - Sum of squares error Bishop (1998).
 } InformationCriterionType_e;
 
 typedef struct roughparametertype {
@@ -65,6 +65,25 @@ typedef struct additinalparametertype {
     int d;       // Golden section constant.
 } AdditionalParameterType;
 
+class RebmixDistribution {
+    // Members.
+    int length_pdf_;    // Length of pdf_. 
+    int length_Theta1_; // Length of Theta1_. 
+    int length_Theta2_; // Length of Theta2_. 
+public:
+    // Members.
+    ParametricFamilyType_e *pdf_;    // Parametric family types.
+    FLOAT                  *Theta1_; // Component parameters.
+    FLOAT                  *Theta2_; // Component parameters.
+    // Constructor.
+    RebmixDistribution();
+    // Destructor.
+    ~RebmixDistribution();
+    // Methods.
+    int Realloc(int length_pdf, int length_Theta1, int length_Theta2);
+    int Memmove(RebmixDistribution *CmpTheta);
+}; // RebmixDistribution
+
 class Rebmix {
     // Methods.
     int Golden();
@@ -87,8 +106,11 @@ public:
     int                        cmax_;          // Maximum number of components.
     InformationCriterionType_e Criterion_;     // Infromation criterion type.
     VariablesType_e            *Variables_;    // Types of variables.
+    int                        length_pdf_;    // Length of pdf_. 
     ParametricFamilyType_e     *pdf_;          // Parametric family types.
+    int                        length_Theta1_; // Length of ini_Theta1_.
     FLOAT                      *Theta1_;       // Initial component parameters.
+    int                        length_Theta2_; // Length of ini_Theta2_.
     FLOAT                      *Theta2_;       // Initial component parameters.
     int                        length_K_;      // Length of K_.
     int                        *K_;            // Numbers of bins v or numbers of nearest neighbours k.
@@ -103,7 +125,7 @@ public:
     FLOAT                      **Y_;           // Dataset.
     // Output members.
     FLOAT                      *W_;            // Component weights.
-    ComponentDistributionType  *Theta_;        // Component parameters.
+    RebmixDistribution         **MixTheta_;    // Mixture parameters.
     SummaryParameterType       summary_;       // Summary.
     int                        opt_length_;    // Length of opt_c_, opt_IC_, opt_logL_ and opt_D_.
     int                        *opt_c_;        // Numbers of components for optimal v or for optimal k.
@@ -122,22 +144,22 @@ public:
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingPW(FLOAT *h, FLOAT **Y);
     int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y);
-    virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int ComponentDist(FLOAT *Y, ComponentDistributionType *CmpTheta, FLOAT *CmpDist, int Cumulative);
-    virtual int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int EnhancedEstimationPW(FLOAT **Y, FLOAT nl, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, ComponentDistributionType *RigidTheta, ComponentDistributionType *LooseTheta);
-    virtual int MomentsCalculation(ComponentDistributionType *CmpTheta, FLOAT *FirstM, FLOAT *SecondM);
-    virtual int BayesClassificationKNN(FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *Theta, FLOAT **FirstM, FLOAT **SecondM);
-    virtual int BayesClassificationPW(FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT **FirstM, FLOAT **SecondM);
-    virtual int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT **FirstM, FLOAT **SecondM);
-    virtual int DegreesOffreedom(int c, ComponentDistributionType *CmpTheta, int *M);
-    int MixtureDist(FLOAT *Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT *MixDist, int Cumulative);
-    int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int InformationCriterionPW(FLOAT V, FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int InformationCriterionH(FLOAT V, int k, FLOAT **Y, int c, FLOAT *W, ComponentDistributionType *CmpTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
+    virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int ComponentDist(FLOAT *Y, RebmixDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int EnhancedEstimationPW(FLOAT **Y, FLOAT nl, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, RebmixDistribution *RigidTheta, RebmixDistribution *LooseTheta);
+    virtual int MomentsCalculation(RebmixDistribution *CmpTheta, FLOAT *FirstM, FLOAT *SecondM);
+    virtual int BayesClassificationKNN(FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
+    virtual int BayesClassificationPW(FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
+    virtual int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
+    virtual int DegreesOffreedom(int c, RebmixDistribution **MixTheta, int *M);
+    int MixtureDist(FLOAT *Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT *MixDist);
+    int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
+    int InformationCriterionPW(FLOAT V, FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
+    int InformationCriterionH(FLOAT V, int k, FLOAT **Y, int c, FLOAT *W, RebmixDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int REBMIX();
     int RunTemplateFile(char *file);
 }; // Rebmix

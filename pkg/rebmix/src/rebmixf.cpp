@@ -8,7 +8,66 @@
 #include "base.h"
 #include "rebmixf.h"
 
-// Constructor.
+// RebmixDistribution constructor.
+
+RebmixDistribution::RebmixDistribution()
+{
+    length_pdf_ = 0;
+    length_Theta1_ = 0;
+    length_Theta2_ = 0;
+    pdf_ = NULL;
+    Theta1_ = NULL;
+    Theta2_ = NULL;
+} // RebmixDistribution
+
+// Rebmix destructor.
+
+RebmixDistribution::~RebmixDistribution()
+{
+    if (Theta2_) free(Theta2_);
+
+    if (Theta1_) free(Theta1_);
+
+    if (pdf_) free(pdf_);
+} // ~RebmixDistribution
+
+int RebmixDistribution::Realloc(int length_pdf, int length_Theta1, int length_Theta2)
+{
+    int Error = 0;
+
+    length_pdf_ = length_pdf;
+
+    pdf_ = (ParametricFamilyType_e*)realloc(pdf_, length_pdf * sizeof(ParametricFamilyType_e));
+
+    Error = NULL == pdf_; if (Error) goto E0;
+
+    length_Theta1_ = length_Theta1;
+
+    Theta1_ = (FLOAT*)realloc(Theta1_, length_Theta1 * sizeof(FLOAT));
+
+    Error = NULL == Theta1_; if (Error) goto E0;
+
+    length_Theta2_ = length_Theta2;
+
+    Theta2_ = (FLOAT*)realloc(Theta2_, length_Theta2 * sizeof(FLOAT));
+
+    Error = NULL == Theta2_; if (Error) goto E0;
+
+E0: return (Error);
+} // Realloc
+
+int RebmixDistribution::Memmove(RebmixDistribution *CmpTheta)
+{
+    int Error = 0;
+
+    memmove(pdf_, CmpTheta->pdf_, length_pdf_ * sizeof(ParametricFamilyType_e));
+    memmove(Theta1_, CmpTheta->Theta1_, length_Theta1_ * sizeof(FLOAT));
+    memmove(Theta2_, CmpTheta->Theta2_, length_Theta2_ * sizeof(FLOAT));
+
+    return (Error);
+} // Memmove
+
+// Rebmix constructor.
 
 Rebmix::Rebmix()
 {
@@ -21,8 +80,11 @@ Rebmix::Rebmix()
     cmax_ = 15;
     Criterion_ = icAIC;
     Variables_ = NULL;
+    length_pdf_ = 0;
     pdf_ = NULL;
+    length_Theta1_ = 0;
     Theta1_ = NULL;
+    length_Theta2_ = 0;
     Theta2_ = NULL;
     length_K_ = 0;
     K_ = NULL;
@@ -35,7 +97,7 @@ Rebmix::Rebmix()
     Dataset_ = NULL;
     Y_ = NULL;
     W_ = NULL;
-    Theta_ = NULL;
+    MixTheta_ = NULL;
     memset(&summary_, 0, sizeof(SummaryParameterType));
     opt_length_ = 0;
     opt_c_ = NULL;
@@ -70,14 +132,12 @@ Rebmix::~Rebmix()
 
     if (summary_.y0) free(summary_.y0);
 
-    if (Theta_) {
+    if (MixTheta_) {
         for (i = 0; i < cmax_; i++) {
-            if (Theta_[i].Theta2) free(Theta_[i].Theta2);
-            if (Theta_[i].Theta1) free(Theta_[i].Theta1);
-            if (Theta_[i].pdf) free(Theta_[i].pdf);
+            if (MixTheta_[i]) delete MixTheta_[i];
         }
 
-        free(Theta_);
+        delete MixTheta_;
     }
 
     if (W_) free(W_);
@@ -583,195 +643,100 @@ int RoughPoissonParameters(FLOAT ym,
 
 // Returns component marginal p.d.f or c.d.f.
 
-int ComponentMarginalDist(int                       i,           // Index of variable y.
-                          FLOAT                     *Y,          // Pointer to the input point [y0,...,yd-1].
-                          ComponentDistributionType *CmpTheta,   // Component distribution type.
-                          FLOAT                     *CmpMrgDist, // Component marginal distribution.
-                          int                       Cumulative)  // Set 1 if c.d.f.or 0 if p.d.f.
+int ComponentMarginalDist(int                i,           // Index of variable y.
+                          FLOAT              *Y,          // Pointer to the input point [y0,...,yd-1].
+                          RebmixDistribution *CmpTheta,   // Component distribution type.
+                          FLOAT              *CmpMrgDist) // Component marginal distribution.
 {
-    FLOAT y, ypb, Sum, p, Theta, GamP, Gamln;
-    int   j, k, n;
-    FLOAT ErF;
+    FLOAT y, ypb, p, Theta;
+    int   j, n;
     int   Error = 0;
 
     *CmpMrgDist = (FLOAT)1.0;
 
-    if (Cumulative) {
-        switch (CmpTheta->pdf[i]) {
-        case pfNormal:
-            y = (Y[i] - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+    switch (CmpTheta->pdf_[i]) {
+    case pfNormal:
+        y = (Y[i] - CmpTheta->Theta1_[i]) / (Sqrt2 * CmpTheta->Theta2_[i]);
 
-            Error = ErrorF(y, &ErF);
+        *CmpMrgDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2_[i]);
 
-            if (Error) goto E0;
+        break;
+    case pfLognormal:
+        if (Y[i] > FLOAT_MIN) {
+            y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1_[i]) / (Sqrt2 * CmpTheta->Theta2_[i]);
 
-            *CmpMrgDist *= (FLOAT)0.5 * ((FLOAT)1.0 + ErF);
-
-            break;
-        case pfLognormal:
-            if (Y[i] > FLOAT_MIN) {
-                y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
-
-                Error = ErrorF(y, &ErF);
-
-                if (Error) goto E0;
-
-                *CmpMrgDist *= (FLOAT)0.5 * ((FLOAT)1.0 + ErF);
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
-
-            break;
-        case pfWeibull:
-            if (Y[i] > FLOAT_MIN) {
-                ypb = (FLOAT)exp(CmpTheta->Theta2[i] * log(Y[i] / CmpTheta->Theta1[i]));
-
-                *CmpMrgDist *= ((FLOAT)1.0 - (FLOAT)exp(-ypb));
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
-
-            break;
-        case pfGamma:
-            if (Y[i] > FLOAT_MIN) {
-                Error = GammaP(CmpTheta->Theta2[i], Y[i] / CmpTheta->Theta1[i], &GamP, &Gamln);
-
-                if (Error) goto E0;
-
-                *CmpMrgDist *= GamP;
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
-
-            break;
-        case pfBinomial:
-            k = (int)Y[i]; n = (int)CmpTheta->Theta1[i]; p = CmpTheta->Theta2[i];
-
-            if (k < 0)
-                *CmpMrgDist *= (FLOAT)0.0;
-            else
-            if (k == 0)
-                *CmpMrgDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
-            else
-            if (k >= n)
-                *CmpMrgDist *= (FLOAT)1.0;
-            else {
-                Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
-
-                for (j = 1; j <= k; j++) {
-                    ypb *= (n - j + (FLOAT)1.0) * p / j / ((FLOAT)1.0 - p); Sum += ypb;
-                }
-
-                *CmpMrgDist *= Sum;
-            }
-
-            break;
-        case pfPoisson:
-            k = (int)Y[i]; Theta = CmpTheta->Theta1[i];
-
-            Sum = ypb = (FLOAT)exp(-Theta);
-
-            for (j = 1; j <= k; j++) {
-                ypb *= Theta / j; Sum += ypb;
-            }
-
-            *CmpMrgDist *= Sum;
-
-            break;
-        case pfDirac:
-            if (Y[i] < CmpTheta->Theta1[i]) {
-                *CmpMrgDist *= (FLOAT)0.0;
-            }
+            *CmpMrgDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2_[i]) / Y[i];
         }
-    }
-    else {
-        switch (CmpTheta->pdf[i]) {
-        case pfNormal:
-            y = (Y[i] - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+        else {
+            *CmpMrgDist = (FLOAT)0.0;
+        }
 
-            *CmpMrgDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2[i]);
+        break;
+    case pfWeibull:
+        if (Y[i] > FLOAT_MIN) {
+            ypb = (FLOAT)exp(CmpTheta->Theta2_[i] * log(Y[i] / CmpTheta->Theta1_[i]));
 
-            break;
-        case pfLognormal:
-            if (Y[i] > FLOAT_MIN) {
-                y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+            *CmpMrgDist *= CmpTheta->Theta2_[i] * ypb * (FLOAT)exp(-ypb) / Y[i];
+        }
+        else {
+            *CmpMrgDist = (FLOAT)0.0;
+        }
 
-                *CmpMrgDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2[i]) / Y[i];
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
+        break;
+    case pfGamma:
+        if (Y[i] > FLOAT_MIN) {
+            ypb = Y[i] / CmpTheta->Theta1_[i];
 
-            break;
-        case pfWeibull:
-            if (Y[i] > FLOAT_MIN) {
-                ypb = (FLOAT)exp(CmpTheta->Theta2[i] * log(Y[i] / CmpTheta->Theta1[i]));
+            *CmpMrgDist *= (FLOAT)exp(CmpTheta->Theta2_[i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta2_[i])) / Y[i];
+        }
+        else {
+            *CmpMrgDist = (FLOAT)0.0;
+        }
 
-                *CmpMrgDist *= CmpTheta->Theta2[i] * ypb * (FLOAT)exp(-ypb) / Y[i];
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
+        break;
+    case pfBinomial:
+        j = (int)Y[i]; n = (int)CmpTheta->Theta1_[i]; p = CmpTheta->Theta2_[i];
 
-            break;
-        case pfGamma:
-            if (Y[i] > FLOAT_MIN) {
-                ypb = Y[i] / CmpTheta->Theta1[i];
+        if (j < 0)
+            *CmpMrgDist *= (FLOAT)0.0;
+        else
+        if (j == 0)
+            *CmpMrgDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
+        else
+        if (j == n)
+            *CmpMrgDist *= (FLOAT)pow(p, n);
+        else
+        if (j > n)
+            *CmpMrgDist *= (FLOAT)0.0;
+        else
+            *CmpMrgDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(j + (FLOAT)1.0) - Gammaln(n - j + (FLOAT)1.0)) *
+                           (FLOAT)pow(p, j) * (FLOAT)pow((FLOAT)1.0 - p, n - j);
 
-                *CmpMrgDist *= (FLOAT)exp(CmpTheta->Theta2[i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta2[i])) / Y[i];
-            }
-            else {
-                *CmpMrgDist = (FLOAT)0.0;
-            }
+        break;
+    case pfPoisson:
+        j = (int)Y[i]; Theta = CmpTheta->Theta1_[i];
 
-            break;
-        case pfBinomial:
-            k = (int)Y[i]; n = (int)CmpTheta->Theta1[i]; p = CmpTheta->Theta2[i];
+        *CmpMrgDist *= (FLOAT)exp(j * log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
 
-            if (k < 0)
-                *CmpMrgDist *= (FLOAT)0.0;
-            else
-            if (k == 0)
-                *CmpMrgDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
-            else
-            if (k == n)
-                *CmpMrgDist *= (FLOAT)pow(p, n);
-            else
-            if (k > n)
-                *CmpMrgDist *= (FLOAT)0.0;
-            else
-                *CmpMrgDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
-                (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
-
-            break;
-        case pfPoisson:
-            k = (int)Y[i]; Theta = CmpTheta->Theta1[i];
-
-            *CmpMrgDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
-
-            break;
-        case pfDirac:
-            if ((FLOAT)fabs(Y[i] - CmpTheta->Theta1[i]) > FLOAT_MIN) {
-                *CmpMrgDist *= (FLOAT)0.0;
-            }
+        break;
+    case pfDirac:
+        if ((FLOAT)fabs(Y[i] - CmpTheta->Theta1_[i]) > FLOAT_MIN) {
+            *CmpMrgDist *= (FLOAT)0.0;
         }
     }
 
-E0: return (Error);
+    return (Error);
 } // ComponentMarginalDist 
 
 // Rough component parameter estimation for k-nearest neighbours.
 
-int Rebmix::RoughEstimationKNN(FLOAT                     **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
-                               int                       k,           // k-nearest neighbours.
-                               FLOAT                     *h,          // Normalizing vector.
-                               FLOAT                     nl,          // Total number of observations in class l.
-                               int                       m,           // Mode index.
-                               ComponentDistributionType *RigidTheta, // Rigid parameters.
-                               ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::RoughEstimationKNN(FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
+                               int                k,           // k-nearest neighbours.
+                               FLOAT              *h,          // Normalizing vector.
+                               FLOAT              nl,          // Total number of observations in class l.
+                               int                m,           // Mode index.
+                               RebmixDistribution *RigidTheta, // Rigid parameters.
+                               RebmixDistribution *LooseTheta) // Loose parameters.
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
@@ -816,58 +781,58 @@ S0:;
     for (i = 0; i < d_; i++) {
         if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfDirac:
-            RigidTheta->Theta1[i] = Mode[i].ym;
+            RigidTheta->Theta1_[i] = Mode[i].ym;
         }
     }
 
-    memmove(LooseTheta->pdf, RigidTheta->pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, RigidTheta->Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, RigidTheta->Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(RigidTheta);
+
+    if (Error) goto E0;
 
     if (Restraints_ == rtRigid) goto E0;
 
     // Loose restraints.
 
     for (i = 0; i < d_; i++) {
-        if (LooseTheta->pdf[i] == pfDirac) goto E1;
+        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
 
         // Bracketing.
 
@@ -884,7 +849,7 @@ S0:;
 
             if (R > Y[m][d_ + 2]) goto S1;
 
-            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
             if (Error) goto E0;
 
@@ -905,39 +870,39 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            switch (LooseTheta->pdf[i]) {
+            switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i]);
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i]);
 
                 if (Error) goto E0;
 
@@ -959,7 +924,7 @@ S1:;
 
                 if (R > Y[m][d_ + 2]) goto S2;
 
-                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
                 if (Error) goto E0;
 
@@ -991,12 +956,12 @@ E0: if (Mode) free(Mode);
 
 // Rough component parameter estimation for Parzen window.
 
-int Rebmix::RoughEstimationPW(FLOAT                    **Y,          // Pointer to the input points [y0,...,yd-1,kl,k].
-                              FLOAT                    *h,           // Sides of the hypersquare.
-                              FLOAT                    nl,           // Total number of observations in class l.
-                              int                      m,            // Mode index.
-                              ComponentDistributionType *RigidTheta, // Rigid parameters.
-                              ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::RoughEstimationPW(FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                              FLOAT              *h,          // Sides of the hypersquare.
+                              FLOAT              nl,          // Total number of observations in class l.
+                              int                m,           // Mode index.
+                              RebmixDistribution *RigidTheta, // Rigid parameters.
+                              RebmixDistribution *LooseTheta) // Loose parameters.
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
@@ -1035,58 +1000,58 @@ S0:;
     for (i = 0; i < d_; i++) {
         if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfDirac:
-            RigidTheta->Theta1[i] = Mode[i].ym;
+            RigidTheta->Theta1_[i] = Mode[i].ym;
         }
     }
 
-    memmove(LooseTheta->pdf, RigidTheta->pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, RigidTheta->Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, RigidTheta->Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(RigidTheta);
+
+    if (Error) goto E0;
 
     if (Restraints_ == rtRigid) goto E0;
 
     // Loose restraints.
 
     for (i = 0; i < d_; i++) {
-        if (LooseTheta->pdf[i] == pfDirac) goto E1;
+        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
 
         // Bracketing.
 
@@ -1095,7 +1060,7 @@ S0:;
         for (o = 0; o < n_; o++) if (Y[o][d_] > FLOAT_MIN) {
             for (p = 0; p < d_; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) >(FLOAT)0.5 * h[p])) goto S1;
 
-            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
             if (Error) goto E0;
 
@@ -1116,39 +1081,39 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            switch (LooseTheta->pdf[i]) {
+            switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i]);
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i]);
 
                 if (Error) goto E0;
 
@@ -1162,7 +1127,7 @@ S1:;
             for (o = 0; o < n_; o++) if (Y[o][d_] > FLOAT_MIN) {
                 for (p = 0; p < d_; p++) if ((i != p) && ((FLOAT)fabs(Y[o][p] - Y[m][p]) >(FLOAT)0.5 * h[p])) goto S2;
 
-                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
                 if (Error) goto E0;
 
@@ -1194,13 +1159,13 @@ E0: if (Mode) free(Mode);
 
 // Rough component parameter estimation for histogram.
 
-int Rebmix::RoughEstimationH(int                      k,            // Total number of bins.
-                             FLOAT                    **Y,          // Pointer to the input points [y0,...,yd-1,kl].
-                             FLOAT                    *h,           // Sides of the hypersquare.
-                             FLOAT                    nl,           // Total number of observations in class l.
-                             int                      m,            // Mode index.
-                             ComponentDistributionType *RigidTheta, // Rigid parameters.
-                             ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::RoughEstimationH(int                k,           // Total number of bins.
+                             FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl].
+                             FLOAT              *h,          // Sides of the hypersquare.
+                             FLOAT              nl,          // Total number of observations in class l.
+                             int                m,           // Mode index.
+                             RebmixDistribution *RigidTheta, // Rigid parameters.
+                             RebmixDistribution *LooseTheta) // Loose parameters.
 {
     int                i, j, l, o, p;
     RoughParameterType *Mode = NULL;
@@ -1239,58 +1204,58 @@ S0:;
     for (i = 0; i < d_; i++) {
         if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
 
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughNormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfLognormal:
-            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfWeibull:
-            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughWeibullParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfGamma:
-            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughGammaParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1[i], &RigidTheta->Theta2[i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta1_[i], &RigidTheta->Theta2_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1[i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta1_[i]);
 
             if (Error) goto E0;
 
             break;
         case pfDirac:
-            RigidTheta->Theta1[i] = Mode[i].ym;
+            RigidTheta->Theta1_[i] = Mode[i].ym;
         }
     }
 
-    memmove(LooseTheta->pdf, RigidTheta->pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, RigidTheta->Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, RigidTheta->Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(RigidTheta);
+
+    if (Error) goto E0;
 
     if (Restraints_ == rtRigid) goto E0;
 
     // Loose restraints.
 
     for (i = 0; i < d_; i++) {
-        if (LooseTheta->pdf[i] == pfDirac) goto E1;
+        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
 
         // Bracketing.
 
@@ -1299,7 +1264,7 @@ S0:;
         for (o = 0; o < k; o++) if (Y[o][d_] > FLOAT_MIN) {
             for (p = 0; p < d_; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S1;
 
-            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
             if (Error) goto E0;
 
@@ -1320,39 +1285,39 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            switch (LooseTheta->pdf[i]) {
+            switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1[i], &LooseTheta->Theta2[i]);
+                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta1_[i], &LooseTheta->Theta2_[i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1[i]);
+                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta1_[i]);
 
                 if (Error) goto E0;
 
@@ -1366,7 +1331,7 @@ S1:;
             for (o = 0; o < k; o++) if (Y[o][d_] > FLOAT_MIN) {
                 for (p = 0; p < d_; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S2;
 
-                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist, 0);
+                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
 
                 if (Error) goto E0;
 
@@ -1398,242 +1363,140 @@ E0: if (Mode) free(Mode);
 
 // Returns component p.d.f or c.d.f.
 
-int Rebmix::ComponentDist(FLOAT                     *Y,         // Pointer to the input point [y0,...,yd-1].
-                          ComponentDistributionType *CmpTheta,  // Component parameters.
-                          FLOAT                     *CmpDist,   // Component distribution.
-                          int                       Cumulative) // Set 1 if c.d.f.or 0 if p.d.f.
+int Rebmix::ComponentDist(FLOAT              *Y,        // Pointer to the input point [y0,...,yd-1].
+                          RebmixDistribution *CmpTheta, // Component parameters.
+                          FLOAT              *CmpDist)  // Component distribution.
 {
-    FLOAT y, ypb, ErF, Sum, p, Theta, GamP, Gamln;
-    int   i, j, k, n;
+    FLOAT y, ypb, p, Theta;
+    int   i, j, n;
     int   Error = 0;
 
     *CmpDist = (FLOAT)1.0;
 
-    if (Cumulative) {
-        for (i = 0; i < d_; i++) {
-            switch (CmpTheta->pdf[i]) {
-            case pfNormal:
-                y = (Y[i] - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+    for (i = 0; i < d_; i++) {
+        switch (CmpTheta->pdf_[i]) {
+        case pfNormal:
+            y = (Y[i] - CmpTheta->Theta1_[i]) / (Sqrt2 * CmpTheta->Theta2_[i]);
 
-                Error = ErrorF(y, &ErF);
+            *CmpDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2_[i]);
 
-                if (Error) goto E0;
+            break;
+        case pfLognormal:
+            if (Y[i] > FLOAT_MIN) {
+                y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1_[i]) / (Sqrt2 * CmpTheta->Theta2_[i]);
 
-                *CmpDist *= (FLOAT)0.5 * ((FLOAT)1.0 + ErF);
-
-                break;
-            case pfLognormal:
-                if (Y[i] > FLOAT_MIN) {
-                    y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
-
-                    Error = ErrorF(y, &ErF);
-
-                    if (Error) goto E0;
-
-                    *CmpDist *= (FLOAT)0.5 * ((FLOAT)1.0 + ErF);
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
-
-                break;
-            case pfWeibull:
-                if (Y[i] > FLOAT_MIN) {
-                    ypb = (FLOAT)exp(CmpTheta->Theta2[i] * log(Y[i] / CmpTheta->Theta1[i]));
-
-                    *CmpDist *= ((FLOAT)1.0 - (FLOAT)exp(-ypb));
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
-
-                break;
-            case pfGamma:
-                if (Y[i] > FLOAT_MIN) {
-                    Error = GammaP(CmpTheta->Theta2[i], Y[i] / CmpTheta->Theta1[i], &GamP, &Gamln);
-
-                    if (Error) goto E0;
-
-                    *CmpDist *= GamP;
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
-
-                break;
-            case pfBinomial:
-                k = (int)Y[i]; n = (int)CmpTheta->Theta1[i]; p = CmpTheta->Theta2[i];
-
-                if (k < 0)
-                    *CmpDist *= (FLOAT)0.0;
-                else
-                if (k == 0)
-                    *CmpDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
-                else
-                if (k >= n)
-                    *CmpDist *= (FLOAT)1.0;
-                else {
-                    Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n);
-
-                    for (j = 1; j <= k; j++) {
-                        ypb *= (n - j + (FLOAT)1.0) * p / j / ((FLOAT)1.0 - p); Sum += ypb;
-                    }
-
-                    *CmpDist *= Sum;
-                }
-
-                break;
-            case pfPoisson:
-                k = (int)Y[i]; Theta = CmpTheta->Theta1[i];
-
-                Sum = ypb = (FLOAT)exp(-Theta);
-
-                for (j = 1; j <= k; j++) {
-                    ypb *= Theta / j; Sum += ypb;
-                }
-
-                *CmpDist *= Sum;
-
-                break;
-            case pfDirac:
-                if (Y[i] < CmpTheta->Theta1[i]) {
-                    *CmpDist *= (FLOAT)0.0;
-                }
+                *CmpDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2_[i]) / Y[i];
             }
-        }
-    }
-    else {
-        for (i = 0; i < d_; i++) {
-            switch (CmpTheta->pdf[i]) {
-            case pfNormal:
-                y = (Y[i] - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+            else {
+                *CmpDist = (FLOAT)0.0;
+            }
 
-                *CmpDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2[i]);
+            break;
+        case pfWeibull:
+            if (Y[i] > FLOAT_MIN) {
+                ypb = (FLOAT)exp(CmpTheta->Theta2_[i] * log(Y[i] / CmpTheta->Theta1_[i]));
 
-                break;
-            case pfLognormal:
-                if (Y[i] > FLOAT_MIN) {
-                    y = ((FLOAT)log(Y[i]) - CmpTheta->Theta1[i]) / (Sqrt2 * CmpTheta->Theta2[i]);
+                *CmpDist *= CmpTheta->Theta2_[i] * ypb * (FLOAT)exp(-ypb) / Y[i];
+            }
+            else {
+                *CmpDist = (FLOAT)0.0;
+            }
 
-                    *CmpDist *= (FLOAT)exp(-(y * y)) / (Sqrt2Pi * CmpTheta->Theta2[i]) / Y[i];
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
+            break;
+        case pfGamma:
+            if (Y[i] > FLOAT_MIN) {
+                ypb = Y[i] / CmpTheta->Theta1_[i];
 
-                break;
-            case pfWeibull:
-                if (Y[i] > FLOAT_MIN) {
-                    ypb = (FLOAT)exp(CmpTheta->Theta2[i] * log(Y[i] / CmpTheta->Theta1[i]));
+                *CmpDist *= (FLOAT)exp(CmpTheta->Theta2_[i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta2_[i])) / Y[i];
+            }
+            else {
+                *CmpDist = (FLOAT)0.0;
+            }
 
-                    *CmpDist *= CmpTheta->Theta2[i] * ypb * (FLOAT)exp(-ypb) / Y[i];
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
+            break;
+        case pfBinomial:
+            j = (int)Y[i]; n = (int)CmpTheta->Theta1_[i]; p = CmpTheta->Theta2_[i];
 
-                break;
-            case pfGamma:
-                if (Y[i] > FLOAT_MIN) {
-                    ypb = Y[i] / CmpTheta->Theta1[i];
+            if (j < 0)
+                *CmpDist *= (FLOAT)0.0;
+            else
+            if (j == 0)
+                *CmpDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
+            else
+            if (j == n)
+                *CmpDist *= (FLOAT)pow(p, n);
+            else
+            if (j > n)
+                *CmpDist *= (FLOAT)0.0;
+            else
+                *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(j + (FLOAT)1.0) - Gammaln(n - j + (FLOAT)1.0)) *
+                            (FLOAT)pow(p, j) * (FLOAT)pow((FLOAT)1.0 - p, n - j);
 
-                    *CmpDist *= (FLOAT)exp(CmpTheta->Theta2[i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta2[i])) / Y[i];
-                }
-                else {
-                    *CmpDist = (FLOAT)0.0;
-                }
+            break;
+        case pfPoisson:
+            j = (int)Y[i]; Theta = CmpTheta->Theta1_[i];
 
-                break;
-            case pfBinomial:
-                k = (int)Y[i]; n = (int)CmpTheta->Theta1[i]; p = CmpTheta->Theta2[i];
+            *CmpDist *= (FLOAT)exp(j * log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
 
-                if (k < 0)
-                    *CmpDist *= (FLOAT)0.0;
-                else
-                if (k == 0)
-                    *CmpDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
-                else
-                if (k == n)
-                    *CmpDist *= (FLOAT)pow(p, n);
-                else
-                if (k > n)
-                    *CmpDist *= (FLOAT)0.0;
-                else
-                    *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
-                    (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
-
-                break;
-            case pfPoisson:
-                k = (int)Y[i]; Theta = CmpTheta->Theta1[i];
-
-                *CmpDist *= (FLOAT)exp(k * log(Theta) - Theta - Gammaln(k + (FLOAT)1.0));
-
-                break;
-            case pfDirac:
-                if ((FLOAT)fabs(Y[i] - CmpTheta->Theta1[i]) > FLOAT_MIN) {
-                    *CmpDist *= (FLOAT)0.0;
-                }
+            break;
+        case pfDirac:
+            if ((FLOAT)fabs(Y[i] - CmpTheta->Theta1_[i]) > FLOAT_MIN) {
+                *CmpDist *= (FLOAT)0.0;
             }
         }
     }
 
-E0: return (Error);
+    return (Error);
 } // ComponentDist
 
 // Enhanced component parameter estimation for k-nearest neighbours.
 
-int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
-                                  FLOAT                     nl,          // Total number of observations in class l.
-                                  ComponentDistributionType *RigidTheta, // Rigid parameters.
-                                  ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::EnhancedEstimationKNN(FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
+                                  FLOAT              nl,          // Total number of observations in class l.
+                                  RebmixDistribution *RigidTheta, // Rigid parameters.
+                                  RebmixDistribution *LooseTheta) // Loose parameters.
 {
-    ComponentDistributionType EnhanTheta;
-    FLOAT                     A[4], T[2];
-    int                       i, j, l;
-    FLOAT                     dP, MrgVar, TmpVar;
-    int                       Error = 0;
+    RebmixDistribution *EnhanTheta;
+    FLOAT              A[4], T[2];
+    int                i, j, l;
+    FLOAT              dP, MrgVar, TmpVar;
+    int                Error = 0;
 
-    memset(&EnhanTheta, 0, sizeof(ComponentDistributionType));
+    EnhanTheta = new RebmixDistribution;
 
-    EnhanTheta.pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+    Error = NULL == EnhanTheta; if (Error) goto E0;
 
-    Error = NULL == EnhanTheta.pdf; if (Error) goto E0;
-    
-    EnhanTheta.Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
+    Error = EnhanTheta->Realloc(d_, d_, d_);
 
-    Error = NULL == EnhanTheta.Theta1; if (Error) goto E0;
-
-    EnhanTheta.Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-    Error = NULL == EnhanTheta.Theta2; if (Error) goto E0;
+    if (Error) goto E0;
 
     for (i = 0; i < d_; i++) {
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            EnhanTheta.pdf[i] = pfNormal;
+            EnhanTheta->pdf_[i] = pfNormal;
 
             for (j = 0; j < n_; j++) if (Y[j][d_] > FLOAT_MIN) {
-                EnhanTheta.Theta1[i] += Y[j][d_] * Y[j][i];
+                EnhanTheta->Theta1_[i] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] /= nl;
+            EnhanTheta->Theta1_[i] /= nl;
 
             for (j = 0; j < n_; j++) if (Y[j][d_] > FLOAT_MIN) {
-                T[0] = Y[j][i] - EnhanTheta.Theta1[i];
+                T[0] = Y[j][i] - EnhanTheta->Theta1_[i];
 
-                EnhanTheta.Theta2[i] += Y[j][d_] * T[0] * T[0];
+                EnhanTheta->Theta2_[i] += Y[j][d_] * T[0] * T[0];
             }
 
-            EnhanTheta.Theta2[i] /= nl;
+            EnhanTheta->Theta2_[i] /= nl;
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1641,31 +1504,31 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfLognormal:
-            EnhanTheta.pdf[i] = pfLognormal;
+            EnhanTheta->pdf_[i] = pfLognormal;
 
             for (j = 0; j < n_; j++) {
                 if ((Y[j][d_] > FLOAT_MIN) && (Y[j][i] > FLOAT_MIN)) {
                     T[0] = Y[j][d_] * (FLOAT)log(Y[j][i]);
 
-                    EnhanTheta.Theta1[i] += T[0];
-                    EnhanTheta.Theta2[i] += T[0] * (FLOAT)log(Y[j][i]);
+                    EnhanTheta->Theta1_[i] += T[0];
+                    EnhanTheta->Theta2_[i] += T[0] * (FLOAT)log(Y[j][i]);
                 }
             }
 
-            EnhanTheta.Theta1[i] /= nl;
-            EnhanTheta.Theta2[i] = EnhanTheta.Theta2[i] / nl - EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
+            EnhanTheta->Theta1_[i] /= nl;
+            EnhanTheta->Theta2_[i] = EnhanTheta->Theta2_[i] / nl - EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
-            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta.Theta1[i] + TmpVar);
-            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1[i] + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta->Theta1_[i] + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1_[i] + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1673,9 +1536,9 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfWeibull:
-            EnhanTheta.pdf[i] = pfWeibull;
+            EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0;
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -1684,7 +1547,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
                 for (l = 0; l < n_; l++) {
                     if ((Y[l][d_] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[l][i]);
-                        T[1] = (FLOAT)exp(T[0] * EnhanTheta.Theta2[i]);
+                        T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta2_[i]);
 
                         A[0] += Y[l][d_] * T[0];
                         A[1] += Y[l][d_] * T[1] * T[0];
@@ -1693,14 +1556,14 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
+                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
 
-                dP = ((FLOAT)1.0 / EnhanTheta.Theta2[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                dP = ((FLOAT)1.0 / EnhanTheta->Theta2_[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -1714,17 +1577,17 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = (FLOAT)exp(log(A[2]) / EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta1_[i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta2_[i]);
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
-            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta.Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta.Theta2[i]));
-            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2[i]));
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta->Theta2_[i]));
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2_[i]));
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1732,9 +1595,9 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfGamma:
-            EnhanTheta.pdf[i] = pfGamma;
+            EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0 + Eps;
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -1749,14 +1612,14 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-                if (Digamma(EnhanTheta.Theta2[i], &T[0]) || Digamma(EnhanTheta.Theta2[i] + Eps, &T[1])) goto E0;
+                if (Digamma(EnhanTheta->Theta2_[i], &T[0]) || Digamma(EnhanTheta->Theta2_[i] + Eps, &T[1])) goto E0;
 
-                dP = ((FLOAT)log(EnhanTheta.Theta2[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta.Theta2[i] - (T[1] - T[0]) / Eps);
+                dP = ((FLOAT)log(EnhanTheta->Theta2_[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta2_[i] - (T[1] - T[0]) / Eps);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -1770,14 +1633,14 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = A[0] / EnhanTheta.Theta2[i];
+            EnhanTheta->Theta1_[i] = A[0] / EnhanTheta->Theta2_[i];
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1785,7 +1648,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfBinomial:
-            EnhanTheta.pdf[i] = pfBinomial;
+            EnhanTheta->pdf_[i] = pfBinomial;
 
             T[0] = (FLOAT)0.0;
 
@@ -1793,16 +1656,16 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
 
-            EnhanTheta.Theta2[i] = T[0] / EnhanTheta.Theta1[i] / nl;
+            EnhanTheta->Theta2_[i] = T[0] / EnhanTheta->Theta1_[i] / nl;
 
-            if ((EnhanTheta.Theta1[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta1_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] >(FLOAT)1.0)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta2[i] * ((FLOAT)1.0 - EnhanTheta.Theta2[i]);
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta2[i] * ((FLOAT)1.0 - RigidTheta->Theta2[i]);
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta2_[i] * ((FLOAT)1.0 - EnhanTheta->Theta2_[i]);
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta2_[i] * ((FLOAT)1.0 - RigidTheta->Theta2_[i]);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1810,7 +1673,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfPoisson:
-            EnhanTheta.pdf[i] = pfPoisson;
+            EnhanTheta->pdf_[i] = pfPoisson;
 
             T[0] = (FLOAT)0.0;
 
@@ -1818,16 +1681,16 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = T[0] / nl;
+            EnhanTheta->Theta1_[i] = T[0] / nl;
 
-            EnhanTheta.Theta2[i] = (FLOAT)0.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)0.0;
 
-            if (EnhanTheta.Theta1[i] < (FLOAT)0.0) {
+            if (EnhanTheta->Theta1_[i] < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1835,77 +1698,69 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                     **Y,         // Poin
 
             break;
         case pfDirac:
-            EnhanTheta.pdf[i] = pfDirac;
+            EnhanTheta->pdf_[i] = pfDirac;
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
         }
     }
 
-    memmove(LooseTheta->pdf, EnhanTheta.pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, EnhanTheta.Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, EnhanTheta.Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(EnhanTheta);
 
-E0: if (EnhanTheta.Theta2) free(EnhanTheta.Theta2);
-    if (EnhanTheta.Theta1) free(EnhanTheta.Theta1);
-    if (EnhanTheta.pdf) free(EnhanTheta.pdf);
+    if (Error) goto E0;
+
+E0: if (EnhanTheta) delete EnhanTheta;
 
     return (Error);
 } // EnhancedEstimationKNN
 
 // Enhanced component parameter estimation for Parzen window.
 
-int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                                 FLOAT                     nl,          // Total number of observations in class l.
-                                 ComponentDistributionType *RigidTheta, // Rigid parameters.
-                                 ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::EnhancedEstimationPW(FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                                 FLOAT              nl,          // Total number of observations in class l.
+                                 RebmixDistribution *RigidTheta, // Rigid parameters.
+                                 RebmixDistribution *LooseTheta) // Loose parameters.
 {
-    ComponentDistributionType EnhanTheta;
-    FLOAT                     A[4], T[2];
-    int                       i, j, l;
-    FLOAT                     dP, MrgVar, TmpVar;
-    int                       Error = 0;
+    RebmixDistribution *EnhanTheta;
+    FLOAT              A[4], T[2];
+    int                i, j, l;
+    FLOAT              dP, MrgVar, TmpVar;
+    int                Error = 0;
 
-    memset(&EnhanTheta, 0, sizeof(ComponentDistributionType));
+    EnhanTheta = new RebmixDistribution;
 
-    EnhanTheta.pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+    Error = NULL == EnhanTheta; if (Error) goto E0;
 
-    Error = NULL == EnhanTheta.pdf; if (Error) goto E0;
+    Error = EnhanTheta->Realloc(d_, d_, d_);
 
-    EnhanTheta.Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-    Error = NULL == EnhanTheta.Theta1; if (Error) goto E0;
-
-    EnhanTheta.Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-    Error = NULL == EnhanTheta.Theta2; if (Error) goto E0;
+    if (Error) goto E0;
 
     for (i = 0; i < d_; i++) {
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            EnhanTheta.pdf[i] = pfNormal;
+            EnhanTheta->pdf_[i] = pfNormal;
 
             for (j = 0; j < n_; j++) if (Y[j][d_] > FLOAT_MIN) {
-                EnhanTheta.Theta1[i] += Y[j][d_] * Y[j][i];
+                EnhanTheta->Theta1_[i] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] /= nl;
+            EnhanTheta->Theta1_[i] /= nl;
 
             for (j = 0; j < n_; j++) if (Y[j][d_] > FLOAT_MIN) {
-                T[0] = Y[j][i] - EnhanTheta.Theta1[i];
+                T[0] = Y[j][i] - EnhanTheta->Theta1_[i];
 
-                EnhanTheta.Theta2[i] += Y[j][d_] * T[0] * T[0];
+                EnhanTheta->Theta2_[i] += Y[j][d_] * T[0] * T[0];
             }
 
-            EnhanTheta.Theta2[i] /= nl;
+            EnhanTheta->Theta2_[i] /= nl;
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1913,31 +1768,31 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfLognormal:
-            EnhanTheta.pdf[i] = pfLognormal;
+            EnhanTheta->pdf_[i] = pfLognormal;
 
             for (j = 0; j < n_; j++) {
                 if ((Y[j][d_] > FLOAT_MIN) && (Y[j][i] > FLOAT_MIN)) {
                     T[0] = Y[j][d_] * (FLOAT)log(Y[j][i]);
 
-                    EnhanTheta.Theta1[i] += T[0];
-                    EnhanTheta.Theta2[i] += T[0] * (FLOAT)log(Y[j][i]);
+                    EnhanTheta->Theta1_[i] += T[0];
+                    EnhanTheta->Theta2_[i] += T[0] * (FLOAT)log(Y[j][i]);
                 }
             }
 
-            EnhanTheta.Theta1[i] /= nl;
-            EnhanTheta.Theta2[i] = EnhanTheta.Theta2[i] / nl - EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
+            EnhanTheta->Theta1_[i] /= nl;
+            EnhanTheta->Theta2_[i] = EnhanTheta->Theta2_[i] / nl - EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
-            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta.Theta1[i] + TmpVar);
-            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1[i] + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta->Theta1_[i] + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1_[i] + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -1945,9 +1800,9 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfWeibull:
-            EnhanTheta.pdf[i] = pfWeibull;
+            EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0;
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -1956,7 +1811,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
                 for (l = 0; l < n_; l++) {
                     if ((Y[l][d_] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[l][i]);
-                        T[1] = (FLOAT)exp(T[0] * EnhanTheta.Theta2[i]);
+                        T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta2_[i]);
 
                         A[0] += Y[l][d_] * T[0];
                         A[1] += Y[l][d_] * T[1] * T[0];
@@ -1965,14 +1820,14 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
+                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
 
-                dP = ((FLOAT)1.0 / EnhanTheta.Theta2[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                dP = ((FLOAT)1.0 / EnhanTheta->Theta2_[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -1986,17 +1841,17 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = (FLOAT)exp(log(A[2]) / EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta1_[i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta2_[i]);
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
-            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta.Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta.Theta2[i]));
-            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2[i]));
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta->Theta2_[i]));
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2_[i]));
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2004,9 +1859,9 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfGamma:
-            EnhanTheta.pdf[i] = pfGamma;
+            EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0 + Eps;
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -2021,14 +1876,14 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-                if (Digamma(EnhanTheta.Theta2[i], &T[0]) || Digamma(EnhanTheta.Theta2[i] + Eps, &T[1])) goto E0;
+                if (Digamma(EnhanTheta->Theta2_[i], &T[0]) || Digamma(EnhanTheta->Theta2_[i] + Eps, &T[1])) goto E0;
 
-                dP = ((FLOAT)log(EnhanTheta.Theta2[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta.Theta2[i] - (T[1] - T[0]) / Eps);
+                dP = ((FLOAT)log(EnhanTheta->Theta2_[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta2_[i] - (T[1] - T[0]) / Eps);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -2042,14 +1897,14 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = A[0] / EnhanTheta.Theta2[i];
+            EnhanTheta->Theta1_[i] = A[0] / EnhanTheta->Theta2_[i];
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2057,7 +1912,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfBinomial:
-            EnhanTheta.pdf[i] = pfBinomial;
+            EnhanTheta->pdf_[i] = pfBinomial;
 
             T[0] = (FLOAT)0.0;
 
@@ -2065,16 +1920,16 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
 
-            EnhanTheta.Theta2[i] = T[0] / EnhanTheta.Theta1[i] / nl;
+            EnhanTheta->Theta2_[i] = T[0] / EnhanTheta->Theta1_[i] / nl;
 
-            if ((EnhanTheta.Theta1[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta1_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] >(FLOAT)1.0)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta2[i] * ((FLOAT)1.0 - EnhanTheta.Theta2[i]);
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta2[i] * ((FLOAT)1.0 - RigidTheta->Theta2[i]);
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta2_[i] * ((FLOAT)1.0 - EnhanTheta->Theta2_[i]);
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta2_[i] * ((FLOAT)1.0 - RigidTheta->Theta2_[i]);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2082,7 +1937,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfPoisson:
-            EnhanTheta.pdf[i] = pfPoisson;
+            EnhanTheta->pdf_[i] = pfPoisson;
 
             T[0] = (FLOAT)0.0;
 
@@ -2090,16 +1945,16 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = T[0] / nl;
+            EnhanTheta->Theta1_[i] = T[0] / nl;
 
-            EnhanTheta.Theta2[i] = (FLOAT)0.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)0.0;
 
-            if (EnhanTheta.Theta1[i] < (FLOAT)0.0) {
+            if (EnhanTheta->Theta1_[i] < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2107,78 +1962,70 @@ int Rebmix::EnhancedEstimationPW(FLOAT                     **Y,         // Point
 
             break;
         case pfDirac:
-            EnhanTheta.pdf[i] = pfDirac;
+            EnhanTheta->pdf_[i] = pfDirac;
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
         }
     }
 
-    memmove(LooseTheta->pdf, EnhanTheta.pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, EnhanTheta.Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, EnhanTheta.Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(EnhanTheta);
 
-E0: if (EnhanTheta.Theta2) free(EnhanTheta.Theta2);
-    if (EnhanTheta.Theta1) free(EnhanTheta.Theta1);
-    if (EnhanTheta.pdf) free(EnhanTheta.pdf);
+    if (Error) goto E0;
+
+E0: if (EnhanTheta) delete EnhanTheta;
 
     return (Error);
 } // EnhancedEstimationPW
 
 // Enhanced component parameter estimation for histogram.
 
-int Rebmix::EnhancedEstimationH(int                       k,           // Total number of bins.
-                                FLOAT                     **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                                FLOAT                     nl,          // Total number of observations in class l.
-                                ComponentDistributionType *RigidTheta, // Rigid parameters.
-                                ComponentDistributionType *LooseTheta) // Loose parameters.
+int Rebmix::EnhancedEstimationH(int                k,           // Total number of bins.
+                                FLOAT              **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                                FLOAT              nl,          // Total number of observations in class l.
+                                RebmixDistribution *RigidTheta, // Rigid parameters.
+                                RebmixDistribution *LooseTheta) // Loose parameters.
 {
-    ComponentDistributionType EnhanTheta;
-    FLOAT                     A[4], T[2];
-    int                       i, j, l;
-    FLOAT                     dP, MrgVar, TmpVar;
-    int                       Error = 0;
+    RebmixDistribution *EnhanTheta;
+    FLOAT              A[4], T[2];
+    int                i, j, l;
+    FLOAT              dP, MrgVar, TmpVar;
+    int                Error = 0;
 
-    memset(&EnhanTheta, 0, sizeof(ComponentDistributionType));
+    EnhanTheta = new RebmixDistribution;
 
-    EnhanTheta.pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+    Error = NULL == EnhanTheta; if (Error) goto E0;
 
-    Error = NULL == EnhanTheta.pdf; if (Error) goto E0;
+    Error = EnhanTheta->Realloc(d_, d_, d_);
 
-    EnhanTheta.Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-    Error = NULL == EnhanTheta.Theta1; if (Error) goto E0;
-
-    EnhanTheta.Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-    Error = NULL == EnhanTheta.Theta2; if (Error) goto E0;
+    if (Error) goto E0;
 
     for (i = 0; i < d_; i++) {
-        switch (RigidTheta->pdf[i]) {
+        switch (RigidTheta->pdf_[i]) {
         case pfNormal:
-            EnhanTheta.pdf[i] = pfNormal;
+            EnhanTheta->pdf_[i] = pfNormal;
 
             for (j = 0; j < k; j++) if (Y[j][d_] > FLOAT_MIN) {
-                EnhanTheta.Theta1[i] += Y[j][d_] * Y[j][i];
+                EnhanTheta->Theta1_[i] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] /= nl;
+            EnhanTheta->Theta1_[i] /= nl;
 
             for (j = 0; j < k; j++) if (Y[j][d_] > FLOAT_MIN) {
-                T[0] = Y[j][i] - EnhanTheta.Theta1[i];
+                T[0] = Y[j][i] - EnhanTheta->Theta1_[i];
 
-                EnhanTheta.Theta2[i] += Y[j][d_] * T[0] * T[0];
+                EnhanTheta->Theta2_[i] += Y[j][d_] * T[0] * T[0];
             }
 
-            EnhanTheta.Theta2[i] /= nl;
+            EnhanTheta->Theta2_[i] /= nl;
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2186,31 +2033,31 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfLognormal:
-            EnhanTheta.pdf[i] = pfLognormal;
+            EnhanTheta->pdf_[i] = pfLognormal;
 
             for (j = 0; j < k; j++) {
                 if ((Y[j][d_] > FLOAT_MIN) && (Y[j][i] > FLOAT_MIN)) {
                     T[0] = Y[j][d_] * (FLOAT)log(Y[j][i]);
 
-                    EnhanTheta.Theta1[i] += T[0];
-                    EnhanTheta.Theta2[i] += T[0] * (FLOAT)log(Y[j][i]);
+                    EnhanTheta->Theta1_[i] += T[0];
+                    EnhanTheta->Theta2_[i] += T[0] * (FLOAT)log(Y[j][i]);
                 }
             }
 
-            EnhanTheta.Theta1[i] /= nl;
-            EnhanTheta.Theta2[i] = EnhanTheta.Theta2[i] / nl - EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
+            EnhanTheta->Theta1_[i] /= nl;
+            EnhanTheta->Theta2_[i] = EnhanTheta->Theta2_[i] / nl - EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
 
-            if (EnhanTheta.Theta2[i] <= FLOAT_MIN) {
+            if (EnhanTheta->Theta2_[i] <= FLOAT_MIN) {
                 Error = 1; if (Error) goto E0;
             }
 
-            EnhanTheta.Theta2[i] = (FLOAT)sqrt(EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta2_[i] = (FLOAT)sqrt(EnhanTheta->Theta2_[i]);
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta2[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta2_[i];
 
-            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta.Theta1[i] + TmpVar);
-            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1[i] + MrgVar);
+            TmpVar = ((FLOAT)exp(TmpVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * EnhanTheta->Theta1_[i] + TmpVar);
+            MrgVar = ((FLOAT)exp(MrgVar) - (FLOAT)1.0) * (FLOAT)exp((FLOAT)2.0 * RigidTheta->Theta1_[i] + MrgVar);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2218,9 +2065,9 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfWeibull:
-            EnhanTheta.pdf[i] = pfWeibull;
+            EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0;
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2229,7 +2076,7 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
                 for (l = 0; l < k; l++) {
                     if ((Y[l][d_] > FLOAT_MIN) && (Y[l][i] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[l][i]);
-                        T[1] = (FLOAT)exp(T[0] * EnhanTheta.Theta2[i]);
+                        T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta2_[i]);
 
                         A[0] += Y[l][d_] * T[0];
                         A[1] += Y[l][d_] * T[1] * T[0];
@@ -2238,14 +2085,14 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta.Theta2[i] * EnhanTheta.Theta2[i];
+                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta2_[i] * EnhanTheta->Theta2_[i];
 
-                dP = ((FLOAT)1.0 / EnhanTheta.Theta2[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                dP = ((FLOAT)1.0 / EnhanTheta->Theta2_[i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -2259,17 +2106,17 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = (FLOAT)exp(log(A[2]) / EnhanTheta.Theta2[i]);
+            EnhanTheta->Theta1_[i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta2_[i]);
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
-            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta.Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta.Theta2[i]));
-            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2[i]));
+            TmpVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / EnhanTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / EnhanTheta->Theta2_[i]));
+            MrgVar *= (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / RigidTheta->Theta2_[i])) - (FLOAT)exp((FLOAT)2.0 * Gammaln((FLOAT)1.0 + (FLOAT)1.0 / RigidTheta->Theta2_[i]));
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2277,9 +2124,9 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfGamma:
-            EnhanTheta.pdf[i] = pfGamma;
+            EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta.Theta2[i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta2_[i] = (FLOAT)1.0 + Eps;
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -2294,14 +2141,14 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
-                if (Digamma(EnhanTheta.Theta2[i], &T[0]) || Digamma(EnhanTheta.Theta2[i] + Eps, &T[1])) goto E0;
+                if (Digamma(EnhanTheta->Theta2_[i], &T[0]) || Digamma(EnhanTheta->Theta2_[i] + Eps, &T[1])) goto E0;
 
-                dP = ((FLOAT)log(EnhanTheta.Theta2[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta.Theta2[i] - (T[1] - T[0]) / Eps);
+                dP = ((FLOAT)log(EnhanTheta->Theta2_[i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta2_[i] - (T[1] - T[0]) / Eps);
 
-                EnhanTheta.Theta2[i] -= dP;
+                EnhanTheta->Theta2_[i] -= dP;
 
                 #if (_REBMIXEXE || _REBMIXR)
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
                 #endif
@@ -2315,14 +2162,14 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             A[2] /= nl;
 
-            EnhanTheta.Theta1[i] = A[0] / EnhanTheta.Theta2[i];
+            EnhanTheta->Theta1_[i] = A[0] / EnhanTheta->Theta2_[i];
 
-            if ((EnhanTheta.Theta1[i] <= FLOAT_MIN) || (EnhanTheta.Theta2[i] <= FLOAT_MIN)) {
+            if ((EnhanTheta->Theta1_[i] <= FLOAT_MIN) || (EnhanTheta->Theta2_[i] <= FLOAT_MIN)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta2[i] * EnhanTheta.Theta1[i] * EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta2[i] * RigidTheta->Theta1[i] * RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta2_[i] * EnhanTheta->Theta1_[i] * EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta2_[i] * RigidTheta->Theta1_[i] * RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2330,7 +2177,7 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfBinomial:
-            EnhanTheta.pdf[i] = pfBinomial;
+            EnhanTheta->pdf_[i] = pfBinomial;
 
             T[0] = (FLOAT)0.0;
 
@@ -2338,16 +2185,16 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
 
-            EnhanTheta.Theta2[i] = T[0] / EnhanTheta.Theta1[i] / nl;
+            EnhanTheta->Theta2_[i] = T[0] / EnhanTheta->Theta1_[i] / nl;
 
-            if ((EnhanTheta.Theta1[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] < (FLOAT)0.0) || (EnhanTheta.Theta2[i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta1_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] < (FLOAT)0.0) || (EnhanTheta->Theta2_[i] >(FLOAT)1.0)) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i] * EnhanTheta.Theta2[i] * ((FLOAT)1.0 - EnhanTheta.Theta2[i]);
-            MrgVar = RigidTheta->Theta1[i] * RigidTheta->Theta2[i] * ((FLOAT)1.0 - RigidTheta->Theta2[i]);
+            TmpVar = EnhanTheta->Theta1_[i] * EnhanTheta->Theta2_[i] * ((FLOAT)1.0 - EnhanTheta->Theta2_[i]);
+            MrgVar = RigidTheta->Theta1_[i] * RigidTheta->Theta2_[i] * ((FLOAT)1.0 - RigidTheta->Theta2_[i]);
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2355,7 +2202,7 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfPoisson:
-            EnhanTheta.pdf[i] = pfPoisson;
+            EnhanTheta->pdf_[i] = pfPoisson;
 
             T[0] = (FLOAT)0.0;
 
@@ -2363,16 +2210,16 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
                 T[0] += Y[j][d_] * Y[j][i];
             }
 
-            EnhanTheta.Theta1[i] = T[0] / nl;
+            EnhanTheta->Theta1_[i] = T[0] / nl;
 
-            EnhanTheta.Theta2[i] = (FLOAT)0.0;
+            EnhanTheta->Theta2_[i] = (FLOAT)0.0;
 
-            if (EnhanTheta.Theta1[i] < (FLOAT)0.0) {
+            if (EnhanTheta->Theta1_[i] < (FLOAT)0.0) {
                 Error = 1; if (Error) goto E0;
             }
 
-            TmpVar = EnhanTheta.Theta1[i];
-            MrgVar = RigidTheta->Theta1[i];
+            TmpVar = EnhanTheta->Theta1_[i];
+            MrgVar = RigidTheta->Theta1_[i];
 
             if (TmpVar < MrgVar) {
                 Error = 1; if (Error) goto E0;
@@ -2380,72 +2227,70 @@ int Rebmix::EnhancedEstimationH(int                       k,           // Total 
 
             break;
         case pfDirac:
-            EnhanTheta.pdf[i] = pfDirac;
+            EnhanTheta->pdf_[i] = pfDirac;
 
-            EnhanTheta.Theta1[i] = RigidTheta->Theta1[i];
+            EnhanTheta->Theta1_[i] = RigidTheta->Theta1_[i];
         }
     }
 
-    memmove(LooseTheta->pdf, EnhanTheta.pdf, d_ * sizeof(ParametricFamilyType_e));
-    memmove(LooseTheta->Theta1, EnhanTheta.Theta1, d_ * sizeof(FLOAT));
-    memmove(LooseTheta->Theta2, EnhanTheta.Theta2, d_ * sizeof(FLOAT));
+    Error = LooseTheta->Memmove(EnhanTheta);
 
-E0: if (EnhanTheta.Theta2) free(EnhanTheta.Theta2);
-    if (EnhanTheta.Theta1) free(EnhanTheta.Theta1);
-    if (EnhanTheta.pdf) free(EnhanTheta.pdf);
+    if (Error) goto E0;
+
+E0: if (EnhanTheta) delete EnhanTheta;
 
     return (Error);
 } // EnhancedEstimationH
 
 // Moments calculation.
 
-int Rebmix::MomentsCalculation(ComponentDistributionType *CmpTheta, // Component distribution type.
-                               FLOAT                     *FirstM,   // First moment.
-                               FLOAT                     *SecondM)  // Second moment.
+int Rebmix::MomentsCalculation(RebmixDistribution *CmpTheta, // Component parameters.
+                               FLOAT              *FirstM,   // First moment.
+                               FLOAT              *SecondM)  // Second moment.
 {
     int i;
     int Error = 0;
 
     for (i = 0; i < d_; i++) {
-        switch (CmpTheta->pdf[i]) {
+        switch (CmpTheta->pdf_[i]) {
         case pfNormal:
-            FirstM[i] = CmpTheta->Theta1[i];
+            FirstM[i] = CmpTheta->Theta1_[i];
 
-            SecondM[i] = CmpTheta->Theta2[i] * CmpTheta->Theta2[i] + CmpTheta->Theta1[i] * CmpTheta->Theta1[i];
+            SecondM[i] = CmpTheta->Theta2_[i] * CmpTheta->Theta2_[i] + CmpTheta->Theta1_[i] * CmpTheta->Theta1_[i];
 
             break;
         case pfLognormal:
-            FirstM[i] = (FLOAT)exp(CmpTheta->Theta1[i] + (FLOAT)0.5 * CmpTheta->Theta2[i] * CmpTheta->Theta2[i]);
+            FirstM[i] = (FLOAT)exp(CmpTheta->Theta1_[i] + (FLOAT)0.5 * CmpTheta->Theta2_[i] * CmpTheta->Theta2_[i]);
 
-            SecondM[i] = (FLOAT)exp((FLOAT)2.0 * (CmpTheta->Theta1[i] + CmpTheta->Theta2[i] * CmpTheta->Theta2[i]));
+            SecondM[i] = (FLOAT)exp((FLOAT)2.0 * (CmpTheta->Theta1_[i] + CmpTheta->Theta2_[i] * CmpTheta->Theta2_[i]));
 
             break;
         case pfWeibull:
-            FirstM[i] = CmpTheta->Theta1[i] * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)1.0 / CmpTheta->Theta2[i]));
+            FirstM[i] = CmpTheta->Theta1_[i] * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)1.0 / CmpTheta->Theta2_[i]));
 
-            SecondM[i] = CmpTheta->Theta1[i] * CmpTheta->Theta1[i] * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / CmpTheta->Theta2[i]));
+            SecondM[i] = CmpTheta->Theta1_[i] * CmpTheta->Theta1_[i] * (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)2.0 / CmpTheta->Theta2_[i]));
 
             break;
         case pfGamma:
-            FirstM[i] = CmpTheta->Theta2[i] * CmpTheta->Theta1[i];
+            FirstM[i] = CmpTheta->Theta2_[i] * CmpTheta->Theta1_[i];
 
-            SecondM[i] = CmpTheta->Theta2[i] * CmpTheta->Theta1[i] * CmpTheta->Theta1[i] * ((FLOAT)1.0 + CmpTheta->Theta2[i]);
+            SecondM[i] = CmpTheta->Theta2_[i] * CmpTheta->Theta1_[i] * CmpTheta->Theta1_[i] * ((FLOAT)1.0 + CmpTheta->Theta2_[i]);
 
             break;
         case pfBinomial:
-            FirstM[i] = CmpTheta->Theta1[i] * CmpTheta->Theta2[i];
+            FirstM[i] = CmpTheta->Theta1_[i] * CmpTheta->Theta2_[i];
 
             SecondM[i] = (FLOAT)0.0;
 
             break;
         case pfPoisson:
-            FirstM[i] = CmpTheta->Theta1[i];
+            FirstM[i] = CmpTheta->Theta1_[i];
 
             SecondM[i] = (FLOAT)0.0;
 
             break;
         case pfDirac:
-            FirstM[i] = CmpTheta->Theta1[i];
+            FirstM[i] = CmpTheta->Theta1_[i];
 
             SecondM[i] = (FLOAT)0.0;
         }
@@ -2521,12 +2366,12 @@ E0: return (Error);
 
 // Bayes classification of the remaining observations for k-nearest neighbour.
 
-int Rebmix::BayesClassificationKNN(FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1].
-                                   int                       c,         // Number of components.
-                                   FLOAT                     *W,        // Component weights.
-                                   ComponentDistributionType *CmpTheta, // Component distribution types.
-                                   FLOAT                     **FirstM,  // First moments.
-                                   FLOAT                     **SecondM) // Second moments.
+int Rebmix::BayesClassificationKNN(FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1].
+                                   int                c,          // Number of components.
+                                   FLOAT              *W,         // Component weights.
+                                   RebmixDistribution **MixTheta, // Mixture parameters.
+                                   FLOAT              **FirstM,   // First moments.
+                                   FLOAT              **SecondM)  // Second moments.
 {
     int   i, j, l;
     FLOAT CmpDist, Max, Tmp, dW;
@@ -2536,14 +2381,14 @@ int Rebmix::BayesClassificationKNN(FLOAT                     **Y,       // Point
         if (Y[i][d_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], &CmpTheta[l], &CmpDist, 0);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
 
             if (Error) goto E0;
 
             Max = W[l] * CmpDist;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -2565,36 +2410,36 @@ int Rebmix::BayesClassificationKNN(FLOAT                     **Y,       // Point
     }
 
     for (i = 0; i < c; i++) for (j = 0; j < d_; j++) {
-        switch (CmpTheta[i].pdf[j]) {
+        switch (MixTheta[i]->pdf_[j]) {
         case pfNormal:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(SecondM[i][j] - CmpTheta[i].Theta1[j] * CmpTheta[i].Theta1[j]);
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta1_[j] * MixTheta[i]->Theta1_[j]);
 
             break;
         case pfLognormal:
-            CmpTheta[i].Theta1[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
+            MixTheta[i]->Theta1_[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
 
             break;
         case pfWeibull:
-            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &CmpTheta[i].Theta1[j], &CmpTheta[i].Theta2[j]);
+            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta1_[j], &MixTheta[i]->Theta2_[j]);
 
             break;
         case pfGamma:
-            CmpTheta[i].Theta2[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+            MixTheta[i]->Theta2_[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-            CmpTheta[i].Theta1[j] = FirstM[i][j] / CmpTheta[i].Theta2[j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j] / MixTheta[i]->Theta2_[j];
 
             break;
         case pfBinomial:
-            CmpTheta[i].Theta2[j] = FirstM[i][j] / CmpTheta[i].Theta1[j];
+            MixTheta[i]->Theta2_[j] = FirstM[i][j] / MixTheta[i]->Theta1_[j];
 
             break;
         case pfPoisson:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
             break;
         case pfDirac:
@@ -2607,12 +2452,12 @@ E0: return (Error);
 
 // Bayes classification of the remaining observations for Parzen window.
 
-int Rebmix::BayesClassificationPW(FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1].
-                                  int                       c,         // Number of components.
-                                  FLOAT                     *W,        // Component weights.
-                                  ComponentDistributionType *CmpTheta, // Component distribution types.
-                                  FLOAT                     **FirstM,  // First moments.
-                                  FLOAT                     **SecondM) // Second moments.
+int Rebmix::BayesClassificationPW(FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1].
+                                  int                c,          // Number of components.
+                                  FLOAT              *W,         // Component weights.
+                                  RebmixDistribution **MixTheta, // Mixture parameters.
+                                  FLOAT              **FirstM,   // First moments.
+                                  FLOAT              **SecondM)  // Second moments.
 {
     int   i, j, l;
     FLOAT CmpDist, Max, Tmp, dW;
@@ -2622,14 +2467,14 @@ int Rebmix::BayesClassificationPW(FLOAT                     **Y,       // Pointe
         if (Y[i][d_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], &CmpTheta[l], &CmpDist, 0);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
 
             if (Error) goto E0;
 
             Max = W[l] * CmpDist;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -2651,36 +2496,36 @@ int Rebmix::BayesClassificationPW(FLOAT                     **Y,       // Pointe
     }
 
     for (i = 0; i < c; i++) for (j = 0; j < d_; j++) {
-        switch (CmpTheta[i].pdf[j]) {
+        switch (MixTheta[i]->pdf_[j]) {
         case pfNormal:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(SecondM[i][j] - CmpTheta[i].Theta1[j] * CmpTheta[i].Theta1[j]);
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta1_[j] * MixTheta[i]->Theta1_[j]);
 
             break;
         case pfLognormal:
-            CmpTheta[i].Theta1[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
+            MixTheta[i]->Theta1_[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
 
             break;
         case pfWeibull:
-            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &CmpTheta[i].Theta1[j], &CmpTheta[i].Theta2[j]);
+            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta1_[j], &MixTheta[i]->Theta2_[j]);
 
             break;
         case pfGamma:
-            CmpTheta[i].Theta2[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+            MixTheta[i]->Theta2_[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-            CmpTheta[i].Theta1[j] = FirstM[i][j] / CmpTheta[i].Theta2[j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j] / MixTheta[i]->Theta2_[j];
 
             break;
         case pfBinomial:
-            CmpTheta[i].Theta2[j] = FirstM[i][j] / CmpTheta[i].Theta1[j];
+            MixTheta[i]->Theta2_[j] = FirstM[i][j] / MixTheta[i]->Theta1_[j];
 
             break;
         case pfPoisson:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
             break;
         case pfDirac:
@@ -2693,13 +2538,13 @@ E0: return (Error);
 
 // Bayes classification of the remaining observations for histogram.
 
-int Rebmix::BayesClassificationH(int                       k,         // Total number of bins.
-                                 FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1].
-                                 int                       c,         // Number of components.
-                                 FLOAT                     *W,        // Component weights.
-                                 ComponentDistributionType *CmpTheta, // Component distribution types.
-                                 FLOAT                     **FirstM,  // First moments.
-                                 FLOAT                     **SecondM) // Second moments.
+int Rebmix::BayesClassificationH(int                k,          // Total number of bins.
+                                 FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1].
+                                 int                c,          // Number of components.
+                                 FLOAT              *W,         // Component weights.
+                                 RebmixDistribution **MixTheta, // Mixture parameters.
+                                 FLOAT              **FirstM,   // First moments.
+                                 FLOAT              **SecondM)  // Second moments.
 {
     int   i, j, l;
     FLOAT CmpDist, Max, Tmp, dW;
@@ -2709,14 +2554,14 @@ int Rebmix::BayesClassificationH(int                       k,         // Total n
         if (Y[i][d_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], &CmpTheta[l], &CmpDist, 0);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
 
             if (Error) goto E0;
 
             Max = W[l] * CmpDist;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -2738,36 +2583,36 @@ int Rebmix::BayesClassificationH(int                       k,         // Total n
     }
 
     for (i = 0; i < c; i++) for (j = 0; j < d_; j++) {
-        switch (CmpTheta[i].pdf[j]) {
+        switch (MixTheta[i]->pdf_[j]) {
         case pfNormal:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(SecondM[i][j] - CmpTheta[i].Theta1[j] * CmpTheta[i].Theta1[j]);
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta1_[j] * MixTheta[i]->Theta1_[j]);
 
             break;
         case pfLognormal:
-            CmpTheta[i].Theta1[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
+            MixTheta[i]->Theta1_[j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-            CmpTheta[i].Theta2[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+            MixTheta[i]->Theta2_[j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
 
             break;
         case pfWeibull:
-            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &CmpTheta[i].Theta1[j], &CmpTheta[i].Theta2[j]);
+            BayesWeibullParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta1_[j], &MixTheta[i]->Theta2_[j]);
 
             break;
         case pfGamma:
-            CmpTheta[i].Theta2[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
+            MixTheta[i]->Theta2_[j] = (FLOAT)1.0 / (SecondM[i][j] / FirstM[i][j] / FirstM[i][j] - (FLOAT)1.0);
 
-            CmpTheta[i].Theta1[j] = FirstM[i][j] / CmpTheta[i].Theta2[j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j] / MixTheta[i]->Theta2_[j];
 
             break;
         case pfBinomial:
-            CmpTheta[i].Theta2[j] = FirstM[i][j] / CmpTheta[i].Theta1[j];
+            MixTheta[i]->Theta2_[j] = FirstM[i][j] / MixTheta[i]->Theta1_[j];
 
             break;
         case pfPoisson:
-            CmpTheta[i].Theta1[j] = FirstM[i][j];
+            MixTheta[i]->Theta1_[j] = FirstM[i][j];
 
             break;
         case pfDirac:
@@ -2778,9 +2623,9 @@ int Rebmix::BayesClassificationH(int                       k,         // Total n
 E0: return (Error);
 } // BayesClassificationH
 
-int Rebmix::DegreesOffreedom(int                       c,         // Number of components.
-                             ComponentDistributionType *CmpTheta, // Component distribution types.
-                             int                       *M)        // Degrees of freedom.
+int Rebmix::DegreesOffreedom(int                c,          // Number of components.
+                             RebmixDistribution **MixTheta, // Mixture parameters.
+                             int                *M)         // Degrees of freedom.
 {
     int i, j;
     int Error = 0;
@@ -2789,7 +2634,7 @@ int Rebmix::DegreesOffreedom(int                       c,         // Number of c
 
     for (i = 0; i < c; i++) {
         for (j = 0; j < d_; j++) {
-            switch (CmpTheta[i].pdf[j]) {
+            switch (MixTheta[i]->pdf_[j]) {
             case pfNormal:
                 *M += 2;
 
@@ -2825,12 +2670,11 @@ int Rebmix::DegreesOffreedom(int                       c,         // Number of c
 
 // Returns mixture p.d.f or c.d.f.
 
-int Rebmix::MixtureDist(FLOAT                     *Y,         // Pointer to the input point [y0,...,yd-1].
-                        int                       c,          // Number of components.
-                        FLOAT                     *W,         // Component weights.
-                        ComponentDistributionType *CmpTheta,  // Component distribution types.
-                        FLOAT                     *MixDist,   // Mixture distribution.
-                        int                       Cumulative) // Set 1 if c.d.f.or 0 if p.d.f.
+int Rebmix::MixtureDist(FLOAT              *Y,         // Pointer to the input point [y0,...,yd-1].
+                        int                c,          // Number of components.
+                        FLOAT              *W,         // Component weights.
+                        RebmixDistribution **MixTheta, // Mixture parameters.
+                        FLOAT              *MixDist)   // Mixture distribution.
 {
     FLOAT CmpDist;
     int   i;
@@ -2839,7 +2683,7 @@ int Rebmix::MixtureDist(FLOAT                     *Y,         // Pointer to the 
     *MixDist = (FLOAT)0.0;
 
     for (i = 0; i < c; i++) {
-        Error = ComponentDist(Y, &CmpTheta[i], &CmpDist, Cumulative);
+        Error = ComponentDist(Y, MixTheta[i], &CmpDist);
 
         if (Error) goto E0;
 
@@ -2851,28 +2695,28 @@ E0: return (Error);
 
 // Returns information criterion for k-nearest neighbour.
 
-int Rebmix::InformationCriterionKNN(int                       k,         // k-nearest neighbours.
-                                    FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1,kl,V,R].
-                                    int                       c,         // Number of components.
-                                    FLOAT                     *W,        // Component weights.
-                                    ComponentDistributionType *CmpTheta, // Component distribution types.
-                                    FLOAT                     *IC,       // Information criterion.
-                                    FLOAT                     *logL,     // log-likelihood.
-                                    int                       *M,        // Degrees of freedom.
-                                    FLOAT                     *D)        // Total of positive relative deviations.
+int Rebmix::InformationCriterionKNN(int                k,          // k-nearest neighbours.
+                                    FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1,kl,V,R].
+                                    int                c,          // Number of components.
+                                    FLOAT              *W,         // Component weights.
+                                    RebmixDistribution **MixTheta, // Mixture parameters.
+                                    FLOAT              *IC,        // Information criterion.
+                                    FLOAT              *logL,      // log-likelihood.
+                                    int                *M,         // Degrees of freedom.
+                                    FLOAT              *D)         // Total of positive relative deviations.
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-    Error = DegreesOffreedom(c, CmpTheta, M);
+    Error = DegreesOffreedom(c, MixTheta, M);
 
     if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
-        Error = MixtureDist(Y[i], c, W, CmpTheta, &MixDist, 0);
+        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
 
         if (Error) goto E0;
 
@@ -2892,7 +2736,7 @@ int Rebmix::InformationCriterionKNN(int                       k,         // k-ne
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
             for (j = 0; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -2991,28 +2835,28 @@ E0: return (Error);
 
 // Returns information criterion for Parzen window.
 
-int Rebmix::InformationCriterionPW(FLOAT                     V,         // Volume of the hypersquare.
-                                   FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1,kl,k].
-                                   int                       c,         // Number of components.
-                                   FLOAT                     *W,        // Component weights.
-                                   ComponentDistributionType *CmpTheta, // Component distribution types.
-                                   FLOAT                     *IC,       // Information criterion.
-                                   FLOAT                     *logL,     // log-likelihood.
-                                   int                       *M,        // Degrees of freedom.
-                                   FLOAT                     *D)        // Total of positive relative deviations.
+int Rebmix::InformationCriterionPW(FLOAT              V,          // Volume of the hypersquare.
+                                   FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1,kl,k].
+                                   int                c,          // Number of components.
+                                   FLOAT              *W,         // Component weights.
+                                   RebmixDistribution **MixTheta, // Mixture parameters.
+                                   FLOAT              *IC,        // Information criterion.
+                                   FLOAT              *logL,      // log-likelihood.
+                                   int                *M,         // Degrees of freedom.
+                                   FLOAT              *D)         // Total of positive relative deviations.
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-    Error = DegreesOffreedom(c, CmpTheta, M);
+    Error = DegreesOffreedom(c, MixTheta, M);
 
     if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
-        Error = MixtureDist(Y[i], c, W, CmpTheta, &MixDist, 0);
+        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
 
         if (Error) goto E0;
 
@@ -3032,7 +2876,7 @@ int Rebmix::InformationCriterionPW(FLOAT                     V,         // Volum
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
             for (j = 0; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -3131,29 +2975,29 @@ E0: return (Error);
 
 // Returns information criterion for histogram.
 
-int Rebmix::InformationCriterionH(FLOAT                     V,         // Volume of the hypersquare.
-                                  int                       k,         // Total number of bins.
-                                  FLOAT                     **Y,       // Pointer to the input points [y0,...,yd-1,kl].
-                                  int                       c,         // Number of components.
-                                  FLOAT                     *W,        // Component weights.
-                                  ComponentDistributionType *CmpTheta, // Component distribution types.
-                                  FLOAT                     *IC,       // Information criterion.
-                                  FLOAT                     *logL,     // log-likelihood.
-                                  int                       *M,        // Degrees of freedom.
-                                  FLOAT                     *D)        // Total of positive relative deviations.
+int Rebmix::InformationCriterionH(FLOAT              V,          // Volume of the hypersquare.
+                                  int                k,          // Total number of bins.
+                                  FLOAT              **Y,        // Pointer to the input points [y0,...,yd-1,kl].
+                                  int                c,          // Number of components.
+                                  FLOAT              *W,         // Component weights.
+                                  RebmixDistribution **MixTheta, // Mixture parameters.
+                                  FLOAT              *IC,        // Information criterion.
+                                  FLOAT              *logL,      // log-likelihood.
+                                  int                *M,         // Degrees of freedom.
+                                  FLOAT              *D)         // Total of positive relative deviations.
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
     int   Error = 0;
 
-    Error = DegreesOffreedom(c, CmpTheta, M);
+    Error = DegreesOffreedom(c, MixTheta, M);
 
     if (Error) goto E0;
 
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
     for (i = 0; i < k; i++) {
-        Error = MixtureDist(Y[i], c, W, CmpTheta, &MixDist, 0);
+        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
 
         if (Error) goto E0;
 
@@ -3173,7 +3017,7 @@ int Rebmix::InformationCriterionH(FLOAT                     V,         // Volume
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icICLBIC:
             for (j = 0; j < c; j++) {
-                Error = ComponentDist(Y[i], &CmpTheta[j], &CmpDist, 0);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
 
                 if (Error) goto E0;
 
@@ -3274,20 +3118,20 @@ E0: return (Error);
 
 int Rebmix::REBMIXKNN()
 {
-    FLOAT                     **Y = NULL;
-    FLOAT                     *ymin = NULL, *ymax = NULL, *h = NULL;
-    FLOAT                     *R = NULL, *E = NULL, *Epsilon = NULL;
-    FLOAT                     *W = NULL;
-    ComponentDistributionType *RigidTheta = NULL, *LooseTheta = NULL; 
-    FLOAT                     **FirstM = NULL, **SecondM = NULL;
-    int                       opt_length;    
-    int                       *opt_c;        
-    FLOAT                     *opt_IC;       
-    FLOAT                     *opt_logL;     
-    FLOAT                     *opt_D;
-    int                       c = 0, i, I, j, J, l, m, M;
-    FLOAT                     Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-    int                       Error = 0, Stop = 0, Found = 0;
+    FLOAT              **Y = NULL;
+    FLOAT              *ymin = NULL, *ymax = NULL, *h = NULL;
+    FLOAT              *R = NULL, *E = NULL, *Epsilon = NULL;
+    FLOAT              *W = NULL;
+    RebmixDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
+    FLOAT              **FirstM = NULL, **SecondM = NULL;
+    int                opt_length;    
+    int                *opt_c;        
+    FLOAT              *opt_IC;       
+    FLOAT              *opt_logL;     
+    FLOAT              *opt_D;
+    int                c = 0, i, I, j, J, l, m, M;
+    FLOAT              Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
+    int                Error = 0, Stop = 0, Found = 0;
 
     // Allocation and initialisation.
 
@@ -3301,22 +3145,18 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    Theta_ = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    MixTheta_ = new RebmixDistribution* [cmax_];
 
-    Error = NULL == Theta_; if (Error) goto E0;
+    Error = NULL == MixTheta_; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        Theta_[i].pdf = (ParametricFamilyType_e*)malloc(d_ * sizeof(ParametricFamilyType_e));
+        MixTheta_[i] = new RebmixDistribution;
 
-        Error = NULL == Theta_[i].pdf; if (Error) goto E0;
+        Error = NULL == MixTheta_[i]; if (Error) goto E0;
 
-        Theta_[i].Theta1 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
+        Error = MixTheta_[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
 
-        Error = NULL == Theta_[i].Theta1; if (Error) goto E0;
-
-        Theta_[i].Theta2 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
-
-        Error = NULL == Theta_[i].Theta2; if (Error) goto E0;
+        if (Error) goto E0;
     }
 
     opt_length_ = ItMax;
@@ -3431,63 +3271,55 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    RigidTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        RigidTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        RigidTheta[i] = new RebmixDistribution;
 
-        Error = NULL == RigidTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == RigidTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            RigidTheta[i].pdf[j] = pdf_[j];
+        Error = RigidTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            RigidTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        RigidTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            RigidTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        RigidTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            RigidTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
-    LooseTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    LooseTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        LooseTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        LooseTheta[i] = new RebmixDistribution;
 
-        Error = NULL == LooseTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == LooseTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            LooseTheta[i].pdf[j] = pdf_[j];
+        Error = LooseTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            LooseTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        LooseTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            LooseTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        LooseTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            LooseTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
@@ -3560,7 +3392,7 @@ int Rebmix::REBMIXKNN()
                 while (I <= ItMax) {
                     // Rough component parameter estimation.
 
-                    Error = RoughEstimationKNN(Y, all_K_[i], h, nl, m, &RigidTheta[l], &LooseTheta[l]);
+                    Error = RoughEstimationKNN(Y, all_K_[i], h, nl, m, RigidTheta[l], LooseTheta[l]);
 
                     if (Error) goto E0;
 
@@ -3570,7 +3402,7 @@ int Rebmix::REBMIXKNN()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][d_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], &LooseTheta[l], &fl, 0);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl);
 
                             if (Error) goto E0;
 
@@ -3594,7 +3426,7 @@ int Rebmix::REBMIXKNN()
                     if (Dl <= Dmin / W[l]) {
                         // Enhanced component parameter estimation.
 
-                        EnhancedEstimationKNN(Y, nl, &RigidTheta[l], &LooseTheta[l]);
+                        EnhancedEstimationKNN(Y, nl, RigidTheta[l], LooseTheta[l]);
 
                         break;
                     }
@@ -3619,7 +3451,7 @@ int Rebmix::REBMIXKNN()
 
                 // Moments calculation.
 
-                Error = MomentsCalculation(&LooseTheta[l], FirstM[l], SecondM[l]);
+                Error = MomentsCalculation(LooseTheta[l], FirstM[l], SecondM[l]);
 
                 if (Error) goto E0;
 
@@ -3658,9 +3490,9 @@ int Rebmix::REBMIXKNN()
                 memmove(W_, W, c * sizeof(FLOAT));  
 
                 for (j = 0; j < c; j++) {
-                    memmove(Theta_[j].pdf, LooseTheta[j].pdf, d_ * sizeof(ParametricFamilyType_e));
-                    memmove(Theta_[j].Theta1, LooseTheta[j].Theta1, d_ * sizeof(FLOAT));
-                    memmove(Theta_[j].Theta2, LooseTheta[j].Theta2, d_ * sizeof(FLOAT));
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
                 }
             }
 
@@ -3710,22 +3542,18 @@ E0: if (opt_D) free(opt_D);
 
     if (LooseTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (LooseTheta[i].Theta2) free(LooseTheta[i].Theta2);
-            if (LooseTheta[i].Theta1) free(LooseTheta[i].Theta1);
-            if (LooseTheta[i].pdf) free(LooseTheta[i].pdf);
+            if (LooseTheta[i]) delete LooseTheta[i];
         }
-         
-        free(LooseTheta);
+
+        delete LooseTheta;
     }
 
     if (RigidTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (RigidTheta[i].Theta2) free(RigidTheta[i].Theta2);
-            if (RigidTheta[i].Theta1) free(RigidTheta[i].Theta1);
-            if (RigidTheta[i].pdf) free(RigidTheta[i].pdf);
+            if (RigidTheta[i]) delete RigidTheta[i];
         }
-         
-        free(RigidTheta);
+
+        delete RigidTheta;
     }
 
     if (W) free(W);
@@ -3757,20 +3585,20 @@ E0: if (opt_D) free(opt_D);
 
 int Rebmix::REBMIXPW()
 {
-    FLOAT                     **Y = NULL;
-    FLOAT                     *ymin = NULL, *ymax = NULL, *h = NULL;
-    FLOAT                     *R = NULL, *E = NULL, *Epsilon = NULL;
-    FLOAT                     *W = NULL;
-    ComponentDistributionType *RigidTheta = NULL, *LooseTheta = NULL; 
-    FLOAT                     **FirstM = NULL, **SecondM = NULL;
-    int                       opt_length;
-    int                       *opt_c;
-    FLOAT                     *opt_IC;
-    FLOAT                     *opt_logL;
-    FLOAT                     *opt_D;
-    int                       c = 0, i, I, j, J, l, m, M;
-    FLOAT                     V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-    int                       Error = 0, Stop = 0, Found = 0;
+    FLOAT              **Y = NULL;
+    FLOAT              *ymin = NULL, *ymax = NULL, *h = NULL;
+    FLOAT              *R = NULL, *E = NULL, *Epsilon = NULL;
+    FLOAT              *W = NULL;
+    RebmixDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
+    FLOAT              **FirstM = NULL, **SecondM = NULL;
+    int                opt_length;
+    int                *opt_c;
+    FLOAT              *opt_IC;
+    FLOAT              *opt_logL;
+    FLOAT              *opt_D;
+    int                c = 0, i, I, j, J, l, m, M;
+    FLOAT              V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
+    int                Error = 0, Stop = 0, Found = 0;
 
     // Allocation and initialisation.
 
@@ -3784,22 +3612,18 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    Theta_ = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    MixTheta_ = new RebmixDistribution* [cmax_];
 
-    Error = NULL == Theta_; if (Error) goto E0;
+    Error = NULL == MixTheta_; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        Theta_[i].pdf = (ParametricFamilyType_e*)malloc(d_ * sizeof(ParametricFamilyType_e));
+        MixTheta_[i] = new RebmixDistribution;
 
-        Error = NULL == Theta_[i].pdf; if (Error) goto E0;
+        Error = NULL == MixTheta_[i]; if (Error) goto E0;
 
-        Theta_[i].Theta1 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
+        Error = MixTheta_[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
 
-        Error = NULL == Theta_[i].Theta1; if (Error) goto E0;
-
-        Theta_[i].Theta2 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
-
-        Error = NULL == Theta_[i].Theta2; if (Error) goto E0;
+        if (Error) goto E0;
     }
 
     opt_length_ = ItMax;
@@ -3910,63 +3734,55 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    RigidTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        RigidTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        RigidTheta[i] = new RebmixDistribution;
 
-        Error = NULL == RigidTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == RigidTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            RigidTheta[i].pdf[j] = pdf_[j];
+        Error = RigidTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            RigidTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        RigidTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            RigidTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        RigidTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            RigidTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
-    LooseTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    LooseTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        LooseTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        LooseTheta[i] = new RebmixDistribution;
 
-        Error = NULL == LooseTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == LooseTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            LooseTheta[i].pdf[j] = pdf_[j];
+        Error = LooseTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            LooseTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        LooseTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            LooseTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        LooseTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            LooseTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
@@ -4051,7 +3867,7 @@ int Rebmix::REBMIXPW()
                 while (I <= ItMax) {
                     // Rough component parameter estimation.
 
-                    Error = RoughEstimationPW(Y, h, nl, m, &RigidTheta[l], &LooseTheta[l]);
+                    Error = RoughEstimationPW(Y, h, nl, m, RigidTheta[l], LooseTheta[l]);
 
                     if (Error) goto E0;
 
@@ -4061,7 +3877,7 @@ int Rebmix::REBMIXPW()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][d_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], &LooseTheta[l], &fl, 0);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl);
 
                             if (Error) goto E0;
 
@@ -4085,7 +3901,7 @@ int Rebmix::REBMIXPW()
                     if (Dl <= Dmin / W[l]) {
                         // Enhanced component parameter estimation.
 
-                        EnhancedEstimationPW(Y, nl, &RigidTheta[l], &LooseTheta[l]);
+                        EnhancedEstimationPW(Y, nl, RigidTheta[l], LooseTheta[l]);
 
                         break;
                     }
@@ -4110,7 +3926,7 @@ int Rebmix::REBMIXPW()
 
                 // Moments calculation.
 
-                Error = MomentsCalculation(&LooseTheta[l], FirstM[l], SecondM[l]);
+                Error = MomentsCalculation(LooseTheta[l], FirstM[l], SecondM[l]);
 
                 if (Error) goto E0;
 
@@ -4149,9 +3965,9 @@ int Rebmix::REBMIXPW()
                 memmove(W_, W, c * sizeof(FLOAT));  
 
                 for (j = 0; j < c; j++) {
-                    memmove(Theta_[j].pdf, LooseTheta[j].pdf, d_ * sizeof(ParametricFamilyType_e));
-                    memmove(Theta_[j].Theta1, LooseTheta[j].Theta1, d_ * sizeof(FLOAT));
-                    memmove(Theta_[j].Theta2, LooseTheta[j].Theta2, d_ * sizeof(FLOAT));
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
                 }
             }
 
@@ -4201,22 +4017,18 @@ E0: if (opt_D) free(opt_D);
 
     if (LooseTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (LooseTheta[i].Theta2) free(LooseTheta[i].Theta2);
-            if (LooseTheta[i].Theta1) free(LooseTheta[i].Theta1);
-            if (LooseTheta[i].pdf) free(LooseTheta[i].pdf);
+            if (LooseTheta[i]) delete LooseTheta[i];
         }
 
-        free(LooseTheta);
+        delete LooseTheta;
     }
 
     if (RigidTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (RigidTheta[i].Theta2) free(RigidTheta[i].Theta2);
-            if (RigidTheta[i].Theta1) free(RigidTheta[i].Theta1);
-            if (RigidTheta[i].pdf) free(RigidTheta[i].pdf);
+            if (RigidTheta[i]) delete RigidTheta[i];
         }
 
-        free(RigidTheta);
+        delete RigidTheta;
     }
 
     if (W) free(W);
@@ -4248,21 +4060,21 @@ E0: if (opt_D) free(opt_D);
 
 int Rebmix::REBMIXH()
 {
-    FLOAT                     **Y = NULL;
-    FLOAT                     *y0 = NULL, *ymin = NULL, *ymax = NULL, *h = NULL;
-    FLOAT                     *R = NULL, *E = NULL, *Epsilon = NULL;
-    FLOAT                     *K = NULL;
-    FLOAT                     *W = NULL;
-    ComponentDistributionType *RigidTheta = NULL, *LooseTheta = NULL; 
-    FLOAT                     **FirstM = NULL, **SecondM = NULL;
-    int                       opt_length;
-    int                       *opt_c;
-    FLOAT                     *opt_IC;       
-    FLOAT                     *opt_logL;     
-    FLOAT                     *opt_D;
-    int                       c = 0, i, I, j, J, k, l, m, M;
-    FLOAT                     V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
-    int                       Error = 0, Stop = 0, Found = 0;
+    FLOAT              **Y = NULL;
+    FLOAT              *y0 = NULL, *ymin = NULL, *ymax = NULL, *h = NULL;
+    FLOAT              *R = NULL, *E = NULL, *Epsilon = NULL;
+    FLOAT              *K = NULL;
+    FLOAT              *W = NULL;
+    RebmixDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
+    FLOAT              **FirstM = NULL, **SecondM = NULL;
+    int                opt_length;
+    int                *opt_c;
+    FLOAT              *opt_IC;       
+    FLOAT              *opt_logL;     
+    FLOAT              *opt_D;
+    int                c = 0, i, I, j, J, k, l, m, M;
+    FLOAT              V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
+    int                Error = 0, Stop = 0, Found = 0;
 
     // Allocation and initialisation.
 
@@ -4280,22 +4092,18 @@ int Rebmix::REBMIXH()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    Theta_ = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    MixTheta_ = new RebmixDistribution* [cmax_];
 
-    Error = NULL == Theta_; if (Error) goto E0;
+    Error = NULL == MixTheta_; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        Theta_[i].pdf = (ParametricFamilyType_e*)malloc(d_ * sizeof(ParametricFamilyType_e));
+        MixTheta_[i] = new RebmixDistribution;
 
-        Error = NULL == Theta_[i].pdf; if (Error) goto E0;
+        Error = NULL == MixTheta_[i]; if (Error) goto E0;
 
-        Theta_[i].Theta1 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
+        Error = MixTheta_[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
 
-        Error = NULL == Theta_[i].Theta1; if (Error) goto E0;
-
-        Theta_[i].Theta2 = (FLOAT*)malloc(d_ * sizeof(FLOAT));
-
-        Error = NULL == Theta_[i].Theta2; if (Error) goto E0;
+        if (Error) goto E0;
     }
 
     opt_length_ = ItMax;
@@ -4412,63 +4220,55 @@ int Rebmix::REBMIXH()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    RigidTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        RigidTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        RigidTheta[i] = new RebmixDistribution;
 
-        Error = NULL == RigidTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == RigidTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            RigidTheta[i].pdf[j] = pdf_[j];
+        Error = RigidTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            RigidTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        RigidTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            RigidTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        RigidTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == RigidTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            RigidTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            RigidTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
-    LooseTheta = (ComponentDistributionType*)malloc(cmax_ * sizeof(ComponentDistributionType));
+    LooseTheta = new RebmixDistribution* [cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 
     for (i = 0; i < cmax_; i++) {
-        LooseTheta[i].pdf = (ParametricFamilyType_e*)calloc(d_, sizeof(ParametricFamilyType_e));
+        LooseTheta[i] = new RebmixDistribution;
 
-        Error = NULL == LooseTheta[i].pdf; if (Error) goto E0;
+        Error = NULL == LooseTheta[i]; if (Error) goto E0;
 
-        for (j = 0; j < d_; j++) {
-            LooseTheta[i].pdf[j] = pdf_[j];
+        Error = LooseTheta[i]->Realloc(length_pdf_, length_Theta1_, length_Theta2_);
+
+        if (Error) goto E0;
+
+        for (j = 0; j < length_pdf_; j++) {
+            LooseTheta[i]->pdf_[j] = pdf_[j];
         }
 
-        LooseTheta[i].Theta1 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta1; if (Error) goto E0;
-
-        if (Theta1_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta1[j] = Theta1_[j];
+        if (Theta1_ != NULL) for (j = 0; j < length_Theta1_; j++) {
+            LooseTheta[i]->Theta1_[j] = Theta1_[j];
         }
 
-        LooseTheta[i].Theta2 = (FLOAT*)calloc(d_, sizeof(FLOAT));
-
-        Error = NULL == LooseTheta[i].Theta2; if (Error) goto E0;
-
-        if (Theta2_ != NULL) for (j = 0; j < d_; j++) {
-            LooseTheta[i].Theta2[j] = Theta2_[j];
+        if (Theta2_ != NULL) for (j = 0; j < length_Theta2_; j++) {
+            LooseTheta[i]->Theta2_[j] = Theta2_[j];
         }
     }
 
@@ -4567,7 +4367,7 @@ int Rebmix::REBMIXH()
                 while (I <= ItMax) { 
                     // Rough component parameter estimation.
 
-                    Error = RoughEstimationH(all_K_[i], Y, h, nl, m, &RigidTheta[l], &LooseTheta[l]);
+                    Error = RoughEstimationH(all_K_[i], Y, h, nl, m, RigidTheta[l], LooseTheta[l]);
 
                     if (Error) goto E0;
 
@@ -4577,7 +4377,7 @@ int Rebmix::REBMIXH()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][d_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], &LooseTheta[l], &fl, 0);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl);
 
                             if (Error) goto E0;
 
@@ -4601,7 +4401,7 @@ int Rebmix::REBMIXH()
                     if (Dl <= Dmin / W[l]) {
                         // Enhanced component parameter estimation.
 
-                        EnhancedEstimationH(all_K_[i], Y, nl, &RigidTheta[l], &LooseTheta[l]);
+                        EnhancedEstimationH(all_K_[i], Y, nl, RigidTheta[l], LooseTheta[l]);
 
                         break;
                     }
@@ -4626,7 +4426,7 @@ int Rebmix::REBMIXH()
 
                 // Moments calculation.
 
-                Error = MomentsCalculation(&LooseTheta[l], FirstM[l], SecondM[l]);
+                Error = MomentsCalculation(LooseTheta[l], FirstM[l], SecondM[l]);
 
                 if (Error) goto E0;
 
@@ -4667,9 +4467,9 @@ int Rebmix::REBMIXH()
                 memmove(W_, W, c * sizeof(FLOAT));  
 
                 for (j = 0; j < c; j++) {
-                    memmove(Theta_[j].pdf, LooseTheta[j].pdf, d_ * sizeof(ParametricFamilyType_e));
-                    memmove(Theta_[j].Theta1, LooseTheta[j].Theta1, d_ * sizeof(FLOAT));
-                    memmove(Theta_[j].Theta2, LooseTheta[j].Theta2, d_ * sizeof(FLOAT));
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
                 }
             }
 
@@ -4721,22 +4521,18 @@ E0: if (opt_D) free(opt_D);
 
     if (LooseTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (LooseTheta[i].Theta2) free(LooseTheta[i].Theta2);
-            if (LooseTheta[i].Theta1) free(LooseTheta[i].Theta1);
-            if (LooseTheta[i].pdf) free(LooseTheta[i].pdf);
+            if (LooseTheta[i]) delete LooseTheta[i];
         }
 
-        free(LooseTheta);
+        delete LooseTheta;
     }
 
     if (RigidTheta) {
         for (i = 0; i < cmax_; i++) {
-            if (RigidTheta[i].Theta2) free(RigidTheta[i].Theta2);
-            if (RigidTheta[i].Theta1) free(RigidTheta[i].Theta1);
-            if (RigidTheta[i].pdf) free(RigidTheta[i].pdf);
+            if (RigidTheta[i]) delete RigidTheta[i];
         }
 
-        free(RigidTheta);
+        delete RigidTheta;
     }
 
     if (W) free(W);
@@ -5141,7 +4937,7 @@ int Rebmix::WriteDataFile()
     for (i = 0; i < summary_.c; i++) {
         fprintf(fp1, "%s\t%E", path, W_[i]);
 
-        for (j = 0; j < d_; j++) switch (Theta_[i].pdf[j]) {
+        for (j = 0; j < d_; j++) switch (MixTheta_[i]->pdf_[j]) {
             case pfNormal:
                 fprintf(fp1, "\t%s", "normal");
 
@@ -5171,11 +4967,11 @@ int Rebmix::WriteDataFile()
         }
 
         for (j = 0; j < d_; j++) {
-            fprintf(fp1, "\t%E", Theta_[i].Theta1[j]);
+            fprintf(fp1, "\t%E", MixTheta_[i]->Theta1_[j]);
         }
 
         for (j = 0; j < d_; j++) {
-            fprintf(fp1, "\t%E", Theta_[i].Theta2[j]);
+            fprintf(fp1, "\t%E", MixTheta_[i]->Theta2_[j]);
         }
 
         fprintf(fp1, "\n");
@@ -5216,14 +5012,12 @@ E0: if (fp0) fclose(fp0);
         free(summary_.y0); summary_.y0 = NULL;
     }
 
-    if (Theta_) {
+    if (MixTheta_) {
         for (i = 0; i < cmax_; i++) {
-            if (Theta_[i].Theta2) free(Theta_[i].Theta2);
-            if (Theta_[i].Theta1) free(Theta_[i].Theta1);
-            if (Theta_[i].pdf) free(Theta_[i].pdf);
+            if (MixTheta_[i]) delete MixTheta_[i];
         }
 
-        free(Theta_); Theta_ = NULL;
+        delete MixTheta_; MixTheta_ = NULL;
     }
 
     if (W_) {
@@ -5253,7 +5047,7 @@ int Rebmix::RunTemplateFile(char *file)
     int   Error = 0;
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.7.2\n");
+    printf("REBMIX Version 2.7.3\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {
@@ -5313,6 +5107,8 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(list, "\t");
 
         if (!strcmp(ident, "RUN")) {
+            length_pdf_ = length_Theta1_ = length_Theta2_ = d_;
+
             for (k = 0; k < o_; k++) {
                 curr_ = open_[k];
 

@@ -1,5 +1,5 @@
 Package: rebmix
-Version: 2.7.2
+Version: 2.7.3
 Date: 2015-04-04
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si"))

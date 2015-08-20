@@ -1,5 +1,8 @@
 #include <math.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "base.h"
 
@@ -15,7 +18,7 @@
 #include <R_ext/Rdynload.h>
 #endif
 
-// Inserts y into ascending list Y of length n. Set n = 0 initially.
+// Inserts y into ascending list Y of length n.Set n = 0 initially.
 
 void Insert(FLOAT y,   // Inserted value.
             int   *n,  // Length of Y.
@@ -371,4 +374,147 @@ int ErrorF(FLOAT y,     // Variable y.
 E0: return (Error);
 } // ErrorF
 
+// Returns the LU decomposition of matrix A. See http://www.nr.com/ 
 
+int LUdcmp(int   n,     // Size of square matrix.
+           FLOAT *A,    // Pointer to the square matrix A.
+           int   *indx, // Pointer to the permutation vector.
+           FLOAT *det)  // Determinant.
+{
+    int   i, imax, j, k;
+    FLOAT Big, Tmp;
+    FLOAT *V;
+    int   Error = 0;
+
+    V = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+    Error = NULL == V; if (Error) goto E0;
+
+    *det = (FLOAT)1.0;
+
+    for (i = 0; i < n; i++) {
+        Big = (FLOAT)0.0;
+
+        for (j = 0; j < n; j++) {
+            if ((Tmp = (FLOAT)fabs(A[i * n + j])) > Big) Big = Tmp;
+        }
+
+        if ((FLOAT)fabs(Big) <= FLOAT_MIN) goto E0;
+
+        V[i] = (FLOAT)1.0 / Big;
+    }
+
+    for (k = 0; k < n; k++) {
+        Big = (FLOAT)0.0; imax = k;
+
+        for (i = k; i < n; i++) {
+            Tmp = V[i] * (FLOAT)fabs(A[i * n + k]);
+
+            if (Tmp > Big) {
+                Big = Tmp; imax = i;
+            }
+        }
+
+        if (k != imax) {
+            for (j = 0; j < n; j++) {
+                Tmp = A[imax * n + j]; A[imax * n + j] = A[k * n + j]; A[k * n + j] = Tmp;
+            }
+
+            *det = -(*det); V[imax] = V[k];
+        }
+
+        indx[k] = imax;
+
+        if ((FLOAT)fabs(A[k * n + k]) < FLOAT_MIN) A[k * n + k] = FLOAT_MIN;
+
+        for (i = k + 1; i < n; i++) {
+            Tmp = A[i * n + k] /= A[k * n + k];
+
+            for (j = k + 1; j < n; j++) A[i * n + j] -= Tmp * A[k * n + j];
+        }
+    }
+
+    for (i = 0; i < n; i++) *det *= A[i * n + i];
+
+E0: if (V) free(V);
+
+    return (Error);
+} // LUdcmp 
+
+// Solves the set of n linear equations A x = b. See See http://www.nr.com/ 
+
+int LUbksb(int   n,     // Size of square matrix.
+           FLOAT *A,    // Pointer to the square matrix A.
+           int   *indx, // Pointer to the permutation vector.
+           FLOAT *b)    // Pointer to the solution vector.
+{
+    int   i, ii = 0, ip, j;
+    FLOAT Sum;
+    int   Error = 0;
+
+    for (i = 0; i < n; i++) {
+        ip = indx[i]; Sum = b[ip]; b[ip] = b[i];
+
+        if (ii) {
+            for (j = ii - 1; j < i; j++) Sum -= A[i * n + j] * b[j];
+        }
+        else
+        if (Sum) {
+            ii = i + 1;
+        }
+
+        b[i] = Sum;
+    }
+
+    for (i = n - 1; i >= 0; i--) {
+        Sum = b[i];
+
+        for (j = i + 1; j < n; j++) Sum -= A[i * n + j] * b[j];
+
+        b[i] = Sum / A[i * n + i];
+    }
+
+    return (Error);
+} // LUbksb 
+
+// Returns the determinant and the inverse matrix of A. See http://www.nr.com/ 
+
+int LUinvdet(int   n,     // Size of square matrix.
+             FLOAT *A,    // Pointer to the square matrix A.
+             FLOAT *Ainv, // Pointer to the inverse matrix of A.
+             FLOAT *Adet) // Pointer to the determinant of A.
+{
+    int   i, *indx = NULL, j;
+    FLOAT *b = NULL;
+    int   Error = 0;
+
+    indx = (int*)calloc(n, sizeof(int));
+
+    Error = NULL == indx; if (Error) goto E0;
+
+    b = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+    Error = NULL == b; if (Error) goto E0;
+
+    Error = LUdcmp(n, A, indx, Adet);
+
+    if (Error) goto E0;
+
+    for (j = 0; j < n; j++) {
+        memset(b, 0, n * sizeof(FLOAT));
+
+        b[j] = (FLOAT)1.0;
+
+        Error = LUbksb(n, A, indx, b);
+
+        if (Error) goto E0;
+
+        for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
+    }
+
+E0:	if (b) free(b);
+
+    if (indx) free(indx);
+
+    return (Error);
+} // LUinvdet

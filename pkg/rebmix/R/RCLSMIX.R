@@ -110,7 +110,7 @@ RCLSMIX <- function(x,
   }
 
   if (s > 1) {
-    message("RCLSMIX Version 2.7.2");
+    message("RCLSMIX Version 2.7.3");
     flush.console()
 
     output <- .C("RCLSMIX",

@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.7.3}{ 
+\itemize{
+\item A.
+}
+}
 \section{Changes in version 2.7.2}{ 
 \itemize{
 \item Switch \code{_TIME_LEFT_SWITCH} eliminated from C code.
