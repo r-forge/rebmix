@@ -6,13 +6,7 @@ print.RNGMIX <- function(x, ...)
 
   cat(paste("$w", "\n", sep = ""))
 
-  print(apply(x$w, c(1, 2), as.number), quote = FALSE, ...)
-
-  cat(paste("\n", sep = ""))
-
-  cat(paste("$Theta", "\n", sep = ""))
-
-  print(apply(x$Theta, c(1, 2), as.number), quote = FALSE, ...)
+  print(as.number(x$w), quote = FALSE, ...)
 
   cat(paste("\n", sep = ""))
 
