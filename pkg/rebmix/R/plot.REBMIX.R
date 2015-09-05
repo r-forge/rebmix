@@ -70,7 +70,7 @@ plot.REBMIX <- function(x,
 
   ni <- ncol(x$summary)
 
-  Theta <- .extractTheta(x$Theta[[pos]])
+  Theta <- .extractTheta(x$w[[pos]], x$Theta[[pos]])
 
   d <- nrow(Theta)
 

@@ -3,6 +3,7 @@ useDynLib(rebmix)
 import("stats", "utils", "graphics", "grDevices")
 
 export(RNGMIX,
+       RNGMVNORM,
        REBMIX,
        boot.REBMIX,
        RCLSMIX,
@@ -30,6 +31,7 @@ export(RNGMIX,
        kseq)
 
 S3method(print, RNGMIX)
+S3method(print, RNGMVNORM)
 S3method(print, REBMIX)
 S3method(summary, REBMIX)
 S3method(plot, REBMIX)

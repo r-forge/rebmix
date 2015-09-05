@@ -5,50 +5,12 @@
 #include "base.h"
 #include "rngmixf.h"
 
-int   NDevISet = 0;
-FLOAT NDevVSet = (FLOAT)0.0;
-int   LDevISet = 0;
-FLOAT LDevVSet = (FLOAT)0.0;
-FLOAT Bn = -(FLOAT)1.0, Bp = -(FLOAT)1.0, Be, Bg, Bplog, Bpc, Bpclog;
-FLOAT PTheta = -(FLOAT)1.0, Pg, Psq, PalTheta;
-long  IY = 0;
-long  IV[NTAB];
-
-// Minimal random number generator of Park and Miller with Bays-Durham shuffle and added
-// safeguards. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint
-// values). Call with IDum a negative integer to initialize; thereafter do not alter IDum
-// between successive deviates in a sequence.RNMX should approximate the largest floating
-// value that is less than 1. See http://www.nrbook.com/a/bookcpdf/c7-1.pdf
-
-FLOAT Ran1(int *IDum)
-{
-    int   j, k;
-    FLOAT Tmp;
-
-    if (*IDum <= 0 || !IY) {
-        *IDum = (-(*IDum) < 1) ? 1 : -(*IDum);
-
-        for (j = NTAB + 7; j >= 0; j--) {
-            k = *IDum / IQ;
-
-            *IDum = IA * (*IDum - k * IQ) - IR * k;
-
-            if (*IDum < 0) *IDum += IM;
-
-            if (j < NTAB) IV[j] = *IDum;
-        }
-
-        IY = IV[0];
-    }
-
-    k = *IDum / IQ; *IDum = IA * (*IDum - k * IQ) - IR * k;
-
-    if (*IDum < 0) *IDum += IM;
-
-    j = IY / NDIV; IY = IV[j]; IV[j] = *IDum;
-
-    if ((Tmp = AM * IY) > RNMX) return (RNMX); else return (Tmp);
-} // Ran1
+static int   NDevISet = 0;
+static FLOAT NDevVSet = (FLOAT)0.0;
+static int   LDevISet = 0;
+static FLOAT LDevVSet = (FLOAT)0.0;
+static FLOAT Bn = -(FLOAT)1.0, Bp = -(FLOAT)1.0, Be, Bg, Bplog, Bpc, Bpclog;
+static FLOAT PTheta = -(FLOAT)1.0, Pg, Psq, PalTheta;
 
 // Rngmix constructor.
 
@@ -61,17 +23,15 @@ Rngmix::Rngmix()
     IDum_ = 0;
     d_ = 0;
     c_ = 0;
+    IniTheta_ = NULL;
     n_ = 0;
     Dataset_ = NULL;
     Y_ = NULL;
     N_ = NULL;
-    length_pdf_ = 0;
-    length_Theta1_ = 0;
-    length_Theta2_ = 0;
     MixTheta_ = NULL;
 } // Rngmix
 
-// Rebmix destructor.
+// Rngmix destructor.
 
 Rngmix::~Rngmix()
 {
@@ -94,6 +54,8 @@ Rngmix::~Rngmix()
 
         free(Y_);
     }
+
+    if (IniTheta_) delete IniTheta_;
 
     if (save_) free(save_);
 
@@ -136,7 +98,7 @@ E0: if (fp) fclose(fp);
         free(Y_); Y_ = NULL;
     }
 
-    return (Error);
+    return Error;
 } // WriteDataFile
 
 // Writes parameters file:
@@ -172,17 +134,17 @@ int Rngmix::WriteParameterFile()
 
 E0: if (fp) fclose(fp);
 
-    return (Error);
+    return Error;
 } // WriteParameterFile
 
-int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
+int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
 {
     FLOAT C[8];
     FLOAT y, p;
     int   i, j;
     int   Error = 0;
 
-    for (i = 0; i < d_; i++) {
+    for (i = 0; i < length_pdf_; i++) {
         switch (CmpDist->pdf_[i]) {
         case pfNormal:
             if (NDevISet == 0) {
@@ -203,7 +165,7 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
                 y = NDevVSet; NDevISet = 0;
             }
 
-            Y[i] = CmpDist->Theta2_[i] * y + CmpDist->Theta1_[i];
+            Y[i] = CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i];
 
             break;
         case pfLognormal:
@@ -225,15 +187,15 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
                 y = LDevVSet; LDevISet = 0;
             }
 
-            Y[i] = (FLOAT)exp(CmpDist->Theta2_[i] * y + CmpDist->Theta1_[i]);
+            Y[i] = (FLOAT)exp(CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i]);
 
             break;
         case pfWeibull:
-            Y[i] = CmpDist->Theta1_[i] * (FLOAT)exp(log(log((FLOAT)1.0 / Ran1(&IDum_))) / CmpDist->Theta2_[i]);
+            Y[i] = CmpDist->Theta_[0][i] * (FLOAT)exp(log(log((FLOAT)1.0 / Ran1(&IDum_))) / CmpDist->Theta_[1][i]);
 
             break;
         case pfGamma:
-            Error = GammaInv(Ran1(&IDum_), CmpDist->Theta1_[i], CmpDist->Theta2_[i], &y);
+            Error = GammaInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i], &y);
 
             if (Error) goto E0;
 
@@ -241,18 +203,18 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
 
             break;
         case pfBinomial:
-            if (CmpDist->Theta2_[i] < (FLOAT)0.5) {
-                p = CmpDist->Theta2_[i];
+            if (CmpDist->Theta_[1][i] < (FLOAT)0.5) {
+                p = CmpDist->Theta_[1][i];
             }
             else {
-                p = (FLOAT)1.0 - CmpDist->Theta2_[i];
+                p = (FLOAT)1.0 - CmpDist->Theta_[1][i];
             }
 
-            C[0] = CmpDist->Theta1_[i] * p;
-            if ((int)CmpDist->Theta1_[i] < 25) {
+            C[0] = CmpDist->Theta_[0][i] * p;
+            if ((int)CmpDist->Theta_[0][i] < 25) {
                 Y[i] = (FLOAT)0.0;
 
-                for (j = 0; j < (int)CmpDist->Theta1_[i]; j++) {
+                for (j = 0; j < (int)CmpDist->Theta_[0][i]; j++) {
                     if (Ran1(&IDum_) < p) ++Y[i];
                 }
             }
@@ -260,22 +222,22 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
             if (C[0] < (FLOAT)1.0) {
                 C[1] = (FLOAT)exp(-C[0]); C[2] = (FLOAT)1.0;
 
-                for (j = 0; j < (int)CmpDist->Theta1_[i]; j++) {
+                for (j = 0; j < (int)CmpDist->Theta_[0][i]; j++) {
                     C[2] *= Ran1(&IDum_); if (C[2] < C[1]) break;
                 }
 
-                if (j > (int)CmpDist->Theta1_[i]) {
-                    Y[i] = CmpDist->Theta1_[i];
+                if (j > (int)CmpDist->Theta_[0][i]) {
+                    Y[i] = CmpDist->Theta_[0][i];
                 }
                 else {
                     Y[i] = j;
                 }
             }
             else {
-                if (CmpDist->Theta1_[i] != Bn) {
-                    Be = CmpDist->Theta1_[i];
+                if (CmpDist->Theta_[0][i] != Bn) {
+                    Be = CmpDist->Theta_[0][i];
                     Bg = Gammaln(Be + (FLOAT)1.0);
-                    Bn = CmpDist->Theta1_[i];
+                    Bn = CmpDist->Theta_[0][i];
                 }
 
                 if (p != Bp) {
@@ -309,17 +271,17 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
                 Y[i] = C[6];
             }
 
-            if (p != CmpDist->Theta2_[i]) {
-                Y[i] = CmpDist->Theta1_[i] - Y[i];
+            if (p != CmpDist->Theta_[1][i]) {
+                Y[i] = CmpDist->Theta_[0][i] - Y[i];
             }
 
             break;
         case pfPoisson:
-            if (CmpDist->Theta1_[i] < (FLOAT)12.0) {
-                if (CmpDist->Theta1_[i] != PTheta) {
-                    PTheta = CmpDist->Theta1_[i];
+            if (CmpDist->Theta_[0][i] < (FLOAT)12.0) {
+                if (CmpDist->Theta_[0][i] != PTheta) {
+                    PTheta = CmpDist->Theta_[0][i];
 
-                    Pg = (FLOAT)exp(-CmpDist->Theta1_[i]);
+                    Pg = (FLOAT)exp(-CmpDist->Theta_[0][i]);
                 }
 
                 C[0] = -(FLOAT)1.0; C[1] = (FLOAT)1.0;
@@ -329,21 +291,21 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
                 } while (C[1] > Pg);
             }
             else {
-                if (CmpDist->Theta1_[i] != PTheta) {
-                    PTheta = CmpDist->Theta1_[i];
+                if (CmpDist->Theta_[0][i] != PTheta) {
+                    PTheta = CmpDist->Theta_[0][i];
 
-                    Psq = (FLOAT)sqrt((FLOAT)2.0 * CmpDist->Theta1_[i]);
+                    Psq = (FLOAT)sqrt((FLOAT)2.0 * CmpDist->Theta_[0][i]);
 
-                    PalTheta = (FLOAT)log(CmpDist->Theta1_[i]);
+                    PalTheta = (FLOAT)log(CmpDist->Theta_[0][i]);
 
-                    Pg = CmpDist->Theta1_[i] * PalTheta - Gammaln(CmpDist->Theta1_[i] + (FLOAT)1.0);
+                    Pg = CmpDist->Theta_[0][i] * PalTheta - Gammaln(CmpDist->Theta_[0][i] + (FLOAT)1.0);
                 }
 
                 do {
                     do {
                         C[2] = (FLOAT)tan(Pi * Ran1(&IDum_));
 
-                        C[0] = Psq * C[2] + CmpDist->Theta1_[i];
+                        C[0] = Psq * C[2] + CmpDist->Theta_[0][i];
                     } while (C[0] < (FLOAT)0.0);
 
                     C[0] = (FLOAT)floor(C[0]);
@@ -356,18 +318,21 @@ int Rngmix::InvComponentDist(RebmixDistribution *CmpDist, FLOAT *Y)
 
             break;
         case pfDirac:
-            Y[i] = CmpDist->Theta1_[i];
+            Y[i] = CmpDist->Theta_[0][i];
+
+            break;
+        default:;
         }
     }
 
-E0: return (Error);
+E0: return Error;
 } // InvComponentDist
 
 // Returns random sample of independent observations.
 
 int Rngmix::RNGMIX()      
 {
-    int i, j, l;
+    int i, j, k;
     int Error = 0;
     
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
@@ -382,31 +347,33 @@ int Rngmix::RNGMIX()
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
 
-    l = 0;
+    k = 0;
+
     for (i = 0; i < c_; i++) {
+        Trigger_ = 1;
+
         for (j = 0; j < N_[i]; j++) {
-            Error = InvComponentDist(MixTheta_[i], Y_[l]);
+            Error = InvComponentDist(MixTheta_[i], Y_[k]);
 
             if (Error) goto E0;
 
-            l++;
+            k++;
         }
     }
 
-E0: return (Error);
+E0: return Error;
 } // RNGMIX
 
 // Runs template file.
 
 int Rngmix::RunTemplateFile(char *file)
 {
-    int                i, imin, imax, j, k, isI;
-    FLOAT              isF;
-    char               line[65536], ident[65536], list[65536];
-    char               *pchar = NULL;
-    FILE               *fp = NULL;
-    RebmixDistribution **MixTheta = NULL;
-    int                Error = 0;
+    int                  i, imin, imax, j, k, isI;
+    char                 line[65536], ident[65536], list[65536];
+    char                 *pchar = NULL;
+    FILE                 *fp = NULL;
+    CompnentDistribution **MixTheta = NULL;
+    int                  Error = 0;
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;
@@ -469,8 +436,6 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(list, "\t");
 
         if (!strcmp(ident, "RUN")) {
-            length_pdf_ = length_Theta1_ = length_Theta2_ = d_;
-
             Error = WriteParameterFile();
 
             if (Error) goto E0;
@@ -510,7 +475,85 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             IDum_ = isI = (int)atol(pchar);
 
             Error = isI >= 0; if (Error) goto E0;
-        } else
+        }
+        else
+        if (!strcmp(ident, "D")) {
+            d_ = isI = (int)atol(pchar);
+
+            Error = isI < 1; if (Error) goto E0;
+        }
+        else
+        if (!strcmp(ident, "LENGTHPDF")) {
+            length_pdf_ = isI = (int)atol(pchar);
+
+            Error = isI < 1; if (Error) goto E0;
+        } 
+        else
+        if (!strcmp(ident, "LENGTHTHETA")) {
+            i = 0;
+
+            while (pchar) {
+                length_theta_ = (int*)realloc(length_theta_, (i + 1) * sizeof(int));
+
+                Error = NULL == length_theta_; if (Error) goto E0;
+
+                length_theta_[i] = isI = (int)atol(pchar);
+
+                Error = isI == 0; if (Error) goto E0;
+
+                pchar = strtok(NULL, "\t"); ++i;
+            }
+
+            length_Theta_ = i;
+
+            IniTheta_ = new CompnentDistribution(this);
+
+            Error = NULL == IniTheta_; if (Error) goto E0;
+
+            Error = IniTheta_->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+        } 
+        else
+        if (!strcmp(ident, "PDF")) {
+            i = 0;
+
+            while (pchar) {
+                if (!strcmp(pchar, "NORMAL"))
+                    IniTheta_->pdf_[i] = pfNormal;
+                else
+                if (!strcmp(pchar, "LOGNORMAL"))
+                    IniTheta_->pdf_[i] = pfLognormal;
+                else
+                if (!strcmp(pchar, "WEIBULL"))
+                    IniTheta_->pdf_[i] = pfWeibull;
+                else
+                if (!strcmp(pchar, "GAMMA"))
+                    IniTheta_->pdf_[i] = pfGamma;
+                else
+                if (!strcmp(pchar, "BINOMIAL"))
+                    IniTheta_->pdf_[i] = pfBinomial;
+                else
+                if (!strcmp(pchar, "POISSON"))
+                    IniTheta_->pdf_[i] = pfPoisson;
+                else
+                if (!strcmp(pchar, "DIRAC"))
+                    IniTheta_->pdf_[i] = pfDirac;
+                else
+                if (!strcmp(pchar, "MVNORMAL"))
+                    IniTheta_->pdf_[i] = pfNormal;
+                else {
+                    Error = 1; goto E0;
+                }
+
+                pchar = strtok(NULL, "\t"); ++i;
+            }
+
+            if ((length_pdf_ > 0) && (length_pdf_ != i)) {
+                Error = 1; goto E0;
+            }
+        }
+        else
         if (!strcmp(ident, "NTHETA")) {
             N_ = (int*)realloc(N_, (c_ + 1) * sizeof(int));
 
@@ -520,137 +563,41 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
             Error = isI < 1; if (Error) goto E0;
 
-            pchar = strtok(NULL, "\t"); 
+            MixTheta = new CompnentDistribution* [c_ + 1];
 
-            while (pchar) {
-                MixTheta = new RebmixDistribution* [c_ + 1];
+            Error = NULL == MixTheta; if (Error) goto E0;
 
-                Error = NULL == MixTheta; if (Error) goto E0;
+            MixTheta[c_] = new CompnentDistribution(this);
 
-                MixTheta[c_] = new RebmixDistribution;
+            Error = NULL == MixTheta[c_]; if (Error) goto E0;
 
-                Error = NULL == MixTheta[c_]; if (Error) goto E0;
-
-                for (i = 0; i < c_; i++) {
-                    MixTheta[i] = MixTheta_[i];
-                }
-
-                if (MixTheta_) delete MixTheta_;
-
-                MixTheta_ = MixTheta;
-
-                d_ = 0;
-
-                while (pchar) {
-                    Error = MixTheta_[c_]->Realloc(d_ + 1, d_ + 1, d_ + 1);
-
-                    if (Error) goto E0;
-
-                    if (!strcmp(pchar, "NORMAL")) {
-                        MixTheta_[c_]->pdf_[d_] = pfNormal;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = (FLOAT)atof(pchar);
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta2_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "LOGNORMAL")) {
-                        MixTheta_[c_]->pdf_[d_] = pfLognormal;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = (FLOAT)atof(pchar);
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta2_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "WEIBULL")) {
-                        MixTheta_[c_]->pdf_[d_] = pfWeibull;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta2_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "GAMMA")) {
-                        MixTheta_[c_]->pdf_[d_] = pfGamma;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta2_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "BINOMIAL")) {
-                        MixTheta_[c_]->pdf_[d_] = pfBinomial;
-
-                        pchar = strtok(NULL, "\t");
-
-                        MixTheta_[c_]->Theta1_[d_] = isF = (FLOAT)floor(atof(pchar) + (FLOAT)0.5);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta2_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = (isF < (FLOAT)0.0) || (isF > (FLOAT)1.0) ; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "POISSON")) {
-                        MixTheta_[c_]->pdf_[d_] = pfPoisson;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = isF = (FLOAT)atof(pchar);
-
-                        Error = isF <= (FLOAT)0.0; if (Error) goto E0;
-                    }
-                    else
-                    if (!strcmp(pchar, "DIRAC")) {
-                        MixTheta_[c_]->pdf_[d_] = pfDirac;
-
-                        pchar = strtok(NULL, "\t"); 
-
-                        MixTheta_[c_]->Theta1_[d_] = isF = (FLOAT)atof(pchar);
-                    }
-                    else {
-                        Error = 1; goto E0;
-                    }
-
-                    d_++;
-
-                    pchar = strtok(NULL, "\t");
-                }
-
-                c_++;
+            for (i = 0; i < c_; i++) {
+                MixTheta[i] = MixTheta_[i];
             }
-        } else
+
+            if (MixTheta_) delete MixTheta_;
+
+            MixTheta_ = MixTheta;
+
+            Error = MixTheta_[c_]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+
+            for (i = 0; i < length_pdf_; i++) {
+                MixTheta_[c_]->pdf_[i] = IniTheta_->pdf_[i];
+            }
+
+            for (i = 0; i < length_Theta_; i++) if (IniTheta_->Theta_[i]) {
+                for (j = 0; j < length_theta_[i]; j++) {
+                    pchar = strtok(NULL, "\t");
+
+                    MixTheta_[c_]->Theta_[i][j] = (FLOAT)atof(pchar);
+                }
+            }
+
+            c_++;
+        } 
+        else
         if (!strcmp(ident, "SAVE")) {
             save_ = (char*)realloc(save_, (strlen(pchar) + 1) * sizeof(char));
 
@@ -662,5 +609,5 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
 E0: if (fp) fclose(fp);
 
-    return (Error);
+    return Error;
 } // RunTemplateFile

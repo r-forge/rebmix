@@ -38,7 +38,7 @@ further arguments to \code{\link[base]{sample}}.
 }
 \value{
 \item{c}{
-a data frame containing numbers of components for \eqn{B} bootstrap datasets.
+a vector containing numbers of components for \eqn{B} bootstrap datasets.
 }
 \item{c.se}{
 standard error of numbers of components \code{c}.
@@ -53,7 +53,7 @@ mode of numbers of components \code{c}.
 probability of mode \code{c.mode}.
 }
 \item{w}{
-a data frame containing component weights for \eqn{\leq B} bootstrap datasets.
+an array containing component weights for \eqn{\leq B} bootstrap datasets.
 }
 \item{w.se}{
 a vector containing standard errors of component weights \code{w}.

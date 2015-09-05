@@ -9,7 +9,7 @@ Returns the REBMIX algorithm output for mixtures of conditionally independent no
 \usage{
 REBMIX(Dataset = NULL, Preprocessing = NULL, cmax = 15, 
        Criterion = "AIC", Variables = NULL, pdf = NULL,
-       Theta1 = NULL, Theta2 = NULL, K = NULL, y0 = NULL, 
+       theta1 = NULL, theta2 = NULL, K = NULL, y0 = NULL, 
        ymin = NULL, ymax = NULL, ar = 0.1, Restraints = "loose", ...)
 }
 \arguments{
@@ -36,10 +36,10 @@ a character vector of length \eqn{d} containing types of variables. One of \code
 \item{pdf}{
 a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
 }
-\item{Theta1}{
+\item{theta1}{
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
 }
-\item{Theta2}{
+\item{theta2}{
 a vector of length \eqn{d} containing initial component parameters. The value is \code{NULL}.
 }
 \item{K}{
@@ -76,10 +76,10 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 represents one random variable. Number of observations \eqn{n} equals the number of rows in the datasets.
 }
 \item{w}{
-a list of data frames each containing \eqn{c} component weights \eqn{w_{l}} summing to 1.
+a list of vectors of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.
 }
 \item{Theta}{
-a list of data frames each containing  \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+a list of lists each containing  \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
 Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
 Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
@@ -143,7 +143,7 @@ Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url
 n <- c(998, 263, 1086, 487, 213, 1076, 232, 
   784, 840, 461, 773, 24, 811, 1091, 861)
 
-Theta <- rbind(pdf = "normal",
+Theta <- list(pdf1 = "normal",
   theta1 = c(688.4, 265.1, 30.8, 934, 561.6, 854.9, 883.7, 
   758.3, 189.3, 919.3, 98, 143, 202.5, 628, 977),
   theta2 = c(12.4, 14.6, 14.8, 8.4, 11.7, 9.2, 6.3, 10.2,

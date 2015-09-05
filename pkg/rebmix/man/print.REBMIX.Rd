@@ -26,7 +26,7 @@ further arguments to \code{\link[base]{print}}.
 \examples{
 ## Generate and print simulated dataset.
 
-Theta <- rbind(pdf = rep("binomial", 3),
+Theta <- list(pdf1 = rep("binomial", 3),
   theta1 = c(10, 10, 10),
   theta2 = c(0.1, 0.4, 0.9))
 
@@ -45,7 +45,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "AIC", 
   Variables = "discrete",
   pdf = "binomial", 
-  Theta1 = 10,
+  theta1 = 10,
   K = 1)
   
 ## Print and plot finite mixture.  

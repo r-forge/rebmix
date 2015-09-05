@@ -110,7 +110,7 @@ typedef enum {
     pfGamma,     // Gamma distribution.
     pfBinomial,  // Binomial distribution.
     pfPoisson,   // Poisson distribution.
-    pfDirac,     // Dirac distribution.
+    pfDirac      // Dirac distribution.
 } ParametricFamilyType_e;
 
 typedef struct componetdistributiontype {
@@ -118,6 +118,25 @@ typedef struct componetdistributiontype {
     FLOAT                  *Theta1; // Component parameters.
     FLOAT                  *Theta2; // Component parameters.
 } ComponentDistributionType;
+
+// length_pdf_ = d_ for class Rebmix.
+// length_Theta_ = 2 for class Rebmix.
+// length_theta_[0] = d_ and length_theta_[1] = d_ for class Rebmix.
+
+class Base {
+public:
+    // Members.
+    int Trigger_;       // Trigger.
+    int length_pdf_;    // Length of pdf_. 
+    int length_Theta_;  // Length of Theta_.
+    int *length_theta_; // Length of Theta_[i].
+    // Constructor.
+    Base();
+    // Destructor.
+    ~Base();
+}; // Base
+
+FLOAT Ran1(int *IDum);
 
 // Inserts y into ascending list Y of length n. Set n = 0 initially.
 
@@ -179,5 +198,11 @@ int LUinvdet(int   n,      // Size of square matrix.
              FLOAT *A,     // Pointer to the square matrix A.
              FLOAT *Ainv,  // Pointer to the inverse matrix of A.
              FLOAT *Adet); // Pointer to the determinant of A.
+
+// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/ 
+
+int Choldc(int   n,   // Size of square matrix.
+           FLOAT *A,  // Pointer to the square matrix A.
+           FLOAT *L); // Lower triangular factors.
 
 #endif

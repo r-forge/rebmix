@@ -3,6 +3,7 @@
 #include "base.h"
 #include "rngmixf.h"
 #include "rebmixf.h"
+#include "mvnorm.h"
 
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC
@@ -57,5 +58,5 @@ E0: if (rngmix) delete rngmix;
     printf("\n%s%d\n", "Error: ", Error);
     #endif
 
-    return (Error);
+    return Error;
 } // main

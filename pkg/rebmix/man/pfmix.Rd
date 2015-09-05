@@ -35,12 +35,12 @@ currently not used.
 \examples{
 ## Generate simulated dataset.
 
-Theta <- rbind(pdf1 = rep("normal", 2),
-  theta1.1 = c(10, 20),
-  theta2.1 = c(3.0, 2.0),
-  pdf1 = rep("Weibull", 2),
-  theta1.1 = c(3, 2),
-  theta2.1 = c(20, 10))
+Theta <- list(pdf1 = c("normal", "Weibull"),
+  theta1.1 = c(10, 3),
+  theta2.1 = c(3, 2),
+  pdf2 = c("normal", "Weibull"),
+  theta1.2 = c(20, 2),
+  theta2.2 = c(2, 10))
 
 simulated <- RNGMIX(Dataset = "simulated",
   rseed = -1,

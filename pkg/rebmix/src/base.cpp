@@ -18,6 +18,62 @@
 #include <R_ext/Rdynload.h>
 #endif
 
+// Base constructor.
+
+Base::Base()
+{
+    Trigger_ = 0;
+    length_pdf_ = 0;
+    length_Theta_ = 0;
+    length_theta_ = NULL;
+} // Base
+
+// Base destructor.
+
+Base::~Base()
+{
+    if (length_theta_) free(length_theta_);
+} // ~Base
+
+static long IY = 0;
+static long IV[NTAB];
+
+// Minimal random number generator of Park and Miller with Bays-Durham shuffle and added
+// safeguards. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint
+// values). Call with IDum a negative integer to initialize; thereafter do not alter IDum
+// between successive deviates in a sequence.RNMX should approximate the largest floating
+// value that is less than 1. See http://www.nrbook.com/a/bookcpdf/c7-1.pdf
+
+FLOAT Ran1(int *IDum)
+{
+    int   j, k;
+    FLOAT Tmp;
+
+    if (*IDum <= 0 || !IY) {
+        *IDum = (-(*IDum) < 1) ? 1 : -(*IDum);
+
+        for (j = NTAB + 7; j >= 0; j--) {
+            k = *IDum / IQ;
+
+            *IDum = IA * (*IDum - k * IQ) - IR * k;
+
+            if (*IDum < 0) *IDum += IM;
+
+            if (j < NTAB) IV[j] = *IDum;
+        }
+
+        IY = IV[0];
+    }
+
+    k = *IDum / IQ; *IDum = IA * (*IDum - k * IQ) - IR * k;
+
+    if (*IDum < 0) *IDum += IM;
+
+    j = IY / NDIV; IY = IV[j]; IV[j] = *IDum;
+
+    if ((Tmp = AM * IY) > RNMX) return (RNMX); else return (Tmp);
+} // Ran1
+
 // Inserts y into ascending list Y of length n.Set n = 0 initially.
 
 void Insert(FLOAT y,   // Inserted value.
@@ -188,7 +244,7 @@ FLOAT PoissonInv(FLOAT Fy, FLOAT Theta)
         y++; ypb *= Theta / y; Sum += ypb;
     }
 
-    if ((Fy < (FLOAT)0.5) && (y >(FLOAT)0.0)) y--;
+    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
 
     return (y);
 } // PoissonInv
@@ -518,3 +574,50 @@ E0:	if (b) free(b);
 
     return (Error);
 } // LUinvdet
+
+// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/ 
+
+int Choldc(int   n,  // Size of square matrix.
+           FLOAT *A, // Pointer to the square matrix A.
+           FLOAT *L) // Lower triangular factors.
+{
+    int   i, j, k;
+    FLOAT Sum;
+    FLOAT *p;
+    int   Error = 0;
+
+    memmove(L, A, n * n * sizeof(FLOAT));
+
+    p = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+    Error = NULL == p; if (Error) goto E0;
+
+    for (i = 0; i < n; i++) {
+        for (j = i; j < n; j++) {
+            Sum = L[i * n + j];
+
+            for (k = 0; k < i; k++) Sum -= L[i * n + k] * L[j * n + k];
+
+            if (i == j) {
+                if (Sum <= FLOAT_MIN) {
+                    Error = 1; goto E0;
+                }
+
+                p[i] = (FLOAT)sqrt(Sum);
+            }
+            else {
+                L[j * n + i] = Sum / p[i];
+            }
+        }
+    }
+
+    for (i = 0; i < n; i++) {
+        L[i * n + i] = p[i]; for (j = 0; j < i; j++) L[j * n + i] = (FLOAT)0.0;
+    }
+
+    if (p) free(p);
+
+E0: return (Error);
+} // Choldc 
+
+

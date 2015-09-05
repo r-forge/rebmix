@@ -4,8 +4,8 @@
   Criterion = "AIC",
   Variables = NULL,
   pdf = NULL,
-  Theta1 = NULL,
-  Theta2 = NULL,
+  theta1 = NULL,
+  theta2 = NULL,
   K = NULL,
   y0 = NULL,
   ymin = NULL,
@@ -50,19 +50,19 @@
       stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }    
 
-    if (!is.null(Theta1)) {
-      Theta1[is.na(Theta1)] <- 0
+    if (!is.null(theta1)) {
+      theta1[is.na(theta1)] <- 0
       
-      if (length(Theta1) != d) {
-        stop("lengths of ", sQuote("Theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      if (length(theta1) != d) {
+        stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
       }
     }
 
-    if (!is.null(Theta2)) {
-      Theta2[is.na(Theta2)] <- 0
+    if (!is.null(theta2)) {
+      theta2[is.na(theta2)] <- 0
       
-      if (length(Theta2) != d) {
-        stop("lengths of ", sQuote("Theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
+      if (length(theta2) != d) {
+        stop("lengths of ", sQuote("theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
       }
     }
     
@@ -91,24 +91,24 @@
     }
     
     if (as.integer(length(pdf)) > 0) {
-        length.pdf = +d;
+        length.pdf <- +d
     }
     else {
-        length.pdf = -d;
+        length.pdf <- -d
     }
     
-    if (as.integer(length(Theta1)) > 0) {
-        length.Theta1 = +d;
+    if (as.integer(length(theta1)) > 0) {
+        length.theta1 <- +d
     }
     else {
-        length.Theta1 = -d;
+        length.theta1 <- -d
     }    
     
-    if (as.integer(length(Theta2)) > 0) {
-        length.Theta2 = +d;
+    if (as.integer(length(theta2)) > 0) {
+        length.theta2 <- +d
     }
     else {
-        length.Theta2 = -d;
+        length.theta2 <- -d
     }      
     
     output <- .C("RREBMIX",
@@ -119,10 +119,9 @@
       Variables = as.character(Variables),
       length.pdf = length.pdf,
       pdf = as.character(pdf),
-      length.Theta1 = length.Theta1,
-      Theta1 = as.double(Theta1),
-      length.Theta2 = length.Theta2,
-      Theta2 = as.double(Theta2),
+      length.Theta = as.integer(2),
+      length.theta = as.integer(c(d, d)),
+      Theta = as.double(c(theta1, theta2)),
       length.K = as.integer(length(K)),
       K = as.integer(K),
       length.y0 = as.integer(length(y0)),
@@ -143,9 +142,8 @@
       summary.M = integer(1), 
       summary.c = integer(1),
       W = double(cmax),        
-      Theta.pdf = as.character(rep("THE_LONGEST_PARAMETRIC_FAMILY_TYPE", cmax * d)),
-      Theta.Theta1 = double(cmax * d),        
-      Theta.Theta2 = double(cmax * d),  
+      theta1 = double(cmax * d),        
+      theta2 = double(cmax * d),  
       opt.length = integer(1),
       opt.c = integer(1000), ## 1000 = ItMax see rebmixf.h
       opt.IC = double(1000),
@@ -160,19 +158,14 @@
     if (output$error == 1) {
       stop("in REBMIX!", call. = FALSE); return(NA)
     }
-
+    
     c <- output$summary.c
 
     length(output$summary.h) <- d
     length(output$W) <- c
-    length(output$Theta.pdf) <- c * d
-    length(output$Theta.Theta1) <- c * d
-    length(output$Theta.Theta2) <- c * d
+    length(output$theta1) <- c * d
+    length(output$theta2) <- c * d
 
-    dim(output$Theta.pdf) <- c(d, c)
-    dim(output$Theta.Theta1) <- c(d, c)
-    dim(output$Theta.Theta2) <- c(d, c)
-    
     length(output$opt.c) <- output$opt.length 
     length(output$opt.IC) <- output$opt.length   
     length(output$opt.logL) <- output$opt.length 
@@ -193,52 +186,27 @@
     output$opt.D <- output$opt.D[j]
     
     length(output$all.K) <- output$all.length 
-    length(output$all.IC) <- output$all.length         
+    length(output$all.IC) <- output$all.length    
+    
+    REBMIX$w[[i]] <- output$W
 
-    REBMIX$w[[i]] <- as.data.frame(rbind(output$W), stringsAsFactors = FALSE)
+    REBMIX$Theta[[i]] <- list()
 
-    rownames(REBMIX$w[[i]]) <- "w"
-    colnames(REBMIX$w[[i]]) <- paste("comp", if (c > 1) 1:c else "", sep = "")
+    length(REBMIX$Theta[[i]]) <- 3 * c
+    
+    names(REBMIX$Theta[[i]])[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
+    names(REBMIX$Theta[[i]])[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
+    names(REBMIX$Theta[[i]])[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+    
+    M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
+    
+    for (j in 1:c) {
+	  REBMIX$Theta[[i]][[1 + (j - 1) * 3]] <- pdf
+	  REBMIX$Theta[[i]][[2 + (j - 1) * 3]] <- output$theta1[seq((j - 1) * d + 1, j * d, 1)]
+  	  REBMIX$Theta[[i]][[3 + (j - 1) * 3]] <- output$theta2[seq((j - 1) * d + 1, j * d, 1)]
 
-    REBMIX$Theta[[i]] <- rbind(output$Theta.pdf, output$Theta.Theta1, output$Theta.Theta2)
-
-    dim(REBMIX$Theta[[i]]) <- c(3 * d, c)
-
-    if (d > 1) {
-      rownames(REBMIX$Theta[[i]]) <- c(paste("pdf", 1:d, sep = ""),
-        paste("theta1.", 1:d, sep = ""),
-        paste("theta2.", 1:d, sep = ""))
+      REBMIX$Theta[[i]][[3 + (j - 1) * 3]][M] <- NA
     }
-    else {
-      rownames(REBMIX$Theta[[i]]) <- c("pdf", "theta1", "theta2")
-    }
-
-    Index <- NULL
-
-    for (j in 1:d){
-      Index <- c(Index, seq(from = j, to = j + 2 * d, by = d))
-    }
-
-    REBMIX$Theta[[i]] <- cbind(REBMIX$Theta[[i]][Index, ])
-
-    M <- match(REBMIX$Theta[[i]][, 1], .rebmix$pdf)
-
-    Index <- NULL
-
-    for (j in 1:length(M)) {
-      if (M[j] %in% which(.rebmix$pdf.nargs == 1)) {
-        Index <- c(Index, j + 2)
-      }
-    }
-
-    if (is.null(Index)) {
-      REBMIX$Theta[[i]] <- as.data.frame(REBMIX$Theta[[i]], stringsAsFactors = FALSE)
-    }
-    else {
-      REBMIX$Theta[[i]] <- as.data.frame(REBMIX$Theta[[i]][-Index, ], stringsAsFactors = FALSE)
-    }
-
-    colnames(REBMIX$Theta[[i]]) <- paste("comp", if (c > 1) 1:c else "", sep = "")
     
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
     
@@ -364,8 +332,8 @@ REBMIX <- function(Dataset = NULL,
   Criterion = "AIC",
   Variables = NULL,
   pdf = NULL,
-  Theta1 = NULL,
-  Theta2 = NULL,
+  theta1 = NULL,
+  theta2 = NULL,
   K = NULL,
   y0 = NULL,
   ymin = NULL,
@@ -502,19 +470,19 @@ REBMIX <- function(Dataset = NULL,
   REBMIX$all.IC <- list()  
   
   REBMIX$call <- list( 
-    Preprocessing = Preprocessing, 
+    Preprocessing = match.arg(Preprocessing, .rebmix$Preprocessing), 
     cmax = cmax,
-    Criterion = Criterion,
-    Variables = Variables,
-    pdf = pdf,
-    Theta1 = Theta1,
-    Theta2 = Theta2,
+    Criterion = match.arg(Criterion, .rebmix$Criterion),
+    Variables = match.arg(Variables, .rebmix$Variables),
+    pdf = match.arg(pdf, .rebmix$pdf),
+    theta1 = theta1,
+    theta2 = theta2,
     K = K,
     y0 = y0,
     ymin = ymin,
     ymax = ymax,
     ar = ar,
-    Restraints = Restraints)
+    Restraints = match.arg(Restraints, .rebmix$Restraints))
 
   for (i in 1:length(Preprocessing)) {
     for (j in 1:length(Criterion)) {
@@ -524,8 +492,8 @@ REBMIX <- function(Dataset = NULL,
         Criterion = Criterion[j],
         Variables = Variables,
         pdf = pdf,
-        Theta1 = Theta1,
-        Theta2 = Theta2,
+        theta1 = theta1,
+        theta2 = theta2,
         K = if (is.list(K)) K[[i]] else K,
         y0 = y0,        
         ymin = ymin,

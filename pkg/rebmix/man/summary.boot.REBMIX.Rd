@@ -20,7 +20,7 @@ further arguments to \code{\link[base]{print}}.
 \examples{
 ## Generate and print simulated dataset.
 
-Theta <- rbind(pdf = rep("normal", 4),
+Theta <- list(pdf1 = rep("normal", 4),
   theta1 = c(1, 3, 6, 9),
   theta2 = c(0.1, 0.2, 0.3, 0.4))
 

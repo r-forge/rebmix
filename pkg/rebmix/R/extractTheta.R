@@ -1,36 +1,24 @@
-.extractTheta <- function(Theta)
+.extractTheta <- function(w, Theta)
 {
-  nrow <- nrow(Theta)
-  ncol <- ncol(Theta)
+  Names <- names(Theta)
+  
+  pdf <- as.character(unlist(Theta[grep("pdf", Names)]))
+  
+  theta1 <- as.numeric(unlist(Theta[grep("theta1", Names)]))
 
-  output <- array(data = list(NULL), dim = c(nrow, ncol), dimnames = NULL)
+  theta2 <- as.numeric(unlist(Theta[grep("theta2", Names)]))
+  
+  c <- length(w); d <- length(pdf) / c
 
-  for (i in 1:ncol) {
-    M <- match(Theta[, i], .rebmix$pdf)
+  output <- array(data = list(NULL), dim = c(d, c), dimnames = NULL)
 
-    j <- 1;
-
-    for (k in 1:length(M)) {
-      if (M[k] %in% which(.rebmix$pdf.nargs == 2)) {
-        output[[j, i]]$pdf <- Theta[k, i]
-        output[[j, i]]$theta1 <- as.numeric(Theta[k + 1, i])
-        output[[j, i]]$theta2 <- as.numeric(Theta[k + 2, i])
-
-        j <- j + 1
-      }
-      else
-      if (M[k] %in% which(.rebmix$pdf.nargs == 1)) {
-        output[[j, i]]$pdf <- Theta[k, i]
-        output[[j, i]]$theta1 <- as.numeric(Theta[k + 1, i])
-
-        j <- j + 1
-      }
-    }
+  for (i in 1:d) {
+    for (j in 1:c) {
+      output[[i, j]]$pdf <- as.character(pdf[(j - 1) * d + i])
+      output[[i, j]]$theta1 <- as.numeric(theta1[(j - 1) * d + i])
+      output[[i, j]]$theta2 <- as.numeric(theta2[(j - 1) * d + i])
+    }	
   }
-
-  j <- j - 1
-
-  output <- output[1:j, ]; dim(output) <- c(j, ncol)
 
   rm(list = ls()[!(ls() %in% c("output"))])
 

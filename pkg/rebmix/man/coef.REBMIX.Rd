@@ -23,9 +23,9 @@ further arguments to \code{\link[base]{print}}.
 \examples{
 ## Generate and print simulated dataset.
 
-Theta <- rbind(pdf = rep("Weibull", 3),
-  theta1 = c(2.0, 10.0, 30),
-  theta2 = c(2.0, 4.0, 7.0))
+Theta <- list(pdf1 = rep("Weibull", 3),
+  theta1 = c(2, 10, 30),
+  theta2 = c(2, 4, 7))
 
 simulated <- RNGMIX(Dataset = "simulated",
   rseed = -1,

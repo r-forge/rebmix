@@ -11,18 +11,16 @@ print.REBMIX <- function(x, pos = 1, ...)
   if ((pos < 1) || (pos > nrow(x$summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x$summary), "!", call. = FALSE)
   }
-
+  
   cat(paste("$w", "\n", sep = ""))
 
-  print(apply(x$w[[pos]], c(1, 2), as.number), quote = FALSE, ...)
+  print(as.number(x$w[[pos]]), quote = FALSE, ...)  
 
   cat(paste("\n", sep = ""))
-
+  
   cat(paste("$Theta", "\n", sep = ""))
 
-  print(apply(x$Theta[[pos]], c(1, 2), as.number), quote = FALSE, ...)
-
-  cat(paste("\n", sep = ""))
+  print(x$Theta[[pos]], quote = FALSE, ...)  
 
   cat(paste("$summary", "\n", sep = ""))
 

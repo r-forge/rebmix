@@ -83,8 +83,8 @@ boot.REBMIX <- function(x,
     Criterion = as.character(x$summary[pos, "Criterion"]),
     Variables = x$call$Variables,
     pdf = x$call$pdf,
-    Theta1 = x$call$Theta1,
-    Theta2 = x$call$Theta2,
+    theta1 = x$call$theta1,
+    theta2 = x$call$theta2,
     K = eval(parse(text = as.character(x$summary[pos, "K"]))),
     y0 = x$call$y0,    
     ymin = x$call$ymin,
@@ -95,105 +95,68 @@ boot.REBMIX <- function(x,
   freq <- table(as.numeric(bsampleest$summary$c))
   c <- as.integer(names(freq)[which.max(freq)])
   
-  w <- rbind(bsampleest$w[as.numeric(bsampleest$summary$c) == c])
+  w <- bsampleest$w[as.numeric(bsampleest$summary$c) == c]
   
-  Theta <- rbind(bsampleest$Theta[as.numeric(bsampleest$summary$c) == c])
+  Theta <- bsampleest$Theta[as.numeric(bsampleest$summary$c) == c]
   
   output <- list()
   
-  output$c <- as.data.frame(rbind(as.numeric(bsampleest$summary$c)), stringsAsFactors = FALSE)
+  output$c <- as.numeric(bsampleest$summary$c)
   output$c.se <- sd(as.numeric(bsampleest$summary$c))
   output$c.cv <- output$c.se / mean(as.numeric(bsampleest$summary$c))
-  
-  rownames(output$c) <- "c"
-  colnames(output$c) <- paste(1:B, sep = "")  
   
   output$c.mode <- c
   output$c.prob <- length(w) / B
   
-  output$w <- NULL
-  output$w.se <- NULL
+  output$w <- unlist(w); dim(output$w) <- c(length(w), c)
   
-  for (i in 1:length(w)) {
-    output$w <- cbind(output$w, as.numeric(w[[i]]))
-  }
-  
-  output$w.se <- apply(output$w, 1, sd)
-  output$w.cv <- output$w.se / apply(output$w, 1, mean)
-  
-  output$w <- as.data.frame(rbind(output$w), stringsAsFactors = FALSE)
-  
-  rownames(output$w) <- paste("comp", if (c > 1) 1:c else "", sep = "")
-  colnames(output$w) <- paste(which(bsampleest$summary$c == c), sep = "") 
-  
-  nrow <- nrow(Theta[[1]])
-  ncol <- ncol(Theta[[1]])  
-  
-  R1 <- NULL; R2 <- NULL; D1 <- NULL; D2 <- NULL
-  
-  i <- 1; j <- 1
-    
-  while (i < nrow) {
-    pdf <- match.arg(Theta[[1]][i, 1], .rebmix$pdf)
+  colnames(output$w) <- paste("comp", if (c > 1) 1:c else "", sep = "")
+  rownames(output$w) <- paste(which(bsampleest$summary$c == c), sep = "")
 
-    if (pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 2]) {
-      R1 <- c(R1, i + 1); R2 <- c(R2, i + 2); D1 <- c(D1, j); D2 <- c(D2, j)
-      
-      i <- i + 3; j <- j + 1
-    }
-    else
-    if (pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1]) {
-      R1 <- c(R1, i + 1); D1 <- c(D1, j)
-      
-      i <- i + 2; j <- j + 1
-    }
-  }
-  
-  for (i in 1:length(R1)) {
-    theta1 <- if (d > 1) paste("theta1.",  D1[i], sep = "") else "theta1"
-    
+  output$w.se <- apply(output$w, 2, sd)
+  output$w.cv <- output$w.se / apply(output$w, 2, mean)
+
+  for (i in 1:output$c.mode) {
+    theta1 <- paste("theta1.",  i, sep = "")
+
     output[[theta1]] <- NULL
 
     for (j in 1:length(Theta)) {
-      output[[theta1]] <- cbind(output[[theta1]], as.numeric(Theta[[j]][R1[i], ]))
+      output[[theta1]] <- c(output[[theta1]], Theta[[j]][[theta1]])
     }
-    
-    se <- apply(output[[theta1]], 1, sd)
 
-    output[[paste(theta1, ".se", sep = "")]] <- se
+    dim(output[[theta1]]) <- c(length(Theta), d)
 
-    cv <- se / apply(output[[theta1]], 1, mean)
-    
-    output[[paste(theta1, ".cv", sep = "")]] <- cv
-    
-    output[[theta1]] <- data.frame(rbind(output[[theta1]]), stringsAsFactors = FALSE)
-    
-    rownames(output[[theta1]]) <- paste("comp", if (c > 1) 1:c else "", sep = "")
-    colnames(output[[theta1]]) <- paste(which(bsampleest$summary$c == c), sep = "") 
+    colnames(output[[theta1]]) <- x$call$pdf
+    rownames(output[[theta1]]) <- paste(which(bsampleest$summary$c == c), sep = "")
+
+    theta1.se <- paste("theta1.",  i, ".se", sep = "")
+    theta1.cv <- paste("theta1.",  i, ".cv", sep = "")
+
+    output[[theta1.se]] <- apply(output[[theta1]], 2, sd)
+    output[[theta1.cv]] <- output[[theta1.se]] / apply(output[[theta1]], 2, mean)
   }
-  
-  for (i in 1:length(R2)) {
-    theta2 <- if (d > 1) paste("theta2.",  D2[i], sep = "") else "theta2"
-    
+
+  for (i in 1:output$c.mode) {
+    theta2 <- paste("theta2.",  i, sep = "")
+
     output[[theta2]] <- NULL
 
     for (j in 1:length(Theta)) {
-      output[[theta2]] <- cbind(output[[theta2]], as.numeric(Theta[[j]][R2[i], ]))
+      output[[theta2]] <- c(output[[theta2]], Theta[[j]][[theta2]])
     }
-    
-    se <- apply(output[[theta2]], 1, sd)
 
-    output[[paste(theta2, ".se", sep = "")]] <- se
+    dim(output[[theta2]]) <- c(length(Theta), d)
 
-    cv <- se / apply(output[[theta2]], 1, mean)
-    
-    output[[paste(theta2, ".cv", sep = "")]] <- cv
-    
-    output[[theta2]] <- data.frame(rbind(output[[theta2]]), stringsAsFactors = FALSE)
-    
-    rownames(output[[theta2]]) <- paste("comp", if (c > 1) 1:c else "", sep = "")
-    colnames(output[[theta2]]) <- paste(which(bsampleest$summary$c == c), sep = "") 
-  }  
+    colnames(output[[theta2]]) <- x$call$pdf
+    rownames(output[[theta2]]) <- paste(which(bsampleest$summary$c == c), sep = "")
+
+    theta2.se <- paste("theta2.",  i, ".se", sep = "")
+    theta2.cv <- paste("theta2.",  i, ".cv", sep = "")
+
+    output[[theta2.se]] <- apply(output[[theta2]], 2, sd)
+    output[[theta2.cv]] <- output[[theta2.se]] / apply(output[[theta2]], 2, mean)
+  }
   
   options(digits = digits)  
 

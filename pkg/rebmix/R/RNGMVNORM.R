@@ -1,11 +1,11 @@
-RNGMIX <- function(Dataset = NULL,
+RNGMVNORM <- function(Dataset = NULL,
   rseed = -1,
   n = NULL,
   Theta = NULL)
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.7.3");
+  message("RNGMVNORM Version 2.7.3");
   
   flush.console()
   
@@ -56,35 +56,33 @@ RNGMIX <- function(Dataset = NULL,
   theta1 <- as.numeric(unlist(Theta[grep("theta1", Names)]))
 
   theta2 <- as.numeric(unlist(Theta[grep("theta2", Names)]))
-  
-  theta2[is.na(theta2)] <- 0
 
   d <- length(theta1) / c
   
-  length(pdf) <- d
+  length(pdf) <- 1
   
   xmin <- rbind(rep(+Inf, d))
   xmax <- rbind(rep(-Inf, d))
 
   IDum <- rseed
 
-  RNGMIX <- list()
+  RNGMVNORM <- list()
 
-  RNGMIX$Dataset <- list()
+  RNGMVNORM$Dataset <- list()
     
   for (i in 1:length(Dataset)) {
     message("Dataset = ", Dataset[i])
 
     flush.console()
 
-    output <- .C("RRNGMIX",
+    output <- .C("RRNGMVNORM",
       IDum = as.integer(IDum), 
       d = as.integer(d),
       c = as.integer(c),
       N = as.integer(n),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.pdf = as.integer(1),
+      length.Theta = as.integer(3),
+      length.theta = as.integer(c(d, length(theta2) / c, -length(theta2) / c)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
       n = integer(1),
@@ -93,7 +91,7 @@ RNGMIX <- function(Dataset = NULL,
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in RNGMIX!", call. = FALSE); return(NA)
+      stop("in RNGMVNORM!", call. = FALSE); return(NA)
     }
 
     dim(output$Y) <- c(output$n, d)
@@ -101,43 +99,25 @@ RNGMIX <- function(Dataset = NULL,
     xmin <- as.numeric(apply(rbind(xmin, output$Y), 2, min))
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
-    RNGMIX$Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
+    RNGMVNORM$Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
 
     IDum <- IDum - 1
   }
   
-  names(RNGMIX$Dataset) <- Dataset
+  names(RNGMVNORM$Dataset) <- Dataset
   
-  RNGMIX$w <- n / output$n
+  RNGMVNORM$w <- n / output$n
   
-  M <- match(pdf, .rebmix$pdf)
+  RNGMVNORM$Variables <- rep(.rebmix$Variables[1], d)
 
-  Index <- NULL
-
-  for (i in 1:length(M)) {
-    if (M[i] %in% which(.rebmix$pdf.nargs == 1)) {
-      Index <- c(Index, i + 2)
-    }
-  }
-
-  RNGMIX$Variables <- rep(.rebmix$Variables[1], d)
-
-  M <- na.omit(M)
-
-  for (i in 1:length(M)) {
-    if (M[i] %in% which(.rebmix$pdf.Variables == .rebmix$Variables[2])) {
-      RNGMIX$Variables[i] <- .rebmix$Variables[2]
-    }
-  }  
-
-  RNGMIX$ymin <- xmin
-  RNGMIX$ymax <- xmax
+  RNGMVNORM$ymin <- xmin
+  RNGMVNORM$ymax <- xmax
     
   options(digits = digits)  
 
-  rm(list = ls()[!(ls() %in% c("RNGMIX"))])
+  rm(list = ls()[!(ls() %in% c("RNGMVNORM"))])
 
-  class(RNGMIX) <- "RNGMIX"
+  class(RNGMVNORM) <- "RNGMVNORM"
   
-  return(RNGMIX)
-} ## RNGMIX
+  return(RNGMVNORM)
+} ## RNGMVNORM
