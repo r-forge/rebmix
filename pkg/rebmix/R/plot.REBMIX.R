@@ -1092,22 +1092,6 @@ plot.REBMIX <- function(x,
     }      
   }
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)

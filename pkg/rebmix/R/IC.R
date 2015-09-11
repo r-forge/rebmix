@@ -29,44 +29,23 @@
 
   h <- as.double(x$summary[pos, paste("h", if (d > 1) 1:d else "", sep = "")])
   
-  nrow <- nrow(x$Theta[[pos]])
-  ncol <- ncol(x$Theta[[pos]])
-
-  c <- ncol
-
-  pdf <- array(data = NA, dim = c(nrow, ncol), dimnames = NULL)
-  theta1 <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
-  theta2 <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
-
-  for (j in 1:ncol) {
-    M <- match(x$Theta[[pos]][, j], .rebmix$pdf)
-
-    d <- 1;
-
-    for (l in 1:length(M)) {
-      if (M[l] %in% which(.rebmix$pdf.nargs == 2)) {
-        pdf[d, j] <- x$Theta[[pos]][l, j]
-        theta1[d, j] <- as.numeric(x$Theta[[pos]][l + 1, j])
-        theta2[d, j] <- as.numeric(x$Theta[[pos]][l + 2, j])
-
-        d <- d + 1
-      }
-      else
-      if (M[l] %in% which(.rebmix$pdf.nargs == 1)) {
-        pdf[d, j] <- x$Theta[[pos]][l, j]
-        theta1[d, j] <- as.numeric(x$Theta[[pos]][l + 1, j])
-
-        d <- d + 1
-      }
-    }
-  }
-
-  d <- d - 1
-
-  pdf <- pdf[1:d, ]; dim(pdf) <- c(d, ncol)
+  Names <- names(x$Theta[[pos]])
   
-  theta1 <- theta1[1:d, ]; dim(theta1) <- c(d, ncol)
-  theta2 <- theta2[1:d, ]; dim(theta2) <- c(d, ncol)
+  c <- length(x$w[[pos]])
+
+  pdf <- as.character(unlist(x$Theta[[pos]][grep("pdf", Names)]))
+  
+  pdf <- match.arg(pdf, .rebmix$pdf)
+  
+  theta1 <- as.numeric(unlist(x$Theta[[pos]][grep("theta1", Names)]))
+  
+  theta1[is.na(theta1)] <- 0
+
+  theta2 <- as.numeric(unlist(x$Theta[[pos]][grep("theta2", Names)]))
+  
+  theta2[is.na(theta2)] <- 0
+
+  length(pdf) <- d
 
   C <- x$summary[pos, "Preprocessing"]
 
@@ -77,18 +56,17 @@
       h = as.double(h),
       y0 = as.double(y0),
       k = as.integer(x$summary[pos, "v/k"]),
-      n = as.integer(n),
       d = as.integer(d),
-      x = as.double(X),
       Criterion = as.character(Criterion),
       c = as.integer(c),
       W = as.double(x$w[[pos]]),
       length.pdf = as.integer(d),
+      length.Theta = as.integer(2),
+      length.theta = as.integer(c(d, d)),
       pdf = as.character(pdf),
-      length.Theta1 = as.integer(d),
-      Theta1 = as.double(theta1),
-      length.Theta2 = as.integer(d),
-      Theta2 = as.double(theta2),     
+      Theta = as.double(c(theta1, theta2)),
+      n = as.integer(n),
+      x = as.double(X),
       IC = double(1),
       logL = double(1),
       M = integer(1),
@@ -104,18 +82,17 @@
   if (C == .rebmix$Preprocessing[2]) {
     output <- .C("RInformationCriterionPW",
       h = as.double(h),
-      n = as.integer(n),
       d = as.integer(d),
-      x = as.double(X),
       Criterion = as.character(Criterion),
       c = as.integer(c),
       W = as.double(x$w[[pos]]),
       length.pdf = as.integer(d),
+      length.Theta = as.integer(2),
+      length.theta = as.integer(c(d, d)),
       pdf = as.character(pdf),
-      length.Theta1 = as.integer(d),
-      Theta1 = as.double(theta1),
-      length.Theta2 = as.integer(d),
-      Theta2 = as.double(theta2),     
+      Theta = as.double(c(theta1, theta2)),
+      n = as.integer(n),
+      x = as.double(X),
       IC = double(1),
       logL = double(1),
       M = integer(1),
@@ -132,20 +109,19 @@
     k <- as.integer(x$summary[pos, "v/k"]) 
 
     output <- .C("RInformationCriterionKNN",
-      k = as.integer(x$summary[pos, "v/k"]),
       h = as.double(h),
-      n = as.integer(n),
+      k = as.integer(x$summary[pos, "v/k"]),
       d = as.integer(d),
-      x = as.double(X),
       Criterion = as.character(Criterion),
       c = as.integer(c),
       W = as.double(x$w[[pos]]),
       length.pdf = as.integer(d),
+      length.Theta = as.integer(2),
+      length.theta = as.integer(c(d, d)),
       pdf = as.character(pdf),
-      length.Theta1 = as.integer(d),
-      Theta1 = as.double(theta1),
-      length.Theta2 = as.integer(d),
-      Theta2 = as.double(theta2),      
+      Theta = as.double(c(theta1, theta2)),
+      n = as.integer(n),
+      x = as.double(X),
       IC = double(1),
       logL = double(1),
       M = integer(1),

@@ -66,7 +66,9 @@ int CompnentDistribution::Realloc(int length_pdf, int length_Theta, int *length_
 
             memset(Theta_[i], 0, length_theta_[i] * sizeof(FLOAT));
         }
+    }
 
+    for (i = 0; i < owner_->length_Theta_; i++) {
         owner_->length_theta_[i] = length_theta_[i];
     }
 
@@ -1377,7 +1379,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
 
     *CmpDist = (FLOAT)1.0;
 
-    for (i = 0; i < length_pdf_; i++) {
+    for (i = 0; i < CmpTheta->length_pdf_; i++) {
         switch (CmpTheta->pdf_[i]) {
         case pfNormal:
             y = (Y[i] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]);

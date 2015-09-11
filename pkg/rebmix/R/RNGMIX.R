@@ -54,6 +54,8 @@ RNGMIX <- function(Dataset = NULL,
   pdf <- match.arg(pdf, .rebmix$pdf)
   
   theta1 <- as.numeric(unlist(Theta[grep("theta1", Names)]))
+  
+  theta1[is.na(theta1)] <- 0
 
   theta2 <- as.numeric(unlist(Theta[grep("theta2", Names)]))
   

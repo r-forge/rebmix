@@ -67,45 +67,23 @@ RCLSMIX <- function(x,
 
   for (io in 1:o) {
     for (is in 1:s) {
-      nrow <- nrow(x[[io]]$Theta[[is]])
-      ncol <- ncol(x[[io]]$Theta[[is]])
+      Names <- names(x[[io]]$Theta[[is]])
+    
+      pdf[[io, is]] <- as.character(unlist(x[[io]]$Theta[[is]][grep("pdf", Names)]))
+    
+      theta1[[io, is]] <- as.numeric(unlist(x[[io]]$Theta[[is]][grep("theta1", Names)]))
+      
+      theta1[[io, is]][is.na(theta1[[io, is]])] <- 0
 
-      c[[io, is]] <- ncol
+      theta2[[io, is]] <- as.numeric(unlist(x[[io]]$Theta[[is]][grep("theta2", Names)]))
+      
+      theta2[[io, is]][is.na(theta2[[io, is]])] <- 0
 
-      w[[io, is]] <- as.numeric(x[[io]]$w[[is]])
+      c[[io, is]] <- length(x[[io]]$w[[is]])
 
-      pdf[[io, is]] <- array(data = NA, dim = c(nrow, ncol), dimnames = NULL)
-      theta1[[io, is]] <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
-      theta2[[io, is]] <- array(data = 0.0, dim = c(nrow, ncol), dimnames = NULL)
-
-      for (j in 1:ncol) {
-        M <- match(x[[io]]$Theta[[is]][, j], .rebmix$pdf)
-
-        d[io] <- 1;
-
-        for (l in 1:length(M)) {
-          if (M[l] %in% which(.rebmix$pdf.nargs == 2)) {
-            pdf[[io, is]][d[io], j] <- x[[io]]$Theta[[is]][l, j]
-            theta1[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 1, j])
-            theta2[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 2, j])
-
-            d[io] <- d[io] + 1
-          }
-          else
-          if (M[l] %in% which(.rebmix$pdf.nargs == 1)) {
-            pdf[[io, is]][d[io], j] <- x[[io]]$Theta[[is]][l, j]
-            theta1[[io, is]][d[io], j] <- as.numeric(x[[io]]$Theta[[is]][l + 1, j])
-
-            d[io] <- d[io] + 1
-          }
-        }
-      }
-
-      d[io] <- d[io] - 1
-
-      pdf[[io, is]] <- pdf[[io, is]][1:d[io], ]; dim(pdf[[io, is]]) <- c(d[io], ncol)
-      theta1[[io, is]] <- theta1[[io, is]][1:d[io], ]; dim(theta1[[io, is]]) <- c(d[io], ncol)
-      theta2[[io, is]] <- theta2[[io, is]][1:d[io], ]; dim(theta2[[io, is]]) <- c(d[io], ncol)
+      w[[io, is]] <- x[[io]]$w[[is]]
+      
+      d[io] <- length(pdf[[io, is]]) / c[[io, is]]
     }
   }
 
@@ -121,9 +99,9 @@ RCLSMIX <- function(x,
       d = as.integer(d),
       c = as.integer(unlist(c)),
       W = as.double(unlist(w)),
-      ParFamType = as.character(unlist(pdf)),
-      Par0 = as.double(unlist(theta1)),
-      Par1 = as.double(unlist(theta2)),
+      pdf = as.character(unlist(pdf)),
+      theta1 = as.double(unlist(theta1)),
+      theta2 = as.double(unlist(theta2)),
       P = as.double(unlist(P)),
       Z = integer(nrow(Dataset)),
       error = integer(1),
@@ -136,7 +114,7 @@ RCLSMIX <- function(x,
 
   output <- as.factor(output$Z)
   levels(output) <- 0:(length(P) -1)
-  
+
   options(digits = digits)
 
   rm(list = ls()[!(ls() %in% c("output"))])

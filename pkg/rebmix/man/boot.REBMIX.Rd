@@ -62,7 +62,7 @@ a vector containing standard errors of component weights \code{w}.
 a vector containing coefficients of variation of component weights \code{w}.
 }
 \item{theta1.i}{
-data frames containing component parameters \code{theta1.i} for \eqn{\leq B} bootstrap datasets.
+arrays containing component parameters \code{theta1.i} for \eqn{\leq B} bootstrap datasets.
 }
 \item{theta1.i.se}{
 vectors containing standard errors of component parameters \code{theta1.i}.
@@ -71,7 +71,7 @@ vectors containing standard errors of component parameters \code{theta1.i}.
 vectors containing coefficients of variation of component parameters \code{theta1.i}.
 }
 \item{theta2.i}{
-data frames containing component parameters \code{theta2.i} for \eqn{\leq B} bootstrap datasets.
+arrays containing component parameters \code{theta2.i} for \eqn{\leq B} bootstrap datasets.
 }
 \item{theta2.i.se}{
 vectors containing standard errors of component parameters \code{theta2.i}.
