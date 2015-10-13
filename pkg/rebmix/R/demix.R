@@ -87,7 +87,7 @@ demix <- function(x = NULL,
       }
       else 
       if (Variables[i] == .rebmix$Variables[2]) {
-        h[i] = 1.0; y0[i] = xmin[i];
+        h[i] = 1.0; y0[i] = xmin[i]
       }
     }    
 

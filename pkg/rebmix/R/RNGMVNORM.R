@@ -5,7 +5,7 @@ RNGMVNORM <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMVNORM Version 2.7.3");
+  message("RNGMVNORM Version 2.7.3")
   
   flush.console()
   

@@ -14,25 +14,25 @@ print.REBMIX <- function(x, pos = 1, ...)
   
   cat(paste("$w", "\n", sep = ""))
 
-  print(as.number(x$w[[pos]]), quote = FALSE, ...)  
+  print(x$w[[pos]], quote = FALSE, ...)  
 
-  cat(paste("\n", sep = ""))
+  cat("\n", sep = "")
   
-  cat(paste("$Theta", "\n", sep = ""))
+  cat("$Theta", "\n", sep = "")
 
   print(x$Theta[[pos]], quote = FALSE, ...)  
 
-  cat(paste("$summary", "\n", sep = ""))
+  cat("$summary", "\n", sep = "")
 
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(x$summary), nomatch = 0)
 
-  print(apply(x$summary[pos, p], c(1, 2), as.number), quote = FALSE, ...)
+  print(x$summary[pos, p], quote = FALSE, ...)
 
-  cat(paste("\n", sep = ""))
+  cat("\n", sep = "")
 
-  cat(paste("attr(,\"class\")", "\n", sep = ""))
+  cat("attr(\"class\")", "\n", sep = "")
 
   print(attr(x, "class"), ...)
-
-  invisible(x)
+  
+  rm(list = ls())
 } ## print.REBMIX

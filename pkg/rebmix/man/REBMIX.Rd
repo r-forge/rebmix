@@ -156,14 +156,8 @@ normal$Dataset[[1]][1:20, ]
 
 # Estimate number of components, component weights and component parameters. 
 
-v <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
   as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
-
-# Number of classes or nearest neighbours to be processed.
-
-N <- as.integer(log(v[2] / (v[1] + 1)) / log(1 + 1 / v[1]))
-
-K <- c(v[1], as.integer((v[1] + 1) * (1 + 1 / v[1])^(0:N)))
 
 normalest <- REBMIX(Dataset = normal$Dataset, 
   Preprocessing = "h", 
@@ -171,7 +165,7 @@ normalest <- REBMIX(Dataset = normal$Dataset,
   Criterion = "BIC", 
   Variables = "c",
   pdf = "n", 
-  K = K)
+  K = K[1]:K[2])
                  
 normalest
 

@@ -12,15 +12,31 @@ coef.REBMIX <- function(x, pos = 1, ...)
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x$summary), "!", call. = FALSE)
   }
   
-  cat(paste("$w", "\n", sep = ""))
-
-  print(as.number(x$w[[pos]]), quote = FALSE, ...)  
-
-  cat(paste("\n", sep = ""))
+  w <- matrix(x$w[[pos]], nrow = 1) 
   
-  cat(paste("$Theta", "\n", sep = ""))
+  rownames(w) <- "w"
+  colnames(w) <- paste("comp", if (x$summary[pos, "c"] > 1) 1:x$summary[pos, "c"] else "", sep = "") 
+  
+  print(w, quote = FALSE, ...)
 
-  print(x$Theta[[pos]], quote = FALSE, ...) 
+  cat("\n", sep = "")
+  
+  names <- names(x$Theta[[pos]])
+  
+  names <- names[grep("theta", names, fixed = TRUE)]
+  
+  theta <- NULL
+  
+  for (i in 1:length(names)) {
+    theta <- c(theta, x$Theta[[pos]][[names[i]]])
+  }  
+  
+  theta <- matrix(theta, ncol = length(x$Theta[[pos]][[names[1]]]), byrow = TRUE)
+  
+  rownames(theta) <- names
+  colnames(theta) <- x$Theta[[pos]]$pdf1
+  
+  print(theta, quote = FALSE, ...)  
   
   rm(list = ls())   
 } ## coef.REBMIX

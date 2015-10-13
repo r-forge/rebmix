@@ -13,7 +13,7 @@ summary.boot.REBMIX <- function(x, ...)
 
   cat("\n", sep = "")  
   
-  names <- names(x); 
+  names <- names(x)
   
   names <- names[grep("theta", names, fixed = TRUE)]
   names <- names[grep(".cv", names, fixed = TRUE)]  
@@ -31,7 +31,7 @@ summary.boot.REBMIX <- function(x, ...)
   
   print(theta.cv, quote = FALSE, ...)
 
-  cat(paste("Mode probability = ", as.number(x$c.prob), " at c = ", as.number(x$c.mode), " components.\n", sep = "", collapse = ""))
+  cat(paste("Mode probability = ", x$c.prob, " at c = ", x$c.mode, " components.\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 } ## summary.boot.REBMIX

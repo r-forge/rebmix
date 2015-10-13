@@ -260,13 +260,13 @@
         output$summary.M)        
     }
     
-    REBMIX$opt.c[[i]] <- output$opt.c;
-    REBMIX$opt.IC[[i]] <- output$opt.IC;
-    REBMIX$opt.logL[[i]] <- output$opt.logL;
-    REBMIX$opt.D[[i]] <- output$opt.D;    
-    REBMIX$all.length[[i]] <- output$all.length;
-    REBMIX$all.K[[i]] <- output$all.K;
-    REBMIX$all.IC[[i]] <- output$all.IC;     
+    REBMIX$opt.c[[i]] <- output$opt.c
+    REBMIX$opt.IC[[i]] <- output$opt.IC
+    REBMIX$opt.logL[[i]] <- output$opt.logL
+    REBMIX$opt.D[[i]] <- output$opt.D
+    REBMIX$all.length[[i]] <- output$all.length
+    REBMIX$all.K[[i]] <- output$all.K
+    REBMIX$all.IC[[i]] <- output$all.IC   
   }
 
   REBMIX$summary <- as.data.frame(do.call("rbind", REBMIX$summary), stringsAsFactors = FALSE)
@@ -343,7 +343,7 @@ REBMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.7.3");
+  message("REBMIX Version 2.7.3")
   flush.console()
 
   if (is.null(Dataset)) {

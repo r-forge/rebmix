@@ -77,7 +77,7 @@ plot.REBMIX <- function(x,
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
-  N <- d * (d - 1) / 2;
+  N <- d * (d - 1) / 2
   
   opar <- par(mfrow = c(nrow, ncol),
     cex = cex,

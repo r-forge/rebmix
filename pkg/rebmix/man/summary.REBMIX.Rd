@@ -7,10 +7,10 @@ Prints Univariate or Multivariate REBMIX Summary
 Returns the \code{summary} output for class REBMIX.
 }
 \usage{
-\method{summary}{REBMIX}(object, ...)
+\method{summary}{REBMIX}(x, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{\dots}{
@@ -18,10 +18,10 @@ further arguments to \code{\link[base]{print}}.
 }
 }
 \examples{
-## Generate and print simulated dataset.
+# Generate and print simulated dataset.
 
 Theta <- list(pdf1 = rep("Dirac", 4),
-  theta1 = c(1, 3, 4, 8))
+  theta1.1 = c(1, 3, 4, 8))
 
 simulated <- RNGMIX(Dataset = "simulated",
   rseed = -1,
@@ -30,7 +30,7 @@ simulated <- RNGMIX(Dataset = "simulated",
   
 print(simulated)
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
@@ -40,7 +40,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   pdf = "Dirac", 
   K = 1)
   
-## Print summary and plot finite mixture.  
+# Print summary and plot finite mixture.  
 
 summary(simulatedest)
 

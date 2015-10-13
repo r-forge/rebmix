@@ -5,7 +5,7 @@ RNGMIX <- function(Dataset = NULL,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.7.3");
+  message("RNGMIX Version 2.7.3")
   
   flush.console()
   

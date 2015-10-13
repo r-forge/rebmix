@@ -19,7 +19,7 @@ RCLSMIX <- function(x,
   }
   else
   if (class(x) == "REBMIX") {
-    o <- 1;
+    o <- 1
 
     x[[1]] <- x
   }
@@ -88,7 +88,7 @@ RCLSMIX <- function(x,
   }
 
   if (s > 1) {
-    message("RCLSMIX Version 2.7.3");
+    message("RCLSMIX Version 2.7.3")
     flush.console()
 
     output <- .C("RCLSMIX",
