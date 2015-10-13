@@ -97,43 +97,39 @@ C. M. Bishop. Neural Networks for Pattern Recognition. Clarendon Press, Oxford, 
 }
 \examples{
 \dontrun{
+devAskNewPage(ask = TRUE)
+
 data("wine")
 
 colnames(wine)
 
-## Remove Cultivar column from wine dataset.
+# Remove Cultivar column from wine dataset.
 
-winecolnames <- !(colnames(wine) \%in\% "Cultivar")
+winecolnames <- !(colnames(wine) %in% "Cultivar")
 
 wine <- wine[ , winecolnames]
 
-## Determine number of dimensions d and wine dataset size n.
+# Determine number of dimensions d and wine dataset size n.
 
 d <- ncol(wine) 
 n <- nrow(wine)
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
-v <- c(as.integer(1 + log2(n)), ## Minimum v follows the Sturges rule.
-  as.integer(2 * n^0.5)) ## Maximum v follows the RootN rule.
-
-## Number of classes or nearest neighbours to be processed.
-
-N <- as.integer(log(v[2] / (v[1] + 1)) / log(1 + 1 / v[1]))
-
-K <- c(v[1], as.integer((v[1] + 1) * (1 + 1 / v[1])^(0:N)), v[2])
+Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
+RootN <- as.integer(2 * n^0.5) # Maximum v follows the RootN rule.
 
 wineest <- REBMIX(Dataset = list(wine = wine), 
   Preprocessing = "Parzen window", 
   Criterion = "ICL-BIC", 
   Variables = rep("continuous", d),
   pdf = rep("normal", d), 
-  K = K)
+  K = Sturges:RootN)
 
-## Plot finite mixture.
+# Plot finite mixture.
 
-plot(wineest, what = c("density", "marginal", "IC", "logL", "D", 
-  "distribution"), nrow = 4, ncol = 5, npts = 500, pty = "s")
+plot(wineest, what = c("density", "marginal", "IC", "logL", "D"),
+  nrow = 2, ncol = 2, pty = "s")
 }
 }
 \keyword{plot}

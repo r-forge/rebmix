@@ -1,29 +1,37 @@
-summary.boot.REBMIX <- function(object, ...)
+summary.boot.REBMIX <- function(x, ...)
 {
-  if (missing(object) || (class(object) != "boot.REBMIX")) {
-    stop(sQuote("object"), " object of class boot.REBMIX is requested!", call. = FALSE)
+  if (missing(x) || (class(x) != "boot.REBMIX")) {
+    stop(sQuote("x"), " object of class boot.REBMIX is requested!", call. = FALSE)
   }
   
-  names <- names(object); 
+  w.cv <- matrix(x$w.cv, nrow = 1) 
   
-  names <- names[grep(".cv", names, fixed = TRUE)]
+  rownames(w.cv) <- "w.cv"
+  colnames(w.cv) <- paste("comp", if (x$c.mode > 1) 1:x$c.mode else "", sep = "") 
+  
+  print(w.cv, quote = FALSE, ...)
 
-  names <- names[-which("c.cv" == names)]
+  cat("\n", sep = "")  
+  
+  names <- names(x); 
+  
+  names <- names[grep("theta", names, fixed = TRUE)]
+  names <- names[grep(".cv", names, fixed = TRUE)]  
   
   theta.cv <- NULL
   
   for (i in 1:length(names)) {
-    theta.cv <- rbind(theta.cv, as.numeric(object[[names[i]]]))
+    theta.cv <- c(theta.cv, x[[names[i]]])
   }
   
-  theta.cv <- as.data.frame(rbind(theta.cv), stringsAsFactors = FALSE)
+  theta.cv <- matrix(theta.cv, ncol = length(x[[names[1]]]), byrow = TRUE)
   
-  rownames(theta.cv) <- names[grep(".cv", names, fixed = TRUE)];
-  colnames(theta.cv) <- paste("comp", if (object$c.mode > 1) 1:object$c.mode else "", sep = "")
+  rownames(theta.cv) <- names
+  colnames(theta.cv) <- names(x[[names[1]]])
   
-  print(apply(theta.cv, c(1, 2), as.number), quote = FALSE, ...)
+  print(theta.cv, quote = FALSE, ...)
 
-  cat(paste("Mode probability = ", as.number(object$c.prob), " at c = ", as.number(object$c.mode), " components.\n", sep = "", collapse = ""))
+  cat(paste("Mode probability = ", as.number(x$c.prob), " at c = ", as.number(x$c.mode), " components.\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 } ## summary.boot.REBMIX

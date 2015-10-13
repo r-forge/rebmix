@@ -137,53 +137,50 @@ M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixtu
 Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.
 }
 \examples{
-\dontrun{
-## Generate the complex 1 dataset.
+# Generate and plot univariate normal dataset.
 
-n <- c(998, 263, 1086, 487, 213, 1076, 232, 
-  784, 840, 461, 773, 24, 811, 1091, 861)
+n <- c(998, 263, 1086, 487)
 
-Theta <- list(pdf1 = "normal",
-  theta1 = c(688.4, 265.1, 30.8, 934, 561.6, 854.9, 883.7, 
-  758.3, 189.3, 919.3, 98, 143, 202.5, 628, 977),
-  theta2 = c(12.4, 14.6, 14.8, 8.4, 11.7, 9.2, 6.3, 10.2,
-  9.5, 8.1, 14.7, 11.7, 7.4, 10.1, 14.6))
+Theta <- list(pdf1 = "n",
+  theta1.1 = c(688, 265, 30, 934),
+  theta2.1 = c(72, 54, 34, 28))
 
-complex1 <- RNGMIX(Dataset = "complex1",
+normal <- RNGMIX(Dataset = "complex1",
   rseed = -1,
   n = n,
   Theta = Theta)
   
-complex1
+normal 
 
-complex1$Dataset[[1]][1:20, ]  
+normal$Dataset[[1]][1:20, ]  
 
-## Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters. 
 
-v <- c(as.integer(1 + log2(sum(n))), ## Minimum v follows the Sturges rule.
-  as.integer(2 * sum(n)^0.5)) ## Maximum v follows the RootN rule.
+v <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
+  as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
 
-## Number of classes or nearest neighbours to be processed.
+# Number of classes or nearest neighbours to be processed.
 
 N <- as.integer(log(v[2] / (v[1] + 1)) / log(1 + 1 / v[1]))
 
 K <- c(v[1], as.integer((v[1] + 1) * (1 + 1 / v[1])^(0:N)))
 
-complex1est <- REBMIX(Dataset = complex1$Dataset, 
-  Preprocessing = "histogram", 
-  cmax = 30, 
+normalest <- REBMIX(Dataset = normal$Dataset, 
+  Preprocessing = "h", 
+  cmax = 8, 
   Criterion = "BIC", 
-  Variables = "continuous",
-  pdf = "normal", 
+  Variables = "c",
+  pdf = "n", 
   K = K)
                  
-complex1est
+normalest
 
-AIC(complex1est)
+BIC(normalest)
 
-## Plot the finite mixture.
+logL(normalest)
 
-plot(complex1est, npts = 1000)
-}
+# Plot the finite mixture.
+
+plot(normalest, nrow = 2, what = c("den", "dis"), npts = 1000)
 }
 \keyword{parameter estimation}

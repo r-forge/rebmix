@@ -32,18 +32,20 @@ York, 1973.
 }
 \examples{
 \dontrun{
+devAskNewPage(ask = TRUE)
+
 data("adult")
 
-## Find complete cases.
+# Find complete cases.
 
 adult <- adult[complete.cases(adult), ]
 
-## Map metric attributes.
+# Map metric attributes.
 
 adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
 adult[["Capital.Gain"]] <- ordered(cut(adult[["Capital.Gain"]], 2000))
 
-## Show level attributes for binary and discrete variables.
+# Show level attributes for binary and discrete variables.
 
 levels(adult[["Type"]])
 levels(adult[["Workclass"]])
@@ -56,20 +58,20 @@ levels(adult[["Sex"]])
 levels(adult[["Native.Country"]])
 levels(adult[["Income"]])
 
-## Replace levels with numbers.
+# Replace levels with numbers.
 
 adult <- as.data.frame(data.matrix(adult))
 
-## Levels should start with 0 for discrete distributions except for the 
-## Dirac distribution.
+# Levels should start with 0 for discrete distributions except for the 
+# Dirac distribution.
 
 f <- c("Type", "Workclass", "Education", "Marital.Status", "Occupation", 
   "Relationship", "Race", "Sex", "Native.Country", "Income")
 
 adult[, f] <- adult[, f] - 1
 
-## Split adult dataset into two train subsets for the two Incomes
-## and remove Type and Income columns.
+# Split adult dataset into two train subsets for the two Incomes
+# and remove Type and Income columns.
 
 trainle50k <- subset(adult, subset = (Type == 1) & (Income == 0), 
   select = c(-Type, -Income))
@@ -80,8 +82,8 @@ trainall <- subset(adult, subset = Type == 1, select = c(-Type, -Income))
 
 train <- as.factor(subset(adult, subset = Type == 1, select = c(Income))[, 1])
 
-## Extract test dataset form adult dataset and remove Type 
-## and Income columns.
+# Extract test dataset form adult dataset and remove Type 
+# and Income columns.
 
 testle50k <- subset(adult, subset = (Type == 0) & (Income == 0), 
   select = c(-Type, -Income))
@@ -92,20 +94,20 @@ testall <- subset(adult, subset = Type == 0, select = c(-Type, -Income))
 
 test <- as.factor(subset(adult, subset = Type == 0, select = c(Income))[, 1])
 
-## Calculate prior probabilities.
+# Calculate prior probabilities.
 
 P <- c(nrow(trainle50k), nrow(traingt50k))
 
 P <- P / sum(P)
 
-## Estimate number of components, component weights and component 
-## parameters for Naive Bayes.
+# Estimate number of components, component weights and component 
+# parameters for Naive Bayes.
 
 Variables <- c("continuous", "discrete", "continuous", "discrete",
  "discrete", "discrete", "discrete", "discrete", "discrete",
  "discrete", "discrete", "discrete", "discrete", "discrete")
 
-pdf <- c("normal", "Dirac", "normal", "Dirac",
+pdf <- c("gamma", "Dirac", "gamma", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac")
 
@@ -120,8 +122,8 @@ for (i in c(1:14)) {
   adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]), 
     as.data.frame(traingt50k[, i])),
     Preprocessing = "histogram",
-    cmax = if (Variables[i] == "continuous") 15 else 100,
-    Criterion = "D",
+    cmax = if (Variables[i] == "continuous") 8 else 100,
+    Criterion = if (Variables[i] == "continuous") "BIC" else "D",
     Variables = Variables[i],
     pdf = pdf[i],
     K = K[[i]],
@@ -132,7 +134,7 @@ for (i in c(1:14)) {
     plot(adultest[[i]], pos = 2, nrow = 1, ncol = 2, what = c("den", "IC"))
 }
 
-## Best-first feature subset selection.
+# Best-first feature subset selection.
 
 c <- NULL; rvs <- 1:14; Error <- 1.0
 
@@ -161,11 +163,11 @@ for (i in 1:14) {
   }
 }
 
-## Error on train dataset.
+# Error on train dataset.
 
 Error
 
-## Selected features.
+# Selected features.
 
 c
 
@@ -179,7 +181,7 @@ Accuracy <- (CM[1, 1] + CM[2, 2]) / sum(CM)
 
 Error <- 1.0 - Accuracy
 
-## Error on test dataset.
+# Error on test dataset.
 
 Error
 }

@@ -56,7 +56,7 @@ W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Re
 of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 }
 \examples{
-## Generate and print multivariate normal datasets with diagonal covariance matrices.
+# Generate and print multivariate normal datasets with diagonal covariance matrices.
 
 n <- c(75, 100, 125, 150, 175)
 
@@ -83,7 +83,7 @@ simulated <- RNGMIX(Dataset = paste("simulated_", 1:25, sep = ""),
   
 simulated
 
-## Generate and print multivariate normal datasets with unrestricted covariance matrices.
+# Generate and print multivariate normal datasets with unrestricted covariance matrices.
 
 n <- c(200, 50, 50)
 
@@ -104,7 +104,7 @@ simulated <- RNGMVNORM(Dataset = paste("simulated_", 1:2, sep = ""),
   
 simulated
 
-## Generate and print multivariate mixed continuous-discrete dataset.
+# Generate and print multivariate mixed continuous-discrete dataset.
 
 n <- c(400, 100, 500)
 
@@ -125,7 +125,7 @@ simulated <- RNGMIX(Dataset = paste("simulated_", 1:5, sep = ""),
   
 simulated  
 
-## Generate and print univariate mixed Weibull dataset.
+# Generate and print univariate mixed Weibull dataset.
 
 n <- c(75, 100, 125, 150, 175)
 

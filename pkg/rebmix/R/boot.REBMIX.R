@@ -51,7 +51,7 @@ boot.REBMIX <- function(x,
   
   if (Bootstrap == .rebmix.boot$Bootstrap[1]) {
     bsample <- RNGMIX(Dataset = paste("bsample_", 1:B, sep = ""),
-      n = rbind(ceiling(n * as.numeric(x$w[[pos]]))),
+      n = ceiling(n * as.numeric(x$w[[pos]])),
       Theta = x$Theta[[pos]], ...)
   }
   else
@@ -93,6 +93,7 @@ boot.REBMIX <- function(x,
     Restraints = as.character(x$summary[pos, "Restraints"]))
 
   freq <- table(as.numeric(bsampleest$summary$c))
+  
   c <- as.integer(names(freq)[which.max(freq)])
   
   w <- bsampleest$w[as.numeric(bsampleest$summary$c) == c]
@@ -108,7 +109,7 @@ boot.REBMIX <- function(x,
   output$c.mode <- c
   output$c.prob <- length(w) / B
   
-  output$w <- unlist(w); dim(output$w) <- c(length(w), c)
+  output$w <- matrix(unlist(w), ncol = c, byrow = TRUE)
   
   colnames(output$w) <- paste("comp", if (c > 1) 1:c else "", sep = "")
   rownames(output$w) <- paste(which(bsampleest$summary$c == c), sep = "")
@@ -124,8 +125,8 @@ boot.REBMIX <- function(x,
     for (j in 1:length(Theta)) {
       output[[theta1]] <- c(output[[theta1]], Theta[[j]][[theta1]])
     }
-
-    dim(output[[theta1]]) <- c(length(Theta), d)
+    
+    output[[theta1]] <- matrix(output[[theta1]], ncol = d, byrow = TRUE)
 
     colnames(output[[theta1]]) <- x$call$pdf
     rownames(output[[theta1]]) <- paste(which(bsampleest$summary$c == c), sep = "")
@@ -146,7 +147,7 @@ boot.REBMIX <- function(x,
       output[[theta2]] <- c(output[[theta2]], Theta[[j]][[theta2]])
     }
 
-    dim(output[[theta2]]) <- c(length(Theta), d)
+    output[[theta2]] <- matrix(output[[theta2]], ncol = d, byrow = TRUE)
 
     colnames(output[[theta2]]) <- x$call$pdf
     rownames(output[[theta2]]) <- paste(which(bsampleest$summary$c == c), sep = "")

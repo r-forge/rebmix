@@ -88,12 +88,12 @@ data("weibull")
 
 n <- nrow(weibull)
 
-## Number of classes or nearest neighbours to be processed.
+# Number of classes or nearest neighbours to be processed.
 
-K <- c(as.integer(1 + log2(sum(n))), ## Minimum v follows the Sturges rule.
-  as.integer(10 * log10(n))) ## Maximum v follows the log10 rule.
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
+  as.integer(10 * log10(n))) # Maximum v follows the log10 rule.
 
-## Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters. 
 
 weibullest <- REBMIX(Dataset = list(weibull),
   Preprocessing = "Parzen window", 
@@ -104,12 +104,12 @@ weibullest <- REBMIX(Dataset = list(weibull),
   K = K[1]:K[2], 
   Restraints = "loose")
   
-## Plot finite mixture.
+# Plot finite mixture.
 
 plot(weibullest, what = c("density", "distribution", "IC", "logL", "D"), 
   nrow = 3, ncol = 2, npts = 1000)
   
-## Bootstrap finite mixture.  
+# Bootstrap finite mixture.  
 
 weibullboot <- boot.REBMIX(x = weibullest, Bootstrap = "nonparametric", B = 10)
 

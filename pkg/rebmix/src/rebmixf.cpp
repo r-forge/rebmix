@@ -328,7 +328,7 @@ int Rebmix::PreprocessingPW(FLOAT *h,  // Sides of the hypersquare.
 
     for (i = 0; i < n_; i++) {
         for (j = i; j < n_; j++) {
-            for (k = 0; k < d_; k++) if ((FLOAT)fabs(Y[i][k] - Y[j][k]) >(FLOAT)0.5 * h[k]) goto S0;
+            for (k = 0; k < d_; k++) if ((FLOAT)fabs(Y[i][k] - Y[j][k]) > (FLOAT)0.5 * h[k]) goto S0;
 
             Y[i][d_ + 1] += (FLOAT)1.0; if (i != j) Y[j][d_ + 1] += (FLOAT)1.0;
 S0:;
@@ -360,7 +360,7 @@ int Rebmix::PreprocessingH(FLOAT *h,  // Sides of the hypersquare.
         }
 
         for (j = 0; j < *k; j++) {
-            for (l = 0; l < d_; l++) if ((FLOAT)fabs(Y[j][l] - Y[*k][l]) >(FLOAT)0.5 * h[l]) goto S0;
+            for (l = 0; l < d_; l++) if ((FLOAT)fabs(Y[j][l] - Y[*k][l]) > (FLOAT)0.5 * h[l]) goto S0;
 
             Y[j][d_] += (FLOAT)1.0; goto S1;
 S0:;
@@ -744,7 +744,7 @@ int Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
                                CompnentDistribution *RigidTheta, // Rigid parameters.
                                CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    int                i, j, l, o, p;
+    int                i, j, o, p;
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, Dlm, Dlmin, Dc, R;
     int                Error = 0, Stop;
@@ -762,7 +762,7 @@ int Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
             Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n_; j++) {
-                Dc = (FLOAT)0.0;
+/*              Dc = (FLOAT)0.0;
 
                 for (l = 0; l < d_; l++) if (i != l) {
                     R = (Y[j][l] - Y[m][l]) / h[l]; Dc += R * R;
@@ -773,19 +773,27 @@ int Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
                 if (R > Y[m][d_ + 2]) goto S0;
 
                 Mode[i].klm += Y[j][d_];
-S0:;
-            }
+S0:; */
+                R = (Y[j][i] - Y[m][i]) / h[i];
+
+                if (R <= Y[m][d_ + 2]) {
+                    Mode[i].klm += Y[j][d_];
+                }
+            } 
         }
         else
-            Mode[i].klm = nl;
+/*          Mode[i].klm = nl;  */
+            Mode[i].klm = Y[m][d_] * k;
 
-        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] * k / (Mode[i].klm * (FLOAT)2.0 * Y[m][d_ + 2] * h[i]); flm *= Mode[i].flm;
+/*      Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] * k / (Mode[i].klm * (FLOAT)2.0 * Y[m][d_ + 2] * h[i]); flm *= Mode[i].flm; */
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Mode[i].klm / (nl * (FLOAT)2.0 * Y[m][d_ + 2] * h[i]); flm *= Mode[i].flm;
     }
 
     epsilon = (FLOAT)exp(log(Y[m][d_] * k / (nl * Y[m][d_ + 1] * flm)) / d_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+/*      if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon; */
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:
@@ -969,7 +977,7 @@ int Rebmix::RoughEstimationPW(FLOAT                **Y,         // Pointer to th
                               CompnentDistribution *RigidTheta, // Rigid parameters.
                               CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    int                i, j, l, o, p;
+    int                i, j, o, p;
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin;
     int                Error = 0, Stop;
@@ -989,22 +997,28 @@ int Rebmix::RoughEstimationPW(FLOAT                **Y,         // Pointer to th
             Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n_; j++) {
-                for (l = 0; l < d_; l++) if ((i != l) && ((FLOAT)fabs(Y[j][l] - Y[m][l]) >(FLOAT)0.5 * h[l])) goto S0;
+/*              for (l = 0; l < d_; l++) if ((i != l) && ((FLOAT)fabs(Y[j][l] - Y[m][l]) > (FLOAT)0.5 * h[l])) goto S0;
 
                 Mode[i].klm += Y[j][d_];
-S0:;
+S0:; */
+                if ((FLOAT)fabs(Y[j][i] - Y[m][i]) <= (FLOAT)0.5 * h[i]) {
+                    Mode[i].klm += Y[j][d_];
+                }
             }
         }
         else
-            Mode[i].klm = nl;
+/*          Mode[i].klm = nl; */
+            Mode[i].klm = Y[m][d_] * Y[m][d_ + 1];
 
-        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] * Y[m][d_ + 1] / (Mode[i].klm * h[i]); flm *= Mode[i].flm;
+/*      Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] * Y[m][d_ + 1] / (Mode[i].klm * h[i]); flm *= Mode[i].flm; */
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Mode[i].klm / (nl * h[i]); flm *= Mode[i].flm; // Dodano!
     }
 
     epsilon = (FLOAT)exp(log(Y[m][d_] * Y[m][d_ + 1] / (nl * V * flm)) / d_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+/*      if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon; */
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:
@@ -1173,7 +1187,7 @@ int Rebmix::RoughEstimationH(int                  k,           // Total number o
                              CompnentDistribution *RigidTheta, // Rigid parameters.
                              CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    int                i, j, l, o, p;
+    int                i, j, o, p;
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin;
     int                Error = 0, Stop;
@@ -1193,22 +1207,28 @@ int Rebmix::RoughEstimationH(int                  k,           // Total number o
             Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < k; j++) {
-                for (l = 0; l < d_; l++) if ((i != l) && (Y[j][l] != Y[m][l])) goto S0;
+/*              for (l = 0; l < d_; l++) if ((i != l) && (Y[j][l] != Y[m][l])) goto S0;
 
                 Mode[i].klm += Y[j][d_];
-S0:;
+S0:; */
+                if (Y[j][i] == Y[m][i]) {
+                    Mode[i].klm += Y[j][d_];
+                }
             }
         }
         else
-            Mode[i].klm = nl;
+/*          Mode[i].klm = nl; */
+            Mode[i].klm = Y[m][d_];
 
-        Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] / (Mode[i].klm * h[i]); flm *= Mode[i].flm;
+/*      Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] / (Mode[i].klm * h[i]); flm *= Mode[i].flm; */
+        Mode[i].ym = Y[m][i]; Mode[i].flm = Mode[i].klm / (nl * h[i]); flm *= Mode[i].flm;
     }
 
     epsilon = (FLOAT)exp(log(Y[m][d_] / (nl * V * flm)) / d_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+/*      if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon; */
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:

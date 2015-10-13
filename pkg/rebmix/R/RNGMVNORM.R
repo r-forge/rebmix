@@ -51,7 +51,7 @@ RNGMVNORM <- function(Dataset = NULL,
 
   pdf <- as.character(unlist(Theta[grep("pdf", Names)]))
   
-  pdf <- match.arg(pdf, .rebmix$pdf)
+  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
   
   theta1 <- as.numeric(unlist(Theta[grep("theta1", Names)]))
   

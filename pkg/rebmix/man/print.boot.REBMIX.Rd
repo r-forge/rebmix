@@ -21,18 +21,25 @@ further arguments to \code{\link[base]{print}}.
 \code{print.boot.REBMIX} returns (invisibly) the full value of x itself.
 }
 \examples{
-## Generate and print simulated dataset.
+# Generate and print simulated dataset.
 
 Theta <- list(pdf1 = rep("Weibull", 2),
-  theta1 = c(10, 20),
-  theta2 = c(2, 6))
+  theta1.1 = c(10, 100),
+  theta2.1 = c(2, 20))
+  
+n <- c(400, 600)
 
 simulated <- RNGMIX(Dataset = "simulated",
   rseed = -1,
-  n = c(30, 70),
+  n = n,
   Theta = Theta)
+  
+# Number of classes or nearest neighbours to be processed.
 
-## Estimate number of components, component weights and component parameters.
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
+  as.integer(10 * log10(sum(n)))) # Maximum v follows the log10 rule.  
+
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
@@ -40,9 +47,9 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Criterion = "AIC", 
   Variables = "continuous",
   pdf = "Weibull", 
-  K = 20:40)
+  K = K[1]:K[2])
   
-## Bootstrap finite mixture.  
+# Bootstrap finite mixture.  
 
 simulatedboot <- boot.REBMIX(x = simulatedest, Bootstrap = "nonparametric", B = 20)
 

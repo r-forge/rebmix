@@ -470,11 +470,11 @@ REBMIX <- function(Dataset = NULL,
   REBMIX$all.IC <- list()  
   
   REBMIX$call <- list( 
-    Preprocessing = match.arg(Preprocessing, .rebmix$Preprocessing), 
+    Preprocessing = Preprocessing, 
     cmax = cmax,
-    Criterion = match.arg(Criterion, .rebmix$Criterion),
-    Variables = match.arg(Variables, .rebmix$Variables),
-    pdf = match.arg(pdf, .rebmix$pdf),
+    Criterion = Criterion,
+    Variables = Variables,
+    pdf = pdf,
     theta1 = theta1,
     theta2 = theta2,
     K = K,
@@ -482,7 +482,7 @@ REBMIX <- function(Dataset = NULL,
     ymin = ymin,
     ymax = ymax,
     ar = ar,
-    Restraints = match.arg(Restraints, .rebmix$Restraints))
+    Restraints = Restraints)
 
   for (i in 1:length(Preprocessing)) {
     for (j in 1:length(Criterion)) {

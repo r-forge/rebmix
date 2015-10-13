@@ -4,45 +4,19 @@ print.boot.REBMIX <- function(x, ...)
     stop(sQuote("x"), " object of class boot.REBMIX is requested!", call. = FALSE)
   }
   
-  names <- names(x); names <- names[order(names)]
+  names <- names(x)
   
-  cat(paste("$c", "\n", sep = ""))
+  for (i in 1:length(names)) {
+    cat("$", names[i], "\n", sep = "")
 
-  print(as.number(x$c), quote = FALSE, ...)
+    print(x[[names[i]]], quote = FALSE, ...)
 
-  cat(paste("\n", sep = ""))  
-  
-  cat(paste("$c.mode", "\n", sep = ""))
-
-  print(as.number(x$c.mode), quote = FALSE, ...)
-
-  cat(paste("\n", sep = ""))
-  
-  cat(paste("$c.prob", "\n", sep = ""))
-
-  print(as.number(x$c.prob), quote = FALSE, ...)
-
-  cat(paste("\n", sep = ""))  
-  
-  for (i in grep(".se", names, fixed = TRUE)) {
-    cat(paste("$", names[i], "\n", sep = ""))
-
-    print(as.number(x[[names[i]]]), quote = FALSE, ...)
-
-    cat(paste("\n", sep = ""))  
+    cat("\n", sep = "")  
   }
-  
-  for (i in grep(".cv", names, fixed = TRUE)) {
-    cat(paste("$", names[i], "\n", sep = ""))
 
-    print(as.number(x[[names[i]]]), quote = FALSE, ...)
-
-    cat(paste("\n", sep = ""))  
-  }  
-
-  cat(paste("attr(,\"class\")", "\n", sep = ""))
+  cat("attr(\"class\")", "\n", sep = "")
 
   print(attr(x, "class"), ...)
-
-  invisible(x)
+  
+  rm(list = ls())
 } ## print.boot.REBMIX

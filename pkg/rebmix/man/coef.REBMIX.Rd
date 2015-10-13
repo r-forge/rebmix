@@ -7,10 +7,10 @@ Prints Univariate or Multivariate REBMIX Coefficients
 Returns the \code{w} and \code{Theta} output at \code{pos} for class REBMIX.
 }
 \usage{
-\method{coef}{REBMIX}(object, pos = 1, ...)
+\method{coef}{REBMIX}(x, pos = 1, ...)
 }
 \arguments{
-\item{object}{
+\item{x}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{
@@ -21,11 +21,11 @@ further arguments to \code{\link[base]{print}}.
 }
 }
 \examples{
-## Generate and print simulated dataset.
+# Generate and print simulated dataset.
 
 Theta <- list(pdf1 = rep("Weibull", 3),
-  theta1 = c(2, 10, 30),
-  theta2 = c(2, 4, 7))
+  theta1.1 = c(2, 10, 30),
+  theta2.1 = c(2, 4, 7))
 
 simulated <- RNGMIX(Dataset = "simulated",
   rseed = -1,
@@ -34,7 +34,7 @@ simulated <- RNGMIX(Dataset = "simulated",
   
 print(simulated)
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
@@ -44,7 +44,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   pdf = "Weibull", 
   K = 8:25)
   
-## Print coefficients and plot finite mixture.  
+# Print coefficients and plot finite mixture.  
 
 coef(simulatedest)
 

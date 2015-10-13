@@ -2,7 +2,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.7.3}{ 
 \itemize{
-\item A.
+\item list namesto rbind za Theta.
 }
 }
 \section{Changes in version 2.7.2}{ 

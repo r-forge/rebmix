@@ -35,7 +35,7 @@
 
   pdf <- as.character(unlist(x$Theta[[pos]][grep("pdf", Names)]))
   
-  pdf <- match.arg(pdf, .rebmix$pdf)
+  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
   
   theta1 <- as.numeric(unlist(x$Theta[[pos]][grep("theta1", Names)]))
   
