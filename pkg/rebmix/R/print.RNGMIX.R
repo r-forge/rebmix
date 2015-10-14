@@ -4,27 +4,27 @@ print.RNGMIX <- function(x, ...)
     stop(sQuote("x"), " object of class RNGMIX is requested!", call. = FALSE)
   }
 
-  cat(paste("$w", "\n", sep = ""))
+  cat("$w", "\n", sep = "")
 
-  print(as.number(x$w), quote = FALSE, ...)
+  print(x$w, quote = FALSE, ...)
 
-  cat(paste("\n", sep = ""))
+  cat("\n", sep = "")
 
-  cat(paste("$ymin", "\n", sep = ""))
+  cat("$ymin", "\n", sep = "")
 
-  print(as.number(x$ymin), quote = FALSE, ...)
+  print(x$ymin, quote = FALSE, ...)
 
-  cat(paste("\n", sep = ""))
+  cat("\n", sep = "")
 
-  cat(paste("$ymax", "\n", sep = ""))
+  cat("$ymax", "\n", sep = "")
 
   print(as.number(x$ymax), quote = FALSE, ...)
 
-  cat(paste("\n", sep = ""))
+  cat("\n", sep = "")
 
-  cat(paste("attr(,\"class\")", "\n", sep = ""))
+  cat("attr(\"class\")", "\n", sep = "")
 
   print(attr(x, "class"), ...)
-
-  invisible(x)
+  
+  rm(list = ls())
 } ## print.RNGMIX

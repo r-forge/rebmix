@@ -12,7 +12,7 @@ print.REBMIX <- function(x, pos = 1, ...)
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x$summary), "!", call. = FALSE)
   }
   
-  cat(paste("$w", "\n", sep = ""))
+  cat("$w", "\n", sep = "")
 
   print(x$w[[pos]], quote = FALSE, ...)  
 

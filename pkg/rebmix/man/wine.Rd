@@ -70,10 +70,10 @@ data("wine")
 
 colnames(wine)
 
-## Split wine dataset into three subsets for three Cultivars
-## and remove Cultivar column from datasets.
+# Split wine dataset into three subsets for three Cultivars
+# and remove Cultivar column from datasets.
 
-winecolnames <- !(colnames(wine) \%in\% "Cultivar")
+winecolnames <- !(colnames(wine) %in% "Cultivar")
 
 wine1 <- wine[wine$Cultivar == 1, winecolnames]
 wine2 <- wine[wine$Cultivar == 2, winecolnames]
@@ -81,8 +81,8 @@ wine3 <- wine[wine$Cultivar == 3, winecolnames]
 
 wine <- wine[ , winecolnames]
 
-## Write datasets without Cultivar information into tab 
-## delimited ASCII files.
+# Write datasets without Cultivar information into tab 
+# delimited ASCII files.
 
 write.table(wine, file = "wine.txt", sep = "\t", 
   eol = "\n", row.names = FALSE, col.names = FALSE)

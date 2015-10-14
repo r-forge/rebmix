@@ -33,7 +33,7 @@ currently not used.
 }
 }
 \examples{
-## Generate simulated dataset.
+# Generate simulated dataset.
 
 Theta <- list(pdf1 = c("normal", "Weibull"),
   theta1.1 = c(10, 3),
@@ -47,7 +47,7 @@ simulated <- RNGMIX(Dataset = "simulated",
   n = c(15, 25),
   Theta = Theta)
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Preprocessing = "Parzen window",
@@ -57,7 +57,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   pdf = c("normal", "Weibull"),
   K = 8)
 
-## Preprocess and plot finite mixtures.
+# Preprocess and plot finite mixtures.
 
 opar <- plot(simulatedest)
 

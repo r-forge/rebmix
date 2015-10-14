@@ -23,10 +23,10 @@ further arguments to \code{\link[base]{print}}.
 \code{print.RNGMIX} and \code{print.RNGMVNORM} return (invisibly) the full value of x itself.
 }
 \examples{
-## Generate and print simulated dataset.
+# Generate and print simulated dataset.
 
 Theta <- list(pdf1 = rep("Poisson", 2),
-  theta1 = c(1, 10))
+  theta1.1 = c(1, 10))
 
 simulated <- RNGMIX(Dataset = paste("simulated_", 1:5, sep = ""),
   rseed = -1,
@@ -35,7 +35,7 @@ simulated <- RNGMIX(Dataset = paste("simulated_", 1:5, sep = ""),
   
 print(simulated, pos = 3)
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = simulated$Dataset, 
   Preprocessing = "histogram", 
@@ -45,7 +45,7 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   pdf = "Poisson", 
   K = 1)
   
-## Print and plot finite mixture.    
+# Print and plot finite mixture.    
 
 print(simulatedest, pos = 2)
 

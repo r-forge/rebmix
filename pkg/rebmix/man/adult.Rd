@@ -167,16 +167,16 @@ A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http:/
 \examples{
 data("adult")
 
-## Find complete cases.
+# Find complete cases.
 
 adult <- adult[complete.cases(adult), ]
 
-## Map metric attributes.
+# Map metric attributes.
 
 adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
 adult[["Capital.Gain"]] <- ordered(cut(adult[["Capital.Gain"]], 2000))
 
-## Show level attributes for binary and discrete variables.
+# Show level attributes for binary and discrete variables.
 
 levels(adult[["Type"]])
 levels(adult[["Workclass"]])
@@ -189,20 +189,20 @@ levels(adult[["Sex"]])
 levels(adult[["Native.Country"]])
 levels(adult[["Income"]])
 
-## Replace levels with numbers.
+# Replace levels with numbers.
 
 adult <- as.data.frame(data.matrix(adult))
 
-## Levels should start with 0 for discrete distributions except for the 
-## Dirac distribution.
+# Levels should start with 0 for discrete distributions except for the 
+# Dirac distribution.
 
 f <- c("Type", "Workclass", "Education", "Marital.Status", "Occupation", 
   "Relationship", "Race", "Sex", "Native.Country", "Income")
 
 adult[, f] <- adult[, f] - 1
 
-## Split adult dataset into two train subsets for the two Incomes
-## and remove Type and Income columns.
+# Split adult dataset into two train subsets for the two Incomes
+# and remove Type and Income columns.
 
 trainle50k <- subset(adult, subset = (Type == 1) & (Income == 0), 
   select = c(-Type, -Income))
@@ -213,8 +213,8 @@ trainall <- subset(adult, subset = Type == 1, select = c(-Type, -Income))
 
 train <- as.factor(subset(adult, subset = Type == 1, select = c(Income))[, 1])
 
-## Extract test dataset form adult dataset and remove Type 
-## and Income columns.
+# Extract test dataset form adult dataset and remove Type 
+# and Income columns.
 
 testle50k <- subset(adult, subset = (Type == 0) & (Income == 0), 
   select = c(-Type, -Income))

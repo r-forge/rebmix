@@ -41,7 +41,7 @@ currently not used.
 }
 }
 \examples{
-## Generate simulated dataset.
+# Generate simulated dataset.
 
 Theta <- list(pdf1 = rep("normal", 2),
   theta1.1 = c(10, 20),
@@ -55,7 +55,7 @@ simulated <- RNGMIX(Dataset = "simulated",
   n = c(15, 15),
   Theta = Theta)
 
-## Preprocess simulated dataset.
+# Preprocess simulated dataset.
 
 y1y2f <- demix(x = simulated$Dataset[[1]],
   Preprocessing = "histogram",
