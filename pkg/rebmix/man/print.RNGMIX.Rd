@@ -19,9 +19,6 @@ an object of class \code{RNGMIX} or class \code{RNGMVNORM}.
 further arguments to \code{\link[base]{print}}.
 }
 }
-\value{
-\code{print.RNGMIX} and \code{print.RNGMVNORM} return (invisibly) the full value of x itself.
-}
 \examples{
 # Generate and print simulated dataset.
 

@@ -7,10 +7,10 @@ Prints Univariate or Multivariate boot.REBMIX Summary
 Returns the \code{summary} output for class boot.REBMIX.
 }
 \usage{
-\method{summary}{boot.REBMIX}(x, ...)
+\method{summary}{boot.REBMIX}(object, ...)
 }
 \arguments{
-\item{x}{
+\item{object}{
 an object of class \code{boot.REBMIX}.
 }
 \item{\dots}{

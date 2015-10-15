@@ -105,7 +105,7 @@ colnames(wine)
 
 # Remove Cultivar column from wine dataset.
 
-winecolnames <- !(colnames(wine) %in% "Cultivar")
+winecolnames <- !(colnames(wine) \%in\% "Cultivar")
 
 wine <- wine[ , winecolnames]
 

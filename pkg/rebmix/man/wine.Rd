@@ -73,7 +73,7 @@ colnames(wine)
 # Split wine dataset into three subsets for three Cultivars
 # and remove Cultivar column from datasets.
 
-winecolnames <- !(colnames(wine) %in% "Cultivar")
+winecolnames <- !(colnames(wine) \%in\% "Cultivar")
 
 wine1 <- wine[wine$Cultivar == 1, winecolnames]
 wine2 <- wine[wine$Cultivar == 2, winecolnames]

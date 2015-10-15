@@ -190,7 +190,15 @@ generated the dataset. As the dataset of \citet{Jinwen_2009} can not exactly be 
 
 n <- c(200, 200, 200)
 
-Theta <- list(rep("Poisson", 3), c(3, 9, 15), rep("Poisson", 3), c(2, 10, 16))
+Theta <- list(pdf1 = rep("Poisson", 2),
+  theta1.1 = c(3, 2),
+  theta2.1 = c(NA, NA),
+  pdf2 = rep("Poisson", 2),
+  theta1.2 = c(9, 10),
+  theta2.2 = c(NA, NA),
+  pdf3 = rep("Poisson", 2),
+  theta1.3 = c(15, 16),
+  theta2.3 = c(NA, NA))
 
 poisson <- RNGMIX(Dataset = paste("Poisson_", 1:100, sep = ""), n = n, Theta = Theta)
 @

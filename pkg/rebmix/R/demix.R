@@ -16,7 +16,7 @@ demix <- function(x = NULL,
     stop(sQuote("x"), " numeric or data frame is requested!", call. = FALSE)
   }
   
-  x <- rbind(x)
+  x <- as.matrix(x)
   
   d <- ncol(x)
   n <- nrow(x) 
@@ -67,14 +67,14 @@ demix <- function(x = NULL,
     xmin <- apply(x, 2, min)
   }
   else {
-    xmin <- rbind(xmin)
+    xmin <- xmin
   }
   
   if (is.null(xmax)) {
     xmax <- apply(x, 2, max)
   }
   else {
-    xmax <- rbind(xmax)
+    xmax <- xmax
   }
 
   if (Preprocessing == .rebmix$Preprocessing[1]) {
@@ -114,7 +114,7 @@ demix <- function(x = NULL,
 
     output <- as.data.frame(output$y, stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("y0", if (d > 1) 1:d else "", sep = ""), "f")
+    colnames(output) <- c(paste("x", if (d > 1) 1:d else "", sep = ""), "f")
   } 
   else 
   if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -149,7 +149,7 @@ demix <- function(x = NULL,
 
     output <- as.data.frame(output$y[, -(d + 1)], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("y", if (d > 1) 1:d else "", sep = ""), "f")
+    colnames(output) <- c(paste("x", if (d > 1) 1:d else "", sep = ""), "f")
   } 
   else
   if (Preprocessing == .rebmix$Preprocessing[3]) {
@@ -179,7 +179,7 @@ demix <- function(x = NULL,
 
     output <- as.data.frame(output$y[, c(-(d + 1), -(d + 3))], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("y", if (d > 1) 1:d else "", sep = ""), "f")
+    colnames(output) <- c(paste("x", if (d > 1) 1:d else "", sep = ""), "f")
   }
   
   options(digits = digits)

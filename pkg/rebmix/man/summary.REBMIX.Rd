@@ -7,10 +7,10 @@ Prints Univariate or Multivariate REBMIX Summary
 Returns the \code{summary} output for class REBMIX.
 }
 \usage{
-\method{summary}{REBMIX}(x, ...)
+\method{summary}{REBMIX}(object, ...)
 }
 \arguments{
-\item{x}{
+\item{object}{
 an object of class \code{REBMIX}.
 }
 \item{\dots}{

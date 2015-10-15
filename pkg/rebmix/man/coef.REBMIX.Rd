@@ -7,10 +7,10 @@ Prints Univariate or Multivariate REBMIX Coefficients
 Returns the \code{w} and \code{Theta} output at \code{pos} for class REBMIX.
 }
 \usage{
-\method{coef}{REBMIX}(x, pos = 1, ...)
+\method{coef}{REBMIX}(object, pos = 1, ...)
 }
 \arguments{
-\item{x}{
+\item{object}{
 an object of class \code{REBMIX}.
 }
 \item{pos}{

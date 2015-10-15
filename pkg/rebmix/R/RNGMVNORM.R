@@ -30,7 +30,7 @@ RNGMVNORM <- function(Dataset = NULL,
   }
 
   if (!is.wholenumber(n)) {
-    stop(sQuote("n"), " integer or data frame is requested!", call. = FALSE)
+    stop(sQuote("n"), " integer is requested!", call. = FALSE)
   }
   
   if (!all(n > 0)) {
@@ -65,8 +65,8 @@ RNGMVNORM <- function(Dataset = NULL,
   
   length(pdf) <- 1
   
-  xmin <- rbind(rep(+Inf, d))
-  xmax <- rbind(rep(-Inf, d))
+  xmin <- rep(+Inf, d)
+  xmax <- rep(-Inf, d)
 
   IDum <- rseed
 

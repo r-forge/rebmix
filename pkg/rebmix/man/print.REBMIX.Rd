@@ -20,9 +20,6 @@ a desired row number in \code{summary} to be printed. The default value is \code
 further arguments to \code{\link[base]{print}}.
 }
 }
-\value{
-\code{print.REBMIX} returns (invisibly) the full value of x itself.
-}
 \examples{
 # Generate and print simulated dataset.
 

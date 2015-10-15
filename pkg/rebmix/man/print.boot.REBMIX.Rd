@@ -17,9 +17,6 @@ an object of class \code{boot.REBMIX}.
 further arguments to \code{\link[base]{print}}.
 }
 }
-\value{
-\code{print.boot.REBMIX} returns (invisibly) the full value of x itself.
-}
 \examples{
 # Generate and print simulated dataset.
 

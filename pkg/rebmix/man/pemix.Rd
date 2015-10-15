@@ -5,8 +5,7 @@ Empirical Distribution Function Calculation
 }
 \description{
 \code{pemix} returns (invisibly) the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
-distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subvectors of 
-\eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
+distribution functions \eqn{F_{1}, \ldots, F_{n}}, where \eqn{\bm{x} = (x_{1}, \ldots, x_{d})^{\top}}.
 }
 \usage{
 pemix(x = NULL, lower.tail = TRUE, log.p = FALSE, ...)
@@ -26,7 +25,7 @@ currently not used.
 }
 }
 \examples{
-## Generate simulated dataset.
+# Generate simulated dataset.
 
 Theta <- list(pdf1 = rep("normal", 2),
   theta1.1 = c(10, 20),
@@ -40,7 +39,7 @@ simulated <- RNGMIX(Dataset = "simulated",
   n = c(15, 15),
   Theta = Theta)
 
-## Preprocess simulated dataset.
+# Preprocess simulated dataset.
 
 y1y2F <- pemix(x = simulated$Dataset[[1]])
   
