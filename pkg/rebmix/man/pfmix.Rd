@@ -4,7 +4,7 @@
 Predictive Distribution Function Calculation
 }
 \description{
-\code{pfmix} returns (invisibly) the vector containing predictive distribution functions \eqn{F(\bm{x} | c, \bm{w}, \bm{\Theta})}, where \eqn{\bm{x} = (x_{1}, \ldots, x_{d})^{\top}}.
+\code{pfmix} returns (invisibly) the vector containing predictive distribution functions \eqn{F(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vector \eqn{\bm{x}} ia a subvector of \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
 pfmix(x = NULL, w = NULL, Theta = NULL, lower.tail = TRUE, log.p = FALSE, ...)
@@ -58,11 +58,25 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
 
 # Predictive distribution calculation.
 
-y1y2f <- pfmix(x = simulatedest$Dataset[[1]],
+i <- 1
+
+x <- simulatedest$Dataset[[1]][, i]
+
+F <- pfmix(x = x,
   w = simulatedest$w[[1]],
-  Theta = simulatedest$Theta[[1]])
+  Theta = lapply(simulatedest$Theta[[1]], "[", i))
   
-y1y2f
+plot(x, F)
+
+i <- 2
+
+x <- simulatedest$Dataset[[1]][, i]
+
+F <- pfmix(x = x,
+  w = simulatedest$w[[1]],
+  Theta = lapply(simulatedest$Theta[[1]], "[", i))
+  
+plot(x, F)
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.

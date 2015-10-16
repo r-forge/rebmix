@@ -3,7 +3,8 @@
 #include "base.h"
 #include "rngmixf.h"
 #include "rebmixf.h"
-#include "mvnorm.h"
+#include "rngmvnormf.h"
+#include "rebmvnormf.h"
 
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC

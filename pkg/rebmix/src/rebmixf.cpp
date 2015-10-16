@@ -7,7 +7,6 @@
 
 #include "base.h"
 #include "rebmixf.h"
-#include "mvnorm.h"
 
 // CompnentDistribution constructor.
 

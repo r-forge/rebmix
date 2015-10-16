@@ -13,7 +13,7 @@ options(prompt = "> ", continue = "+ ", width = 70,
 ## Preliminaries ##
 ###################
 
-## load packages.
+# load packages.
 
 library("flexmix")
 library("rebmix")
@@ -22,7 +22,7 @@ library("rebmix")
 ## Truck dataset ##
 ###################
 
-## Load truck dataset.
+# Load truck dataset.
 
 data("truck")
 
@@ -30,7 +30,7 @@ set.seed(8)
 
 ########## FlexMix ##########
 
-## Weibull-normal mixture model
+# Weibull-normal mixture model
 
 WNmodel <- function (formula = .~.) {    
   retval <- new("FLXMC", weighted = TRUE,
@@ -103,7 +103,7 @@ WNmodel <- function (formula = .~.) {
   retval
 } ## WNmodel
 
-## Estimate number of components, component weights and component parameters by FlexMix.
+# Estimate number of components, component weights and component parameters by FlexMix.
 
 timeFlexMix <- system.time(truckestFlexMix <- flexmix(as.matrix(truck) ~ 1, k = 5, model = WNmodel()))
 
@@ -114,7 +114,7 @@ summary(truckestFlexMix)
 
 ########## REBMIX ##########
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 n = nrow(truck)
 

@@ -4,7 +4,7 @@
 Predictive Density Calculation
 }
 \description{
-\code{dfmix} returns (invisibly) the vector containing predictive densities \eqn{f(\bm{x} | c, \bm{w}, \bm{\Theta})}, where \eqn{\bm{x} = (x_{1}, \ldots, x_{d})^{\top}}.
+\code{dfmix} returns (invisibly) the vector containing predictive densities \eqn{f(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vector \eqn{\bm{x}} ia a subvector of \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
 dfmix(x = NULL, w = NULL, Theta = NULL, ...)
@@ -52,11 +52,25 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
 
 # Predictive density calculation.
 
-y1y2f <- dfmix(x = simulatedest$Dataset[[1]],
+i <- 1
+
+x <- simulatedest$Dataset[[1]][, i]
+
+f <- dfmix(x = x,
   w = simulatedest$w[[1]],
-  Theta = simulatedest$Theta[[1]])
+  Theta = lapply(simulatedest$Theta[[1]], "[", i))
   
-y1y2f
+plot(x, f)
+
+i <- 2
+
+x <- simulatedest$Dataset[[1]][, i]
+
+f <- dfmix(x = x,
+  w = simulatedest$w[[1]],
+  Theta = lapply(simulatedest$Theta[[1]], "[", i))
+  
+plot(x, f)
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.

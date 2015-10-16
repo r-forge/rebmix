@@ -11,7 +11,7 @@ options(prompt = "> ", continue = "+ ", width = 70,
 ## Preliminaries ##
 ###################
 
-## load package.
+# load package.
 
 library("rebmix")
 
@@ -19,7 +19,7 @@ library("rebmix")
 ##  Univariate normal datasets  ##
 ##################################
 
-## Generate univariate normal datasets.
+# Generate univariate normal datasets.
 
 N <- array(data = list(NULL), dim = 15)
 
@@ -116,7 +116,7 @@ theta1.2 <- function(x) 2 * x / 7
 
 N[[15]]$Theta <- list(pdf1 = "normal", theta1.1 = c(theta1.1(0:2), theta1.2(8:10)), theta2.1 = c(rep(2/7, 3), rep(1/21, 3)))
 
-## Set dataset size.
+# Set dataset size.
 
 n <- c(100, 1000, 10000)
 
@@ -129,15 +129,15 @@ for (i in 1:15) {
   }
 }
 
-## Estimate number of components, component weights and component parameters.
+# Estimate number of components, component weights and component parameters.
 
 normalest <- array(data = list(NULL), dim = c(15, 3))
 table <- array(data = 0, dim = c(15, 6))
 
 for (j in 1:length(n)) {
-  Sturges <- as.integer(1 + log2(n[j])) ## Minimum v follows the Sturges rule.
-  Log10 <- as.integer(10 * log10(n[j])) ## Maximum v follows the Log10 rule.
-  RootN <- as.integer(2 * n[j]^0.5) ## Maximum v follows the RootN rule.
+  Sturges <- as.integer(1 + log2(n[j])) # Minimum v follows the Sturges rule.
+  Log10 <- as.integer(10 * log10(n[j])) # Maximum v follows the Log10 rule.
+  RootN <- as.integer(2 * n[j]^0.5) # Maximum v follows the RootN rule.
 
   for (i in 1:15) {
     normalest[[i, j]] <- REBMIX(Dataset = normal[[i, j]]$Dataset,

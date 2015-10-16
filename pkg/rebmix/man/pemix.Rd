@@ -5,7 +5,7 @@ Empirical Distribution Function Calculation
 }
 \description{
 \code{pemix} returns (invisibly) the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
-distribution functions \eqn{F_{1}, \ldots, F_{n}}, where \eqn{\bm{x} = (x_{1}, \ldots, x_{d})^{\top}}.
+distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vector \eqn{\bm{x}} ia a subvector of \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
 pemix(x = NULL, lower.tail = TRUE, log.p = FALSE, ...)
