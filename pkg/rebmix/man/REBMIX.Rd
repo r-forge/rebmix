@@ -7,12 +7,15 @@ REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
 }
 \usage{
-REBMIX(Dataset = NULL, Preprocessing = NULL, cmax = 15, 
-       Criterion = "AIC", Variables = NULL, pdf = NULL,
-       theta1 = NULL, theta2 = NULL, K = NULL, y0 = NULL, 
-       ymin = NULL, ymax = NULL, ar = 0.1, Restraints = "loose", ...)
+REBMIX(model = NULL, Dataset = NULL, Preprocessing = NULL, 
+       cmax = 15, Criterion = "AIC", pdf = NULL, theta1 = NULL, 
+       theta2 = NULL, K = NULL, y0 = NULL, ymin = NULL, 
+       ymax = NULL, ar = 0.1, Restraints = "loose", ...)
 }
 \arguments{
+\item{model}{
+a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{NULL}.
+}
 \item{Dataset}{
 a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
 represents one random variable. Number of observations \eqn{n} equals the number of rows in the datasets.
@@ -29,9 +32,6 @@ Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"
 approximate weight of evidence \code{"AWE"}, classification likelihood \code{"CLC"}, 
 integrated classification likelihood \code{"ICL"} or \code{"ICL-BIC"}, partition coefficient \code{"PC"}, 
 total of positive relative deviations \code{"D"} or sum of squares error \code{"SSE"}.
-}
-\item{Variables}{
-a character vector of length \eqn{d} containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
 }
 \item{pdf}{
 a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
@@ -71,54 +71,9 @@ potential further arguments of the method.
 }
 }
 \value{
-\item{Dataset}{
-a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
-represents one random variable. Number of observations \eqn{n} equals the number of rows in the datasets.
+Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
-\item{w}{
-a list of vectors of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.
-}
-\item{Theta}{
-a list of lists each containing  \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
-}
-\item{summary}{
-a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, information criterion type, 
-\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
-information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
-}
-\item{pos}{
-position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.
-}
-\item{opt.c}{
-a list of vectors containing numbers of components for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{opt.IC}{
-a list of vectors containing information criteria for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{opt.logL}{
-a list of vectors containing log likelihoods for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{opt.D}{
-a list of vectors containing totals of positive relative deviations for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{all.K}{
-a list of vectors containing all processed numbers of bins \eqn{v} for the histogram and the Parzen window or all processed numbers of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{all.IC}{
-a list of vectors containing information criteria for all processed numbers of bins \eqn{v} for the histogram and the Parzen window or for all processed numbers of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{call}{
-a function call used to create the object.
-}
-}
+\author{Marko Nagode}
 \references{
 H. A. Sturges. The choice of a class interval. Journal of American Statistical Association, 21(153):
 65-66, 1926. \url{http://www.jstor.org/stable/2965501}.\cr\cr
@@ -163,7 +118,6 @@ normalest <- REBMIX(Dataset = normal$Dataset,
   Preprocessing = "h", 
   cmax = 8, 
   Criterion = "BIC", 
-  Variables = "c",
   pdf = "n", 
   K = K[1]:K[2])
                  

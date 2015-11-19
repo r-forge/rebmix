@@ -59,7 +59,6 @@ simulated <- RNGMIX(Dataset = "simulated",
 
 y1y2f <- demix(x = simulated$Dataset[[1]],
   Preprocessing = "histogram",
-  Variables = c("continuous", "continuous"),
   pdf = c("normal", "normal"),
   k = 6)
   

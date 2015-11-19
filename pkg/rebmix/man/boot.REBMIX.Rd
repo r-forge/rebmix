@@ -99,7 +99,6 @@ weibullest <- REBMIX(Dataset = list(weibull),
   Preprocessing = "Parzen window", 
   cmax = 4,
   Criterion = "BIC", 
-  Variables = "continuous",
   pdf = "Weibull", 
   K = K[1]:K[2], 
   Restraints = "loose")

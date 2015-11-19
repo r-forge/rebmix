@@ -1,19 +1,20 @@
 \name{RNGMIX}
 \alias{RNGMIX}
-\alias{RNGMVNORM}
 \title{
 Random Univariate or Multivariate Finite Mixture Generation
 }
 \description{
-RNGMIX returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
-RNGMVNORM returns multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices.
+RNGMIX returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities for missing \code{model}.
+If \code{model} is an object of class \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
 }
 \usage{
-RNGMIX(Dataset = NULL, rseed = -1, n = NULL, Theta = NULL)
-RNGMVNORM(Dataset = NULL, rseed = -1, n = NULL, Theta = NULL)
+RNGMIX(model = NULL, Dataset.name = NULL, rseed = -1, n = NULL, Theta = NULL)
 }
 \arguments{
-\item{Dataset}{
+\item{model}{
+a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{NULL}.
+}
+\item{Dataset.name}{
 a character vector containing list names of data frames of size \eqn{n \times d} that \emph{d}-dimensional datasets are written in.
 }
 \item{rseed}{
@@ -30,27 +31,13 @@ Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_
 }
 }
 \details{
-RNGMIX and RNGMVNORM are based on the "Minimal" random number generator \code{ran1} of Park and Miller with the Bays-Durham shuffle and added safeguards that returns a uniform random deviate between 0.0 and 1.0 
+RNGMIX is based on the "Minimal" random number generator \code{ran1} of Park and Miller with the Bays-Durham shuffle and added safeguards that returns a uniform random deviate between 0.0 and 1.0 
 (exclusive of the endpoint values).
 }
 \value{
-\item{Dataset}{
-a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns represents one random variable. Number of observations \eqn{n} equals the number of rows
-in the datasets.
+Returns an object of class \code{RNGMIX} or \code{RNGMVNORM}.
 }
-\item{w}{
-a vector of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.
-}
-\item{Variables}{
-a character vector containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
-}
-\item{ymin}{
-a vector of length \eqn{d} containing minimum observations.
-}
-\item{ymax}{
-a vector of length \eqn{d} containing maximum observations.
-}
-}
+\author{Marko Nagode}
 \references{
 W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Recipes in C: The Art
 of Scientific Computing. Cambridge University Press, Cambridge, 1992.
@@ -97,10 +84,11 @@ Theta <- list(pdf1 = "normal",
   theta1.3 = c(6, 6, 4),
   theta2.3 = c(4, 3.2, 2.8, 3.2, 4, 2.4, 2.8, 2.4, 2))
 
-simulated <- RNGMVNORM(Dataset = paste("simulated_", 1:2, sep = ""),
+simulated <- RNGMIX(Dataset = paste("simulated_", 1:2, sep = ""),
   rseed = -1,
   n = c(200, 50, 50),
-  Theta = Theta)
+  Theta = Theta,
+  model = new("RNGMVNORM"))
   
 simulated
 

@@ -46,7 +46,6 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Preprocessing = "Parzen window",
   cmax = 4,
   Criterion = "BIC",
-  Variables = c("continuous", "continuous"),
   pdf = c("normal", "Weibull"),
   K = 8)
 

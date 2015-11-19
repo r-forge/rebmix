@@ -124,7 +124,6 @@ for (i in c(1:14)) {
     Preprocessing = "histogram",
     cmax = if (Variables[i] == "continuous") 8 else 100,
     Criterion = if (Variables[i] == "continuous") "BIC" else "D",
-    Variables = Variables[i],
     pdf = pdf[i],
     K = K[[i]],
     ymin = ymin[i],

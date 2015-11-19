@@ -2,7 +2,10 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.7.3}{ 
 \itemize{
-\item list namesto rbind za Theta.
+\item Object-oriented C++ code is considerably improved.
+\item R functions arguments and values are improved.
+\item Function \code{RNGMVNORM} for multivariate normal finite mixture generation is added.
+\item Function \code{REBMVNORM} for multivariate normal finite mixture estimation is added.
 }
 }
 \section{Changes in version 2.7.2}{ 

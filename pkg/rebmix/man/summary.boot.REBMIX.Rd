@@ -42,7 +42,6 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Preprocessing = "histogram", 
   cmax = 8, 
   Criterion = "BIC", 
-  Variables = "continuous",
   pdf = "normal", 
   K = K[1]:K[2])
 

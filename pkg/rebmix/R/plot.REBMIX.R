@@ -1,4 +1,7 @@
-plot.REBMIX <- function(x,
+setMethod("plot", 
+          signature(x = "REBMIX", y = "missing"),
+function(x,
+  y,
   pos = 1,
   what = c("density"),
   nrow = 1,
@@ -26,8 +29,8 @@ plot.REBMIX <- function(x,
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
 
-  if ((pos < 1) || (pos > nrow(x$summary))) {
-    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x$summary), "!", call. = FALSE)
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
   }
   
   if (!is.character(what)) {
@@ -68,9 +71,9 @@ plot.REBMIX <- function(x,
     stop(sQuote("n"), " must be greater than 0!", call. = FALSE)
   }  
 
-  ni <- ncol(x$summary)
+  ni <- ncol(x@summary)
 
-  Theta <- .extractTheta(x$w[[pos]], x$Theta[[pos]])
+  Theta <- .extractTheta(x@w[[pos]], x@Theta[[pos]])
 
   d <- nrow(Theta)
 
@@ -90,22 +93,22 @@ plot.REBMIX <- function(x,
     pty = pty,
     tcl = tcl, ...)
 
-  C <- x$summary[pos, "Preprocessing"]
+  C <- x@summary[pos, "Preprocessing"]
 
   if (.Device == "tikz output") {
     item <- list()
 
     item[[1]] <- "$\\textrm{Dataset}$"
     item[[2]] <- "$\\; = \\;$"
-    item[[3]] <- paste("$\\textrm{", x$summary[pos, "Dataset"], "}$, ", sep = "")
+    item[[3]] <- paste("$\\textrm{", x@summary[pos, "Dataset"], "}$, ", sep = "")
 
     item[[4]] <- "$\\textrm{Preprocessing}$"
     item[[5]] <- "$\\; = \\;$"
-    item[[6]] <- paste("$\\textrm{", x$summary[pos, "Preprocessing"], "}$, ", sep = "")
+    item[[6]] <- paste("$\\textrm{", x@summary[pos, "Preprocessing"], "}$, ", sep = "")
 
     item[[7]] <- "$\\textrm{Restraints}$"
     item[[8]] <- "$\\; = \\;$"
-    item[[9]] <- paste("$\\textrm{", x$summary[pos, "Restraints"], "}$, ", sep = "")
+    item[[9]] <- paste("$\\textrm{", x@summary[pos, "Restraints"], "}$, ", sep = "")
 
     item[[10]] <- "$D$"
     item[[11]] <- ""
@@ -113,15 +116,15 @@ plot.REBMIX <- function(x,
 
     item[[13]] <- "$c_{\\mathrm{max}}$"
     item[[14]] <- "$\\; = \\;$"
-    item[[15]] <- paste("$", x$summary[pos, "cmax"], "$, ", sep = "")
+    item[[15]] <- paste("$", x@summary[pos, "cmax"], "$, ", sep = "")
 
     item[[16]] <- "$a_{\\mathrm{r}}$"
     item[[17]] <- "$\\; = \\;$"
-    item[[18]] <- paste("$", as.number(x$summary[pos, "ar"]), "$, ", sep = "")
+    item[[18]] <- paste("$", as.number(x@summary[pos, "ar"]), "$, ", sep = "")
 
     item[[19]] <- "$c$"
     item[[20]] <- "$\\; = \\;$"
-    item[[21]] <- paste("$", x$summary[pos, "c"], "$, ", sep = "")
+    item[[21]] <- paste("$", x@summary[pos, "c"], "$, ", sep = "")
 
     item[[22]] <- ""
     item[[23]] <- ""
@@ -130,28 +133,28 @@ plot.REBMIX <- function(x,
     if (C == .rebmix$Preprocessing[1]) {
       item[[25]] <- "$v$"
       item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x$summary[pos, "v/k"], "$, ", sep = "")
+      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
     }
     else
     if (C == .rebmix$Preprocessing[2]) {
       item[[25]] <- "$v$"
       item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x$summary[pos, "v/k"], "$, ", sep = "")
+      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
     }
     else
     if (C == .rebmix$Preprocessing[3]) {
       item[[25]] <- "$k$"
       item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x$summary[pos, "v/k"], "$, ", sep = "")
+      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
     }
 
-    item[[28]] <- paste("$\\mathrm{", x$summary[pos, "Criterion"], "}$", sep = "")
+    item[[28]] <- paste("$\\mathrm{", x@summary[pos, "Criterion"], "}$", sep = "")
     item[[29]] <- "$\\; = \\;$"
-    item[[30]] <- paste("$", as.number(x$summary[pos, "IC"]), "$, ", sep = "")
+    item[[30]] <- paste("$", as.number(x@summary[pos, "IC"]), "$, ", sep = "")
 
     item[[31]] <- "$\\mathrm{log}\\, L$"
     item[[32]] <- "$\\; = \\;$"
-    item[[33]] <- paste("$", as.number(x$summary[pos, "logL"]), "$.", sep = "")
+    item[[33]] <- paste("$", as.number(x@summary[pos, "logL"]), "$.", sep = "")
 
     i <- 1; legend <- list(); legend[[i]] <- item[[1]]
 
@@ -171,15 +174,15 @@ plot.REBMIX <- function(x,
 
     item[[1]] <- "Dataset"
     item[[2]] <- " = "
-    item[[3]] <- paste(x$summary[pos, "Dataset"], ", ", sep = "")
+    item[[3]] <- paste(x@summary[pos, "Dataset"], ", ", sep = "")
 
     item[[4]] <- "Preprocessing"
     item[[5]] <- " = "
-    item[[6]] <- paste(x$summary[pos, "Preprocessing"], ", ", sep = "")
+    item[[6]] <- paste(x@summary[pos, "Preprocessing"], ", ", sep = "")
 
     item[[7]] <- "Restraints"
     item[[8]] <- " = "
-    item[[9]] <- paste(x$summary[pos, "Restraints"], ", ", sep = "")
+    item[[9]] <- paste(x@summary[pos, "Restraints"], ", ", sep = "")
 
     item[[10]] <- "D"
     item[[11]] <- ""
@@ -187,15 +190,15 @@ plot.REBMIX <- function(x,
 
     item[[13]] <- bquote(c[max])
     item[[14]] <- " = "
-    item[[15]] <- paste(x$summary[pos, "cmax"], ", ", sep = "")
+    item[[15]] <- paste(x@summary[pos, "cmax"], ", ", sep = "")
 
     item[[16]] <- bquote(a[r])
     item[[17]] <- " = "
-    item[[18]] <- paste(as.number(x$summary[pos, "ar"]), ", ", sep = "")
+    item[[18]] <- paste(as.number(x@summary[pos, "ar"]), ", ", sep = "")
 
     item[[19]] <- "c"
     item[[20]] <- " = "
-    item[[21]] <- paste(x$summary[pos, "c"], ", ", sep = "")
+    item[[21]] <- paste(x@summary[pos, "c"], ", ", sep = "")
 
     item[[22]] <- ""
     item[[23]] <- ""
@@ -204,28 +207,28 @@ plot.REBMIX <- function(x,
     if (C == .rebmix$Preprocessing[1]) {
       item[[25]] <- "v"
       item[[26]] <- " = "
-      item[[27]] <- paste(x$summary[pos, "v/k"], ", ", sep = "")
+      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
     }
     else
     if (C == .rebmix$Preprocessing[2]) {
       item[[25]] <- "v"
       item[[26]] <- " = "
-      item[[27]] <- paste(x$summary[pos, "v/k"], ", ", sep = "")
+      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
     }
     else
     if (C == .rebmix$Preprocessing[3]) {
       item[[25]] <- "k"
       item[[26]] <- " = "
-      item[[27]] <- paste(x$summary[pos, "v/k"], ", ", sep = "")
+      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
     }
 
-    item[[28]] <- as.character(x$summary[pos, "Criterion"])
+    item[[28]] <- as.character(x@summary[pos, "Criterion"])
     item[[29]] <- " = "
-    item[[30]] <- paste(as.number(x$summary[pos, "IC"]), ", ", sep = "")
+    item[[30]] <- paste(as.number(x@summary[pos, "IC"]), ", ", sep = "")
 
     item[[31]] <- "log L"
     item[[32]] <- " = "
-    item[[33]] <- paste(as.number(x$summary[pos, "logL"]), ".", sep = "")
+    item[[33]] <- paste(as.number(x@summary[pos, "logL"]), ".", sep = "")
 
     i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
 
@@ -243,9 +246,9 @@ plot.REBMIX <- function(x,
 
   par(oma = c(length(legend) + 0.2, 0.2, 0.2, 0.2))
 
-  Dataset <- as.character(x$summary[pos, "Dataset"])
+  Dataset <- as.character(x@summary[pos, "Dataset"])
 
-  ey <- as.matrix(x$Dataset[[which(names(x$Dataset) == x$summary[pos, "Dataset"])]])
+  ey <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
 
   y0 <- array(data = 0.0, dim = d, dimnames = NULL)
   h <- array(data = 0.0, dim = d, dimnames = NULL)
@@ -254,29 +257,29 @@ plot.REBMIX <- function(x,
 
   py <- list(d)
 
-  Variables <- match.arg(x$call$Variables, .rebmix$Variables, several.ok = TRUE)
+  Variables <- match.arg(x@Variables, .rebmix$Variables, several.ok = TRUE)
   
-  pdf <- match.arg(x$call$pdf, .rebmix$pdf, several.ok = TRUE)
+  pdf <- match.arg(x@pdf, .rebmix$pdf, several.ok = TRUE)
   
   for (i in 1:d) {
     if (C == .rebmix$Preprocessing[1]) {
-      k <- as.numeric(x$summary[pos, "v/k"])
-      y0[i] <- as.numeric(x$summary[pos, paste("y0", if (d > 1) i, sep = "")])
-      h[i] <- as.numeric(x$summary[pos, paste("h", if (d > 1) i, sep = "")])
+      k <- as.numeric(x@summary[pos, "v/k"])
+      y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
+      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
     else
     if (C == .rebmix$Preprocessing[2]) {
-      h[i] <- as.numeric(x$summary[pos, paste("h", if (d > 1) i, sep = "")])
+      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
     else
     if (C == .rebmix$Preprocessing[3]) {
-      k <- as.numeric(x$summary[pos, "v/k"])
+      k <- as.numeric(x@summary[pos, "v/k"])
 
-      h[i] <- as.numeric(x$summary[pos, paste("h", if (d > 1) i, sep = "")])
+      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
@@ -292,7 +295,7 @@ plot.REBMIX <- function(x,
     }
   }
 
-  w <- as.numeric(x$w[[pos]])
+  w <- as.numeric(x@w[[pos]])
 
   if (N > 0) {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {  
@@ -829,10 +832,10 @@ plot.REBMIX <- function(x,
   }
   
   if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
-    ylim <- range(x$opt.IC[[pos]], finite = TRUE)
+    ylim <- range(x@opt.IC[[pos]], finite = TRUE)
   
-    plot(x = x$opt.c[[pos]],
-      y = x$opt.IC[[pos]],
+    plot(x = x@opt.c[[pos]],
+      y = x@opt.IC[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -895,10 +898,10 @@ plot.REBMIX <- function(x,
   }
   
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
-    ylim <- range(x$opt.logL[[pos]], finite = TRUE)
+    ylim <- range(x@opt.logL[[pos]], finite = TRUE)
   
-    plot(x = x$opt.c[[pos]],
-      y = x$opt.logL[[pos]],
+    plot(x = x@opt.c[[pos]],
+      y = x@opt.logL[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -961,10 +964,10 @@ plot.REBMIX <- function(x,
   }  
   
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
-    ylim <- range(x$opt.D[[pos]], finite = TRUE)
+    ylim <- range(x@opt.D[[pos]], finite = TRUE)
   
-    plot(x = x$opt.c[[pos]],
-      y = x$opt.D[[pos]],
+    plot(x = x@opt.c[[pos]],
+      y = x@opt.D[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -1027,10 +1030,10 @@ plot.REBMIX <- function(x,
   }
   
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
-    ylim <- range(x$all.IC[[pos]], finite = TRUE)
+    ylim <- range(x@all.IC[[pos]], finite = TRUE)
   
-    plot(x = x$all.K[[pos]],
-      y = x$all.IC[[pos]],
+    plot(x = x@all.K[[pos]],
+      y = x@all.IC[[pos]],
       type = "o",
       main = "",
       sub = "",
@@ -1095,4 +1098,4 @@ plot.REBMIX <- function(x,
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-} ## plot.REBMIX
+}) ## plot.REBMIX

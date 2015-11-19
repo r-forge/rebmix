@@ -10,25 +10,16 @@ options(prompt = "> ", continue = "+ ", width = 70,
   useFancyQuotes = FALSE, digits = 3)
 
 ###################
-## Preliminaries ##
-###################
-
-# load packages.
-
-library("flexmix")
-library("rebmix")
-
-###################
 ## Truck dataset ##
 ###################
 
-# Load truck dataset.
-
-data("truck")
-
-set.seed(8)
+data("truck", package = "rebmix")
 
 ########## FlexMix ##########
+
+library("flexmix")
+
+set.seed(8)
 
 # Weibull-normal mixture model
 
@@ -114,12 +105,14 @@ summary(truckestFlexMix)
 
 ########## REBMIX ##########
 
+library("rebmix")
+
 # Estimate number of components, component weights and component parameters.
 
 n = nrow(truck)
 
-Sturges <- as.integer(1 + log2(n)) ## Minimum v follows the Sturges rule.
-Log10 <- as.integer(10 * log10(n)) ## Maximum v follows the Log10 rule.
+Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
+Log10 <- as.integer(10 * log10(n)) # Maximum v follows the Log10 rule.
 
 timerebmix <- system.time(truckestrebmix <- REBMIX(Dataset = 
   list(truck = truck),
@@ -133,3 +126,6 @@ timerebmix
 
 plot(truckestrebmix, nrow = 2, ncol = 3, 
   what = c("density", "marginal", "IC", "logL"), npts = 1000)
+
+detach(package:rebmix, unload = TRUE)
+detach(package:flexmix, unload = TRUE)

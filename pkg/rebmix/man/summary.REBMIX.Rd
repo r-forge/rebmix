@@ -36,7 +36,6 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
   Preprocessing = "histogram", 
   cmax = 8, 
   Criterion = "D", 
-  Variables = "discrete",
   pdf = "Dirac", 
   K = 1)
   

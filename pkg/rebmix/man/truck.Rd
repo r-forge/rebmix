@@ -6,7 +6,7 @@
 The dataset contains amplitudes and means measured on a truck wheels.
 }
 \usage{
-truck
+data("truck")
 }
 \format{
 \code{truck} is a data frame with 31665 rows and 2 variables (columns) named:

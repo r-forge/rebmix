@@ -6,7 +6,7 @@
 The complete data are the failure times in weeks.
 }
 \usage{
-weibull
+data("weibull")
 }
 \format{
 \code{weibull} is a data frame with 50 cases (rows) and 1 variables (columns) named:
