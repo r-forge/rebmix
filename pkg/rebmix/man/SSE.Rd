@@ -4,7 +4,7 @@
 Sum of Squares Error
 }
 \description{
-Returns the sum of squares error at \code{pos} for class REBMIX.
+Returns the sum of squares error at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 SSE(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 C. M. Bishop. Neural Networks for Pattern Recognition. Clarendon Press, Oxford, 1995.
 }

@@ -26,5 +26,24 @@ setGeneric("REBMIX",
 setGeneric("coef",
   function(object = NULL,
     pos = 1, ...)
-  standardGeneric("coef"))  
-
+  standardGeneric("coef"))
+  
+setGeneric("IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric("IC"))
+  
+setGeneric("logL", function(x = NULL, pos = 1, ...) standardGeneric("logL")) 
+setGeneric("AIC", function(x = NULL, pos = 1, ...) standardGeneric("AIC"))     
+setGeneric("AIC3", function(x = NULL, pos = 1, ...) standardGeneric("AIC3"))    
+setGeneric("AIC4", function(x = NULL, pos = 1, ...) standardGeneric("AIC4"))    
+setGeneric("AICc", function(x = NULL, pos = 1, ...) standardGeneric("AICc"))    
+setGeneric("BIC", function(x = NULL, pos = 1, ...) standardGeneric("BIC"))    
+setGeneric("CAIC", function(x = NULL, pos = 1, ...) standardGeneric("CAIC"))    
+setGeneric("HQC", function(x = NULL, pos = 1, ...) standardGeneric("HQC"))    
+setGeneric("MDL2", function(x = NULL, pos = 1, ...) standardGeneric("MDL2"))    
+setGeneric("MDL5", function(x = NULL, pos = 1, ...) standardGeneric("MDL5"))    
+setGeneric("AWE", function(x = NULL, pos = 1, ...) standardGeneric("AWE"))    
+setGeneric("CLC", function(x = NULL, pos = 1, ...) standardGeneric("CLC"))   
+setGeneric("ICL", function(x = NULL, pos = 1, ...) standardGeneric("ICL"))   
+setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))   
+setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
+setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
+setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))

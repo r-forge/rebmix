@@ -2,7 +2,7 @@ setMethod("coef",
           signature(object = "REBMIX"),
 function(object, pos, ...)
 {
-  if (missing(object) || (class(object) != "REBMIX")) {
+  if (missing(object)) {
     stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
   }
 
@@ -40,7 +40,34 @@ function(object, pos, ...)
   rownames(theta) <- names
   colnames(theta) <- object@Theta[[pos]]$pdf1
   
+  if (nrow(theta) > ncol(theta)) {
+    theta <- t(theta)
+  }  
+  
   print(theta, quote = FALSE, ...)  
+  
+  rm(list = ls())   
+}) ## coef
+
+setMethod("coef",
+          signature(object = "REBMVNORM"),
+function(object, pos, ...)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMVNORM is requested!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(object@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
+  }
+ 
+  print("Test coef!")  
   
   rm(list = ls())   
 }) ## coef

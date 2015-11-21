@@ -1,5 +1,7 @@
 \name{REBMIX}
 \alias{REBMIX}
+\alias{show,REBMIX}
+\alias{show,REBMVNORM}
 \title{
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }

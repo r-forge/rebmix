@@ -8,7 +8,7 @@
 Akaike Information Criterion
 }
 \description{
-Returns the Akaike information criterion at \code{pos} for class REBMIX.
+Returns the Akaike information criterion at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 AIC(x, pos = 1, ...)
@@ -28,6 +28,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 H. Akaike. A new look at the statistical model identification. IEEE Transactions on Automatic Control, 19(51):716-723, 1974.\cr\cr
 A. F. M. Smith and D. J. Spiegelhalter. Bayes factors and choice criteria for linear

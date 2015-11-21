@@ -129,7 +129,7 @@ setMethod("show",
           signature(object = "RNGMIX"),
 function(object)
 {
-  if (missing(object) || (class(object) != "RNGMIX")) {
+  if (missing(object)) {
     stop(sQuote("object"), " object of class RNGMIX is requested!", call. = FALSE)
   }
   
@@ -154,7 +154,7 @@ setMethod("show",
           signature(object = "RNGMVNORM"),
 function(object)
 {
-  if (missing(object) || (class(object) != "RNGMVNORM")) {
+  if (missing(object)) {
     stop(sQuote("object"), " object of class RNGMVNORM is requested!", call. = FALSE)
   }
   
@@ -390,7 +390,7 @@ setMethod("show",
           signature(object = "REBMIX"),
 function(object)
 {
-  if (missing(object) || (class(object) != "REBMIX")) {
+  if (missing(object)) {
     stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
   }
   

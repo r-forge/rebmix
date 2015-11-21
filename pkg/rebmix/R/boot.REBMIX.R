@@ -8,7 +8,7 @@ boot.REBMIX <- function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  if (missing(x) || (class(x) != "REBMIX")) {
+  if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
   }
 

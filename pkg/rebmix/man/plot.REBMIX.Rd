@@ -4,7 +4,7 @@
 Plots Univariate or Multivariate REBMIX Output
 }
 \description{
-Takes an object of class \code{REBMIX} and plots empirical and predictive univariate \eqn{d = 1} mixture densities
+Takes an object of class \code{REBMIX} or \code{REBMVNORM} and plots empirical and predictive univariate \eqn{d = 1} mixture densities
 or pairs of empirical and predictive bivariate marginal mixture densities for \eqn{d > 1}. The empirical
 densities follow the histogram, Parzen window or \emph{k}-nearest neighbour approach.
 }
@@ -15,10 +15,16 @@ densities follow the histogram, Parzen window or \emph{k}-nearest neighbour appr
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
      contour.nlevels = 12, ...)
+\S4method{plot}{REBMVNORM, missing}(x, y, pos = 1, what = c("density"),
+     nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
+     lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
+     plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
+     contour.labcex = 0.8, contour.method = "flattest", 
+     contour.nlevels = 12, ...)     
 }
 \arguments{
 \item{x}{
-an object of class \code{REBMIX}.
+an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \item{y}{
 currently not used.

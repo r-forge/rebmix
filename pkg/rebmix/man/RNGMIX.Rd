@@ -1,5 +1,7 @@
 \name{RNGMIX}
 \alias{RNGMIX}
+\alias{show,RNGMIX}
+\alias{show,RNGMVNORM}
 \title{
 Random Univariate or Multivariate Finite Mixture Generation
 }

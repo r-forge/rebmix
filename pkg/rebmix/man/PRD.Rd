@@ -4,7 +4,7 @@
 Total of Positive Relative Deviations
 }
 \description{
-Returns the total of positive relative deviations \code{D} at \code{pos} for class REBMIX.
+Returns the total of positive relative deviations \code{D} at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 PRD(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
 Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{http://dx.doi.org/10.1080/03610920903480890}.\cr\cr

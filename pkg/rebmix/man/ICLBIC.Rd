@@ -4,7 +4,7 @@
 Approximate Integrated Classification Likelihood Criterion
 }
 \description{
-Returns the approximate integrated classification likelihood criterion at \code{pos} for class REBMIX.
+Returns the approximate integrated classification likelihood criterion at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 ICLBIC(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 C. Biernacki, G. Celeux, and G. Govaert. Assessing a mixture model for clustering with the integrated
 classification likelihood. Technical Report 3521, INRIA, Rhone-Alpes, 1998.

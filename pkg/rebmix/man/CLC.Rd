@@ -4,7 +4,7 @@
 Classification Likelihood Criterion
 }
 \description{
-Returns the classification likelihood criterion at \code{pos} for class REBMIX.
+Returns the classification likelihood criterion at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 CLC(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 C. Biernacki and G. Govaert. Using the classification likelihood to choose the number of clusters. In
 E. J. Wegman and S. P. Azen, editors, Computing Science and Statistics, 1997.

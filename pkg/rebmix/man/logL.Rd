@@ -4,7 +4,7 @@
 Log Likelihood
 }
 \description{
-Returns the log likelihood at \code{pos} for class REBMIX.
+Returns the log likelihood at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 logL(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 2000.
 }

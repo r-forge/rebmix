@@ -4,7 +4,7 @@
 Bayesian Information Criterion
 }
 \description{
-Returns the Bayesian information criterion at \code{pos} for class REBMIX.
+Returns the Bayesian information criterion at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 BIC(x, pos = 1, ...)
@@ -20,6 +20,7 @@ a desired row number in \code{summary} for which the information criterion is ca
 currently not used.
 }
 }
+\author{Marko Nagode}
 \references{
 G. Schwarz. Estimating the dimension of the model. The Annals of Statistics, 6(2):461-464, 1978.
 }

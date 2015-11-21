@@ -4,14 +4,15 @@
 Prints Univariate or Multivariate REBMIX Coefficients
 }
 \description{
-Returns the \code{w} and \code{Theta} output at \code{pos} for class REBMIX.
+Returns the \code{w} and \code{Theta} output at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 \S4method{coef}{REBMIX}(object, pos = 1, ...)
+\S4method{coef}{REBMVNORM}(object, pos = 1, ...)
 }
 \arguments{
 \item{object}{
-an object of class \code{REBMIX}.
+an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \item{pos}{
 a desired row number in \code{summary} to be printed. The default value is \code{1}.

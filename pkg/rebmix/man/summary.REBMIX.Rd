@@ -4,14 +4,15 @@
 Prints Univariate or Multivariate REBMIX Summary
 }
 \description{
-Returns the \code{summary} output for class REBMIX.
+Returns the \code{summary} output for classes \code{REBMIX} and \code{REBMVNORM}.
 }
 \usage{
 \S4method{summary}{REBMIX}(object, ...)
+\S4method{summary}{REBMVNORM}(object, ...)
 }
 \arguments{
 \item{object}{
-an object of class \code{REBMIX}.
+an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \item{\dots}{
 additional arguments affecting the summary produced.
