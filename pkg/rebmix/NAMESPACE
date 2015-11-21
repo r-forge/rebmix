@@ -1,8 +1,6 @@
 useDynLib("rebmix")
 
-import("methods")
-
-import("stats", "utils", "graphics", "grDevices")
+import("methods", "stats", "utils", "graphics", "grDevices")
 
 export("RNGMIX",
        "REBMIX",
@@ -39,9 +37,9 @@ exportClasses("RNGMIX",
 
 exportMethods("RNGMIX",
               "REBMIX",
-              "plot")
+              "plot",
+              "summary",
+              "coef")
 
-#S3method("summary", "REBMIX")
-#S3method("coef", "REBMIX")
 #S3method("print", "boot.REBMIX")
 #S3method("summary", "boot.REBMIX")

@@ -28,6 +28,8 @@ function(x,
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
+  
+  length(pos) <- 1
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
@@ -1098,4 +1100,4 @@ function(x,
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-}) ## plot.REBMIX
+}) ## plot

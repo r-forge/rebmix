@@ -1,5 +1,5 @@
 setGeneric("RNGMIX",
-  function(model = NULL,
+  function(model = "RNGMIX",
     Dataset.name = character(0),
     rseed = -1,
     n = numeric(0),
@@ -7,7 +7,7 @@ setGeneric("RNGMIX",
   standardGeneric("RNGMIX"))
 
 setGeneric("REBMIX",
-  function(model = NULL,
+  function(model = "REBMIX",
     Dataset = list(0),
     Preprocessing = character(0),
     cmax = 15,
@@ -22,4 +22,9 @@ setGeneric("REBMIX",
     ar = 0.1,
     Restraints = "loose", ...)
   standardGeneric("REBMIX"))
+  
+setGeneric("coef",
+  function(object = NULL,
+    pos = 1, ...)
+  standardGeneric("coef"))  
 

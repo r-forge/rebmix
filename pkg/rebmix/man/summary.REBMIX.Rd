@@ -1,5 +1,5 @@
-\name{summary.REBMIX}
-\alias{summary.REBMIX}
+\name{summary}
+\alias{summary}
 \title{
 Prints Univariate or Multivariate REBMIX Summary
 }
@@ -7,32 +7,34 @@ Prints Univariate or Multivariate REBMIX Summary
 Returns the \code{summary} output for class REBMIX.
 }
 \usage{
-\method{summary}{REBMIX}(object, ...)
+\S4method{summary}{REBMIX}(object, ...)
 }
 \arguments{
 \item{object}{
 an object of class \code{REBMIX}.
 }
 \item{\dots}{
-further arguments to \code{\link[base]{print}}.
+additional arguments affecting the summary produced.
 }
 }
+\author{Marko Nagode}
 \examples{
 # Generate and print simulated dataset.
 
-Theta <- list(pdf1 = rep("Dirac", 4),
-  theta1.1 = c(1, 3, 4, 8))
+Theta <- list(pdf1 = "Dirac",
+  theta1.1 = c(1, 3, 4, 8),
+  theta2.1 = c(NA, NA, NA, NA))
 
-simulated <- RNGMIX(Dataset = "simulated",
+simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = c(40, 20, 50, 10),
   Theta = Theta)
   
-print(simulated)
+show(simulated)
 
 # Estimate number of components, component weights and component parameters.
 
-simulatedest <- REBMIX(Dataset = simulated$Dataset, 
+simulatedest <- REBMIX(Dataset = simulated@Dataset, 
   Preprocessing = "histogram", 
   cmax = 8, 
   Criterion = "D", 
@@ -45,5 +47,5 @@ summary(simulatedest)
 
 plot(simulatedest)
 }
-\keyword{print}
+\keyword{summary}
 

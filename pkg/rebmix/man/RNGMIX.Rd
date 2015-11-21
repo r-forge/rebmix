@@ -4,15 +4,15 @@
 Random Univariate or Multivariate Finite Mixture Generation
 }
 \description{
-RNGMIX returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities for missing \code{model}.
-If \code{model} is an object of class \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
+RNGMIX returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
+If \code{model = "RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
 }
 \usage{
-RNGMIX(model = NULL, Dataset.name = NULL, rseed = -1, n = NULL, Theta = NULL)
+RNGMIX(model = "RNGMIX", Dataset.name = NULL, rseed = -1, n = NULL, Theta = NULL)
 }
 \arguments{
 \item{model}{
-a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{NULL}.
+a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{"RNGMIX"}.
 }
 \item{Dataset.name}{
 a character vector containing list names of data frames of size \eqn{n \times d} that \emph{d}-dimensional datasets are written in.
@@ -63,7 +63,7 @@ Theta <- list(pdf1 = rep("normal", 4),
   theta1.5 = c(7, 9, 13, 15),
   theta2.5 = c(3, 3, 3, 3))
 
-simulated <- RNGMIX(Dataset = paste("simulated_", 1:25, sep = ""),
+simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:25, sep = ""),
   rseed = -1,
   n = n,
   Theta = Theta)
@@ -74,21 +74,21 @@ simulated
 
 n <- c(200, 50, 50)
 
-Theta <- list(pdf1 = "normal",
+Theta <- list(pdf1 = rep("normal", 3),
   theta1.1 = c(0, 0, 0),
   theta2.1 = c(9, 0, 0, 0, 4, 0, 0, 0, 1),
-  pdf2 = "normal",
+  pdf2 = rep("normal", 3),
   theta1.2 = c(-6, 3, 6),
   theta2.2 = c(4, -3.2, -0.2 , -3.2, 4, 0, -0.2, 0, 1),
-  pdf3 = "normal",
+  pdf3 = rep("normal", 3),
   theta1.3 = c(6, 6, 4),
   theta2.3 = c(4, 3.2, 2.8, 3.2, 4, 2.4, 2.8, 2.4, 2))
 
-simulated <- RNGMIX(Dataset = paste("simulated_", 1:2, sep = ""),
+simulated <- RNGMIX(model = "RNGMVNORM",
+  Dataset.name = paste("simulated_", 1:2, sep = ""),
   rseed = -1,
   n = c(200, 50, 50),
-  Theta = Theta,
-  model = new("RNGMVNORM"))
+  Theta = Theta)
   
 simulated
 
@@ -106,7 +106,7 @@ Theta <- list(pdf1 = c("lognormal", "Poisson", "binomial", "Weibull"),
   theta1.3 = c(2.5, 15, 10, 25), 
   theta2.3 = c(0.4, NA, 0.7, 20))
   
-simulated <- RNGMIX(Dataset = paste("simulated_", 1:5, sep = ""),
+simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:5, sep = ""),
   rseed = -1,
   n = n,
   Theta = Theta)
@@ -133,7 +133,7 @@ Theta <- list(pdf1 = "Weibull",
   theta1.5 = 9,
   theta2.5 = 5.3)  
 
-simulated <- RNGMIX(Dataset = "simulated",
+simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = n,
   Theta = Theta)

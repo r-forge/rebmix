@@ -4,17 +4,17 @@
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
+Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model = "REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
 }
 \usage{
-REBMIX(model = NULL, Dataset = NULL, Preprocessing = NULL, 
+REBMIX(model = "REBMIX", Dataset = NULL, Preprocessing = NULL, 
        cmax = 15, Criterion = "AIC", pdf = NULL, theta1 = NULL, 
        theta2 = NULL, K = NULL, y0 = NULL, ymin = NULL, 
        ymax = NULL, ar = 0.1, Restraints = "loose", ...)
 }
 \arguments{
 \item{model}{
-a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{NULL}.
+a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{"REBMIX"}.
 }
 \item{Dataset}{
 a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
@@ -67,7 +67,7 @@ a character string giving the restraints type. One of \code{"rigid"} or default 
 The rigid restraints are obsolete and applicable for well separated components only. 
 }
 \item{...}{
-potential further arguments of the method. 
+currently not used. 
 }
 }
 \value{
@@ -100,21 +100,21 @@ Theta <- list(pdf1 = "n",
   theta1.1 = c(688, 265, 30, 934),
   theta2.1 = c(72, 54, 34, 28))
 
-normal <- RNGMIX(Dataset = "complex1",
+normal <- RNGMIX(Dataset.name = "complex1",
   rseed = -1,
   n = n,
   Theta = Theta)
   
 normal 
 
-normal$Dataset[[1]][1:20, ]  
+normal@Dataset[[1]][1:20, ]  
 
 # Estimate number of components, component weights and component parameters. 
 
 K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
   as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
 
-normalest <- REBMIX(Dataset = normal$Dataset, 
+normalest <- REBMIX(Dataset = normal@Dataset, 
   Preprocessing = "h", 
   cmax = 8, 
   Criterion = "BIC", 

@@ -273,7 +273,7 @@ function(model,
  
   flush.console()
   
-  model <- new(if (missing(model)) "REBMIX" else model,
+  model <- new(model,
     Dataset = Dataset,
     Preprocessing = Preprocessing,
     cmax = cmax,

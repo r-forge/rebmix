@@ -1,3 +1,26 @@
+# Class RNGMIX
+
+validity.RNGMIX <- function(object)
+{ 
+  # Dataset.name.
+  
+  if (length(object@Dataset.name) == 0) {
+    stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
+  }
+  
+  # rseed.    
+  
+  if (!is.wholenumber(object@rseed)) {
+    stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
+  }
+  
+  if (object@rseed > -1) {
+    stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
+  }
+  
+  return(TRUE)
+} ## validity.RNGMIX
+
 setClass(Class = "RNGMIX",
 slots = c(Dataset.name = "character",
   rseed = "numeric",
@@ -8,10 +31,97 @@ slots = c(Dataset.name = "character",
   Variables = "character",
   ymin = "numeric",
   ymax = "numeric"),
-prototype = list(Dataset.name = NULL,
-  rseed = -1,
-  n = NULL,
-  Theta = NULL))                          
+validity = validity.RNGMIX)
+
+setMethod("initialize", "RNGMIX", 
+function(.Object, ...,
+  n,
+  Theta)
+{
+  # n.
+  
+  if (length(n) == 0) {
+    stop(sQuote("n"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(n)) {
+    stop(sQuote("n"), " integer is requested!", call. = FALSE)
+  }
+  
+  if (!all(n > 0)) {
+    stop("all ", sQuote("n"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  c <- length(n)
+  
+  # Theta.  
+  
+  if (length(Theta) == 0) {
+    stop(sQuote("Theta"), " must not be empty!", call. = FALSE)
+  }
+  
+  Names <- names(Theta)
+  
+  j <- 0; length.pdf <- length(Theta[[1]])
+  
+  for (i in grep("pdf", Names)) {  
+    pdf <- as.character(Theta[[i]])
+  
+    pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
+    
+    if (length(pdf) != length.pdf) {
+      stop("lengths of ", sQuote("pdfi"), " must be equal!", call. = FALSE)
+    }    
+  
+    Theta[[i]] <- pdf; j <- j + 1
+  }
+
+  if ((length.pdf > 1) && (j != c)) {
+    stop(sQuote("pdfi"), " and ", sQuote("n"), " must match!", call. = FALSE)
+  } 
+  
+  j <- 0; length.theta1 <- length(Theta[[2]])
+  
+  for (i in grep("theta1", Names)) {  
+    theta1 <- as.numeric(Theta[[i]])
+   
+    if (length(theta1) != length.theta1) {
+      stop("lengths of ", sQuote("theta1.i"), " must be equal!", call. = FALSE)
+    }    
+
+    j <- j + 1
+  }
+
+  if ((length.pdf > 1) && (j != c)) {
+    stop(sQuote("theta1.i"), " and ", sQuote("n"), " must match!", call. = FALSE)
+  } 
+  
+  j <- 0; length.theta2 <- length(Theta[[3]])
+  
+  for (i in grep("theta2", Names)) {  
+    theta2 <- as.numeric(Theta[[i]])
+   
+    if (length(theta2) != length.theta2) {
+      stop("lengths of ", sQuote("theta2.i"), " must be equal!", call. = FALSE)
+    }
+
+    j <- j + 1    
+  }
+
+  if ((length.pdf > 1) && (j != c)) {
+    stop(sQuote("theta2.i"), " and ", sQuote("n"), " must match!", call. = FALSE)
+  } 
+ 
+  # Variables.
+
+  for (i in 1:length(.rebmix$pdf)) {
+    .Object@Variables[which(pdf == .rebmix$pdf[i])] <- .rebmix$pdf.Variables[i]
+  }
+  
+  callNextMethod(.Object, ...,
+    n = n,
+    Theta = Theta)
+})
                           
 setClass("RNGMVNORM", contains = "RNGMIX")
 
@@ -285,13 +395,13 @@ function(object)
   }
   
   if (!is.wholenumber(object@pos)) {
-    stop(sQuote("object@pos"), " integer is requested!", call. = FALSE)
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
   
   length(object@pos) <- 1
 
   if ((object@pos < 1) || (object@pos > nrow(object@summary))) {
-    stop(sQuote("object@pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
   }  
   
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
