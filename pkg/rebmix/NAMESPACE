@@ -4,7 +4,6 @@ import("methods", "stats", "utils", "graphics", "grDevices")
 
 export("RNGMIX",
        "REBMIX",
-       "boot.REBMIX",
        "RCLSMIX",
        "logL",
        "AIC",
@@ -39,7 +38,8 @@ exportMethods("RNGMIX",
               "REBMIX",
               "plot",
               "summary",
-              "coef")
+              "coef",
+              "boot")
 
 #S3method("print", "boot.REBMIX")
 #S3method("summary", "boot.REBMIX")

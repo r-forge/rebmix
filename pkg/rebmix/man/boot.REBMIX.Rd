@@ -1,5 +1,5 @@
-\name{boot.REBMIX}
-\alias{boot.REBMIX}
+\name{boot}
+\alias{boot}
 \title{
 Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Variation Estimation
 }
@@ -37,49 +37,9 @@ further arguments to \code{\link[base]{sample}}.
 }
 }
 \value{
-\item{c}{
-a vector containing numbers of components for \eqn{B} bootstrap datasets.
+Returns an object of class \code{REBMIX.boot} or \code{REBMVNORM.boot}.
 }
-\item{c.se}{
-standard error of numbers of components \code{c}.
-}
-\item{c.cv}{
-coefficient of variation of numbers of components \code{c}.
-}
-\item{c.mode}{
-mode of numbers of components \code{c}.
-}
-\item{c.prob}{
-probability of mode \code{c.mode}.
-}
-\item{w}{
-an array containing component weights for \eqn{\leq B} bootstrap datasets.
-}
-\item{w.se}{
-a vector containing standard errors of component weights \code{w}.
-}
-\item{w.cv}{
-a vector containing coefficients of variation of component weights \code{w}.
-}
-\item{theta1.i}{
-arrays containing component parameters \code{theta1.i} for \eqn{\leq B} bootstrap datasets.
-}
-\item{theta1.i.se}{
-vectors containing standard errors of component parameters \code{theta1.i}.
-}
-\item{theta1.i.cv}{
-vectors containing coefficients of variation of component parameters \code{theta1.i}.
-}
-\item{theta2.i}{
-arrays containing component parameters \code{theta2.i} for \eqn{\leq B} bootstrap datasets.
-}
-\item{theta2.i.se}{
-vectors containing standard errors of component parameters \code{theta2.i}.
-}
-\item{theta2.i.cv}{
-vectors containing coefficients of variation of component parameters \code{theta2.i}.
-}
-}
+\author{Marko Nagode}
 \references{
 G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 2000.
 }
@@ -110,7 +70,7 @@ plot(weibullest, what = c("density", "distribution", "IC", "logL", "D"),
   
 # Bootstrap finite mixture.  
 
-weibullboot <- boot.REBMIX(x = weibullest, Bootstrap = "nonparametric", B = 10)
+weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric", B = 10)
 
 weibullboot
 }

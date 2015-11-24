@@ -47,3 +47,13 @@ setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))
 setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
 setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
+
+setGeneric("boot",
+  function(x = NULL,
+    pos = 1,
+    Bootstrap = "parametric",
+    B = 100, 
+    n = numeric(0), 
+    replace = TRUE,
+    prob = numeric(0), ...)
+  standardGeneric("boot"))

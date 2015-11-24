@@ -334,7 +334,6 @@ slots = c(Dataset = "list",
   opt.IC = "list",
   opt.logL = "list",
   opt.D = "list",
-  all.length = "list",
   all.K = "list",
   all.IC = "list"),
 prototype = list(pos = 1),
@@ -422,3 +421,96 @@ function(object)
 
   rm(list = ls())
 }) ## show
+
+## Class REBMIX.boot
+
+setClass("REBMIX.boot",
+slots = c(x = "REBMIX",
+  pos = "numeric",
+  Bootstrap = "character",
+  B = "numeric", 
+  n = "numeric",
+  replace = "logical", 
+  prob = "numeric",
+  c = "numeric",
+  c.se = "numeric",
+  c.cv = "numeric",
+  c.mode = "numeric",
+  c.prob = "numeric",
+  w = "matrix",
+  w.se = "numeric",
+  w.cv = "numeric",
+  Theta = "list",
+  Theta.se = "list",
+  Theta.cv = "list"),
+prototype = list(pos = 1))
+
+setMethod("initialize", "REBMIX.boot", 
+function(.Object, ...,
+  x,
+  pos,
+  Bootstrap,
+  B,
+  n)
+{
+  # x
+
+  if (missing(x)) {
+    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
+  }
+  
+  # pos.
+
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }  
+  
+  # Bootstrap.
+  
+  Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
+
+  # B.
+  
+  if (!is.wholenumber(B)) {
+    stop(sQuote("B"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(B) <- 1
+
+  if (B < 1) {
+    stop(sQuote("B"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  # n.
+  
+  nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
+  
+  if (length(n) == 0) {
+    n <- nmax
+  }
+  else {
+    if (!is.wholenumber(n)) {
+      stop(sQuote("n"), " integer is requested!", call. = FALSE)
+    }
+  
+    if ((n < 1) || (n > nmax)) {
+      stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
+    }
+  }    
+  
+  callNextMethod(.Object, ...,
+    x = x,
+    pos = pos,
+    Bootstrap = Bootstrap,
+    B = B,
+    n = n)
+})
+
+
+

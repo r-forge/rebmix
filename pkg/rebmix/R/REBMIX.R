@@ -23,20 +23,20 @@ function(model, ...)
       length.pdf <- -d
     }
     
-    if (as.integer(length(model@theta1)) > 0) {
-      length.theta1 <- +d
+    if (length(model@theta1) > 0) {
+      length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
     }
     else {
-      length.theta1 <- -d
+      length.theta1 <- -d; theta1 <- numeric(0)
     }    
     
-    if (as.integer(length(model@theta2)) > 0) {
-      length.theta2 <- +d
+    if (length(model@theta2) > 0) {
+      length.theta2 <- +d; theta2 <- model@theta2; theta2[is.na(theta2)] <- 0
     }
     else {
-      length.theta2 <- -d
-    }      
-    
+      length.theta2 <- -d; theta2 <- numeric(0)
+    }
+        
     output <- .C("RREBMIX",
       Preprocessing = as.character(model@Preprocessing), 
       cmax = as.integer(model@cmax),
@@ -47,7 +47,7 @@ function(model, ...)
       pdf = as.character(model@pdf),
       length.Theta = as.integer(2),
       length.theta = as.integer(c(d, d)),
-      Theta = as.double(c(model@theta1, model@theta2)),
+      Theta = as.double(c(theta1, theta2)),
       length.K = as.integer(length(model@K)),
       K = as.integer(model@K),
       length.y0 = as.integer(length(model@y0)),
@@ -190,7 +190,6 @@ function(model, ...)
     model@opt.IC[[i]] <- output$opt.IC
     model@opt.logL[[i]] <- output$opt.logL
     model@opt.D[[i]] <- output$opt.D
-    model@all.length[[i]] <- output$all.length
     model@all.K[[i]] <- output$all.K
     model@all.IC[[i]] <- output$all.IC   
   }
@@ -317,7 +316,6 @@ function(model,
         model@opt.IC[[length(model@opt.IC) + 1]] <- output@opt.IC[[k]] 
         model@opt.logL[[length(model@opt.logL) + 1]] <- output@opt.logL[[k]] 
         model@opt.D[[length(model@opt.D) + 1]] <- output@opt.D[[k]] 
-        model@all.length[[length(model@all.length) + 1]] <- output@all.length[[k]] 
         model@all.K[[length(model@all.K) + 1]] <- output@all.K[[k]] 
         model@all.IC[[length(model@all.IC) + 1]] <- output@all.IC[[k]] 
       }      

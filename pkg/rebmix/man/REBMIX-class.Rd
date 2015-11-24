@@ -36,7 +36,7 @@ a character vector of length \eqn{d} containing continuous or discrete parametri
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
 }
 \item{\code{theta2}:}{
-a vector of length \eqn{d} containing initial component parameters. The value is \code{NULL}.
+a vector of length \eqn{d} containing initial component parameters. Currently not used.
 }
 \item{\code{K}:}{
 a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the Parzen window or numbers of nearest
@@ -47,13 +47,13 @@ rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bin
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. 
 }
 \item{\code{y0}:}{
-a vector of length \eqn{d} containing origins. The default value is \code{NULL}.
+a vector of length \eqn{d} containing origins. The default value is \code{numeric(0)}.
 }
 \item{\code{ymin}:}{
-a vector of length \eqn{d} containing minimum observations. The default value is \code{NULL}.
+a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric(0)}.
 }
 \item{\code{ymax}:}{
-a vector of length \eqn{d} containing maximum observations. The default value is \code{NULL}.
+a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric(0)}.
 }
 \item{\code{ar}:}{
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.
