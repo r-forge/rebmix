@@ -24,6 +24,7 @@ number specifying the fraction by which the bins or nearest neighbours should be
 currently not used.
 }
 }
+\author{Marko Nagode}
 \examples{
 # Generate numbers of bins.
 

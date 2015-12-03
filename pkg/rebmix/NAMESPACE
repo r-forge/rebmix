@@ -2,44 +2,41 @@ useDynLib("rebmix")
 
 import("methods", "stats", "utils", "graphics", "grDevices")
 
-export("RNGMIX",
-       "REBMIX",
-       "RCLSMIX",
-       "logL",
-       "AIC",
-       "AIC3",
-       "AIC4",
-       "AICc",
-       "CAIC",
-       "BIC",
-       "HQC",
-       "MDL2",
-       "MDL5",
-       "AWE",
-       "CLC",
-       "ICL",
-       "ICLBIC",
-       "PRD",
-       "SSE",
-       "PC",
-       "demix",
+export("demix",
        "pemix",
        "dfmix",
        "pfmix",
-       "kseq",
-       "show")
+       "kseq")
 
 exportClasses("RNGMIX",
               "RNGMVNORM",
               "REBMIX",
-              "REBMVNORM")
+              "REBMVNORM",
+              "REBMIX.boot",
+              "REBMVNORM.boot")
 
 exportMethods("RNGMIX",
               "REBMIX",
-              "plot",
+              "RCLSMIX",
+              "logL",
+              "AIC",
+              "AIC3",
+              "AIC4",
+              "AICc",
+              "CAIC",
+              "BIC",
+              "HQC",
+              "MDL2",
+              "MDL5",
+              "AWE",
+              "CLC",
+              "ICL",
+              "ICLBIC",
+              "PRD",
+              "SSE",
+              "PC",
+              "show",
               "summary",
+              "plot",
               "coef",
               "boot")
-
-#S3method("print", "boot.REBMIX")
-#S3method("summary", "boot.REBMIX")

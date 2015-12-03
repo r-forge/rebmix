@@ -1,21 +1,35 @@
-\name{boot}
+\name{boot-methods}
+\docType{methods}
 \alias{boot}
+\alias{boot-methods}
+\alias{boot,REBMIX-method}
+\alias{boot,REBMVNORM-method}
+\alias{show,REBMIX.boot-method}
+\alias{show,REBMVNORM.boot-method}
+\alias{summary,REBMIX.boot-method}
+\alias{summary,REBMVNORM.boot-method}
 \title{
 Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Variation Estimation
 }
 \description{
-Returns the boot.REBMIX output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
-}
-\usage{
-boot.REBMIX(x, pos = 1, Bootstrap = "parametric", 
-     B = 100, n = NULL, replace = TRUE, prob = NULL, ...)
+Returns as default the boot output for mixtures of conditionally independent normal, 
+lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If 
+\code{x} is of class \code{RNGMVNORM} the boot output for mixtures of multivariate normal 
+component densities with unrestricted covariance matrices is returned.
+} 
+\usage{ 
+\S4method{boot}{REBMIX}(x = NULL, pos = 1, Bootstrap = "parametric", 
+     B = 100, n = numeric(0), replace = TRUE, prob = numeric(0), ...)
+## ... and for other signatures
+\S4method{summary}{REBMIX.boot}(object, ...)
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-an object of class \code{REBMIX}.
+see Methods section below.
 }
 \item{pos}{
-a desired row number in \code{x$summary} to be bootstrapped. The default value is \code{1}.
+a desired row number in \code{x@summary} to be bootstrapped. The default value is \code{1}.
 }
 \item{Bootstrap}{
 a character vector giving the bootstrap type. One of default \code{"parametric"} or \code{"nonparametric"}.
@@ -24,20 +38,31 @@ a character vector giving the bootstrap type. One of default \code{"parametric"}
 number of bootstrap datasets. The default value is \code{100}.
 }
 \item{n}{
-number of observations. The default value is \code{NULL}.
+number of observations. The default value is \code{numeric(0)}.
 }
 \item{replace}{
 logical. The sampling is with replacement if \code{TRUE}, see also \code{\link[base]{sample}}. The default value is \code{TRUE}.
 }
 \item{prob}{
-a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{NULL}.
+a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric(0)}.
 }
 \item{\dots}{
-further arguments to \code{\link[base]{sample}}.
+further arguments to \code{\link[base]{sample}}; additional arguments affecting the summary produced.
+}
+\item{object}{
+see Methods section below.
 }
 }
 \value{
 Returns an object of class \code{REBMIX.boot} or \code{REBMVNORM.boot}.
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
+}
 }
 \author{Marko Nagode}
 \references{

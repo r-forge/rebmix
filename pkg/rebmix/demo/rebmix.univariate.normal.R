@@ -124,7 +124,7 @@ normal <- array(data = list(NULL), dim = c(15, 3))
 
 for (i in 1:15) {
   for (j in 1:length(n)) {
-    normal[[i, j]] <- RNGMIX(Dataset = paste("normal_", i, "_", j, "_", 1:100, sep = ""), 
+    normal[[i, j]] <- RNGMIX(Dataset.name = paste("normal_", i, "_", j, "_", 1:100, sep = ""), 
       n = ceiling(N[[i]]$w * n[j]), Theta = N[[i]]$Theta)
   }
 }
@@ -140,13 +140,13 @@ for (j in 1:length(n)) {
   RootN <- as.integer(2 * n[j]^0.5) # Maximum v follows the RootN rule.
 
   for (i in 1:15) {
-    normalest[[i, j]] <- REBMIX(Dataset = normal[[i, j]]$Dataset,
+    normalest[[i, j]] <- REBMIX(Dataset = normal[[i, j]]@Dataset,
       Preprocessing = "histogram", cmax = 20, Criterion = "BIC",
-      Variables = "continuous", pdf = "normal", K = Sturges:Log10,
-      y0 = 0.0, ymin = normal[[i, j]]$ymin, ymax = normal[[i, j]]$ymax)
+      pdf = "normal", K = Sturges:Log10, y0 = 0.0, 
+      ymin = normal[[i, j]]@ymin, ymax = normal[[i, j]]@ymax)
 
-    table[i, j * 2 - 1] <- mean(as.numeric(normalest[[i, j]]$summary$c))  
-    table[i, j * 2] <- sd(as.numeric(normalest[[i, j]]$summary$c))
+    table[i, j * 2 - 1] <- mean(as.numeric(normalest[[i, j]]@summary$c))  
+    table[i, j * 2] <- sd(as.numeric(normalest[[i, j]]@summary$c))
   }
 }
 

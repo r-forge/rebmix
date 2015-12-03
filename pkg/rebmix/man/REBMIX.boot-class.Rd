@@ -2,10 +2,10 @@
 \docType{class}
 \alias{REBMIX.boot-class}
 \alias{REBMVNORM.boot-class}
-\title{Class "REBMIX.boot"}
+\title{Class \code{"REBMIX.boot"}}
 \description{Object of class \code{REBMIX.boot}.}
 \section{Objects from the Class}{
-  Objects can be created by \code{new("REBMIX.boot", ...)}. 
+Objects can be created by calls of the form \code{new("REBMIX.boot", ...)}. 
 }
 \section{Slots}{
 \describe{

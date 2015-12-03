@@ -3,7 +3,7 @@ setGeneric("RNGMIX",
     Dataset.name = character(0),
     rseed = -1,
     n = numeric(0),
-    Theta = list(0))
+    Theta = list(0), ...)
   standardGeneric("RNGMIX"))
 
 setGeneric("REBMIX",
@@ -28,7 +28,7 @@ setGeneric("coef",
     pos = 1, ...)
   standardGeneric("coef"))
   
-setGeneric("IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric("IC"))
+setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC"))
   
 setGeneric("logL", function(x = NULL, pos = 1, ...) standardGeneric("logL")) 
 setGeneric("AIC", function(x = NULL, pos = 1, ...) standardGeneric("AIC"))     
@@ -57,3 +57,9 @@ setGeneric("boot",
     replace = TRUE,
     prob = numeric(0), ...)
   standardGeneric("boot"))
+
+setGeneric("RCLSMIX",
+  function(x = list(0),
+    P = numeric(0),
+    Dataset = data.frame(0), ...)
+  standardGeneric("RCLSMIX"))

@@ -1,5 +1,8 @@
-\name{plot}
-\alias{plot}
+\name{plot-methods}
+\docType{methods}
+\alias{plot-methods}
+\alias{plot,REBMIX,missing-method}
+\alias{plot,REBMVNORM,missing-method}
 \title{
 Plots Univariate or Multivariate REBMIX Output
 }
@@ -9,22 +12,17 @@ or pairs of empirical and predictive bivariate marginal mixture densities for \e
 densities follow the histogram, Parzen window or \emph{k}-nearest neighbour approach.
 }
 \usage{
-\S4method{plot}{REBMIX, missing}(x, y, pos = 1, what = c("density"),
+\S4method{plot}{REBMIX,missing}(x, y, pos = 1, what = c("density"),
      nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
      lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
      contour.nlevels = 12, ...)
-\S4method{plot}{REBMVNORM, missing}(x, y, pos = 1, what = c("density"),
-     nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
-     lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
-     plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
-     contour.labcex = 0.8, contour.method = "flattest", 
-     contour.nlevels = 12, ...)     
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-an object of class \code{REBMIX} or \code{REBMVNORM}.
+see Methods section below.
 }
 \item{y}{
 currently not used.
@@ -100,6 +98,12 @@ further arguments to \code{\link[graphics]{par}}.
 \value{
 \code{par} is returned in an invisible named list. Such a list
 can be passed as an argument to \code{\link[graphics]{par}} to restore the parameter values.
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX", y = "missing")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM", y = "missing")}}{an object of class \code{REBMVNORM}.}
+}
 }
 \author{Marko Nagode}
 \references{

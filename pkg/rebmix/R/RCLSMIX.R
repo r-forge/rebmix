@@ -1,6 +1,8 @@
-RCLSMIX <- function(x,
-  P = NULL,
-  Dataset = NULL, ...)
+setMethod("RCLSMIX",
+          signature(x = "list"),
+function(x,
+  P,
+  Dataset, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -33,11 +35,11 @@ RCLSMIX <- function(x,
 
   Dataset <- as.data.frame(Dataset)
 
-  s <- nrow(x[[1]]$summary)
+  s <- nrow(x[[1]]@summary)
 
   if (o > 1) {
     for (i in 2:o) {
-      if (s != nrow(x[[i]]$summary)) {
+      if (s != nrow(x[[i]]@summary)) {
         stop(sQuote("x"), " list of classes REBMIX with equal number of classes is requested!", call. = FALSE)
       }
     }
@@ -67,21 +69,21 @@ RCLSMIX <- function(x,
 
   for (io in 1:o) {
     for (is in 1:s) {
-      Names <- names(x[[io]]$Theta[[is]])
+      Names <- names(x[[io]]@Theta[[is]])
     
-      pdf[[io, is]] <- as.character(unlist(x[[io]]$Theta[[is]][grep("pdf", Names)]))
+      pdf[[io, is]] <- as.character(unlist(x[[io]]@Theta[[is]][grep("pdf", Names)]))
     
-      theta1[[io, is]] <- as.numeric(unlist(x[[io]]$Theta[[is]][grep("theta1", Names)]))
+      theta1[[io, is]] <- as.numeric(unlist(x[[io]]@Theta[[is]][grep("theta1", Names)]))
       
       theta1[[io, is]][is.na(theta1[[io, is]])] <- 0
 
-      theta2[[io, is]] <- as.numeric(unlist(x[[io]]$Theta[[is]][grep("theta2", Names)]))
+      theta2[[io, is]] <- as.numeric(unlist(x[[io]]@Theta[[is]][grep("theta2", Names)]))
       
       theta2[[io, is]][is.na(theta2[[io, is]])] <- 0
 
-      c[[io, is]] <- length(x[[io]]$w[[is]])
+      c[[io, is]] <- length(x[[io]]@w[[is]])
 
-      w[[io, is]] <- x[[io]]$w[[is]]
+      w[[io, is]] <- x[[io]]@w[[is]]
       
       d[io] <- length(pdf[[io, is]]) / c[[io, is]]
     }
@@ -89,6 +91,7 @@ RCLSMIX <- function(x,
 
   if (s > 1) {
     message("RCLSMIX Version 2.7.3")
+    
     flush.console()
 
     output <- .C("RCLSMIX",
@@ -120,4 +123,4 @@ RCLSMIX <- function(x,
   rm(list = ls()[!(ls() %in% c("output"))])
 
   return(output)
-} ## RCLSMIX
+}) ## RCLSMIX

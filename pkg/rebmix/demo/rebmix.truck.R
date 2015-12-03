@@ -117,15 +117,17 @@ Log10 <- as.integer(10 * log10(n)) # Maximum v follows the Log10 rule.
 timerebmix <- system.time(truckestrebmix <- REBMIX(Dataset = 
   list(truck = truck),
   Preprocessing = "histogram", cmax = 10, Criterion = "AIC",
-  Variables = c("continuous", "continuous"), pdf = c("Weibull", "normal"),
+  pdf = c("Weibull", "normal"),
   K = kseq(Sturges, Log10, 0.07)))
 
-print(truckestrebmix)
+truckestrebmix
 AIC(truckestrebmix)
 timerebmix 
 
 plot(truckestrebmix, nrow = 2, ncol = 3, 
   what = c("density", "marginal", "IC", "logL"), npts = 1000)
 
-detach(package:rebmix, unload = TRUE)
-detach(package:flexmix, unload = TRUE)
+summary(truckestrebmix)
+
+detach("package:rebmix")
+detach("package:flexmix")

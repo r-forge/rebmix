@@ -1,25 +1,38 @@
-\name{MDL}
+\name{MDL-methods}
 \alias{MDL2}
 \alias{MDL5}
+\alias{MDL2-methods}
+\alias{MDL2,REBMIX-method}
+\alias{MDL2,REBMVNORM-method}
+\alias{MDL5-methods}
+\alias{MDL5,REBMIX-method}
+\alias{MDL5,REBMVNORM-method}
 \title{
 Minimum Description Length
 }
 \description{
-Returns the minimum desription length at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
+Returns the minimum desription length at \code{pos}.
 }
 \usage{
-MDL2(x, pos = 1, ...)
-MDL5(x, pos = 1, ...)
+\S4method{MDL2}{REBMIX}(x = NULL, pos = 1, ...)
+\S4method{MDL5}{REBMIX}(x = NULL, pos = 1, ...)
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-an object of class \code{REBMIX}.
+see Methods section below.
 }
 \item{pos}{
 a desired row number in \code{summary} for which the information criterion is calculated. The default value is \code{1}.
 }
 \item{\dots}{
 currently not used.
+}
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}

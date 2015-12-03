@@ -24,6 +24,7 @@ logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
 currently not used.
 }
 }
+\author{Marko Nagode}
 \examples{
 # Generate simulated dataset.
 
@@ -34,14 +35,14 @@ Theta <- list(pdf1 = rep("normal", 2),
   theta1.2 = c(3, 2),
   theta2.2 = c(20, 10))
 
-simulated <- RNGMIX(Dataset = "simulated",
+simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = c(15, 15),
   Theta = Theta)
 
 # Preprocess simulated dataset.
 
-y1y2F <- pemix(x = simulated$Dataset[[1]])
+y1y2F <- pemix(x = simulated@Dataset[[1]])
   
 y1y2F
 }

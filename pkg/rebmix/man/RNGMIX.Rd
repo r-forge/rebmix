@@ -1,26 +1,32 @@
-\name{RNGMIX}
+\name{RNGMIX-methods}
+\docType{methods}
 \alias{RNGMIX}
-\alias{show,RNGMIX}
-\alias{show,RNGMVNORM}
+\alias{RNGMIX-methods}
+\alias{RNGMIX,RNGMIX-method}
+\alias{RNGMIX,RNGMVNORM-method}
+\alias{show,RNGMIX-method}
+\alias{show,RNGMVNORM-method}
 \title{
 Random Univariate or Multivariate Finite Mixture Generation
 }
 \description{
-RNGMIX returns univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
-If \code{model = "RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
+Returns as default the RNGMIX univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
+If \code{model} equals \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
 }
 \usage{
-RNGMIX(model = "RNGMIX", Dataset.name = NULL, rseed = -1, n = NULL, Theta = NULL)
+\S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(0), 
+       rseed = -1, n = numeric(0), Theta = list(0), ...)
+## ... and for other signatures
 }
 \arguments{
 \item{model}{
-a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{"RNGMIX"}.
+see Methods section below.
 }
 \item{Dataset.name}{
 a character vector containing list names of data frames of size \eqn{n \times d} that \emph{d}-dimensional datasets are written in.
 }
 \item{rseed}{
-set the random seed to any negative integer value to initialize the sequence. The first file in \code{Dataset} corresponds to it.
+set the random seed to any negative integer value to initialize the sequence. The first file in \code{Dataset.name} corresponds to it.
 For each next file the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\mathrm{seed}} - 1}. The default value is \code{-1}.
 }
 \item{n}{
@@ -31,6 +37,9 @@ a list containing \eqn{c} parametric family types \code{pdfi}. One of \code{"nor
 Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
 Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
 }
+\item{\dots}{
+currently not used.
+}
 }
 \details{
 RNGMIX is based on the "Minimal" random number generator \code{ran1} of Park and Miller with the Bays-Durham shuffle and added safeguards that returns a uniform random deviate between 0.0 and 1.0 
@@ -38,6 +47,12 @@ RNGMIX is based on the "Minimal" random number generator \code{ran1} of Park and
 }
 \value{
 Returns an object of class \code{RNGMIX} or \code{RNGMVNORM}.
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(model = "RNGMIX")}}{a character string giving the default class name \code{"RNGMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "RNGMVNORM")}}{a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+}
 }
 \author{Marko Nagode}
 \references{

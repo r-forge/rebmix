@@ -1,24 +1,34 @@
-\name{coef}
+\name{coef-methods}
+\docType{methods}
 \alias{coef}
+\alias{coef-methods}
+\alias{coef,REBMIX-method}
+\alias{coef,REBMVNORM-method}
 \title{
 Prints Univariate or Multivariate REBMIX Coefficients
 }
 \description{
-Returns the \code{w} and \code{Theta} output at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
+Returns the \code{w} and \code{Theta} output at \code{pos}.
 }
 \usage{
-\S4method{coef}{REBMIX}(object, pos = 1, ...)
-\S4method{coef}{REBMVNORM}(object, pos = 1, ...)
+\S4method{coef}{REBMIX}(object = NULL, pos = 1, ...)
+## ... and for other signatures
 }
 \arguments{
 \item{object}{
-an object of class \code{REBMIX} or \code{REBMVNORM}.
+see Methods section below.
 }
 \item{pos}{
 a desired row number in \code{summary} to be printed. The default value is \code{1}.
 }
 \item{\dots}{
 currently not used..
+}
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}

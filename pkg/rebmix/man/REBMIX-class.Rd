@@ -2,10 +2,10 @@
 \docType{class}
 \alias{REBMIX-class}
 \alias{REBMVNORM-class}
-\title{Class "REBMIX"}
+\title{Class \code{"REBMIX"}}
 \description{Object of class \code{REBMIX}.}
 \section{Objects from the Class}{
-  Objects can be created by \code{new("REBMIX", ...)}. 
+Objects can be created by calls of the form \code{new("REBMIX", ...)}.
 }
 \section{Slots}{
 \describe{

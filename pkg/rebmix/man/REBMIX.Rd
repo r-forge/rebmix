@@ -1,22 +1,31 @@
-\name{REBMIX}
+\name{REBMIX-methods}
+\docType{methods}
 \alias{REBMIX}
-\alias{show,REBMIX}
-\alias{show,REBMVNORM}
+\alias{REBMIX-methods}
+\alias{REBMIX,REBMIX-method}
+\alias{REBMIX,REBMVNORM-method}
+\alias{show,REBMIX-method}
+\alias{show,REBMVNORM-method}
+\alias{summary,REBMIX-method}
+\alias{summary,REBMVNORM-method}
 \title{
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model = "REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
+Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
 }
 \usage{
-REBMIX(model = "REBMIX", Dataset = NULL, Preprocessing = NULL, 
-       cmax = 15, Criterion = "AIC", pdf = NULL, theta1 = NULL, 
-       theta2 = NULL, K = NULL, y0 = NULL, ymin = NULL, 
-       ymax = NULL, ar = 0.1, Restraints = "loose", ...)
+\S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(0), Preprocessing = character(0), 
+       cmax = 15, Criterion = "AIC", pdf = character(0), theta1 = numeric(0), 
+       theta2 = numeric(0), K = numeric(0), y0 = numeric(0), ymin = numeric(0), 
+       ymax = numeric(0), ar = 0.1, Restraints = "loose", ...)
+## ... and for other signatures
+\S4method{summary}{REBMIX}(object, ...)   
+## ... and for other signatures 
 }
 \arguments{
 \item{model}{
-a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices. The default value is \code{"REBMIX"}.
+see Methods section below.
 }
 \item{Dataset}{
 a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
@@ -42,7 +51,7 @@ a character vector of length \eqn{d} containing continuous or discrete parametri
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
 }
 \item{theta2}{
-a vector of length \eqn{d} containing initial component parameters. The value is \code{NULL}.
+a vector of length \eqn{d} containing initial component parameters. Currently not used.
 }
 \item{K}{
 a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the Parzen window or numbers of nearest
@@ -53,13 +62,13 @@ rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bin
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. 
 }
 \item{y0}{
-a vector of length \eqn{d} containing origins. The default value is \code{NULL}.
+a vector of length \eqn{d} containing origins. The default value is \code{numeric(0)}.
 }
 \item{ymin}{
-a vector of length \eqn{d} containing minimum observations. The default value is \code{NULL}.
+a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric(0)}.
 }
 \item{ymax}{
-a vector of length \eqn{d} containing maximum observations. The default value is \code{NULL}.
+a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric(0)}.
 }
 \item{ar}{
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.
@@ -68,12 +77,23 @@ acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.
 a character string giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
 The rigid restraints are obsolete and applicable for well separated components only. 
 }
-\item{...}{
-currently not used. 
+\item{object}{
+see Methods section below.
+}
+\item{\dots}{
+currently not used; additional arguments affecting the summary produced.
 }
 }
 \value{
 Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(model = "REBMIX")}}{a character string giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "REBMVNORM")}}{a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
+}
 }
 \author{Marko Nagode}
 \references{
@@ -91,7 +111,9 @@ Engineering & System Safety, 91(4):388-397, 2006. \url{http://dx.doi.org/10.1016
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
 Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{http://dx.doi.org/10.1080/03610920903480890}.\cr\cr
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.\cr\cr
+M. Nagode. Finite mixture modeling via REBMIX.
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625}.
 }
 \examples{
 # Generate and plot univariate normal dataset.

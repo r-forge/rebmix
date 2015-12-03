@@ -1,23 +1,33 @@
-\name{ICL}
+\name{ICL-methods}
 \alias{ICL}
+\alias{ICL-methods}
+\alias{ICL,REBMIX-method}
+\alias{ICL,REBMVNORM-method}
 \title{
 Integrated Classification Likelihood Criterion
 }
 \description{
-Returns the integrated classification likelihood criterion at \code{pos} for classes \code{REBMIX} and \code{REBMVNORM}.
+Returns the integrated classification likelihood criterion at \code{pos}.
 }
 \usage{
-ICL(x, pos = 1, ...)
+\S4method{ICL}{REBMIX}(x = NULL, pos = 1, ...)
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-an object of class \code{REBMIX}.
+see Methods section below.
 }
 \item{pos}{
 a desired row number in \code{summary} for which the information criterion is calculated. The default value is \code{1}.
 }
 \item{\dots}{
 currently not used.
+}
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}

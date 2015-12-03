@@ -1,5 +1,8 @@
-\name{RCLSMIX}
+\name{RCLSMIX-methods}
+\docType{methods}
 \alias{RCLSMIX}
+\alias{RCLSMIX-methods}
+\alias{RCLSMIX,list-method}
 \title{
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
@@ -7,7 +10,7 @@ Predicts Class Membership Based Upon a Model Trained by REBMIX
 Takes a list of objects of class \code{REBMIX}, prior probabilities \code{P} and data frame \code{Dataset} with test classes and returns predictive classes.
 }
 \usage{
-RCLSMIX(x, P = NULL, Dataset = NULL, ...)      
+\S4method{RCLSMIX}{list}(x, P = numeric(0), Dataset = data.frame(0), ...)      
 }
 \arguments{
 \item{x}{
@@ -26,6 +29,12 @@ potential further arguments of the method.
 \value{
 predictive classes.
 }
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "list")}}{}
+}
+}
+\author{Marko Nagode}
 \references{
 R. O. Duda and P. E. Hart. Pattern Classification and Scene Analysis. John Wiley & Sons, New
 York, 1973.

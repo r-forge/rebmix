@@ -422,6 +422,12 @@ function(object)
   rm(list = ls())
 }) ## show
 
+setMethod("show",
+          signature(object = "REBMVNORM"),
+function(object)
+{
+}) ## show
+
 ## Class REBMIX.boot
 
 setClass("REBMIX.boot",
@@ -511,6 +517,162 @@ function(.Object, ...,
     B = B,
     n = n)
 })
+
+setMethod("show",
+          signature(object = "REBMIX.boot"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMIX.boot is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"c\":", "\n", sep = "")
+
+  print(object@c, quote = FALSE)
+  
+  cat("Slot \"c.se\":", "\n", sep = "")
+
+  print(object@c.se, quote = FALSE)  
+
+  cat("Slot \"c.cv\":", "\n", sep = "")
+
+  print(object@c.cv, quote = FALSE)
+  
+  cat("Slot \"c.mode\":", "\n", sep = "")
+
+  print(object@c.mode, quote = FALSE) 
+  
+  cat("Slot \"c.prob\":", "\n", sep = "")
+
+  print(object@c.prob, quote = FALSE)        
+
+  rm(list = ls())
+}) ## show
+
+## Class REBMVNORM.boot
+
+setClass("REBMVNORM.boot",
+slots = c(x = "REBMVNORM",
+  pos = "numeric",
+  Bootstrap = "character",
+  B = "numeric", 
+  n = "numeric",
+  replace = "logical", 
+  prob = "numeric",
+  c = "numeric",
+  c.se = "numeric",
+  c.cv = "numeric",
+  c.mode = "numeric",
+  c.prob = "numeric",
+  w = "matrix",
+  w.se = "numeric",
+  w.cv = "numeric",
+  Theta = "list",
+  Theta.se = "list",
+  Theta.cv = "list"),
+prototype = list(pos = 1))
+
+setMethod("initialize", "REBMVNORM.boot", 
+function(.Object, ...,
+  x,
+  pos,
+  Bootstrap,
+  B,
+  n)
+{
+  # x
+
+  if (missing(x)) {
+    stop(sQuote("x"), " object of class REBMVNORM is requested!", call. = FALSE)
+  }
+  
+  # pos.
+
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }  
+  
+  # Bootstrap.
+  
+  Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
+
+  # B.
+  
+  if (!is.wholenumber(B)) {
+    stop(sQuote("B"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(B) <- 1
+
+  if (B < 1) {
+    stop(sQuote("B"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  # n.
+  
+  nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
+  
+  if (length(n) == 0) {
+    n <- nmax
+  }
+  else {
+    if (!is.wholenumber(n)) {
+      stop(sQuote("n"), " integer is requested!", call. = FALSE)
+    }
+  
+    if ((n < 1) || (n > nmax)) {
+      stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
+    }
+  }    
+  
+  callNextMethod(.Object, ...,
+    x = x,
+    pos = pos,
+    Bootstrap = Bootstrap,
+    B = B,
+    n = n)
+})
+
+setMethod("show",
+          signature(object = "REBMVNORM.boot"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMVNORM.boot is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"c\":", "\n", sep = "")
+
+  print(object@c, quote = FALSE)
+  
+  cat("Slot \"c.se\":", "\n", sep = "")
+
+  print(object@c.se, quote = FALSE)  
+
+  cat("Slot \"c.cv\":", "\n", sep = "")
+
+  print(object@c.cv, quote = FALSE)
+  
+  cat("Slot \"c.mode\":", "\n", sep = "")
+
+  print(object@c.mode, quote = FALSE) 
+  
+  cat("Slot \"c.prob\":", "\n", sep = "")
+
+  print(object@c.prob, quote = FALSE)        
+
+  rm(list = ls())
+}) ## show
 
 
 

@@ -6,9 +6,9 @@ Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
 Title: Rough - Enhanced - Bayesian Finite Mixture Modeling
 Suggests: flexmix, mclust, mixtools
 Description: A collection of R functions for analysing univariate and multivariate finite mixtures. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac parametric families.
-Imports: stats, utils, graphics, grDevices
+Imports: methods, stats, utils, graphics, grDevices
 License: GPL (>= 2)
-Collate: allClasses.R allGenerics.R REBMIX.R RNGMIX.R as.number.R boot.REBMIX.R coef.REBMIX.R ddirac.R defaults.R demix.R densHistogram.x.R densHistogram.xy.R densKNearestNeighbour.x.R densKNearestNeighbour.xy.R densParzenWindow.x.R densParzenWindow.xy.R dfmix.R dfmix.x.R dfmix.xy.R dist.x.R dist.xy.R extractTheta.R IC.R is.wholenumber.R kseq.R pdirac.R pemix.R pfmix.R pfmix.x.R pfmix.xy.R plot.REBMIX.R print.boot.REBMIX.R RCLSMIX.R summary.boot.REBMIX.R summary.REBMIX.R
+Collate: allClasses.R allGenerics.R REBMIX.R RNGMIX.R as.number.R boot.REBMIX.R coef.REBMIX.R ddirac.R defaults.R demix.R densHistogram.x.R densHistogram.xy.R densKNearestNeighbour.x.R densKNearestNeighbour.xy.R densParzenWindow.x.R densParzenWindow.xy.R dfmix.R dfmix.x.R dfmix.xy.R dist.x.R dist.xy.R extractTheta.R IC.R is.wholenumber.R kseq.R pdirac.R pemix.R pfmix.R pfmix.x.R pfmix.xy.R plot.REBMIX.R RCLSMIX.R summary.R
 Author: Marko Nagode [aut, cre]
 Maintainer: Marko Nagode <marko.nagode@fs.uni-lj.si>
 

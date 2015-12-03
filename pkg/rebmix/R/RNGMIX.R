@@ -1,6 +1,6 @@
 setMethod("RNGMIX",
           signature(model = "RNGMIX"),
-function(model)
+function(model, ...)
 { 
   Names <- names(model@Theta)
 
@@ -67,11 +67,11 @@ function(model)
   rm(list = ls()[!(ls() %in% c("model"))])
 
   return(model)  
-}) ## REBMIX
+}) ## RNGMIX
 
 setMethod("RNGMIX",
           signature(model = "RNGMVNORM"),
-function(model)
+function(model, ...)
 { 
   Names <- names(model@Theta)
 
@@ -138,7 +138,7 @@ function(model)
   rm(list = ls()[!(ls() %in% c("model"))])
 
   return(model)  
-}) ## REBMIX
+}) ## RNGMIX
 
 setMethod("RNGMIX",
           signature(model = "ANY"),

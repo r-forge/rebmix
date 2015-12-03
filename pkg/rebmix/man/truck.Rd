@@ -19,6 +19,7 @@ data("truck")
 }
 }
 }
+\author{Mitja Franko}
 \examples{
 data("truck")
 }

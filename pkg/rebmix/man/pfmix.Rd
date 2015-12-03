@@ -31,6 +31,7 @@ logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
 currently not used.
 }
 }
+\author{Marko Nagode}
 \examples{
 # Generate simulated dataset.
 
@@ -41,14 +42,14 @@ Theta <- list(pdf1 = c("normal", "Weibull"),
   theta1.2 = c(20, 2),
   theta2.2 = c(2, 10))
 
-simulated <- RNGMIX(Dataset = "simulated",
+simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = c(15, 25),
   Theta = Theta)
 
 # Estimate number of components, component weights and component parameters.
 
-simulatedest <- REBMIX(Dataset = simulated$Dataset,
+simulatedest <- REBMIX(Dataset = simulated@Dataset,
   Preprocessing = "Parzen window",
   cmax = 4,
   Criterion = "BIC",
@@ -59,21 +60,21 @@ simulatedest <- REBMIX(Dataset = simulated$Dataset,
 
 i <- 1
 
-x <- simulatedest$Dataset[[1]][, i]
+x <- simulatedest@Dataset[[1]][, i]
 
 F <- pfmix(x = x,
-  w = simulatedest$w[[1]],
-  Theta = lapply(simulatedest$Theta[[1]], "[", i))
+  w = simulatedest@w[[1]],
+  Theta = lapply(simulatedest@Theta[[1]], "[", i))
   
 plot(x, F)
 
 i <- 2
 
-x <- simulatedest$Dataset[[1]][, i]
+x <- simulatedest@Dataset[[1]][, i]
 
 F <- pfmix(x = x,
-  w = simulatedest$w[[1]],
-  Theta = lapply(simulatedest$Theta[[1]], "[", i))
+  w = simulatedest@w[[1]],
+  Theta = lapply(simulatedest@Theta[[1]], "[", i))
   
 plot(x, F)
 }
@@ -81,6 +82,8 @@ plot(x, F)
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
 Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{http://dx.doi.org/10.1080/03610920903480890}.\cr\cr
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.\cr\cr
+M. Nagode. Finite mixture modeling via REBMIX.
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625}.
 }
 \keyword{distributions}

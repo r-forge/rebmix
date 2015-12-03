@@ -46,11 +46,11 @@ normal <- RNGMIX(Dataset = paste("normal_", 1:100, sep = ""), n = n, Theta = The
 Sturges <- as.integer(1 + log2(sum(n))) # Minimum v follows the Sturges rule.
 Log10 <- as.integer(10 * log10(sum(n))) # Maximum v follows the Log10 rule.
 
-normalest <- REBMIX(normal$Dataset, Preprocessing = "histogram", K = Sturges:Log10,
-  Criterion = "BIC", Variables = rep("continuous", 4), pdf = rep("normal", 4))
+normalest <- REBMIX(Dataset = normal@Dataset, Preprocessing = "histogram",
+  K = Sturges:Log10, Criterion = "BIC", pdf = rep("normal", 4))
 
-c <- as.numeric(normalest$summary$c)
-IC <- as.numeric(normalest$summary$IC)
+c <- as.numeric(normalest@summary$c)
+IC <- as.numeric(normalest@summary$IC)
 
 summary(c)
 summary(IC, digits = 5)

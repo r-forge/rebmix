@@ -40,9 +40,8 @@ mixed <- RNGMIX(Dataset = "mixed", n = n, Theta = Theta)
 Sturges <- as.integer(1 + log2(sum(n))) # Minimum v follows the Sturges rule.
 Log10 <- as.integer(10 * log10(sum(n))) # Maximum v follows the Log10 rule.
 
-mixedest <- REBMIX(Dataset = mixed$Dataset, Preprocessing = "histogram", cmax = 9,
-  Criterion = "BIC", Variables = c("continuous", "discrete", "discrete", "continuous"),
-  pdf = c("lognormal", "Poisson", "binomial", "Weibull"),
+mixedest <- REBMIX(Dataset = mixed@Dataset, Preprocessing = "histogram", cmax = 9,
+  Criterion = "BIC", pdf = c("lognormal", "Poisson", "binomial", "Weibull"),
   theta1 = c(NA, NA, 10, NA), K = kseq(Sturges, Log10, 0.1))
 
 #library("tikzDevice") # Uncomment to use tikzDevice package.
@@ -52,7 +51,7 @@ plot(mixedest, what = c("dens", "marg", "IC", "logL"), nrow = 4, ncol = 3, npts 
 
 # Bootstrap finite mixture.
 
-mixedboot <- boot.REBMIX(x = mixedest, pos = 1, Bootstrap = "p", 
-  B = 100, n = NULL, replace = TRUE, prob = NULL)
+mixedboot <- boot(x = mixedest, pos = 1, Bootstrap = "p", 
+  B = 100, n = numeric(0), replace = TRUE, prob = numeric(0))
 
 mixedboot

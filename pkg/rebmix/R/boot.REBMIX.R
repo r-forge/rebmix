@@ -74,13 +74,13 @@ function(x,
   
   c <- as.integer(names(freq)[which.max(freq)])
   
-  w <- bsampleest@w[as.numeric(bsampleest@summary$c) == c]
-  
-  Theta <- bsampleest@Theta[as.numeric(bsampleest@summary$c) == c]
-  
   model@c <- as.numeric(bsampleest@summary$c)
-  model@c.se <- sd(as.numeric(bsampleest@summary$c))
-  model@c.cv <- model@c.se / mean(as.numeric(bsampleest@summary$c))
+  model@c.se <- sd(model@c)
+  model@c.cv <- model@c.se / mean(model@c)  
+  
+  w <- bsampleest@w[model@c == c]
+  
+  Theta <- bsampleest@Theta[model@c == c]
   
   model@c.mode <- c
   model@c.prob <- length(w) / model@B
@@ -142,3 +142,14 @@ function(x,
   return(model)  
 }) ## boot
 
+setMethod("boot", 
+          signature(x = "REBMVNORM"),
+function(x,
+  pos,
+  Bootstrap,
+  B, 
+  n,
+  replace, 
+  prob, ...)
+{
+}) ## boot

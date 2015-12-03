@@ -248,6 +248,12 @@ function(model, ...)
 
   return(model)
 }) ## REBMIX
+
+setMethod("REBMIX",
+          signature(model = "REBMVNORM"),
+function(model, ...)
+{
+}) ## REBMIX
            
 setMethod("REBMIX",
           signature(model = "ANY"),

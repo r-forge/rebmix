@@ -117,15 +117,17 @@ Log10 <- as.integer(10 * log10(n)) # Maximum v follows the Log10 rule.
 timerebmix <- system.time(weibullnormalestrebmix <- REBMIX(Dataset = 
   list(weibullnormal = weibullnormal),
   Preprocessing = "histogram", cmax = 5, Criterion = "AIC",
-  Variables = c("continuous", "continuous"), pdf = c("Weibull", "normal"),
+  pdf = c("Weibull", "normal"),
   K = kseq(Sturges, Log10, 0.07)))
 
-print(weibullnormalestrebmix)
+weibullnormalestrebmix
 AIC(weibullnormalestrebmix)
 timerebmix 
 
 plot(weibullnormalestrebmix, nrow = 2, ncol = 3, 
   what = c("density", "marginal", "IC", "logL"), npts = 1000)
+  
+summary(weibullnormalestrebmix)
 
-detach(package:rebmix, unload = TRUE)
-detach(package:flexmix, unload = TRUE)
+detach("package:rebmix")
+detach("package:flexmix")

@@ -2,10 +2,10 @@
 \docType{class}
 \alias{RNGMIX-class}
 \alias{RNGMVNORM-class}
-\title{Class "RNGMIX"}
+\title{Class \code{"RNGMIX"}}
 \description{Object of class \code{RNGMIX}.}
 \section{Objects from the Class}{
-  Objects can be created by \code{new("RNGMIX", ...)}. 
+Objects can be created by calls of the form \code{new("RNGMIX", ...)}. 
 }
 \section{Slots}{
 \describe{
@@ -13,7 +13,7 @@
 a character vector containing list names of data frames of size \eqn{n \times d} that \emph{d}-dimensional datasets are written in.
 }
 \item{\code{rseed}:}{
-set the random seed to any negative integer value to initialize the sequence. The first file in \code{Dataset} corresponds to it.
+set the random seed to any negative integer value to initialize the sequence. The first file in \code{Dataset.name} corresponds to it.
 For each next file the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\mathrm{seed}} - 1}. The default value is \code{-1}.
 }
 \item{\code{n}:}{

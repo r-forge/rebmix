@@ -1,4 +1,6 @@
-.plot <- function(x,
+setMethod("plot", 
+          signature(x = "REBMIX", y = "missing"),
+function(x,
   y,
   pos = 1,
   what = c("density"),
@@ -20,7 +22,7 @@
   contour.nlevels = 12, ...)
 {
   if (missing(x)) {
-    stop(sQuote("x"), " object of class REBMIX or REBMVNORM is requested!", call. = FALSE)
+    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
   }
 
   if (!is.wholenumber(pos)) {
@@ -1098,12 +1100,29 @@
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-} ## .plot
+}) ## plot
 
 setMethod("plot", 
-          signature(x = "REBMIX", y = "missing"),
-          definition = .plot)
-          
-setMethod("plot", 
           signature(x = "REBMVNORM", y = "missing"),
-          definition = .plot)          
+function(x,
+  y,
+  pos = 1,
+  what = c("density"),
+  nrow = 1,
+  ncol = 1,
+  npts = 200,
+  n = 200,
+  cex = 0.8,
+  fg = "black",
+  lty = "solid",
+  lwd = 1,
+  pty = "m",
+  tcl = 0.5,
+  plot.cex = 0.8,
+  plot.pch = 19,
+  contour.drawlabels = FALSE,
+  contour.labcex = 0.8,
+  contour.method = "flattest",
+  contour.nlevels = 12, ...)
+{
+}) # plot         

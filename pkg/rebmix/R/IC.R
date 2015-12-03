@@ -1,4 +1,4 @@
-setMethod("IC",
+setMethod(".IC",
           signature(x = "REBMIX"),
 function(x, 
   Criterion = "AIC",
@@ -79,7 +79,7 @@ function(x,
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in IC!", call. = FALSE); return(NA)
+      stop("in .IC!", call. = FALSE); return(NA)
     }
   } 
   else 
@@ -105,7 +105,7 @@ function(x,
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in IC!", call. = FALSE); return(NA)
+      stop("in .IC!", call. = FALSE); return(NA)
     }
   } 
   else
@@ -134,14 +134,22 @@ function(x,
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in IC!", call. = FALSE); return(NA)
+      stop("in .IC!", call. = FALSE); return(NA)
     }
   }
   
   rm(list = ls()[!(ls() %in% c("output"))])
 
   invisible(output)
-}) ## IC
+}) ## .IC
+
+setMethod(".IC",
+          signature(x = "REBMVNORM"),
+function(x, 
+  Criterion = "AIC",
+  pos = 1, ...)
+{
+}) ## .IC
 
 setMethod("logL",
           signature(x = "ANY"),
@@ -150,7 +158,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC", pos = pos, ...)
 
   output <- output$logL
   
@@ -168,7 +176,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -186,7 +194,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AIC3", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC3", pos = pos, ...)
   
   output <- output$IC
   
@@ -204,7 +212,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AIC4", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AIC4", pos = pos, ...)
   
   output <- output$IC
   
@@ -222,7 +230,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AICc", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AICc", pos = pos, ...)
   
   output <- output$IC
   
@@ -240,7 +248,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "BIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "BIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -258,7 +266,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "CAIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "CAIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -276,7 +284,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "HQC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "HQC", pos = pos, ...)
   
   output <- output$IC
   
@@ -294,7 +302,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "MDL2", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "MDL2", pos = pos, ...)
   
   output <- output$IC
   
@@ -312,7 +320,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "MDL5", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "MDL5", pos = pos, ...)
   
   output <- output$IC
   
@@ -330,7 +338,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "AWE", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "AWE", pos = pos, ...)
   
   output <- output$IC
   
@@ -348,7 +356,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "CLC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "CLC", pos = pos, ...)
   
   output <- output$IC
   
@@ -366,7 +374,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "ICL", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "ICL", pos = pos, ...)
   
   output <- output$IC
   
@@ -384,7 +392,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "ICL-BIC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "ICL-BIC", pos = pos, ...)
   
   output <- output$IC
   
@@ -402,7 +410,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "D", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "D", pos = pos, ...)
   
   output <- output$IC
   
@@ -420,7 +428,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "SSE", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "SSE", pos = pos, ...)
 
   output <- output$IC
   
@@ -438,7 +446,7 @@ function(x,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  output <- IC(x = x, Criterion = "PC", pos = pos, ...)
+  output <- .IC(x = x, Criterion = "PC", pos = pos, ...)
   
   output <- output$IC
   

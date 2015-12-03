@@ -19,6 +19,7 @@ data("weibullnormal")
 }
 }
 }
+\author{Mitja Franko}
 \examples{
 data("weibullnormal")
 }
