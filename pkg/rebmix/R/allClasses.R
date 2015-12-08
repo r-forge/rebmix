@@ -40,7 +40,7 @@ function(.Object, ...,
 {
   # n.
   
-  if (length(n) == 0) {
+  if (missing(n)) {
     stop(sQuote("n"), " must not be empty!", call. = FALSE)
   }
 
@@ -56,7 +56,7 @@ function(.Object, ...,
   
   # Theta.  
   
-  if (length(Theta) == 0) {
+  if (missing(Theta)) {
     stop(sQuote("Theta"), " must not be empty!", call. = FALSE)
   }
   
@@ -349,23 +349,43 @@ function(.Object, ...,
 {
   # Dataset.
   
+  if (missing(Dataset)) {
+    stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+  }  
+  
   if (is.null(names(Dataset))) {
     names(Dataset) <- paste("dataset", 1:length(Dataset), sep = "")
   }
 
   # Preprocessing.
+  
+  if (missing(Preprocessing)) {
+    stop(sQuote("Preprocessing"), " must not be empty!", call. = FALSE)
+  }   
 
   Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = TRUE)
 
   # Criterion.
+  
+  if (missing(Criterion)) {
+    stop(sQuote("Criterion"), " must not be empty!", call. = FALSE)
+  }   
 
   Criterion <- match.arg(Criterion, .rebmix$Criterion, several.ok = TRUE)
 
   # pdf.
+  
+  if (missing(pdf)) {
+    stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
+  }   
 
   pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
 
   # Restraints.
+  
+  if (missing(Restraints)) {
+    stop(sQuote("Restraints"), " must not be empty!", call. = FALSE)
+  }   
 
   Restraints <- match.arg(Restraints, .rebmix$Restraints, several.ok = FALSE)
   
@@ -459,13 +479,17 @@ function(.Object, ...,
   B,
   n)
 {
-  # x
+  # x.
 
   if (missing(x)) {
-    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
+    stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
   
   # pos.
+  
+  if (missing(pos)) {
+    stop(sQuote("pos"), " must not be empty!", call. = FALSE)
+  }  
 
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
@@ -479,9 +503,17 @@ function(.Object, ...,
   
   # Bootstrap.
   
+  if (missing(Bootstrap)) {
+    stop(sQuote("Bootstrap"), " must not be empty!", call. = FALSE)
+  }    
+  
   Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
 
   # B.
+  
+  if (missing(B)) {
+    stop(sQuote("B"), " must not be empty!", call. = FALSE)
+  }    
   
   if (!is.wholenumber(B)) {
     stop(sQuote("B"), " integer is requested!", call. = FALSE)
@@ -494,6 +526,10 @@ function(.Object, ...,
   }
   
   # n.
+  
+  if (missing(n)) {
+    stop(sQuote("n"), " must not be empty!", call. = FALSE)
+  }    
   
   nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
   
@@ -582,13 +618,17 @@ function(.Object, ...,
   B,
   n)
 {
-  # x
+  # x.
 
   if (missing(x)) {
-    stop(sQuote("x"), " object of class REBMVNORM is requested!", call. = FALSE)
+    stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
   
   # pos.
+  
+  if (missing(pos)) {
+    stop(sQuote("pos"), " must not be empty!", call. = FALSE)
+  }  
 
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
@@ -601,6 +641,10 @@ function(.Object, ...,
   }  
   
   # Bootstrap.
+  
+  if (missing(Bootstrap)) {
+    stop(sQuote("Bootstrap"), " must not be empty!", call. = FALSE)
+  }  
   
   Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
 
@@ -617,6 +661,10 @@ function(.Object, ...,
   }
   
   # n.
+  
+  if (missing(n)) {
+    stop(sQuote("n"), " must not be empty!", call. = FALSE)
+  }   
   
   nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
   
@@ -674,5 +722,90 @@ function(object)
   rm(list = ls())
 }) ## show
 
+## Class RCLSMIX
 
+setClass("RCLSMIX",
+slots = c(x = "list",
+  Dataset = "data.frame",
+  o = "numeric",
+  s = "numeric",
+  ntrain = "numeric",
+  P = "numeric",
+  ntest = "numeric",
+  Z = "factor"))
+
+setMethod("initialize", "RCLSMIX", 
+function(.Object, ...,
+  x,
+  Dataset)
+{
+  # x.
+
+  if (missing(x)) {
+    stop(sQuote("x"), " must not be empty!", call. = FALSE)
+  } 
+  
+  if (!all(unlist(lapply(x, class)) == "REBMIX")) {
+    stop(sQuote("x"), " list of REBMIX objects is requested!", call. = FALSE)
+  }
+  
+  # o.
+  
+  .Object@o <- length(x)
+  
+  # s.
+  
+  s <- unique(unlist(lapply(x, function(x) length(x@Dataset))))
+  
+  if (length(s) != 1) {
+    stop("lengths of ", sQuote("Dataset"), " in ", sQuote("x"), " must be equal!", call. = FALSE)
+  }
+  
+  if (s == 1) {
+    stop(sQuote("s"), " must be greater than 1!", call. = FALSE)
+  }  
+  
+  .Object@s <- s
+  
+  # ntrain.
+  
+  ntrain <- matrix(unlist(lapply(x, function(x) lapply(x@Dataset, nrow))), ncol = s, byrow = TRUE)
+  
+  ntrain <- ntrain[!duplicated(ntrain), ] 
+  
+  if (length(ntrain) != s) {
+    stop(sQuote("Dataset"), " in ", sQuote("x"), " numbers of rows in data frames must be equal!", call. = FALSE)
+  }
+  
+  .Object@ntrain <- ntrain
+  
+  # P.
+  
+  .Object@P <- ntrain / sum(ntrain)
+  
+  # Dataset.
+  
+  if (missing(Dataset)) {
+    stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+  }  
+  
+  # ntest.
+  
+  .Object@ntest <- nrow(Dataset)
+  
+  callNextMethod(.Object, ...,
+    x = x,
+    Dataset = Dataset)
+})
+
+## Class RCLSMVNORM
+
+setClass("RCLSMVNORM",
+slots = c(x = "list",
+  Dataset = "data.frame",
+  s = "numeric",
+  ntrain = "numeric",
+  P = "numeric",
+  ntest = "numeric",
+  Z = "factor"))
 

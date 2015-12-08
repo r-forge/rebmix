@@ -13,11 +13,12 @@ exportClasses("RNGMIX",
               "REBMIX",
               "REBMVNORM",
               "REBMIX.boot",
-              "REBMVNORM.boot")
+              "REBMVNORM.boot",
+              "RCLSMIX",
+              "RCLSMVNORM")
 
 exportMethods("RNGMIX",
               "REBMIX",
-              "RCLSMIX",
               "logL",
               "AIC",
               "AIC3",
