@@ -279,19 +279,19 @@ function(model,
   flush.console()
   
   model <- new(model,
-    Dataset = Dataset,
-    Preprocessing = Preprocessing,
-    cmax = cmax,
-    Criterion = Criterion,
-    pdf = pdf,
-    theta1 = theta1,
-    theta2 = theta2,
-    K = K,
-    y0 = y0,
-    ymin = ymin,
-    ymax = ymax,                                      
-    ar = ar,   
-    Restraints = Restraints)
+     Dataset = Dataset,
+     Preprocessing = Preprocessing,
+     cmax = cmax,
+     Criterion = Criterion,
+     pdf = pdf,
+     theta1 = theta1,
+     theta2 = theta2,
+     K = K,
+     y0 = y0,
+     ymin = ymin,
+     ymax = ymax,                                      
+     ar = ar,   
+     Restraints = Restraints)
     
   Preprocessing <- model@Preprocessing; K <- model@K; Criterion <- model@Criterion
   

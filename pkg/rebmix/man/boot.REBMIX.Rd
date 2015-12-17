@@ -32,7 +32,7 @@ see Methods section below.
 a desired row number in \code{x@summary} to be bootstrapped. The default value is \code{1}.
 }
 \item{Bootstrap}{
-a character vector giving the bootstrap type. One of default \code{"parametric"} or \code{"nonparametric"}.
+a character giving the bootstrap type. One of default \code{"parametric"} or \code{"nonparametric"}.
 }
 \item{B}{
 number of bootstrap datasets. The default value is \code{100}.

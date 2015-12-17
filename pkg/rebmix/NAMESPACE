@@ -19,6 +19,7 @@ exportClasses("RNGMIX",
 
 exportMethods("RNGMIX",
               "REBMIX",
+              "RCLSMIX",
               "logL",
               "AIC",
               "AIC3",

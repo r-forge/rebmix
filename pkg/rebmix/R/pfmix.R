@@ -20,7 +20,7 @@ pfmix <- function(x = NULL, w = NULL, Theta = NULL, lower.tail = TRUE, log.p = F
   }  
   
   if (!is.numeric(w)) {
-    stop(sQuote("w"), " numeric is requested!", call. = FALSE)
+    stop(sQuote("w"), " numeric vector is requested!", call. = FALSE)
   }
   
   if (!all(w > 0.0)) {

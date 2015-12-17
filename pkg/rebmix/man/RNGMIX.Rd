@@ -30,7 +30,7 @@ set the random seed to any negative integer value to initialize the sequence. Th
 For each next file the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\mathrm{seed}} - 1}. The default value is \code{-1}.
 }
 \item{n}{
-a vector containing number of observations in classes \eqn{n_{l}}, where number of observations \eqn{n = \sum_{l = 1}^{c} n_{l}}.
+a vector containing numbers of observations in classes \eqn{n_{l}}, where number of observations \eqn{n = \sum_{l = 1}^{c} n_{l}}.
 }
 \item{Theta}{
 a list containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
@@ -50,8 +50,8 @@ Returns an object of class \code{RNGMIX} or \code{RNGMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(model = "RNGMIX")}}{a character string giving the default class name \code{"RNGMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
-\item{\code{signature(model = "RNGMVNORM")}}{a character string giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(model = "RNGMIX")}}{a character giving the default class name \code{"RNGMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "RNGMVNORM")}}{a character giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
 }
 }
 \author{Marko Nagode}

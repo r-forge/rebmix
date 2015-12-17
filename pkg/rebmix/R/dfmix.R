@@ -20,7 +20,7 @@ dfmix <- function(x = NULL, w = NULL, Theta = NULL, ...)
   }  
   
   if (!is.numeric(w)) {
-    stop(sQuote("w"), " numeric is requested!", call. = FALSE)
+    stop(sQuote("w"), " numeric vector is requested!", call. = FALSE)
   }
   
   if (!all(w > 0.0)) {

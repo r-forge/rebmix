@@ -37,15 +37,15 @@ function(x,
   
   c <- length(x@w[[pos]])
 
-  pdf <- as.character(unlist(x@Theta[[pos]][grep("pdf", Names)]))
+  pdf <- unlist(x@Theta[[pos]][grep("pdf", Names)])
   
   pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
   
-  theta1 <- as.numeric(unlist(x@Theta[[pos]][grep("theta1", Names)]))
+  theta1 <- unlist(x@Theta[[pos]][grep("theta1", Names)])
   
   theta1[is.na(theta1)] <- 0
 
-  theta2 <- as.numeric(unlist(x@Theta[[pos]][grep("theta2", Names)]))
+  theta2 <- unlist(x@Theta[[pos]][grep("theta2", Names)])
   
   theta2[is.na(theta2)] <- 0
 
@@ -63,7 +63,7 @@ function(x,
       d = as.integer(d),
       Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(x@w[[pos]]),
+      w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(2),
       length.theta = as.integer(c(d, d)),
@@ -89,7 +89,7 @@ function(x,
       d = as.integer(d),
       Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(x@w[[pos]]),
+      w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(2),
       length.theta = as.integer(c(d, d)),
@@ -118,7 +118,7 @@ function(x,
       d = as.integer(d),
       Criterion = as.character(Criterion),
       c = as.integer(c),
-      W = as.double(x@w[[pos]]),
+      w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(2),
       length.theta = as.integer(c(d, d)),

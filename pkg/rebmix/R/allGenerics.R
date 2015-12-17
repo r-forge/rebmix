@@ -59,7 +59,8 @@ setGeneric("boot",
   standardGeneric("boot"))
 
 setGeneric("RCLSMIX",
-  function(model = "REBMIX",
+  function(model = "RCLSMIX",
     x = list(0),
-    Dataset = data.frame(0), ...)
+    Dataset = data.frame(0), 
+    Zt = factor(0), ...)
   standardGeneric("RCLSMIX"))

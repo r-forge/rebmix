@@ -59,7 +59,7 @@ a vector of length \eqn{d} containing maximum observations. The default value is
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.
 }
 \item{\code{Restraints}:}{
-a character string giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
+a character giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
 The rigid restraints are obsolete and applicable for well separated components only. 
 }
 \item{\code{w}:}{

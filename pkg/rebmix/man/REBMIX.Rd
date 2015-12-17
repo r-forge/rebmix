@@ -74,7 +74,7 @@ a vector of length \eqn{d} containing maximum observations. The default value is
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.
 }
 \item{Restraints}{
-a character string giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
+a character giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
 The rigid restraints are obsolete and applicable for well separated components only. 
 }
 \item{object}{
@@ -89,8 +89,8 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(model = "REBMIX")}}{a character string giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
-\item{\code{signature(model = "REBMVNORM")}}{a character string giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
 \item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }

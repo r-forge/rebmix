@@ -1,26 +1,5 @@
 # Class RNGMIX
 
-validity.RNGMIX <- function(object)
-{ 
-  # Dataset.name.
-  
-  if (length(object@Dataset.name) == 0) {
-    stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
-  }
-  
-  # rseed.    
-  
-  if (!is.wholenumber(object@rseed)) {
-    stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
-  }
-  
-  if (object@rseed > -1) {
-    stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
-  }
-  
-  return(TRUE)
-} ## validity.RNGMIX
-
 setClass(Class = "RNGMIX",
 slots = c(Dataset.name = "character",
   rseed = "numeric",
@@ -31,21 +10,47 @@ slots = c(Dataset.name = "character",
   Variables = "character",
   ymin = "numeric",
   ymax = "numeric"),
-validity = validity.RNGMIX)
+prototype = list(rseed = -1))
 
 setMethod("initialize", "RNGMIX", 
 function(.Object, ...,
+  Dataset.name,
+  rseed,
   n,
   Theta)
 {
+  # Dataset.name.
+  
+  if (missing(Dataset.name) || (length(Dataset.name) == 0)) {
+    stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.character(Dataset.name)) {
+    stop(sQuote("Dataset.name"), " character vector is requested!", call. = FALSE)
+  }
+
+  # rseed.
+
+  if (missing(rseed) || (length(rseed) == 0)) rseed <- .Object@rseed
+  
+  if (!is.wholenumber(rseed)) {
+    stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
+  }
+
+  length(rseed) <- 1
+  
+  if (rseed > -1) {
+    stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
+  }
+
   # n.
   
-  if (missing(n)) {
+  if (missing(n) || (length(n) == 0)) {
     stop(sQuote("n"), " must not be empty!", call. = FALSE)
   }
 
   if (!is.wholenumber(n)) {
-    stop(sQuote("n"), " integer is requested!", call. = FALSE)
+    stop(sQuote("n"), " integer vector is requested!", call. = FALSE)
   }
   
   if (!all(n > 0)) {
@@ -56,11 +61,29 @@ function(.Object, ...,
   
   # Theta.  
   
-  if (missing(Theta)) {
+  if (missing(Theta) || (length(Theta) == 0)) {
     stop(sQuote("Theta"), " must not be empty!", call. = FALSE)
   }
   
+  if (!is.list(Theta)) {
+    stop(sQuote("Theta"), " list is requested!!", call. = FALSE)
+  }  
+  
   Names <- names(Theta)
+  
+  if (length(grep("pdf", Names)) == 0) {
+    stop(sQuote("pdf1"), " in " , sQuote("Theta"), " character vector is requested!", call. = FALSE)
+  }
+  
+  if (length(grep("theta1", Names)) == 0) {
+    stop(sQuote("theta1.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
+  }
+  
+  if (length(grep("theta2", Names)) == 0) {
+    stop(sQuote("theta2.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
+  }     
+  
+  length(grep("pdf", Names))  
   
   j <- 0; length.pdf <- length(Theta[[1]])
   
@@ -70,14 +93,14 @@ function(.Object, ...,
     pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
     
     if (length(pdf) != length.pdf) {
-      stop("lengths of ", sQuote("pdfi"), " must be equal!", call. = FALSE)
+      stop("lengths of ", sQuote("pdfi"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }    
   
     Theta[[i]] <- pdf; j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("pdfi"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    stop(sQuote("pdfi"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
   
   j <- 0; length.theta1 <- length(Theta[[2]])
@@ -86,14 +109,14 @@ function(.Object, ...,
     theta1 <- as.numeric(Theta[[i]])
    
     if (length(theta1) != length.theta1) {
-      stop("lengths of ", sQuote("theta1.i"), " must be equal!", call. = FALSE)
+      stop("lengths of ", sQuote("theta1.i"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }    
 
     j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("theta1.i"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    stop(sQuote("theta1.i"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
   
   j <- 0; length.theta2 <- length(Theta[[3]])
@@ -102,14 +125,14 @@ function(.Object, ...,
     theta2 <- as.numeric(Theta[[i]])
    
     if (length(theta2) != length.theta2) {
-      stop("lengths of ", sQuote("theta2.i"), " must be equal!", call. = FALSE)
+      stop("lengths of ", sQuote("theta2.i"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }
 
     j <- j + 1    
   }
 
   if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("theta2.i"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    stop(sQuote("theta2.i"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
  
   # Variables.
@@ -119,11 +142,11 @@ function(.Object, ...,
   }
   
   callNextMethod(.Object, ...,
+    Dataset.name = Dataset.name,
+    rseed = rseed,
     n = n,
     Theta = Theta)
-})
-                          
-setClass("RNGMVNORM", contains = "RNGMIX")
+}) ## initialize
 
 setMethod("show",
           signature(object = "RNGMIX"),
@@ -149,6 +172,10 @@ function(object)
 
   rm(list = ls())
 }) ## show
+
+# Class RNGMVNORM
+                          
+setClass("RNGMVNORM", contains = "RNGMIX")
 
 setMethod("show",
           signature(object = "RNGMVNORM"),
@@ -177,140 +204,6 @@ function(object)
 
 # Class REBMIX
 
-validity.REBMIX <- function(object)
-{ 
-  # Dataset.
-  
-  if (length(object@Dataset) == 0) {
-    stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!all(unlist(lapply(object@Dataset, is.data.frame)))) {
-    stop(sQuote("Dataset"), " list of data frames is requested!", call. = FALSE)
-  }
-
-  d <- ncol(object@Dataset[[1]])
-
-  if (d < 1) {
-    stop(sQuote("d"), " must be greater than 0!", call. = FALSE)
-  }
-
-  if (!all(unlist(lapply(object@Dataset, ncol)) == d)) {
-    stop(sQuote("Dataset"), " numbers of columns in data frames must be equal!", call. = FALSE)
-  }
-
-  if (!all(unlist(lapply(object@Dataset, nrow)) > 1)) {
-    stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
-  }
-
-  # cmax.
-
-  if (!is.wholenumber(object@cmax)) {
-    stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
-  }
-
-  if (object@cmax < 1) {
-    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
-  }
-
-  # pdf. 
-
-  if (length(object@pdf) != d) {
-    stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
-  } 
-
-  # theta1.  
-
-  if (length(object@theta1) > 0) {
-    object@theta1[is.na(object@theta1)] <- 0
-      
-    if (length(object@theta1) != d) {
-      stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }
-  }
-
-  # theta2.  
-
-  if (length(object@theta2) > 0) {
-    object@theta2[is.na(object@theta2)] <- 0
-      
-    if (length(object@theta2) != d) {
-      stop("lengths of ", sQuote("theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }
-  }
-
-  # K. 
-
-  if (length(object@K) == 0) {
-    stop(sQuote("K"), " must not be empty!", call. = FALSE)
-  }
-
-  if (is.list(object@K)) {
-    for (i in 1:length(object@K)) {
-      if (!is.wholenumber(object@K[[i]])) {
-        stop(sQuote("K"), " integer vector is requested!", call. = FALSE)
-      }
-
-      if (!all(object@K[[i]] > 0)) {
-        stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
-      }
-    }
-
-    if (length(object@K) != length(object@Preprocessing)) {
-      stop("lengths of ", sQuote("Preprocessing"), " and ", sQuote("K"), " must match!", call. = FALSE)
-    }
-  }
-  else 
-  if (is.numeric(object@K)) {
-    if (!is.wholenumber(object@K)) {
-      stop(sQuote("K"), " integer vector is requested!", call. = FALSE)
-    }
-
-    if (!all(object@K > 0)) {
-      stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
-    }
-  }
-  else {
-    stop(sQuote("K"), " list of integer vectors or integer vector is requested!", call. = FALSE)
-  }
-
-  # y0. 
-
-  if (length(object@y0) > 0) {
-    object@y0[is.na(object@y0)] <- 0
-      
-    if (length(object@y0) != d) {
-      stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
-  } 
-
-  # ymin.    
-
-  if (length(object@ymin) > 0) {
-    object@ymin[is.na(object@ymin)] <- 0
-      
-    if (length(object@ymin) != d) {
-      stop("lengths of ", sQuote("ymin"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
-  }
-
-  # ymax. 
-
-  if (length(object@ymax) > 0) {
-    object@ymax[is.na(object@ymax)] <- 0
-      
-    if (length(object@ymax) != d) {
-      stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
-  }
-
-  if ((object@ar <= 0.0) || (object@ar > 1.0)) {
-    stop(sQuote("ar"), " must be greater than 0.0 and less or equal than 1.0!", call. = FALSE)
-  }
-
-  return(TRUE)
-} ## validity.REBMIX
-
 setClass(Class = "REBMIX",
 slots = c(Dataset = "list",
   Preprocessing = "character",
@@ -336,57 +229,220 @@ slots = c(Dataset = "list",
   opt.D = "list",
   all.K = "list",
   all.IC = "list"),
-prototype = list(pos = 1),
-validity = validity.REBMIX) 
+prototype = list(cmax = 15,
+  Criterion = "AIC",
+  ar = 0.1,
+  Restraints = "loose",
+  pos = 1)) 
 
 setMethod("initialize", "REBMIX", 
 function(.Object, ...,
   Dataset,
   Preprocessing,
+  cmax,
   Criterion,
   pdf,
+  theta1,
+  theta2,
+  K,
+  y0,
+  ymin,
+  ymax,
+  ar,
   Restraints)
 {
   # Dataset.
   
-  if (missing(Dataset)) {
+  if (missing(Dataset) || (length(Dataset) == 0)) {
     stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
-  }  
+  }
+  
+  if (!is.list(Dataset)) {
+    stop(sQuote("Dataset"), " list is requested!", call. = FALSE)
+  }   
   
   if (is.null(names(Dataset))) {
     names(Dataset) <- paste("dataset", 1:length(Dataset), sep = "")
   }
 
+  if (!all(unlist(lapply(Dataset, is.data.frame)))) {
+    stop(sQuote("Dataset"), " list of data frames is requested!", call. = FALSE)
+  }
+
+  d <- unique(unlist(lapply(Dataset, ncol)))
+
+  if (length(d) != 1) {
+    stop(sQuote("Dataset"), " numbers of columns in data frames must be equal!", call. = FALSE)
+  }
+
+  if (!all(unlist(lapply(Dataset, ncol)) > 0)) {
+    stop(sQuote("Dataset"), " numbers of columns in data frames must be greater than 0!", call. = FALSE)
+  }
+
+  if (!all(unlist(lapply(Dataset, nrow)) > 1)) {
+    stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
+  }
+
   # Preprocessing.
   
-  if (missing(Preprocessing)) {
+  if (missing(Preprocessing) || (length(Preprocessing) == 0)) {
     stop(sQuote("Preprocessing"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.character(Preprocessing)) {
+    stop(sQuote("Preprocessing"), " character vector is requested!", call. = FALSE)
   }   
 
   Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = TRUE)
+  
+  # cmax.
+  
+  if (missing(cmax) || (length(cmax) == 0)) cmax <- .Object@cmax
+  
+  if (!is.wholenumber(cmax)) {
+    stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmax < 1) {
+    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
+  }  
 
   # Criterion.
-  
-  if (missing(Criterion)) {
-    stop(sQuote("Criterion"), " must not be empty!", call. = FALSE)
-  }   
+
+  if (missing(Criterion) || (length(Criterion) == 0)) Criterion <- .Object@Criterion
+
+  if (!is.character(Criterion)) {
+    stop(sQuote("Criterion"), " character vector is requested!", call. = FALSE)
+  } 
 
   Criterion <- match.arg(Criterion, .rebmix$Criterion, several.ok = TRUE)
-
+  
   # pdf.
   
-  if (missing(pdf)) {
+  if (missing(pdf) || (length(pdf) == 0)) {
     stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
-  }   
+  }
+
+  if (!is.character(pdf)) {
+    stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
+  } 
 
   pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
 
-  # Restraints.
+  if (length(pdf) != d) {
+    stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
+  }
   
-  if (missing(Restraints)) {
-    stop(sQuote("Restraints"), " must not be empty!", call. = FALSE)
+  # theta1.
+  
+  if (missing(theta1) || (length(theta1) == 0)) {
+    theta1 <- .Object@theta1
+  }
+  else {
+    if (length(theta1) != d) {
+      stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
+  }
+  
+  # theta2.
+  
+  if (missing(theta2) || (length(theta2) == 0)) {
+    theta2 <- .Object@theta2
+  }
+  else {
+    if (length(theta2) != d) {
+      stop("lengths of ", sQuote("theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
   }   
+  
+  # K. 
 
+  if (missing(K) || (length(K) == 0)) {
+    stop(sQuote("K"), " must not be empty!", call. = FALSE)
+  }
+
+  if (is.list(K)) {
+    if (!all(unlist(lapply(K, is.wholenumber) == TRUE))) {
+      stop(sQuote("K"), " list of integer vectors is requested!", call. = FALSE)
+    }
+
+    if (!all(unlist(lapply(K, function(x) all(x > 0)))) == TRUE) {
+      stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
+    }
+
+    if (length(K) != length(Preprocessing)) {
+      stop("lengths of ", sQuote("Preprocessing"), " and ", sQuote("K"), " must match!", call. = FALSE)
+    }
+  }
+  else 
+  if (is.numeric(K)) {
+    if (!is.wholenumber(K)) {
+      stop(sQuote("K"), " integer vector is requested!", call. = FALSE)
+    }
+
+    if (!all(K > 0)) {
+      stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
+    }
+  }
+  else {
+    stop(sQuote("K"), " list of integer vectors or integer vector is requested!", call. = FALSE)
+  }
+  
+  # y0.
+  
+  if (missing(y0) || (length(y0) == 0)) {
+    y0 <- .Object@y0  
+  }
+  else {
+    if (length(y0) != d) {
+      stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }      
+  }
+  
+  # ymin.
+  
+  if (missing(ymin) || (length(ymin) == 0)) {
+    ymin <- .Object@ymin  
+  }
+  else {
+    if (length(ymin) != d) {
+      stop("lengths of ", sQuote("ymin"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }      
+  }
+  
+  # ymax.
+  
+  if (missing(ymax) || (length(ymax) == 0)) {
+    ymax <- .Object@ymax  
+  }
+  else {
+    if (length(ymax) != d) {
+      stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }      
+  }
+  
+  # ar.
+  
+  if (missing(ar) || (length(ar) == 0)) ar <- .Object@ar
+  
+  if (!is.numeric(ar)) {
+    stop(sQuote("ar"), " numeric is requested!", call. = FALSE)
+  }
+  
+  length(ar) <- 1
+
+  if ((ar <= 0.0) || (ar > 1.0)) {
+    stop(sQuote("ar"), " must be greater than 0.0 and less or equal than 1.0!", call. = FALSE)
+  }     
+
+  # Restraints.
+
+  if (missing(Restraints) || (length(Restraints) == 0)) Restraints <- .Object@Restraints
+  
+  if (!is.character(Restraints)) {
+    stop(sQuote("Restraints"), " character is requested!", call. = FALSE)
+  }
+  
   Restraints <- match.arg(Restraints, .rebmix$Restraints, several.ok = FALSE)
   
   # Variables.
@@ -398,13 +454,19 @@ function(.Object, ...,
   callNextMethod(.Object, ...,
     Dataset = Dataset,
     Preprocessing = Preprocessing,
+    cmax = cmax,
     Criterion = Criterion,
     pdf = pdf,
+    theta1 = theta1,
+    theta2 = theta2,
+    K = K,
+    y0 = y0,
+    ymin = ymin,
+    ymax = ymax,
+    ar = ar,
     Restraints = Restraints)
-})
+}) ## initialize
                     
-setClass("REBMVNORM", contains = "REBMIX")
-
 setMethod("show",
           signature(object = "REBMIX"),
 function(object)
@@ -442,6 +504,10 @@ function(object)
   rm(list = ls())
 }) ## show
 
+## Class REBMVNORM
+
+setClass("REBMVNORM", contains = "REBMIX")
+
 setMethod("show",
           signature(object = "REBMVNORM"),
 function(object)
@@ -469,7 +535,10 @@ slots = c(x = "REBMIX",
   Theta = "list",
   Theta.se = "list",
   Theta.cv = "list"),
-prototype = list(pos = 1))
+prototype = list(pos = 1,
+  Bootstrap = "parametric",
+  B = 100,
+  replace = TRUE))
 
 setMethod("initialize", "REBMIX.boot", 
 function(.Object, ...,
@@ -477,20 +546,24 @@ function(.Object, ...,
   pos,
   Bootstrap,
   B,
-  n)
+  n,
+  replace,
+  prob)
 {
   # x.
 
-  if (missing(x)) {
+  if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
-  
-  # pos.
-  
-  if (missing(pos)) {
-    stop(sQuote("pos"), " must not be empty!", call. = FALSE)
-  }  
 
+  if (class(x) != "REBMIX") {
+    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
+  }
+
+  # pos.
+
+  if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
+  
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
@@ -499,21 +572,21 @@ function(.Object, ...,
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
-  }  
+  }
   
   # Bootstrap.
-  
-  if (missing(Bootstrap)) {
-    stop(sQuote("Bootstrap"), " must not be empty!", call. = FALSE)
-  }    
+
+  if (missing(Bootstrap) || (length(Bootstrap) == 0)) Bootstrap <- .Object@Bootstrap
+
+  if (!is.character(Bootstrap)) {
+    stop(sQuote("Bootstrap"), " character is requested!", call. = FALSE)
+  } 
   
   Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
 
   # B.
-  
-  if (missing(B)) {
-    stop(sQuote("B"), " must not be empty!", call. = FALSE)
-  }    
+
+  if (missing(B) || (length(B) == 0)) B <- .Object@B
   
   if (!is.wholenumber(B)) {
     stop(sQuote("B"), " integer is requested!", call. = FALSE)
@@ -526,11 +599,9 @@ function(.Object, ...,
   }
   
   # n.
-  
-  if (missing(n)) {
-    stop(sQuote("n"), " must not be empty!", call. = FALSE)
-  }    
-  
+
+  if (missing(n) || (length(n) == 0)) n <- .Object@n
+
   nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
   
   if (length(n) == 0) {
@@ -544,15 +615,40 @@ function(.Object, ...,
     if ((n < 1) || (n > nmax)) {
       stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
     }
-  }    
+  }
+
+  # replace.
+
+  if (missing(replace) || (length(replace) == 0)) replace <- .Object@replace
+  
+  if (!is.logical(replace)) {
+    stop(sQuote("replace"), " logical is requested!", call. = FALSE)
+  }
+
+  # prob.
+
+  if (missing(prob) || (length(prob) == 0)) {
+    prob <- .Object@prob
+  }
+  else {
+    if (!is.numeric(prob)) {
+      stop(sQuote("prob"), " numeric vector is requested!", call. = FALSE)
+    }
+
+    if (length(prob) != length(n)) {
+      stop("lengths of ", sQuote("prob"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    }
+  }  
   
   callNextMethod(.Object, ...,
     x = x,
     pos = pos,
     Bootstrap = Bootstrap,
     B = B,
-    n = n)
-})
+    n = n,
+    replace = replace,
+    prob = prob)
+}) ## initialize
 
 setMethod("show",
           signature(object = "REBMIX.boot"),
@@ -608,7 +704,10 @@ slots = c(x = "REBMVNORM",
   Theta = "list",
   Theta.se = "list",
   Theta.cv = "list"),
-prototype = list(pos = 1))
+prototype = list(pos = 1,
+  Bootstrap = "parametric",
+  B = 100,
+  replace = TRUE))
 
 setMethod("initialize", "REBMVNORM.boot", 
 function(.Object, ...,
@@ -616,20 +715,24 @@ function(.Object, ...,
   pos,
   Bootstrap,
   B,
-  n)
+  n,
+  replace,
+  prob)
 {
   # x.
 
-  if (missing(x)) {
+  if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
-  
-  # pos.
-  
-  if (missing(pos)) {
-    stop(sQuote("pos"), " must not be empty!", call. = FALSE)
-  }  
 
+  if (class(x) != "REBMVNORM") {
+    stop(sQuote("x"), " object of class REBMVNORM is requested!", call. = FALSE)
+  }
+
+  # pos.
+
+  if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
+  
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
@@ -638,17 +741,21 @@ function(.Object, ...,
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
-  }  
+  }
   
   # Bootstrap.
-  
-  if (missing(Bootstrap)) {
-    stop(sQuote("Bootstrap"), " must not be empty!", call. = FALSE)
-  }  
+
+  if (missing(Bootstrap) || (length(Bootstrap) == 0)) Bootstrap <- .Object@Bootstrap
+
+  if (!is.character(Bootstrap)) {
+    stop(sQuote("Bootstrap"), " character is requested!", call. = FALSE)
+  } 
   
   Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
 
   # B.
+
+  if (missing(B) || (length(B) == 0)) B <- .Object@B
   
   if (!is.wholenumber(B)) {
     stop(sQuote("B"), " integer is requested!", call. = FALSE)
@@ -661,11 +768,9 @@ function(.Object, ...,
   }
   
   # n.
-  
-  if (missing(n)) {
-    stop(sQuote("n"), " must not be empty!", call. = FALSE)
-  }   
-  
+
+  if (missing(n) || (length(n) == 0)) n <- .Object@n
+
   nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
   
   if (length(n) == 0) {
@@ -679,15 +784,40 @@ function(.Object, ...,
     if ((n < 1) || (n > nmax)) {
       stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
     }
-  }    
+  }
+
+  # replace.
+
+  if (missing(replace) || (length(replace) == 0)) replace <- .Object@replace
+  
+  if (!is.logical(replace)) {
+    stop(sQuote("replace"), " logical is requested!", call. = FALSE)
+  }
+
+  # prob.
+
+  if (missing(prob) || (length(prob) == 0)) {
+    prob <- .Object@prob
+  }
+  else {
+    if (!is.numeric(prob)) {
+      stop(sQuote("prob"), " numeric vector is requested!", call. = FALSE)
+    }
+
+    if (length(prob) != length(n)) {
+      stop("lengths of ", sQuote("prob"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    }
+  }  
   
   callNextMethod(.Object, ...,
     x = x,
     pos = pos,
     Bootstrap = Bootstrap,
     B = B,
-    n = n)
-})
+    n = n,
+    replace = replace,
+    prob = prob)
+}) ## initialize
 
 setMethod("show",
           signature(object = "REBMVNORM.boot"),
@@ -732,16 +862,24 @@ slots = c(x = "list",
   ntrain = "numeric",
   P = "numeric",
   ntest = "numeric",
-  Z = "factor"))
+  Zp = "factor",
+  Zt = "factor",
+  CM = "table",
+  Accuracy = "numeric",
+  Error = "numeric",
+  Precission = "numeric",
+  Sensitivity = "numeric",
+  Specificity = "numeric"))
 
 setMethod("initialize", "RCLSMIX", 
 function(.Object, ...,
   x,
-  Dataset)
+  Dataset,
+  Zt)
 {
   # x.
 
-  if (missing(x)) {
+  if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   } 
   
@@ -785,27 +923,40 @@ function(.Object, ...,
   
   # Dataset.
   
-  if (missing(Dataset)) {
+  if (missing(Dataset) || (length(Dataset) == 0)) {
     stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
-  }  
+  }
+  
+  if (!is.data.frame(Dataset)) {
+    stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)  
+  }
   
   # ntest.
   
   .Object@ntest <- nrow(Dataset)
   
+  # Zt.
+  
+  if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
+  
+  if (!is.factor(Zt)) {
+    stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
+  }  
+  
   callNextMethod(.Object, ...,
     x = x,
-    Dataset = Dataset)
-})
+    Dataset = Dataset,
+    Zt = Zt)
+}) ## initialize
 
 ## Class RCLSMVNORM
 
 setClass("RCLSMVNORM",
 slots = c(x = "list",
   Dataset = "data.frame",
+  o = "numeric",
   s = "numeric",
   ntrain = "numeric",
   P = "numeric",
   ntest = "numeric",
-  Z = "factor"))
-
+  Zt = "factor"))

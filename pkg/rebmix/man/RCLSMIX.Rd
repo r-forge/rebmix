@@ -2,36 +2,47 @@
 \docType{methods}
 \alias{RCLSMIX}
 \alias{RCLSMIX-methods}
-\alias{RCLSMIX,list-method}
+\alias{RCLSMIX,RCLSMIX-method}
+\alias{RCLSMIX,RCLSMVNORM-method}
 \title{
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
 \description{
-Takes a list of objects of class \code{REBMIX}, prior probabilities \code{P} and data frame \code{Dataset} with test classes and returns predictive classes.
+Returns as default the RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLSMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
 }
 \usage{
-\S4method{RCLSMIX}{list}(x, P = numeric(0), Dataset = data.frame(0), ...)      
+\S4method{RCLSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(0), Dataset = data.frame(0),
+        Zt = factor(0), ...)
+## ... and for other signatures       
 }
 \arguments{
-\item{x}{
-a list of objects of class \code{REBMIX} containing outputs for a finite set of size \eqn{s} of classes \eqn{\Omega_g}.
+\item{model}{
+see Methods section below.
 }
-\item{P}{
-a vector of length \eqn{s} containing prior probabilites.
+\item{x}{
+a list of objects of class \code{REBMIX} of length \eqn{o} obtained by running \code{\link[rebmix]{REBMIX}} on \eqn{g = 1, \ldots, s} train datasets \eqn{Y_{\mathrm{train}g}} all of length \eqn{n_{\mathrm{train}g}}.
+For the train datasets the corresponding class membership \eqn{\bm{\Omega}_{g}} is known. This yields
+\eqn{n_{\mathrm{train}} = \sum_{g = 1}^{s} n_{\mathrm{train}g}}, while \eqn{Y_{\mathrm{train}q} \cap Y_{\mathrm{train}g} = \emptyset} for all \eqn{q \neq g}.
+Each object in the list corresponds to one chunk, e.g., \eqn{(y_{1j}, y_{3j})^{\top}}. The default value is \code{list(0)}.
 }
 \item{Dataset}{
-a data frame containing test classes.
+a data frame containing test dataset \eqn{Y_{\mathrm{test}}} of length \eqn{n_{\mathrm{test}}}. For the test dataset the corresponding class membership \eqn{\bm{\Omega}_{g}} is not known.
+The default value is \code{data.frame(0)}.
+}
+\item{Zt}{
+a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. The default value is \code{factor(0)}.
 }
 \item{\dots}{
-potential further arguments of the method.
+currently not used.
 }
 }
 \value{
-predictive classes.
+Returns an object of class \code{RCLSMIX} or \code{RCLSMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(x = "list")}}{}
+\item{\code{signature(model = "RCLSMIX")}}{a character giving the default class name \code{"RCLSMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "RCLSMVNORM")}}{a character giving the class name \code{"RCLSMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
 }
 }
 \author{Marko Nagode}

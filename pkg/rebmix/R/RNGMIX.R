@@ -4,13 +4,13 @@ function(model, ...)
 { 
   Names <- names(model@Theta)
 
-  pdf <- as.character(unlist(model@Theta[grep("pdf", Names)]))
+  pdf <- unlist(model@Theta[grep("pdf", Names)])
   
-  theta1 <- as.numeric(unlist(model@Theta[grep("theta1", Names)]))
+  theta1 <- unlist(model@Theta[grep("theta1", Names)])
   
   theta1[is.na(theta1)] <- 0
 
-  theta2 <- as.numeric(unlist(model@Theta[grep("theta2", Names)]))
+  theta2 <- unlist(model@Theta[grep("theta2", Names)])
   
   theta2[is.na(theta2)] <- 0
   
@@ -75,13 +75,13 @@ function(model, ...)
 { 
   Names <- names(model@Theta)
 
-  pdf <- as.character(unlist(model@Theta[grep("pdf", Names)]))
+  pdf <- unlist(model@Theta[grep("pdf", Names)])
   
-  theta1 <- as.numeric(unlist(model@Theta[grep("theta1", Names)]))
+  theta1 <- unlist(model@Theta[grep("theta1", Names)])
   
   theta1[is.na(theta1)] <- 0
 
-  theta2 <- as.numeric(unlist(model@Theta[grep("theta2", Names)]))
+  theta2 <- unlist(model@Theta[grep("theta2", Names)])
   
   theta2[is.na(theta2)] <- 0
   

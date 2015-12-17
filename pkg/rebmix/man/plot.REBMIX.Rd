@@ -85,7 +85,7 @@ logical. The contours are labelled if \code{TRUE}. The default value is \code{FA
 \code{\link[graphics]{par}("cex")}.
 }
 \item{contour.method}{
-a character string specifying where the labels will be located. The possible values
+a character specifying where the labels will be located. The possible values
 are \code{"simple"}, \code{"edge"} and default \code{"flattest"}, see also \code{\link[graphics]{contour}}.
 }
 \item{contour.nlevels}{
