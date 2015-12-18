@@ -6,6 +6,8 @@
 \alias{RCLSMIX,RCLSMVNORM-method}
 \alias{show,RCLSMIX-method}
 \alias{show,RCLSMVNORM-method}
+\alias{summary,RCLSMIX-method}
+\alias{summary,RCLSMVNORM-method}
 \title{
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
@@ -36,8 +38,11 @@ The default value is \code{data.frame(0)}.
 \item{Zt}{
 a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. The default value is \code{factor(0)}.
 }
+\item{object}{
+see Methods section below.
+}
 \item{\dots}{
-currently not used.
+currently not used; additional arguments affecting the summary produced.
 }
 }
 \value{
