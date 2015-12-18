@@ -4,6 +4,8 @@
 \alias{RCLSMIX-methods}
 \alias{RCLSMIX,RCLSMIX-method}
 \alias{RCLSMIX,RCLSMVNORM-method}
+\alias{show,RCLSMIX-method}
+\alias{show,RCLSMVNORM-method}
 \title{
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
@@ -13,7 +15,9 @@ Returns as default the RCLSMIX algorithm output for mixtures of conditionally in
 \usage{
 \S4method{RCLSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(0), Dataset = data.frame(0),
         Zt = factor(0), ...)
-## ... and for other signatures       
+## ... and for other signatures
+\S4method{summary}{RCLSMIX}(object, ...)
+## ... and for other signatures     
 }
 \arguments{
 \item{model}{
@@ -43,6 +47,8 @@ Returns an object of class \code{RCLSMIX} or \code{RCLSMVNORM}.
 \describe{
 \item{\code{signature(model = "RCLSMIX")}}{a character giving the default class name \code{"RCLSMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
 \item{\code{signature(model = "RCLSMVNORM")}}{a character giving the class name \code{"RCLSMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(object = "RCLSMIX")}}{an object of class \code{RCLSMIX}.}
+\item{\code{signature(object = "RCLSMVNORM")}}{an object of class \code{RCLSMVNORM}.}
 }
 }
 \author{Marko Nagode}
@@ -161,16 +167,12 @@ for (i in 1:14) {
   k <- NA
 
   for (j in rvs) {
-    predictive <- RCLSMIX(adultest[c(c, j)],
-      P = P,
-      Dataset = trainall[, c(c, j)]) 
+    predictive <- RCLSMIX(x = adultest[c(c, j)],
+      Dataset = as.data.frame(trainall[, c(c, j)]),
+      Zt = train) 
 
-    CM <- table(train, predictive)
-
-    Accuracy <- (CM[1, 1] + CM[2, 2]) / sum(CM)
-
-    if (1.0 - Accuracy < Error) {
-      Error <- 1.0 - Accuracy; k <- j
+    if (predictive@Error < Error) {
+      Error <- predictive@Error; k <- j
     }
   }
 
@@ -190,19 +192,13 @@ Error
 
 c
 
-predictive <- RCLSMIX(adultest[c],
-  P = P,
-  Dataset = testall[, c]) 
-
-CM <- table(test, predictive)
-
-Accuracy <- (CM[1, 1] + CM[2, 2]) / sum(CM)
-
-Error <- 1.0 - Accuracy
+predictive <- RCLSMIX(x = adultest[c],
+  Dataset = as.data.frame(testall[, c]), 
+  Zt = test) 
 
 # Error on test dataset.
 
-Error
+summary(predictive)
 }
 }
 \keyword{classification}

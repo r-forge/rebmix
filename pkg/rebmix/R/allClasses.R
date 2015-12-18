@@ -517,7 +517,7 @@ function(object)
 ## Class REBMIX.boot
 
 setClass("REBMIX.boot",
-slots = c(x = "REBMIX",
+slots = c(x = "ANY",
   pos = "numeric",
   Bootstrap = "character",
   B = "numeric", 
@@ -550,14 +550,16 @@ function(.Object, ...,
   replace,
   prob)
 {
+  model <- gsub("\\.boot", "", .Object@class[1])
+  
   # x.
 
   if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
 
-  if (class(x) != "REBMIX") {
-    stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
+  if (class(x) != model) {
+    stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
   }
 
   # pos.
@@ -685,139 +687,7 @@ function(object)
 
 ## Class REBMVNORM.boot
 
-setClass("REBMVNORM.boot",
-slots = c(x = "REBMVNORM",
-  pos = "numeric",
-  Bootstrap = "character",
-  B = "numeric", 
-  n = "numeric",
-  replace = "logical", 
-  prob = "numeric",
-  c = "numeric",
-  c.se = "numeric",
-  c.cv = "numeric",
-  c.mode = "numeric",
-  c.prob = "numeric",
-  w = "matrix",
-  w.se = "numeric",
-  w.cv = "numeric",
-  Theta = "list",
-  Theta.se = "list",
-  Theta.cv = "list"),
-prototype = list(pos = 1,
-  Bootstrap = "parametric",
-  B = 100,
-  replace = TRUE))
-
-setMethod("initialize", "REBMVNORM.boot", 
-function(.Object, ...,
-  x,
-  pos,
-  Bootstrap,
-  B,
-  n,
-  replace,
-  prob)
-{
-  # x.
-
-  if (missing(x) || (length(x) == 0)) {
-    stop(sQuote("x"), " must not be empty!", call. = FALSE)
-  }
-
-  if (class(x) != "REBMVNORM") {
-    stop(sQuote("x"), " object of class REBMVNORM is requested!", call. = FALSE)
-  }
-
-  # pos.
-
-  if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
-  
-  if (!is.wholenumber(pos)) {
-    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
-  }
-  
-  length(pos) <- 1
-
-  if ((pos < 1) || (pos > nrow(x@summary))) {
-    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
-  }
-  
-  # Bootstrap.
-
-  if (missing(Bootstrap) || (length(Bootstrap) == 0)) Bootstrap <- .Object@Bootstrap
-
-  if (!is.character(Bootstrap)) {
-    stop(sQuote("Bootstrap"), " character is requested!", call. = FALSE)
-  } 
-  
-  Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
-
-  # B.
-
-  if (missing(B) || (length(B) == 0)) B <- .Object@B
-  
-  if (!is.wholenumber(B)) {
-    stop(sQuote("B"), " integer is requested!", call. = FALSE)
-  }
-  
-  length(B) <- 1
-
-  if (B < 1) {
-    stop(sQuote("B"), " must be greater than 0!", call. = FALSE)
-  }
-  
-  # n.
-
-  if (missing(n) || (length(n) == 0)) n <- .Object@n
-
-  nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
-  
-  if (length(n) == 0) {
-    n <- nmax
-  }
-  else {
-    if (!is.wholenumber(n)) {
-      stop(sQuote("n"), " integer is requested!", call. = FALSE)
-    }
-  
-    if ((n < 1) || (n > nmax)) {
-      stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
-    }
-  }
-
-  # replace.
-
-  if (missing(replace) || (length(replace) == 0)) replace <- .Object@replace
-  
-  if (!is.logical(replace)) {
-    stop(sQuote("replace"), " logical is requested!", call. = FALSE)
-  }
-
-  # prob.
-
-  if (missing(prob) || (length(prob) == 0)) {
-    prob <- .Object@prob
-  }
-  else {
-    if (!is.numeric(prob)) {
-      stop(sQuote("prob"), " numeric vector is requested!", call. = FALSE)
-    }
-
-    if (length(prob) != length(n)) {
-      stop("lengths of ", sQuote("prob"), " and ", sQuote("n"), " must match!", call. = FALSE)
-    }
-  }  
-  
-  callNextMethod(.Object, ...,
-    x = x,
-    pos = pos,
-    Bootstrap = Bootstrap,
-    B = B,
-    n = n,
-    replace = replace,
-    prob = prob)
-}) ## initialize
+setClass("REBMVNORM.boot", contains = "REBMIX.boot")
 
 setMethod("show",
           signature(object = "REBMVNORM.boot"),
@@ -877,14 +747,16 @@ function(.Object, ...,
   Dataset,
   Zt)
 {
+  model <- gsub("RCLS", "REB", .Object@class[1])
+
   # x.
 
   if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   } 
   
-  if (!all(unlist(lapply(x, class)) == "REBMIX")) {
-    stop(sQuote("x"), " list of REBMIX objects is requested!", call. = FALSE)
+  if (!all(unlist(lapply(x, class)) == model)) {
+    stop(sQuote("x"), " list of ", model, " objects is requested!", call. = FALSE)
   }
   
   # o.
@@ -949,14 +821,51 @@ function(.Object, ...,
     Zt = Zt)
 }) ## initialize
 
+setMethod("show",
+          signature(object = "RCLSMIX"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLSMIX is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"CM\":", sep = "")
+
+  print(object@CM, quote = FALSE)
+  
+  cat("Slot \"Error\":", "\n", sep = "")
+
+  print(object@Error, quote = FALSE)
+  
+  cat("Slot \"Precission\":", "\n", sep = "")
+  
+  names(object@Precission) <- NULL
+
+  print(object@Precission, quote = FALSE) 
+  
+  cat("Slot \"Sensitivity\":", "\n", sep = "")
+  
+  names(object@Sensitivity) <- NULL
+
+  print(object@Sensitivity, quote = FALSE)   
+  
+  cat("Slot \"Specificity\":", "\n", sep = "")
+  
+  names(object@Specificity) <- NULL
+
+  print(object@Specificity, quote = FALSE)      
+
+  rm(list = ls())
+}) ## show
+
 ## Class RCLSMVNORM
 
-setClass("RCLSMVNORM",
-slots = c(x = "list",
-  Dataset = "data.frame",
-  o = "numeric",
-  s = "numeric",
-  ntrain = "numeric",
-  P = "numeric",
-  ntest = "numeric",
-  Zt = "factor"))
+setClass("RCLSMVNORM", contains = "RCLSMIX")
+
+setMethod("show",
+          signature(object = "RCLSMVNORM"),
+function(object)
+{
+}) ## show
