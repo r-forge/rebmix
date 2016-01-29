@@ -1,4 +1,4 @@
-.extractTheta <- function(w, Theta)
+.extractThetaA <- function(w, Theta)
 {
   Names <- names(Theta)
   
@@ -27,4 +27,4 @@
   rm(list = ls()[!(ls() %in% c("output"))])
 
   return(output)
-} ## .extractTheta
+} ## .extractThetaA
