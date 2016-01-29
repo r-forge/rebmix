@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     #endif
 
     Rngmix *rngmix = NULL;
-    Rebmix *rebmix = NULL;
+    Rebmvnorm *rebmix = NULL;
     int    Error = 0;
 
     if (argc != 3) goto E0;
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     }
     else
     if (!strcmp(argv[2], "REBMIX")) {
-        rebmix = new Rebmix;
+        rebmix = new Rebmvnorm;
 
         Error = NULL == rebmix; if (Error) goto E0;
  

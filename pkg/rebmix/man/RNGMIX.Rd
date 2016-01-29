@@ -11,7 +11,7 @@ Random Univariate or Multivariate Finite Mixture Generation
 }
 \description{
 Returns as default the RNGMIX univariate or multivariate random datasets for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.
-If \code{model} equals \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted covariance matrices are returned.
+If \code{model} equals \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices are returned.
 }
 \usage{
 \S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(0), 
@@ -51,7 +51,7 @@ Returns an object of class \code{RNGMIX} or \code{RNGMVNORM}.
 \section{Methods}{
 \describe{
 \item{\code{signature(model = "RNGMIX")}}{a character giving the default class name \code{"RNGMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
-\item{\code{signature(model = "RNGMVNORM")}}{a character giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(model = "RNGMVNORM")}}{a character giving the class name \code{"RNGMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 }
 }
 \author{Marko Nagode}
@@ -60,7 +60,8 @@ W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Re
 of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 }
 \examples{
-# Generate and print multivariate normal datasets with diagonal covariance matrices.
+# Generate and print multivariate normal datasets with diagonal 
+# variance-covariance matrices.
 
 n <- c(75, 100, 125, 150, 175)
 
@@ -87,7 +88,8 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:25, sep = ""),
   
 simulated
 
-# Generate and print multivariate normal datasets with unrestricted covariance matrices.
+# Generate and print multivariate normal datasets with unrestricted 
+# variance-covariance matrices.
 
 n <- c(200, 50, 50)
 
@@ -104,7 +106,7 @@ Theta <- list(pdf1 = rep("normal", 3),
 simulated <- RNGMIX(model = "RNGMVNORM",
   Dataset.name = paste("simulated_", 1:2, sep = ""),
   rseed = -1,
-  n = c(200, 50, 50),
+  n = n,
   Theta = Theta)
   
 simulated

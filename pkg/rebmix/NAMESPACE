@@ -1,6 +1,6 @@
 useDynLib("rebmix")
 
-import("methods", "stats", "utils", "graphics", "grDevices")
+import("methods", "stats", "utils", "graphics", "grDevices", "mvtnorm")
 
 export("demix",
        "pemix",

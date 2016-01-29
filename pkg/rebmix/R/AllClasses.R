@@ -342,6 +342,8 @@ function(.Object, ...,
     if (length(theta1) != d) {
       stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
+    
+    class(theta1) <- "numeric"
   }
   
   # theta2.
@@ -353,6 +355,8 @@ function(.Object, ...,
     if (length(theta2) != d) {
       stop("lengths of ", sQuote("theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
+    
+    class(theta2) <- "numeric"
   }   
   
   # K. 
@@ -512,6 +516,37 @@ setMethod("show",
           signature(object = "REBMVNORM"),
 function(object)
 {
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMVNORM is requested!", call. = FALSE)
+  }
+  
+  if (!is.wholenumber(object@pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(object@pos) <- 1
+
+  if ((object@pos < 1) || (object@pos > nrow(object@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
+  }  
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  
+  cat("Slot \"w\":", "\n", sep = "")
+
+  print(object@w[[object@pos]], quote = FALSE)
+
+  cat("Slot \"Theta\":", "\n", sep = "")
+
+  print(object@Theta[[object@pos]], quote = FALSE)
+
+  cat("Slot \"summary\":", "\n", sep = "")
+  
+  p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
+
+  print(object@summary[object@pos, p], quote = FALSE)  
+
+  rm(list = ls())
 }) ## show
 
 ## Class REBMIX.boot

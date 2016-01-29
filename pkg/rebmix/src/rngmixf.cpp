@@ -334,7 +334,7 @@ int Rngmix::RNGMIX()
 {
     int i, j, k;
     int Error = 0;
-    
+
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
     
     Y_ = (FLOAT**)malloc(n_ * sizeof(FLOAT*));

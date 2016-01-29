@@ -12,7 +12,7 @@
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
 \description{
-Returns as default the RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLSMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
+Returns as default the RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLSMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
 \S4method{RCLSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(0), Dataset = data.frame(0),
@@ -51,7 +51,7 @@ Returns an object of class \code{RCLSMIX} or \code{RCLSMVNORM}.
 \section{Methods}{
 \describe{
 \item{\code{signature(model = "RCLSMIX")}}{a character giving the default class name \code{"RCLSMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
-\item{\code{signature(model = "RCLSMVNORM")}}{a character giving the class name \code{"RCLSMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(model = "RCLSMVNORM")}}{a character giving the class name \code{"RCLSMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 \item{\code{signature(object = "RCLSMIX")}}{an object of class \code{RCLSMIX}.}
 \item{\code{signature(object = "RCLSMVNORM")}}{an object of class \code{RCLSMVNORM}.}
 }
@@ -124,12 +124,6 @@ testgt50k <- subset(adult, subset = (Type == 0) & (Income == 1),
 testall <- subset(adult, subset = Type == 0, select = c(-Type, -Income))
 
 test <- as.factor(subset(adult, subset = Type == 0, select = c(Income))[, 1])
-
-# Calculate prior probabilities.
-
-P <- c(nrow(trainle50k), nrow(traingt50k))
-
-P <- P / sum(P)
 
 # Estimate number of components, component weights and component 
 # parameters for Naive Bayes.

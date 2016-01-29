@@ -12,7 +12,7 @@
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted covariance matrices is returned.
+Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(0), Preprocessing = character(0), 
@@ -90,7 +90,7 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 \section{Methods}{
 \describe{
 \item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
-\item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted covariance matrices.}
+\item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 \item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }

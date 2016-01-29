@@ -6,7 +6,7 @@ Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
 Title: Rough - Enhanced - Bayesian Finite Mixture Modeling
 Suggests: flexmix, mclust, mixtools
 Description: A collection of R functions for analysing univariate and multivariate finite mixtures. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac parametric families.
-Imports: methods, stats, utils, graphics, grDevices
+Imports: methods, stats, utils, graphics, grDevices, mvtnorm
 License: GPL (>= 2)
 Author: Marko Nagode [aut, cre]
 Maintainer: Marko Nagode <marko.nagode@fs.uni-lj.si>

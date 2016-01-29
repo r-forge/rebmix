@@ -541,7 +541,7 @@ int LUinvdet(int   n,     // Size of square matrix.
              FLOAT *Adet) // Pointer to the determinant of A.
 {
     int   i, *indx = NULL, j;
-    FLOAT *b = NULL;
+    FLOAT *b = NULL, *B = NULL;
     int   Error = 0;
 
     indx = (int*)calloc(n, sizeof(int));
@@ -552,7 +552,13 @@ int LUinvdet(int   n,     // Size of square matrix.
 
     Error = NULL == b; if (Error) goto E0;
 
-    Error = LUdcmp(n, A, indx, Adet);
+    B = (FLOAT*)malloc(n * n * sizeof(FLOAT));
+
+    Error = NULL == B; if (Error) goto E0;
+
+    memmove(B, A, n * n * sizeof(FLOAT));
+
+    Error = LUdcmp(n, B, indx, Adet);
 
     if (Error) goto E0;
 
@@ -561,14 +567,16 @@ int LUinvdet(int   n,     // Size of square matrix.
 
         b[j] = (FLOAT)1.0;
 
-        Error = LUbksb(n, A, indx, b);
+        Error = LUbksb(n, B, indx, b);
 
         if (Error) goto E0;
 
         for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
     }
 
-E0:	if (b) free(b);
+E0: if (B) free(B);	
+ 
+    if (b) free(b);
 
     if (indx) free(indx);
 
@@ -577,9 +585,9 @@ E0:	if (b) free(b);
 
 // Returns the Cholesky decomposition of matrix A. See http://www.nr.com/ 
 
-int Choldc(int   n,  // Size of square matrix.
-           FLOAT *A, // Pointer to the square matrix A.
-           FLOAT *L) // Lower triangular factors.
+int Choldc(int   n,   // Size of square matrix.
+           FLOAT *A,  // Pointer to the square matrix A.
+           FLOAT *L)  // Lower triangular factors.
 {
     int   i, j, k;
     FLOAT Sum;
