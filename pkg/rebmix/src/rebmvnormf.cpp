@@ -8,22 +8,28 @@
 #include "base.h"
 #include "rebmvnormf.h"
 
-int Rebmvnorm::ComponentMarginalDist(int                  i,           // Index of variable y.
-                                     FLOAT                *Y,          // Pointer to the input point [y0,...,yd-1].
-                                     CompnentDistribution *CmpTheta,   // Component distribution type.
-                                     FLOAT                *CmpMrgDist) // Component marginal distribution.
+int Rebmvnorm::ComponentConditionalDist(int                  i,           // Index of variable y.
+                                        FLOAT                *Y,          // Pointer to the input point [y0,...,yd-1].
+                                        FLOAT                *Cinv,       // Inverse correlation matrix.
+                                        CompnentDistribution *CmpTheta,   // Component distribution type.
+                                        FLOAT                *CmpMrgDist) // Component marginal distribution.
 {
+    int o;
     FLOAT y, Mean, Stdev;
     int   Error = 0;
 
-    Mean = CmpTheta->Theta_[0][i]; Stdev = (FLOAT)sqrt(CmpTheta->Theta_[1][i * d_ + i]);
+    Mean = CmpTheta->Theta_[0][i]; 
+
+    o = i * d_ + i;
+
+    Stdev = (FLOAT)sqrt(CmpTheta->Theta_[1][o] / Cinv[o]);
 
     y = (Y[i] - Mean) / (Sqrt2 * Stdev);
 
     *CmpMrgDist = (FLOAT)exp(-(y * y)) / (Sqrt2Pi * Stdev);
 
     return Error;
-} // ComponentMarginalDist 
+} // ComponentConditionalDist 
 
 // Rough component parameter estimation for histogram.
 
@@ -37,7 +43,7 @@ int Rebmvnorm::RoughEstimationH(int                  k,           // Total numbe
 {
     int                i, ii, j, l, o, p, q, r;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Sum, Sdet, Stdev;
+    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Sum, Stdev;
     FLOAT              *C = NULL, *Cinv = NULL, Cdet;
     int                Error = 0, Stop;
 
@@ -68,6 +74,8 @@ S0:;
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][d_] / (Mode[i].klm * h[i]);
     }
 
+    flm = Y[m][d_] / (nl * V);
+
     // Variance-covariance matrix.
 
     C = (FLOAT*)malloc(d_ * d_ * sizeof(FLOAT));
@@ -77,16 +85,16 @@ S0:;
     for (i = 0; i < d_; i++) {
         Sum = (FLOAT)0.0;
         
-        for (j = 0; j < k; j++) {
+        for (j = 0; j < k; j++) if (Y[j][d_] > FLOAT_MIN) {
             Sum += Y[j][d_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
         }
 
-        C[i * d_ + i] = Sum / nl;
-    
+        C[i * d_ + i] = Sum / nl; 
+
         for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
         
-            for (j = 0; j < k; j++) {
+            for (j = 0; j < k; j++) if (Y[j][d_] > FLOAT_MIN) {
                 Sum += Y[j][d_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
             }
 
@@ -97,13 +105,22 @@ S0:;
     // Correlation matrix.
 
     for (i = 0; i < d_; i++) {
+        o = i * d_ + i; 
+
         for (ii = 0; ii < i; ii++) {
-            C[i * d_ + ii] = C[ii * d_ + i] /= (FLOAT)sqrt(C[i * d_ + i] * C[ii * d_ + ii]);
+            p = i * d_ + ii; q = ii * d_ + i; r = ii * d_ + ii;
+
+            if (((FLOAT)fabs(C[q]) < FLOAT_MIN) || (C[o] < FLOAT_MIN) || (C[r] < FLOAT_MIN)) {
+                C[p] = C[q] = (FLOAT)0.0;
+            }
+            else {
+                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
+            }
         }
     }
 
     for (i = 0; i < d_; i++) {
-        C[i * d_ + i] = (FLOAT)1.0;
+        C[i * d_ + i] = (FLOAT)1.0; 
     }
 
     Cinv = (FLOAT*)malloc(d_ * d_ * sizeof(FLOAT));
@@ -116,7 +133,7 @@ S0:;
 
     // Rigid restraints.
 
-    Sdet = (FLOAT)1.0;
+    RigidTheta->Theta_[3][0] = Cdet;
 
     for (i = 0; i < d_; i++) {
         RigidTheta->Theta_[0][i] = Mode[i].ym;
@@ -125,25 +142,23 @@ S0:;
 
         o = i * d_ + i;
 
-        Sdet *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
+        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = Cinv[o] / Stdev;
 
         for (ii = 0; ii < i; ii++) {
             p = i * d_ + ii; q = ii * d_ + i; r = ii * d_ + ii;
 
             Stdev = (FLOAT)sqrt(RigidTheta->Theta_[1][o] * RigidTheta->Theta_[1][r]);
 
-            RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] = C[p] * Stdev;
+            RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] = C[q] * Stdev;
 
-            RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] = Cinv[p] / Stdev;
+            RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] = Cinv[q] / Stdev;
         }
     }
 
-    RigidTheta->Theta_[3][0] = Sdet * Cdet;
-
-    epsilon = (FLOAT)pow(nl * V / Y[m][d_] / (FLOAT)sqrt(RigidTheta->Theta_[3][0]), (FLOAT)2.0 / d_) / (FLOAT)2.0 / Pi;
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrt2Pi + (FLOAT)log(flm) / d_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / d_);
 
     if (epsilon > (FLOAT)1.0) {
-        RigidTheta->Theta_[3][0] *= (FLOAT)pow(epsilon, d_);
+        RigidTheta->Theta_[3][0] *= (FLOAT)exp(d_ * (FLOAT)log(epsilon));
 
         for (i = 0; i < d_; i++) {
             o = i * d_ + i;
@@ -176,7 +191,7 @@ S0:;
         for (o = 0; o < k; o++) if (Y[o][d_] > FLOAT_MIN) {
             for (p = 0; p < d_; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S1;
 
-            Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
+            Error = ComponentConditionalDist(i, Y[o], Cinv, LooseTheta, &CmpMrgDist);
 
             if (Error) goto E0;
 
@@ -197,14 +212,18 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            LooseTheta->Theta_[1][i * d_ + i] = (FLOAT)pow((FLOAT)1.0 / (Sqrt2Pi * flm), (FLOAT)2.0);
+            Stdev = (FLOAT)1.0 / (Sqrt2Pi * flm); Stdev *= Stdev;
+
+            o = i * d_ + i;
+
+            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
             Dlm = (FLOAT)0.0;
 
             for (o = 0; o < k; o++) if (Y[o][d_] > FLOAT_MIN) {
                 for (p = 0; p < d_; p++) if ((i != p) && (Y[o][p] != Y[m][p])) goto S2;
 
-                Error = ComponentMarginalDist(i, Y[o], LooseTheta, &CmpMrgDist);
+                Error = ComponentConditionalDist(i, Y[o], Cinv, LooseTheta, &CmpMrgDist);
 
                 if (Error) goto E0;
 
@@ -229,25 +248,23 @@ S2:;
 E1:;
     }
 
-    Sdet = (FLOAT)1.0;
+    LooseTheta->Theta_[3][0] = Cdet;
 
     for (i = 0; i < d_; i++) {
         o = i * d_ + i;
 
-        Sdet *= LooseTheta->Theta_[1][o]; LooseTheta->Theta_[2][o] = Cinv[o] / LooseTheta->Theta_[1][o];
+        LooseTheta->Theta_[3][0] *= LooseTheta->Theta_[1][o]; LooseTheta->Theta_[2][o] = Cinv[o] / LooseTheta->Theta_[1][o];
 
         for (ii = 0; ii < i; ii++) {
             p = i * d_ + ii; q = ii * d_ + i; r = ii * d_ + ii;
 
             Stdev = (FLOAT)sqrt(LooseTheta->Theta_[1][o] * LooseTheta->Theta_[1][r]);
 
-            LooseTheta->Theta_[1][p] = LooseTheta->Theta_[1][q] = C[p] * Stdev;
+            LooseTheta->Theta_[1][p] = LooseTheta->Theta_[1][q] = C[q] * Stdev;
 
-            LooseTheta->Theta_[2][p] = LooseTheta->Theta_[2][q] = Cinv[p] / Stdev;
+            LooseTheta->Theta_[2][p] = LooseTheta->Theta_[2][q] = Cinv[q] / Stdev;
         }
     }
-
-    LooseTheta->Theta_[3][0] = Sdet * Cdet;
 
 E0: if (Cinv) free(Cinv);
 
@@ -311,7 +328,7 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
         for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
         
-            for (j = 0; j < k; j++) {
+            for (j = 0; j < k; j++) if (Y[j][d_] > FLOAT_MIN) {
                 Sum += Y[j][d_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
             }
 

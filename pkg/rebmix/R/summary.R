@@ -42,25 +42,34 @@ function(object, ...)
   
   w.cv <- matrix(object@w.cv, nrow = 1) 
   
+  c <- ncol(w.cv)   
+  
   rownames(w.cv) <- "w.cv"
   colnames(w.cv) <- paste("comp", if (object@c.mode > 1) 1:object@c.mode else "", sep = "") 
   
   print(w.cv, quote = FALSE, ...)
 
-  cat("\n", sep = "")  
+  d <- length(object@x@Variables)  
   
   names <- names(object@Theta.cv) 
 
-  names <- names[grep("theta", names, fixed = TRUE)]
+  Names <- names[grep("theta1", names, fixed = TRUE)]
   
-  d <- length(object@x@Variables)
-
-  theta.cv <- matrix(unlist(object@Theta.cv[names]), ncol = d, byrow = TRUE)  
+  theta1.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
   
-  rownames(theta.cv) <- names
-  colnames(theta.cv) <- names(object@Theta.cv[[names[1]]])
+  rownames(theta1.cv) <- Names
+  colnames(theta1.cv) <- paste(1:d, sep = "")
   
-  print(theta.cv, quote = FALSE, ...)
+  print(theta1.cv, quote = FALSE, ...) 
+  
+  Names <- names[grep("theta2", names, fixed = TRUE)]
+  
+  theta2.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
+  
+  rownames(theta2.cv) <- Names
+  colnames(theta2.cv) <- paste(1:d, sep = "") 
+  
+  print(theta2.cv, quote = FALSE, ...)
 
   cat(paste("Mode probability = ", object@c.prob, " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
   
@@ -71,6 +80,44 @@ setMethod("summary",
           signature(object = "REBMVNORM.boot"),
 function(object, ...)
 {
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMVNORM.boot is requested!", call. = FALSE)
+  }
+  
+  w.cv <- matrix(object@w.cv, nrow = 1) 
+  
+  c <- ncol(w.cv)   
+  
+  rownames(w.cv) <- "w.cv"
+  colnames(w.cv) <- paste("comp", if (object@c.mode > 1) 1:object@c.mode else "", sep = "") 
+  
+  print(w.cv, quote = FALSE, ...)
+
+  d <- length(object@x@Variables)  
+  
+  names <- names(object@Theta.cv) 
+
+  Names <- names[grep("theta1", names, fixed = TRUE)]
+  
+  theta1.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
+  
+  rownames(theta1.cv) <- Names
+  colnames(theta1.cv) <- paste(1:d, sep = "")
+  
+  print(theta1.cv, quote = FALSE, ...) 
+  
+  Names <- names[grep("theta2", names, fixed = TRUE)]
+  
+  theta2.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d * d, byrow = TRUE)
+  
+  rownames(theta2.cv) <- Names
+  colnames(theta2.cv) <- paste(rep(1:d, each = d), rep(1:d, d), sep = "-") 
+  
+  print(theta2.cv, quote = FALSE, ...)
+
+  cat(paste("Mode probability = ", object@c.prob, " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
+  
+  rm(list = ls()) 
 }) ## summary
 
 setMethod("summary", 

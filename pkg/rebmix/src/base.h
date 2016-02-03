@@ -43,6 +43,10 @@
 #define LogPi (FLOAT)1.1447298858494001741434273513531
 #endif
 
+#ifndef LogSqrt2Pi
+#define LogSqrt2Pi (FLOAT)0.91893853320467274178032973640562
+#endif 
+
 #ifndef Euler       
 #define Euler (FLOAT)0.5772156649015328606065120900824
 #endif

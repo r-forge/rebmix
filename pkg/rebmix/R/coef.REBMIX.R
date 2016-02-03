@@ -16,37 +16,38 @@ function(object, pos, ...)
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
   }
   
-  w <- matrix(object@w[[pos]], nrow = 1) 
+  w <- matrix(object@w[[pos]], nrow = 1)
+  
+  c <- ncol(w)  
   
   rownames(w) <- "w"
   colnames(w) <- paste("comp", if (object@summary[pos, "c"] > 1) 1:object@summary[pos, "c"] else "", sep = "") 
   
   print(w, quote = FALSE, ...)
+  
+  d <- length(object@Variables)   
+  
+  names <- names(object@Theta[[pos]]) 
 
-  cat("\n", sep = "")
+  Names <- names[grep("theta1", names, fixed = TRUE)]
   
-  names <- names(object@Theta[[pos]])
+  theta1 <- matrix(unlist(object@Theta[[pos]][Names]), ncol = d, byrow = TRUE)
   
-  names <- names[grep("theta", names, fixed = TRUE)]
+  rownames(theta1) <- Names
+  colnames(theta1) <- paste(1:d, sep = "")
   
-  theta <- NULL
+  print(theta1, quote = FALSE, ...) 
+
+  Names <- names[grep("theta2", names, fixed = TRUE)]
   
-  for (i in 1:length(names)) {
-    theta <- c(theta, object@Theta[[pos]][[names[i]]])
-  }  
+  theta2 <- matrix(unlist(object@Theta[[pos]][Names]), ncol = d, byrow = TRUE)
   
-  theta <- matrix(theta, ncol = length(object@Theta[[pos]][[names[1]]]), byrow = TRUE)
+  rownames(theta2) <- Names
+  colnames(theta2) <- paste(1:d, sep = "")
   
-  rownames(theta) <- names
-  colnames(theta) <- object@Theta[[pos]]$pdf1
+  print(theta2, quote = FALSE, ...)
   
-  if (nrow(theta) > ncol(theta)) {
-    theta <- t(theta)
-  }  
-  
-  print(theta, quote = FALSE, ...)  
-  
-  rm(list = ls())   
+  rm(list = ls())    
 }) ## coef
 
 setMethod("coef",
@@ -75,39 +76,28 @@ function(object, pos, ...)
   colnames(w) <- paste("comp", if (object@summary[pos, "c"] > 1) 1:object@summary[pos, "c"] else "", sep = "") 
   
   print(w, quote = FALSE, ...)
+  
+  d <- length(object@Variables)   
+  
+  names <- names(object@Theta[[pos]]) 
 
-  names <- names(object@Theta[[pos]])
+  Names <- names[grep("theta1", names, fixed = TRUE)]
   
-  names <- names[grep("theta", names, fixed = TRUE)]
+  theta1 <- matrix(unlist(object@Theta[[pos]][Names]), ncol = d, byrow = TRUE)
   
-  d <- length(object@Theta[[pos]][[names[1]]])
+  rownames(theta1) <- Names
+  colnames(theta1) <- paste(1:d, sep = "")
   
-  theta <- NULL
+  print(theta1, quote = FALSE, ...) 
+
+  Names <- names[grep("theta2", names, fixed = TRUE)]
   
-  for (i in 1:length(names)) {
-    theta <- c(theta, object@Theta[[pos]][[names[i]]])
-  }  
+  theta2 <- matrix(unlist(object@Theta[[pos]][Names]), ncol = d * d, byrow = TRUE)
   
-  theta <- matrix(theta, ncol = d, byrow = TRUE)
+  rownames(theta2) <- Names
+  colnames(theta2) <- paste(rep(1:d, each = d), rep(1:d, d), sep = "-") 
   
-  Names <- array(data = "", dim = nrow(theta), dimnames = NULL)
-  
-  i <- 1
-  
-  for (j in 1:c) {
-    Names[d * (j - 1) + j] <- names[i]
-    
-    i <- i + 1
-    
-    Names[d * (j - 1) + j + 1] <- names[i]    
-    
-    i <- i + 1
-  }
-  
-  rownames(theta) <- Names
-  colnames(theta) <- rep("", d)
-  
-  print(theta, quote = FALSE, ...)  
+  print(theta2, quote = FALSE, ...)
   
   rm(list = ls())   
 }) ## coef

@@ -433,4 +433,192 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
 E0: if (rebmvnorm) delete rebmvnorm;
 } // RREBMVNORM
 
+// Returns classified observations in R.
+
+void RCLSMVNORM(int    *n,      // Total number of independent observations.
+                double *X,      // Pointer to the input array X.
+                int    *s,      // Number of classes.
+                int    *o,      // Number of input REBMVNORM objects.
+                int    *d,      // Number of independent random variables in REBMVNORM objects.
+                int    *c,      // Number of components.
+                double *W,      // Component weights.
+                char   **pdf,   // Component parameters.
+                double *theta1, // Component parameters.
+                double *theta2, // Component parameters.
+                double *P,      // Prior probabilities.
+                int    *Z,      // Pointer to the output array Z.
+                int    *Error)  // Error code.
+{
+    Rebmvnorm            *rebmvnorm = NULL;
+    int                  **C = NULL; 
+    int                  A[2];
+    FLOAT                ***Q = NULL;
+    FLOAT                *Y = NULL;
+    CompnentDistribution ****Theta = NULL; 
+    FLOAT                CmpDist, MixDist, MaxMixDist;
+    int                  i, j, k, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    C = (int**)malloc(*s * sizeof(int*));
+
+    *Error = NULL == C; if (*Error) goto E0;
+
+    i = 0;
+
+    for (j = 0; j < *s; j++) {
+        C[j] = (int*)malloc(*o * sizeof(int));
+
+        *Error = NULL == C[j]; if (*Error) goto E0;
+
+        for (k = 0; k < *o; k++) {
+            C[j][k] = c[i]; i++;
+        }
+    }
+
+    Q = (FLOAT***)malloc(*s * sizeof(FLOAT**));
+
+    *Error = NULL == Q; if (*Error) goto E0;
+
+    i = 0;
+
+    for (j = 0; j < *s; j++) {
+        Q[j] = (FLOAT**)malloc(*o * sizeof(FLOAT*));
+
+        *Error = NULL == Q[j]; if (*Error) goto E0;
+
+        for (k = 0; k < *o; k++) {
+            Q[j][k] = (FLOAT*)malloc(C[j][k] * sizeof(FLOAT));
+
+            *Error = NULL == Q[j][k]; if (*Error) goto E0;
+
+            for (l = 0; l < C[j][k]; l++) {
+                Q[j][k][l] = W[i]; i++;
+            }
+        }
+    }
+
+    Theta = new CompnentDistribution*** [*s];
+
+    *Error = NULL == Theta; if (*Error) goto E0;
+
+    i = 0;
+
+    for (j = 0; j < *s; j++) {
+        Theta[j] = new CompnentDistribution** [*o];
+
+        *Error = NULL == Theta[j]; if (*Error) goto E0;
+
+        for (k = 0; k < *o; k++) {
+            Theta[j][k] = new CompnentDistribution* [C[j][k]];
+
+            *Error = NULL == Theta[j][k]; if (*Error) goto E0;
+
+            for (l = 0; l < C[j][k]; l++) {
+                Theta[j][k][l] = new CompnentDistribution(rebmvnorm);
+
+                *Error = NULL == Theta[j][k][l]; if (*Error) goto E0;
+
+                A[0] = A[1] = d[k];
+
+                *Error = Theta[j][k][l]->Realloc(d[k], 2, A);
+
+                if (*Error) goto E0;
+
+                for (m = 0; m < d[k]; m++) {
+                    if (!strcmp(pdf[i], "normal")) {
+                        Theta[j][k][l]->pdf_[m] = pfNormal;
+
+                        Theta[j][k][l]->Theta_[0][m] = theta1[i];
+                        Theta[j][k][l]->Theta_[1][m] = theta2[i];
+                    }
+                    else {
+                        *Error = 1; goto E0;
+                    }
+
+                    i++;
+                }
+            }
+        }
+    }
+
+    i = d[0]; for (j = 1; j < *o; j++) if (d[j] > i) i = d[j]; 
+
+    Y = (FLOAT*)malloc(i * sizeof(FLOAT));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < *n; i++) {
+        Z[i] = 0; MaxMixDist = (FLOAT)0.0; 
+         
+        for (j = 0; j < *s; j++) {
+            k = 0; MixDist = (FLOAT)1.0;
+            
+            for (l = 0; l < *o; l++) {
+                for (m = 0; m < d[l]; m++) {
+                    Y[m] = X[i + (*n) * (m + k)];
+                }
+
+                *Error = rebmvnorm->MixtureDist(Y, C[j][l], Q[j][l], Theta[j][l], &CmpDist);
+
+                if (*Error) goto E0;
+
+                k += d[l]; MixDist *= CmpDist; 
+            }
+
+            MixDist *= P[j];
+
+            if (MixDist > MaxMixDist) {
+                Z[i] = j; MaxMixDist = MixDist;
+            }
+        }
+    }
+
+E0: if (Y) free(Y);
+
+    if (Theta) {
+        for (i = 0; i < *s; i++) {
+            if (Theta[i]) {
+                for (j = 0; j < *o; j++) {
+                    if (Theta[i][j]) {
+                        for (k = 0; k < C[i][j]; k++) {
+                            if (Theta[i][j][k]) delete Theta[i][j][k];
+                        }
+                        
+                        delete Theta[i][j];
+                    }
+                }
+
+                delete Theta[i];
+            }
+        }
+
+        delete Theta;
+    }
+
+    if (Q) {
+        for (i = 0; i < *s; i++) {
+            if (Q[i]) {
+                for (j = 0; j < *o; j++) if (Q[i][j]) free(Q[i][j]);
+                
+                free(Q[i]);
+            }
+        }
+
+        free(Q);
+    } 
+
+    if (C) {
+        for (i = 0; i < *s; i++) {
+            if (C[i]) free(C[i]);
+        }
+
+        free(C);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RCLSMVNORM 
+
 } // extern "C"

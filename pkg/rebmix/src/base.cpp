@@ -446,8 +446,6 @@ int LUdcmp(int   n,     // Size of square matrix.
 
     Error = NULL == V; if (Error) goto E0;
 
-    *det = (FLOAT)1.0;
-
     for (i = 0; i < n; i++) {
         Big = (FLOAT)0.0;
 
@@ -455,10 +453,14 @@ int LUdcmp(int   n,     // Size of square matrix.
             if ((Tmp = (FLOAT)fabs(A[i * n + j])) > Big) Big = Tmp;
         }
 
-        if ((FLOAT)fabs(Big) <= FLOAT_MIN) goto E0;
+        if ((FLOAT)fabs(Big) <= FLOAT_MIN) {
+            Error = 1; goto E0;
+        }
 
         V[i] = (FLOAT)1.0 / Big;
     }
+
+    *det = (FLOAT)1.0;
 
     for (k = 0; k < n; k++) {
         Big = (FLOAT)0.0; imax = k;

@@ -104,7 +104,7 @@ function(x,
 
     model@Theta[[theta1]] <- matrix(model@Theta[[theta1]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta1]]) <- model@x@pdf
+    colnames(model@Theta[[theta1]]) <- paste(1:d, sep = "")
     rownames(model@Theta[[theta1]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta1.se <- paste("theta1.",  i, ".se", sep = "")
@@ -125,7 +125,7 @@ function(x,
 
     model@Theta[[theta2]] <- matrix(model@Theta[[theta2]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta2]]) <- model@x@pdf
+    colnames(model@Theta[[theta2]]) <- paste(1:d, sep = "")
     rownames(model@Theta[[theta2]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta2.se <- paste("theta2.",  i, ".se", sep = "")
@@ -249,7 +249,7 @@ function(x,
 
     model@Theta[[theta1]] <- matrix(model@Theta[[theta1]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta1]]) <- model@x@pdf
+    colnames(model@Theta[[theta1]]) <- paste(1:d, sep = "")
     rownames(model@Theta[[theta1]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta1.se <- paste("theta1.",  i, ".se", sep = "")
@@ -268,9 +268,9 @@ function(x,
       model@Theta[[theta2]] <- c(model@Theta[[theta2]], Theta[[j]][[theta2]])
     }
 
-    model@Theta[[theta2]] <- matrix(model@Theta[[theta2]], ncol = d, byrow = TRUE)
-
-    colnames(model@Theta[[theta2]]) <- model@x@pdf
+    model@Theta[[theta2]] <- matrix(model@Theta[[theta2]], ncol = d * d, byrow = TRUE)
+    
+    colnames(model@Theta[[theta2]]) <- paste(rep(1:d, each = d), rep(1:d, d), sep = "-")
     rownames(model@Theta[[theta2]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta2.se <- paste("theta2.",  i, ".se", sep = "")

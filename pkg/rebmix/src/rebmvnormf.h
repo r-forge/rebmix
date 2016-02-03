@@ -9,7 +9,7 @@
 
 class Rebmvnorm : public Rebmix {
 private:
-    int ComponentMarginalDist(int i, FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpMrgDist);
+    int ComponentConditionalDist(int i, FLOAT *Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpMrgDist);
 public:
     // Methods.
     // int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
