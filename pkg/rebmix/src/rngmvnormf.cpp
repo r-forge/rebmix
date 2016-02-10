@@ -18,15 +18,15 @@ int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
     int   i, j;
     int   Error = 0;
 
-    y = (FLOAT*)malloc(d_ * sizeof(FLOAT));
+    y = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == y; if (Error) goto E0;
 
-    for (i = 0; i < d_; i++) {
+    for (i = 0; i < length_pdf_; i++) {
         if (Trigger_) {
             Trigger_ = 0;
 
-            Error = Choldc(d_, CmpDist->Theta_[1], CmpDist->Theta_[2]);
+            Error = Choldc(length_pdf_, CmpDist->Theta_[1], CmpDist->Theta_[2]);
 
             if (Error) goto E0;
         }
@@ -50,11 +50,11 @@ int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
         }
     }
 
-    for (i = 0; i < d_; i++) {
+    for (i = 0; i < length_pdf_; i++) {
         Sum = (FLOAT)0.0;
 
         for (j = 0; j <= i; j++) {
-            Sum += CmpDist->Theta_[2][i * d_ + j] * y[j];
+            Sum += CmpDist->Theta_[2][i * length_pdf_ + j] * y[j];
         }
 
         Y[i] = Sum + CmpDist->Theta_[0][i];

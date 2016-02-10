@@ -143,4 +143,17 @@ setMethod("summary",
           signature(object = "RCLSMVNORM"),
 function(object, ...)
 {
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLSMVNORM is requested!", call. = FALSE)
+  }
+  
+  CM <- as.data.frame(object@CM)
+  
+  colnames(CM) <- c("Test", "Predictive", "Frequency")
+ 
+  print(CM, quote = FALSE, ...)
+   
+  cat(paste("Error = ", object@Error, ".\n", sep = "", collapse = ""))
+  
+  rm(list = ls()) 
 }) ## summary

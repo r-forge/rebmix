@@ -97,7 +97,6 @@ public:
     int                        o_;             // Number of paths.
     char                       **open_;        // Paths to open data files.
     char                       *save_;         // Path to the save data file.
-    int                        d_;             // Number of independent random variables.
     PreprocessingType_e        Preprocessing_; // Preprocessing type.
     int                        cmax_;          // Maximum number of components.
     InformationCriterionType_e Criterion_;     // Infromation criterion type.

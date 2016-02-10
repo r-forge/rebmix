@@ -37,7 +37,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
     *Error = NULL == rngmvnorm; if (*Error) goto E0;
 
     rngmvnorm->IDum_ = *IDum;
-    rngmvnorm->d_ = *d;
+    rngmvnorm->length_pdf_ = *d;
     rngmvnorm->c_ = *c;
 
     rngmvnorm->N_ = (int*)malloc(rngmvnorm->c_ * sizeof(int));
@@ -108,7 +108,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
 
     *n = rngmvnorm->n_; i = 0;
 
-    for (j = 0; j < rngmvnorm->d_; j++) {
+    for (j = 0; j < rngmvnorm->length_pdf_; j++) {
         for (k = 0; k < rngmvnorm->n_; k++) {
             Y[i] = rngmvnorm->Y_[k][j]; i++;
         }
@@ -236,13 +236,13 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         *Error = 1; goto E0;
     }
 
-    rebmvnorm->d_ = *d;
+    rebmvnorm->length_pdf_ = *d;
 
-    rebmvnorm->Variables_ = (VariablesType_e*)malloc(rebmvnorm->d_ * sizeof(VariablesType_e));
+    rebmvnorm->Variables_ = (VariablesType_e*)malloc(rebmvnorm->length_pdf_ * sizeof(VariablesType_e));
 
     *Error = NULL == rebmvnorm->Variables_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->d_; i++) {
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
         if (!strcmp(Variables[i], "continuous")) {
             rebmvnorm->Variables_[i] = vtContinuous;
         }
@@ -297,11 +297,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     }
 
     if (*length_y0 > 0) {
-        rebmvnorm->y0_ = (FLOAT*)malloc(rebmvnorm->d_ * sizeof(FLOAT));
+        rebmvnorm->y0_ = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->y0_; if (*Error) goto E0;
 
-        for (i = 0; i < rebmvnorm->d_; i++) {
+        for (i = 0; i < rebmvnorm->length_pdf_; i++) {
             rebmvnorm->y0_[i] = y0[i];
         }
     }
@@ -310,11 +310,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     }
 
     if (*length_ymin > 0) {
-        rebmvnorm->ymin_ = (FLOAT*)malloc(rebmvnorm->d_ * sizeof(FLOAT));
+        rebmvnorm->ymin_ = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->ymin_; if (*Error) goto E0;
 
-        for (i = 0; i < rebmvnorm->d_; i++) {
+        for (i = 0; i < rebmvnorm->length_pdf_; i++) {
             rebmvnorm->ymin_[i] = ymin[i];
         }
     }
@@ -323,11 +323,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     }
 
     if (*length_ymax > 0) {
-        rebmvnorm->ymax_ = (FLOAT*)malloc(rebmvnorm->d_ * sizeof(FLOAT));
+        rebmvnorm->ymax_ = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->ymax_; if (*Error) goto E0;
 
-        for (i = 0; i < rebmvnorm->d_; i++) {
+        for (i = 0; i < rebmvnorm->length_pdf_; i++) {
             rebmvnorm->ymax_[i] = ymax[i];
         }
     }
@@ -355,14 +355,14 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->n_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->d_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->d_; j++) {
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
         for (l = 0; l < rebmvnorm->n_; l++) {
             rebmvnorm->Y_[l][j] = Y[i]; i++;
         }
@@ -374,11 +374,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
 
     *summary_k = rebmvnorm->summary_.k;
 
-    if (rebmvnorm->summary_.h) for (i = 0; i < rebmvnorm->d_; i++) {
+    if (rebmvnorm->summary_.h) for (i = 0; i < rebmvnorm->length_pdf_; i++) {
         summary_h[i] = rebmvnorm->summary_.h[i];
     }
 
-    if (rebmvnorm->summary_.y0) for (i = 0; i < rebmvnorm->d_; i++) {
+    if (rebmvnorm->summary_.y0) for (i = 0; i < rebmvnorm->length_pdf_; i++) {
         summary_y0[i] = rebmvnorm->summary_.y0[i];
     }
 
@@ -451,7 +451,7 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
 {
     Rebmvnorm            *rebmvnorm = NULL;
     int                  **C = NULL; 
-    int                  A[2];
+    int                  A[4];
     FLOAT                ***Q = NULL;
     FLOAT                *Y = NULL;
     CompnentDistribution ****Theta = NULL; 
@@ -504,8 +504,6 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
 
     *Error = NULL == Theta; if (*Error) goto E0;
 
-    i = 0;
-
     for (j = 0; j < *s; j++) {
         Theta[j] = new CompnentDistribution** [*o];
 
@@ -521,18 +519,27 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
 
                 *Error = NULL == Theta[j][k][l]; if (*Error) goto E0;
 
-                A[0] = A[1] = d[k];
+                A[0] = d[k];
+                A[1] = A[2] = d[k] * d[k];
+                A[3] = 1;
 
-                *Error = Theta[j][k][l]->Realloc(d[k], 2, A);
+                *Error = Theta[j][k][l]->Realloc(d[k], 4, A);
 
                 if (*Error) goto E0;
+            }
+        }
+    }
 
+    i = 0;
+
+    for (j = 0; j < *s; j++) {
+        for (k = 0; k < *o; k++) {
+            for (l = 0; l < C[j][k]; l++) {
                 for (m = 0; m < d[k]; m++) {
                     if (!strcmp(pdf[i], "normal")) {
                         Theta[j][k][l]->pdf_[m] = pfNormal;
 
                         Theta[j][k][l]->Theta_[0][m] = theta1[i];
-                        Theta[j][k][l]->Theta_[1][m] = theta2[i];
                     }
                     else {
                         *Error = 1; goto E0;
@@ -544,6 +551,30 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
         }
     }
 
+    i = 0;
+
+    for (j = 0; j < *s; j++) {
+        for (k = 0; k < *o; k++) {
+            for (l = 0; l < C[j][k]; l++) {
+                for (m = 0; m < d[k] * d[k]; m++) {
+                    Theta[j][k][l]->Theta_[1][m] = theta2[i];
+
+                    i++;
+                }
+            }
+        }
+    }
+
+    for (j = 0; j < *s; j++) {
+        for (k = 0; k < *o; k++) {
+            for (l = 0; l < C[j][k]; l++) {
+                *Error = LUinvdet(d[k], Theta[j][k][l]->Theta_[1], Theta[j][k][l]->Theta_[2], Theta[j][k][l]->Theta_[3]);
+
+                if (*Error) goto E0;
+            }
+        }
+    }
+
     i = d[0]; for (j = 1; j < *o; j++) if (d[j] > i) i = d[j]; 
 
     Y = (FLOAT*)malloc(i * sizeof(FLOAT));
@@ -551,8 +582,8 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < *n; i++) {
-        Z[i] = 0; MaxMixDist = (FLOAT)0.0; 
-         
+        Z[i] = 0; MaxMixDist = (FLOAT)0.0;
+        
         for (j = 0; j < *s; j++) {
             k = 0; MixDist = (FLOAT)1.0;
             

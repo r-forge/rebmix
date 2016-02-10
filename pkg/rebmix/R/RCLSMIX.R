@@ -105,7 +105,7 @@ function(model, ...)
       d[io] <- length(pdf[[io, is]]) / c[[io, is]]
     }
   }
-
+  
   output <- .C("RCLSMVNORM",
     n = model@ntest,
     X = as.double(unlist(model@Dataset)),
@@ -154,17 +154,19 @@ function(model,
      
   model <- RCLSMIX(model = model, ...)
   
-  model@CM <- table(model@Zt, model@Zp)
+  if (!missing(Zt)) {
+    model@CM <- table(model@Zt, model@Zp)
   
-  model@Accuracy <- sum(diag(model@CM)) / model@ntest
+    model@Accuracy <- sum(diag(model@CM)) / model@ntest
   
-  model@Error <- 1.0 - model@Accuracy
+    model@Error <- 1.0 - model@Accuracy
   
-  model@Precission <- diag(model@CM) / apply(model@CM, 1, sum)
+    model@Precission <- diag(model@CM) / apply(model@CM, 1, sum)
   
-  model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
+    model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
   
-  model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
+    model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
+  }
   
   options(digits = digits)  
 

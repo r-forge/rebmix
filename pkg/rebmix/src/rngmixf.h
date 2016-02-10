@@ -18,7 +18,6 @@ public:
     char                 **open_;        // Paths to open data files.
     char                 *save_;         // Path to the save data file.
     int                  IDum_;          // Random seed.
-    int                  d_;             // Number of independent random variables.
     int                  c_;             // Number of components.
     CompnentDistribution *IniTheta_;     // Initial component parameters.
     int                  n_;             // Number of observations.

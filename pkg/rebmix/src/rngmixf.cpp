@@ -21,7 +21,6 @@ Rngmix::Rngmix()
     open_ = NULL;
     save_ = NULL;
     IDum_ = 0;
-    d_ = 0;
     c_ = 0;
     IniTheta_ = NULL;
     n_ = 0;
@@ -83,7 +82,7 @@ int Rngmix::WriteDataFile()
     for (i = 0; i < n_; i++) {
         fprintf(fp, "%E", Y_[i][0]); 
         
-        for (j = 1; j < d_; j++) fprintf(fp, "\t%E", Y_[i][j]); 
+        for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[i][j]); 
         
         fprintf(fp, "\n");
     }
@@ -342,7 +341,7 @@ int Rngmix::RNGMIX()
     Error = NULL == Y_; if (Error) goto E0;
 
     for (i = 0; i < n_; i++) {
-        Y_[i] = (FLOAT*)malloc(d_ * sizeof(FLOAT));
+        Y_[i] = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
@@ -478,7 +477,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         }
         else
         if (!strcmp(ident, "D")) {
-            d_ = isI = (int)atol(pchar);
+            length_pdf_ = isI = (int)atol(pchar);
 
             Error = isI < 1; if (Error) goto E0;
         }

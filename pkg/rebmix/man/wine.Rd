@@ -54,7 +54,7 @@ data("wine")
 \code{Proline} continuous.
 }
 \item{
-\code{Cultivar} continuous.
+\code{Cultivar} discrete \code{1}, \code{2} or \code{3}.
 }
 }
 }

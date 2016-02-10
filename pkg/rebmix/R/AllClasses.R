@@ -903,4 +903,37 @@ setMethod("show",
           signature(object = "RCLSMVNORM"),
 function(object)
 {
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLSMVNORM is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"CM\":", sep = "")
+
+  print(object@CM, quote = FALSE)
+  
+  cat("Slot \"Error\":", "\n", sep = "")
+
+  print(object@Error, quote = FALSE)
+  
+  cat("Slot \"Precission\":", "\n", sep = "")
+  
+  names(object@Precission) <- NULL
+
+  print(object@Precission, quote = FALSE) 
+  
+  cat("Slot \"Sensitivity\":", "\n", sep = "")
+  
+  names(object@Sensitivity) <- NULL
+
+  print(object@Sensitivity, quote = FALSE)   
+  
+  cat("Slot \"Specificity\":", "\n", sep = "")
+  
+  names(object@Specificity) <- NULL
+
+  print(object@Specificity, quote = FALSE)      
+
+  rm(list = ls())
 }) ## show
