@@ -59,7 +59,6 @@ function(model, ...)
   }
 
   model@Zp <- as.factor(output$Z)
-  levels(model@Zp) <- 0:(length(model@P) - 1)
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -127,7 +126,6 @@ function(model, ...)
   }
 
   model@Zp <- as.factor(output$Z)
-  levels(model@Zp) <- 0:(length(model@P) - 1)
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -154,19 +152,17 @@ function(model,
      
   model <- RCLSMIX(model = model, ...)
   
-  if (!missing(Zt)) {
-    model@CM <- table(model@Zt, model@Zp)
+  model@CM <- table(model@Zt, model@Zp)
   
-    model@Accuracy <- sum(diag(model@CM)) / model@ntest
+  model@Accuracy <- sum(diag(model@CM)) / model@ntest
   
-    model@Error <- 1.0 - model@Accuracy
+  model@Error <- 1.0 - model@Accuracy
   
-    model@Precission <- diag(model@CM) / apply(model@CM, 1, sum)
+  model@Precission <- diag(model@CM) / apply(model@CM, 1, sum)
   
-    model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
+  model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
   
-    model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
-  }
+  model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
   
   options(digits = digits)  
 

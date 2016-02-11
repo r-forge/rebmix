@@ -193,11 +193,15 @@ c
 
 predictive <- RCLSMIX(x = adultest[c],
   Dataset = as.data.frame(testall[, c]), 
-  Zt = test) 
-
-# Error on test dataset.
+  Zt = test)
+  
+predictive  
 
 summary(predictive)
+
+# Plot selected features.
+
+plot(predictive, nrow = 2, ncol = 5)
 }
 }
 \keyword{classification}

@@ -3,11 +3,13 @@
 \alias{plot-methods}
 \alias{plot,REBMIX,missing-method}
 \alias{plot,REBMVNORM,missing-method}
+\alias{plot,RCLSMIX,missing-method}
+\alias{plot,RCLSMVNORM,missing-method}
 \title{
 Plots Univariate or Multivariate REBMIX Output
 }
 \description{
-Takes an object of class \code{REBMIX} or \code{REBMVNORM} and plots empirical and predictive univariate \eqn{d = 1} mixture densities
+Plots empirical and predictive univariate \eqn{d = 1} mixture densities
 or pairs of empirical and predictive bivariate marginal mixture densities for \eqn{d > 1}. The empirical
 densities follow the histogram, Parzen window or \emph{k}-nearest neighbour approach.
 }
@@ -18,6 +20,9 @@ densities follow the histogram, Parzen window or \emph{k}-nearest neighbour appr
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
      contour.nlevels = 12, ...)
+\S4method{plot}{RCLSMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
+     plot.cex = 0.8, plot.pch = 19, ...)     
 ## ... and for other signatures
 }
 \arguments{
@@ -103,6 +108,8 @@ can be passed as an argument to \code{\link[graphics]{par}} to restore the param
 \describe{
 \item{\code{signature(x = "REBMIX", y = "missing")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(x = "REBMVNORM", y = "missing")}}{an object of class \code{REBMVNORM}.}
+\item{\code{signature(x = "RCLSMIX", y = "missing")}}{an object of class \code{RCLSMIX}.}
+\item{\code{signature(x = "RCLSMVNORM", y = "missing")}}{an object of class \code{RCLSMVNORM}.}
 }
 }
 \author{Marko Nagode}

@@ -72,7 +72,7 @@ iris_vir_train <- iris_vir[s_vir, ]; iris_vir_test <- iris_vir[-s_vir, ]
 
 iris_test = rbind(iris_set_test, iris_ver_test, iris_vir_test)
 
-Zt <- c(rep(0, nrow(iris_set_test)), rep(1, nrow(iris_ver_test)), rep(2, nrow(iris_vir_test)))
+Zt <- factor(c(rep(0, nrow(iris_set_test)), rep(1, nrow(iris_ver_test)), rep(2, nrow(iris_vir_test))))
 
 # Estimate number of components, component weights and component 
 # parameters for the train subsets.
@@ -101,11 +101,15 @@ plot(irisest, pos = 3, nrow = 2, ncol = 3, what = c("den"))
 predictive <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(irisest),
   Dataset = iris_test,
-  Zt = factor(Zt))
+  Zt = Zt)
 
 predictive
 
 summary(predictive)
+
+# Plot selected features.
+
+plot(predictive, nrow = 3, ncol = 2)
 }
 }
 \keyword{datasets}

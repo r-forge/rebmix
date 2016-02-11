@@ -1010,7 +1010,7 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < *n; i++) {
-        Z[i] = 0; MaxMixDist = (FLOAT)0.0; 
+        Z[i] = 1; MaxMixDist = (FLOAT)0.0; 
          
         for (j = 0; j < *s; j++) {
             k = 0; MixDist = (FLOAT)1.0;
@@ -1030,7 +1030,7 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
             MixDist *= P[j];
 
             if (MixDist > MaxMixDist) {
-                Z[i] = j; MaxMixDist = MixDist;
+                Z[i] = j + 1; MaxMixDist = MixDist;
             }
         }
     }

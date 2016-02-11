@@ -844,11 +844,15 @@ function(.Object, ...,
   
   # Zt.
   
-  if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
+  if (missing(Zt) || (length(Zt) == 0)) {
+    stop(sQuote("Zt"), " must not be empty!", call. = FALSE)  
+  }
   
   if (!is.factor(Zt)) {
     stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
-  }  
+  }
+  
+  levels(Zt) <- 1:s
   
   callNextMethod(.Object, ...,
     x = x,
