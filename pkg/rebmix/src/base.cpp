@@ -274,7 +274,7 @@ int GammaSer(FLOAT a,       // Constant a > 0.
         while ((i <= ItMax) && Error) {
             ap += (FLOAT)1.0; Del *= y / ap; Sum += Del;
 
-            if ((FLOAT)fabs(Del) < FLOAT_EPSILON) Error = 0;
+            if ((FLOAT)fabs(Del) <= FLOAT_EPSILON) Error = 0;
 
             i++;
         }
@@ -323,7 +323,7 @@ int GammaCfg(FLOAT a,       // Constant a > 0.
             if (a1 != (FLOAT)0.0) {
                 Fac = (FLOAT)1.0 / a1; G = b1 * Fac;
 
-                if ((FLOAT)fabs(G - Gold) < FLOAT_EPSILON) Error = 0; else Gold = G;
+                if ((FLOAT)fabs(G - Gold) <= FLOAT_EPSILON) Error = 0; else Gold = G;
             }
 
             i++;
@@ -483,7 +483,7 @@ int LUdcmp(int   n,     // Size of square matrix.
 
         indx[k] = imax;
 
-        if ((FLOAT)fabs(A[k * n + k]) < FLOAT_MIN) A[k * n + k] = FLOAT_MIN;
+        if ((FLOAT)fabs(A[k * n + k]) <= FLOAT_MIN) A[k * n + k] = FLOAT_MIN;
 
         for (i = k + 1; i < n; i++) {
             Tmp = A[i * n + k] /= A[k * n + k];
@@ -494,7 +494,9 @@ int LUdcmp(int   n,     // Size of square matrix.
 
     for (i = 0; i < n; i++) *det *= A[i * n + i];
 
-    if (*det < FLOAT_MIN) Error = 1;
+    if (isnan(*det) || ((FLOAT)fabs(*det) <= FLOAT_MIN)) {
+        Error = 1; goto E0;
+    }
 
 E0: if (V) free(V);
 
@@ -576,6 +578,10 @@ int LUinvdet(int   n,     // Size of square matrix.
         if (Error) goto E0;
 
         for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
+
+        if (Ainv[j * n + j] <= FLOAT_MIN) {
+            Error = 1; goto E0;
+        }
     }
 
 E0: if (B) free(B);	
