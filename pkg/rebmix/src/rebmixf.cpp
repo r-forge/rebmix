@@ -1347,7 +1347,7 @@ S2:;
                 Stop = 1;
             }
             else {
-                if (Dlm * Dlmin >(FLOAT)0.0) {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
                     flmin = flm; Dlmin = Dlm;
                 }
                 else {
