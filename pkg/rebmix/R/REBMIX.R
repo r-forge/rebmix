@@ -519,7 +519,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.7.3")
+  message("REBMIX Version 2.8.0")
  
   flush.console()
   
@@ -531,7 +531,7 @@ function(model,
      pdf = pdf,
      theta1 = theta1,
      theta2 = theta2,
-     K = K,
+     K = sort(K),
      y0 = y0,
      ymin = ymin,
      ymax = ymax,                                      

@@ -379,7 +379,7 @@ int Rngmix::RunTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.7.3\n");
+    printf("RNGMIX Version 2.8.0\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -476,12 +476,6 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             Error = isI >= 0; if (Error) goto E0;
         }
         else
-        if (!strcmp(ident, "D")) {
-            length_pdf_ = isI = (int)atol(pchar);
-
-            Error = isI < 1; if (Error) goto E0;
-        }
-        else
         if (!strcmp(ident, "LENGTHPDF")) {
             length_pdf_ = isI = (int)atol(pchar);
 
@@ -538,9 +532,6 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 else
                 if (!strcmp(pchar, "DIRAC"))
                     IniTheta_->pdf_[i] = pfDirac;
-                else
-                if (!strcmp(pchar, "MVNORMAL"))
-                    IniTheta_->pdf_[i] = pfNormal;
                 else {
                     Error = 1; goto E0;
                 }

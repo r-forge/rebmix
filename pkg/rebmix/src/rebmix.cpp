@@ -20,14 +20,14 @@ int main(int argc, char* argv[])
     _CrtMemCheckpoint(&s1);
     #endif
 
-    Rngmix *rngmix = NULL;
+    Rngmvnorm *rngmix = NULL;
     Rebmvnorm *rebmix = NULL;
-    int    Error = 0;
+    int       Error = 0;
 
     if (argc != 3) goto E0;
 
     if (!strcmp(argv[2], "RNGMIX")) {
-        rngmix = new Rngmix;
+        rngmix = new Rngmvnorm;
 
         Error = NULL == rngmix; if (Error) goto E0;
 

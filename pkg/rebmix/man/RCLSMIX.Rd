@@ -73,8 +73,10 @@ adult <- adult[complete.cases(adult), ]
 
 # Map metric attributes.
 
-adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
+adult[["Age"]] <- ordered(cut(adult[["Age"]], 2000))
+adult[["Hours.Per.Week"]] <- ordered(cut(adult[["Hours.Per.Week"]], 2000))
 adult[["Capital.Gain"]] <- ordered(cut(adult[["Capital.Gain"]], 2000))
+adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
 
 # Show level attributes for binary and discrete variables.
 
@@ -96,8 +98,9 @@ adult <- as.data.frame(data.matrix(adult))
 # Levels should start with 0 for discrete distributions except for the 
 # Dirac distribution.
 
-f <- c("Type", "Workclass", "Education", "Marital.Status", "Occupation", 
-  "Relationship", "Race", "Sex", "Native.Country", "Income")
+f <- c("Type", "Age", "Workclass", "Education", "Marital.Status", 
+  "Occupation", "Relationship", "Race", "Sex", "Capital.Gain", 
+  "Capital.Loss", "Hours.Per.Week", "Native.Country", "Income")
 
 adult[, f] <- adult[, f] - 1
 
@@ -128,18 +131,20 @@ test <- as.factor(subset(adult, subset = Type == 0, select = c(Income))[, 1])
 # Estimate number of components, component weights and component 
 # parameters for Naive Bayes.
 
-Variables <- c("continuous", "discrete", "continuous", "discrete",
+Variables <- c("discrete", "discrete", "continuous", "discrete",
  "discrete", "discrete", "discrete", "discrete", "discrete",
  "discrete", "discrete", "discrete", "discrete", "discrete")
 
-pdf <- c("gamma", "Dirac", "gamma", "Dirac",
+pdf <- c("Dirac", "Dirac", "gamma", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac",
   "Dirac", "Dirac", "Dirac", "Dirac", "Dirac")
 
-K <- list(kseq(6, 20, 0.05), 1, kseq(6, 20, 0.05), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+n <- range(nrow(trainle50k), nrow(traingt50k))
 
-ymin <- as.numeric(apply(trainall, 2, min))
-ymax <- as.numeric(apply(trainall, 2, max))
+K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
+  as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
+
+K <- list(1, 1, K[1]:K[2], 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
 adultest <- list()
 
@@ -150,12 +155,10 @@ for (i in c(1:14)) {
     cmax = if (Variables[i] == "continuous") 8 else 100,
     Criterion = if (Variables[i] == "continuous") "BIC" else "D",
     pdf = pdf[i],
-    K = K[[i]],
-    ymin = ymin[i],
-    ymax = ymax[i])
+    K = K[[i]])
 
-    plot(adultest[[i]], pos = 1, nrow = 1, ncol = 2, what = c("den", "IC"))
-    plot(adultest[[i]], pos = 2, nrow = 1, ncol = 2, what = c("den", "IC"))
+    plot(adultest[[i]], pos = 1)
+    plot(adultest[[i]], pos = 2)
 }
 
 # Best-first feature subset selection.
@@ -201,7 +204,7 @@ summary(predictive)
 
 # Plot selected features.
 
-plot(predictive, nrow = 2, ncol = 5)
+plot(predictive, nrow = 5, ncol = 2)
 }
 }
 \keyword{classification}

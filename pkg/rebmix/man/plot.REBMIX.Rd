@@ -140,15 +140,18 @@ n <- nrow(wine)
 Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
 RootN <- as.integer(2 * n^0.5) # Maximum v follows the RootN rule.
 
-wineest <- REBMIX(Dataset = list(wine = wine), 
+K <- c(floor(Sturges^(1/13)), ceiling(RootN^(1/13)))
+
+wineest <- REBMIX(model = "REBMVNORM",
+  Dataset = list(wine = wine), 
   Preprocessing = "Parzen window", 
   Criterion = "ICL-BIC", 
   pdf = rep("normal", d), 
-  K = Sturges:RootN)
+  K = K[1]:K[2])
 
 # Plot finite mixture.
 
-plot(wineest, what = c("density", "marginal", "IC", "logL", "D"),
+plot(wineest, what = c("density", "IC", "logL", "D"),
   nrow = 2, ncol = 2, pty = "s")
 }
 }

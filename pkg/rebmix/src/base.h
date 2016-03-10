@@ -123,10 +123,6 @@ typedef struct componetdistributiontype {
     FLOAT                  *Theta2; // Component parameters.
 } ComponentDistributionType;
 
-// length_pdf_ = d_ for class Rebmix.
-// length_Theta_ = 2 for class Rebmix.
-// length_theta_[0] = d_ and length_theta_[1] = d_ for class Rebmix.
-
 class Base {
 public:
     // Members.

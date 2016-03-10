@@ -56,6 +56,8 @@ iris_vir <- subset(iris, subset = Class == "iris-virginica", select = c(-Class))
 
 # Split datasets into train (75%) and test (25%) subsets.
 
+set.seed(5)
+
 Prob <- 0.75
 
 n_set <- nrow(iris_set); s_set <- sample.int(n = n_set, size = as.integer(n_set * Prob))
@@ -72,7 +74,9 @@ iris_vir_train <- iris_vir[s_vir, ]; iris_vir_test <- iris_vir[-s_vir, ]
 
 iris_test = rbind(iris_set_test, iris_ver_test, iris_vir_test)
 
-Zt <- factor(c(rep(0, nrow(iris_set_test)), rep(1, nrow(iris_ver_test)), rep(2, nrow(iris_vir_test))))
+Zt <- factor(c(rep(0, nrow(iris_set_test)), 
+  rep(1, nrow(iris_ver_test)), 
+  rep(2, nrow(iris_vir_test))))
 
 # Estimate number of components, component weights and component 
 # parameters for the train subsets.
@@ -82,19 +86,21 @@ n <- range(nrow(iris_set_train), nrow(iris_ver_train), nrow(iris_vir_train))
 K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
 
+K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
+
 irisest <- REBMIX(model = "REBMVNORM",
   Dataset = list(iris_set_train = iris_set_train,
                  iris_ver_train = iris_ver_train,
                  iris_vir_train = iris_vir_train),
   Preprocessing = "Parzen window",
-  cmax = 15,
+  cmax = 10,
   Criterion = "ICL-BIC",
   pdf = rep("normal", 4),
   K = K[1]:K[2])
 
-plot(irisest, pos = 1, nrow = 2, ncol = 3, what = c("den"))
-plot(irisest, pos = 2, nrow = 2, ncol = 3, what = c("den"))
-plot(irisest, pos = 3, nrow = 2, ncol = 3, what = c("den"))
+plot(irisest, pos = 1, nrow = 3, ncol = 2, what = c("den"))
+plot(irisest, pos = 2, nrow = 3, ncol = 2, what = c("den"))
+plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("den"))
 
 # Selected features.
 

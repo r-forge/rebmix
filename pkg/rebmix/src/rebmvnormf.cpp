@@ -53,8 +53,6 @@ int Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    flm = (FLOAT)1.0;
-
     for (i = 0; i < length_pdf_; i++) {
         if (length_pdf_ > 1) {
             Mode[i].klm = (FLOAT)0.0;
@@ -76,7 +74,7 @@ S0:;
         }
         else
             Mode[i].klm = nl;
-                                             
+
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] * k / (Mode[i].klm * (FLOAT)2.0 * Y[m][length_pdf_ + 2] * h[i]);
     }
 
@@ -88,52 +86,66 @@ S0:;
 
     Error = NULL == C; if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        Sum = (FLOAT)0.0;
-        
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
-        }
-
-        C[i * length_pdf_ + i] = Sum / nl; 
-
-        for (ii = 0; ii < i; ii++) {
-            Sum = (FLOAT)0.0;
-        
-            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
-            }
-
-            C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
-        }
-    }
-
-    // Correlation matrix.
-
-    for (i = 0; i < length_pdf_; i++) {
-        o = i * length_pdf_ + i; 
-
-        for (ii = 0; ii < i; ii++) {
-            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
-
-            if (((FLOAT)fabs(C[q]) < FLOAT_MIN) || (C[o] < FLOAT_MIN) || (C[r] < FLOAT_MIN)) {
-                C[p] = C[q] = (FLOAT)0.0;
-            }
-            else {
-                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
-            }
-        }
-    }
-
-    for (i = 0; i < length_pdf_; i++) {
-        C[i * length_pdf_ + i] = (FLOAT)1.0; 
-    }
-
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == Cinv; if (Error) goto E0;
 
-    if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            Sum = (FLOAT)0.0;
+        
+            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
+            }
+
+            C[i * length_pdf_ + i] = Sum / nl;
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
+                }
+
+                C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
+            }
+        }
+
+        // Correlation matrix.
+
+        for (i = 0; i < length_pdf_; i++) {
+            o = i * length_pdf_ + i; 
+
+            for (ii = 0; ii < i; ii++) {
+                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
+
+                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
+
+                if (isnan(C[q]) || isinf(C[q])) {
+                    C[p] = C[q] = (FLOAT)0.0;
+                }
+            }
+        }
+
+        for (i = 0; i < length_pdf_; i++) {
+            C[i * length_pdf_ + i] = (FLOAT)1.0; 
+        }
+
+        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+            for (i = 0; i < length_pdf_; i++) {
+                o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
+
+                for (ii = 0; ii < i; ii++) {
+                    p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+
+                    C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
+                }
+            }
+
+            Cdet = (FLOAT)1.0;
+        }
+    }
+    else {
         for (i = 0; i < length_pdf_; i++) {
             o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -143,6 +155,8 @@ S0:;
                 C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
             }
         }
+
+        Cdet = (FLOAT)1.0;
     }
 
     // Rigid restraints.
@@ -156,7 +170,7 @@ S0:;
 
         o = i * length_pdf_ + i;
 
-        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = Cinv[o] / Stdev;
+        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
 
         for (ii = 0; ii < i; ii++) {
             p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
@@ -326,7 +340,7 @@ int Rebmvnorm::RoughEstimationPW(FLOAT                **Y,         // Pointer to
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    flm = (FLOAT)1.0; V = (FLOAT)1.0;
+    V = (FLOAT)1.0;
 
     for (i = 0; i < length_pdf_; i++) {
         V *= h[i];
@@ -343,7 +357,7 @@ S0:;
         }
         else
             Mode[i].klm = nl;
-                                             
+
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / (Mode[i].klm * h[i]);
     }
 
@@ -355,52 +369,66 @@ S0:;
 
     Error = NULL == C; if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        Sum = (FLOAT)0.0;
-        
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
-        }
-
-        C[i * length_pdf_ + i] = Sum / nl; 
-
-        for (ii = 0; ii < i; ii++) {
-            Sum = (FLOAT)0.0;
-        
-            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
-            }
-
-            C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
-        }
-    }
-
-    // Correlation matrix.
-
-    for (i = 0; i < length_pdf_; i++) {
-        o = i * length_pdf_ + i; 
-
-        for (ii = 0; ii < i; ii++) {
-            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
-
-            if (((FLOAT)fabs(C[q]) < FLOAT_MIN) || (C[o] < FLOAT_MIN) || (C[r] < FLOAT_MIN)) {
-                C[p] = C[q] = (FLOAT)0.0;
-            }
-            else {
-                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
-            }
-        }
-    }
-
-    for (i = 0; i < length_pdf_; i++) {
-        C[i * length_pdf_ + i] = (FLOAT)1.0; 
-    }
-
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == Cinv; if (Error) goto E0;
 
-    if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            Sum = (FLOAT)0.0;
+        
+            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
+            }
+
+            C[i * length_pdf_ + i] = Sum / nl;
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
+                }
+
+                C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
+            }
+        }
+
+        // Correlation matrix.
+
+        for (i = 0; i < length_pdf_; i++) {
+            o = i * length_pdf_ + i; 
+
+            for (ii = 0; ii < i; ii++) {
+                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
+
+                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
+
+                if (isnan(C[q]) || isinf(C[q])) {
+                    C[p] = C[q] = (FLOAT)0.0;
+                }
+            }
+        }
+
+        for (i = 0; i < length_pdf_; i++) {
+            C[i * length_pdf_ + i] = (FLOAT)1.0; 
+        }
+
+        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+            for (i = 0; i < length_pdf_; i++) {
+                o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
+
+                for (ii = 0; ii < i; ii++) {
+                    p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+
+                    C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
+                }
+            }
+
+            Cdet = (FLOAT)1.0;
+        }
+    }
+    else {
         for (i = 0; i < length_pdf_; i++) {
             o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -410,6 +438,8 @@ S0:;
                 C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
             }
         }
+
+        Cdet = (FLOAT)1.0;
     }
 
     // Rigid restraints.
@@ -423,7 +453,7 @@ S0:;
 
         o = i * length_pdf_ + i;
 
-        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = Cinv[o] / Stdev;
+        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
 
         for (ii = 0; ii < i; ii++) {
             p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
@@ -578,7 +608,7 @@ int Rebmvnorm::RoughEstimationH(int                  k,           // Total numbe
 
     Error = NULL == Mode; if (Error) goto E0;
 
-    flm = (FLOAT)1.0; V = (FLOAT)1.0;
+    V = (FLOAT)1.0;
 
     for (i = 0; i < length_pdf_; i++) {
         V *= h[i];
@@ -607,52 +637,66 @@ S0:;
 
     Error = NULL == C; if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        Sum = (FLOAT)0.0;
-        
-        for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
-        }
-
-        C[i * length_pdf_ + i] = Sum / nl; 
-
-        for (ii = 0; ii < i; ii++) {
-            Sum = (FLOAT)0.0;
-        
-            for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
-            }
-
-            C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
-        }
-    }
-
-    // Correlation matrix.
-
-    for (i = 0; i < length_pdf_; i++) {
-        o = i * length_pdf_ + i; 
-
-        for (ii = 0; ii < i; ii++) {
-            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
-
-            if (((FLOAT)fabs(C[q]) < FLOAT_MIN) || (C[o] < FLOAT_MIN) || (C[r] < FLOAT_MIN)) {
-                C[p] = C[q] = (FLOAT)0.0;
-            }
-            else {
-                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
-            }
-        }
-    }
-
-    for (i = 0; i < length_pdf_; i++) {
-        C[i * length_pdf_ + i] = (FLOAT)1.0; 
-    }
-
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == Cinv; if (Error) goto E0;
 
-    if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            Sum = (FLOAT)0.0;
+        
+            for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][i] - Mode[i].ym);
+            }
+
+            C[i * length_pdf_ + i] = Sum / nl;
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - Mode[i].ym) * (Y[j][ii] - Mode[ii].ym);
+                }
+
+                C[i * length_pdf_ + ii] = C[ii * length_pdf_ + i] = Sum / nl;
+            }
+        }
+
+        // Correlation matrix.
+
+        for (i = 0; i < length_pdf_; i++) {
+            o = i * length_pdf_ + i; 
+
+            for (ii = 0; ii < i; ii++) {
+                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
+
+                C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
+
+                if (isnan(C[q]) || isinf(C[q])) {
+                    C[p] = C[q] = (FLOAT)0.0;
+                }
+            }
+        }
+
+        for (i = 0; i < length_pdf_; i++) {
+            C[i * length_pdf_ + i] = (FLOAT)1.0; 
+        }
+
+        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+            for (i = 0; i < length_pdf_; i++) {
+                o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
+
+                for (ii = 0; ii < i; ii++) {
+                    p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+
+                    C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
+                }
+            }
+
+            Cdet = (FLOAT)1.0;
+        }
+    }
+    else {
         for (i = 0; i < length_pdf_; i++) {
             o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -662,6 +706,8 @@ S0:;
                 C[p] = C[q] = Cinv[p] = Cinv[q] = (FLOAT)0.0;
             }
         }
+
+        Cdet = (FLOAT)1.0;
     }
 
     // Rigid restraints.
@@ -675,7 +721,7 @@ S0:;
 
         o = i * length_pdf_ + i;
 
-        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = Cinv[o] / Stdev;
+        RigidTheta->Theta_[3][0] *= RigidTheta->Theta_[1][o] = Cinv[o] * Stdev; RigidTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
 
         for (ii = 0; ii < i; ii++) {
             p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
@@ -1101,24 +1147,30 @@ int Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
                 for (jj = 0; jj < j; jj++) {
                     p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][p]) / W[l];
+                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][q]) / W[l];
                 }
             }
         }
     }
 
-    for (i = 0; i < c; i++) for (j = 0; j < length_pdf_; j++) {
-        MixTheta[i]->Theta_[0][j] = FirstM[i][j];
+    for (i = 0; i < c; i++) {
+        for (j = 0; j < length_pdf_; j++) {
+            MixTheta[i]->Theta_[0][j] = FirstM[i][j];
 
-        o = j * length_pdf_ + j;
+            o = j * length_pdf_ + j;
 
-        MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
+            MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
 
-        for (jj = 0; jj < j; jj++) {
-            p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
+            for (jj = 0; jj < j; jj++) {
+                p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-            MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+                MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+            }
         }
+
+        Error = LUinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
+
+        if (Error) goto E0;
     }
 
 E0: return Error;
@@ -1171,24 +1223,30 @@ int Rebmvnorm::BayesClassificationPW(FLOAT                **Y,        // Pointer
                 for (jj = 0; jj < j; jj++) {
                     p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][p]) / W[l];
+                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][q]) / W[l];
                 }
             }
         }
     }
 
-    for (i = 0; i < c; i++) for (j = 0; j < length_pdf_; j++) {
-        MixTheta[i]->Theta_[0][j] = FirstM[i][j];
+    for (i = 0; i < c; i++) {
+        for (j = 0; j < length_pdf_; j++) {
+            MixTheta[i]->Theta_[0][j] = FirstM[i][j];
 
-        o = j * length_pdf_ + j;
+            o = j * length_pdf_ + j;
 
-        MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
+            MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
 
-        for (jj = 0; jj < j; jj++) {
-            p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
+            for (jj = 0; jj < j; jj++) {
+                p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-            MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+                MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+            }
         }
+
+        Error = LUinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
+
+        if (Error) goto E0;
     }
 
 E0: return Error;
@@ -1242,24 +1300,30 @@ int Rebmvnorm::BayesClassificationH(int                  k,          // Total nu
                 for (jj = 0; jj < j; jj++) {
                     p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][p]) / W[l];
+                    SecondM[l][p] = SecondM[l][q] += dW * (Y[i][j] * Y[i][jj] - SecondM[l][q]) / W[l];
                 }
             }
         }
     }
 
-    for (i = 0; i < c; i++) for (j = 0; j < length_pdf_; j++) {
-        MixTheta[i]->Theta_[0][j] = FirstM[i][j];
+    for (i = 0; i < c; i++) {
+        for (j = 0; j < length_pdf_; j++) {
+            MixTheta[i]->Theta_[0][j] = FirstM[i][j];
 
-        o = j * length_pdf_ + j;
+            o = j * length_pdf_ + j;
 
-        MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
+            MixTheta[i]->Theta_[1][o] = SecondM[i][o] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j];
 
-        for (jj = 0; jj < j; jj++) {
-            p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
+            for (jj = 0; jj < j; jj++) {
+                p = j * length_pdf_ + jj; q = jj * length_pdf_ + j;
 
-            MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+                MixTheta[i]->Theta_[1][p] = MixTheta[i]->Theta_[1][q] = SecondM[i][p] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][jj];
+            }
         }
+
+        Error = LUinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
+
+        if (Error) goto E0;
     }
 
 E0: return Error;

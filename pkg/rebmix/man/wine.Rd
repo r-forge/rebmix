@@ -66,31 +66,83 @@ S. J. Roberts, R. Everson, and I. Rezek. Maximum certainty data partitioning. Pa
 33(5):833-839, 2000. \url{http://dx.doi.org/10.1016/S0031-3203(99)00086-2}.
 }
 \examples{
+\dontrun{
+devAskNewPage(ask = TRUE)
+
 data("wine")
 
-colnames(wine)
+# Show level attributes discrete variables.
 
-# Split wine dataset into three subsets for three Cultivars
-# and remove Cultivar column from datasets.
+levels(factor(wine[["Cultivar"]]))
 
-winecolnames <- !(colnames(wine) \%in\% "Cultivar")
+# Split wine dataset into three subsets for the three Cultivars
+# and remove Cultivar column.
 
-wine1 <- wine[wine$Cultivar == 1, winecolnames]
-wine2 <- wine[wine$Cultivar == 2, winecolnames]
-wine3 <- wine[wine$Cultivar == 3, winecolnames]
+wine_1 <- subset(wine, subset = Cultivar == 1, select = c(-Cultivar))
+wine_2 <- subset(wine, subset = Cultivar == 2, select = c(-Cultivar))
+wine_3 <- subset(wine, subset = Cultivar == 3, select = c(-Cultivar))
 
-wine <- wine[ , winecolnames]
+# Split datasets into train (75%) and test (25%) subsets.
 
-# Write datasets without Cultivar information into tab 
-# delimited ASCII files.
+set.seed(3)
 
-write.table(wine, file = "wine.txt", sep = "\t", 
-  eol = "\n", row.names = FALSE, col.names = FALSE)
-write.table(wine1, file = "wine1.txt", sep = "\t", 
-  eol = "\n", row.names = FALSE, col.names = FALSE)
-write.table(wine2, file = "wine2.txt", sep = "\t", 
-  eol = "\n", row.names = FALSE, col.names = FALSE)
-write.table(wine3, file = "wine3.txt", sep = "\t", 
-  eol = "\n", row.names = FALSE, col.names = FALSE)
+Prob <- 0.75
+
+n_1 <- nrow(wine_1); s_1 <- sample.int(n = n_1, size = as.integer(n_1 * Prob))
+
+wine_1_train <- wine_1[s_1, ]; wine_1_test <- wine_1[-s_1, ]
+
+n_2 <- nrow(wine_2); s_2 <- sample.int(n = n_2, size = as.integer(n_2 * Prob))
+
+wine_2_train <- wine_2[s_2, ]; wine_2_test <- wine_2[-s_2, ]
+
+n_3 <- nrow(wine_3); s_3 <- sample.int(n = n_3, size = as.integer(n_3 * Prob))
+
+wine_3_train <- wine_3[s_3, ]; wine_3_test <- wine_3[-s_3, ]
+
+wine_test = rbind(wine_1_test, wine_2_test, wine_3_test)
+
+Zt <- factor(c(rep(0, nrow(wine_1_test)), rep(1, nrow(wine_2_test)), rep(2, nrow(wine_3_test))))
+
+# Estimate number of components, component weights and component 
+# parameters for the train subsets.
+
+n <- range(nrow(wine_1_train), nrow(wine_2_train), nrow(wine_3_train))
+
+K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
+  as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
+
+K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))
+
+wineest <- REBMIX(model = "REBMVNORM",
+  Dataset = list(wine_1_train = wine_1_train,
+                 wine_2_train = wine_2_train,
+                 wine_3_train = wine_3_train),
+  Preprocessing = "Parzen window",
+  cmax = 10,
+  Criterion = "ICL-BIC",
+  pdf = rep("normal", 13),
+  K = K[1]:K[2],
+  Restraints = "loose")
+
+plot(wineest, pos = 1, nrow = 7, ncol = 6, what = c("den"))
+plot(wineest, pos = 2, nrow = 7, ncol = 6, what = c("den"))
+plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
+
+# Selected features.
+
+predictive <- RCLSMIX(model = "RCLSMVNORM", 
+  x = list(wineest),
+  Dataset = wine_test,
+  Zt = Zt)
+
+predictive
+
+summary(predictive)
+
+# Plot selected features.
+
+plot(predictive, nrow = 7, ncol = 6)
+}
 }
 \keyword{datasets}

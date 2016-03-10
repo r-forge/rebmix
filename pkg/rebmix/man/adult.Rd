@@ -167,14 +167,33 @@ A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http:/
 \examples{
 data("adult")
 
+# Type, nominal, 2 levels. 
+# Age, numerical, > 0.
+# Workclass, nominal, 8 levels.
+# Fnlwgt, numerical, > 0.
+# Education, nominal, 16 levels.
+# Education.Num, odinal, > 0.
+# Marital.Status, nominal, 7 levels.
+# Occupation, nominal, 14 levels.
+# Relationship, nominal, 6 levels.
+# Race, nominal, 5 levels.
+# Sex, nominal, 2 levels.
+# Capital.Gain, numerical, > 0. 
+# Capital.Loss, numerical, > 0.
+# Hours.Per.Week, numerical, > 0.
+# Native.Country, nominal, 41 levels.
+# Income, nominal, 2 levels. 
+
 # Find complete cases.
 
 adult <- adult[complete.cases(adult), ]
 
 # Map metric attributes.
 
-adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
+adult[["Age"]] <- ordered(cut(adult[["Age"]], 2000))
+adult[["Hours.Per.Week"]] <- ordered(cut(adult[["Hours.Per.Week"]], 2000))
 adult[["Capital.Gain"]] <- ordered(cut(adult[["Capital.Gain"]], 2000))
+adult[["Capital.Loss"]] <- ordered(cut(adult[["Capital.Loss"]], 2000))
 
 # Show level attributes for binary and discrete variables.
 
@@ -196,8 +215,9 @@ adult <- as.data.frame(data.matrix(adult))
 # Levels should start with 0 for discrete distributions except for the 
 # Dirac distribution.
 
-f <- c("Type", "Workclass", "Education", "Marital.Status", "Occupation", 
-  "Relationship", "Race", "Sex", "Native.Country", "Income")
+f <- c("Type", "Age", "Workclass", "Education", "Marital.Status", 
+  "Occupation", "Relationship", "Race", "Sex", "Capital.Gain", 
+  "Capital.Loss", "Hours.Per.Week", "Native.Country", "Income")
 
 adult[, f] <- adult[, f] - 1
 
