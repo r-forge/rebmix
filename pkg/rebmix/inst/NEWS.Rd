@@ -6,6 +6,7 @@
 \item R code is extended and rewritten in S4 class system.
 \item Multivariate normal parametric family with unrestricted variance-covariance matrices is enabled.
 \item Classification is improved.
+\item Clustering is added.
 \item Datasets \code{iris} is added. 
 \item Renewed vignette.
 }

@@ -27,6 +27,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
                 double *Theta,        // Component parameters.
                 int    *n,            // Number of observations.
                 double *Y,            // Dataset.
+                int    *Z,            // Component membership. 
                 int    *Error)        // Error code.
 {
     Rngmvnorm *rngmvnorm;
@@ -112,6 +113,10 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
         for (k = 0; k < rngmvnorm->n_; k++) {
             Y[i] = rngmvnorm->Y_[k][j]; i++;
         }
+    }
+
+    for (i = 0; i < rngmvnorm->n_; i++) {
+        Z[i] = rngmvnorm->Z_[i];
     }
 
 E0: if (rngmvnorm) delete rngmvnorm;
@@ -650,6 +655,120 @@ E0: if (Y) free(Y);
     }
 
     if (rebmvnorm) delete rebmvnorm;
-} // RCLSMVNORM 
+} // RCLSMVNORM
+
+// Returns clustered observations in R.
+
+void RCLRMVNORM(int    *n,      // Total number of independent observations.
+                double *X,      // Pointer to the input array X.
+                int    *d,      // Number of independent random variables.
+                int    *c,      // Number of components.
+                double *W,      // Component weights.
+                char   **pdf,   // Component parameters.
+                double *theta1, // Component parameters.
+                double *theta2, // Component parameters.
+                int    *Z,      // Pointer to the output array Z.
+                int    *Error)  // Error code.
+{
+    Rebmvnorm            *rebmvnorm = NULL;
+    FLOAT                *Y = NULL;
+    int                  A[4];
+    CompnentDistribution **Theta = NULL; 
+    FLOAT                CmpDist, MaxCmpDist;
+    int                  i, j, k;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->length_pdf_ = *d;
+
+    Theta = new CompnentDistribution* [*c];
+
+    *Error = NULL == Theta; if (*Error) goto E0;
+
+    A[0] = *d;
+    A[1] = A[2] = (*d) * (*d);
+    A[3] = 1;
+
+    for (j = 0; j < *c; j++) {
+        Theta[j] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == Theta[j]; if (*Error) goto E0;
+
+        *Error = Theta[j]->Realloc(*d, 4, A);
+
+        if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < *c; j++) {
+        for (k = 0; k < *d; k++) {
+            if (!strcmp(pdf[i], "normal")) {
+                Theta[j]->pdf_[k] = pfNormal;
+
+                Theta[j]->Theta_[0][k] = theta1[i];
+            }
+            else {
+                *Error = 1; goto E0;
+            }
+
+            i++;
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < *c; j++) {
+        for (k = 0; k < (*d) * (*d); k++) {
+            Theta[j]->Theta_[1][k] = theta2[i];
+
+            i++;
+        }
+    }
+
+    for (j = 0; j < *c; j++) {
+        *Error = LUinvdet(*d, Theta[j]->Theta_[1], Theta[j]->Theta_[2], Theta[j]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    Y = (FLOAT*)malloc(*d * sizeof(FLOAT));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < *n; i++) {
+        for (j = 0; j < *d; j++) {
+            Y[j] = X[i + (*n) * j];
+        }
+
+        Z[i] = 1; MaxCmpDist = (FLOAT)0.0;
+         
+        for (j = 0; j < *c; j++) {
+            *Error = rebmvnorm->ComponentDist(Y, Theta[j], &CmpDist);
+
+            if (*Error) goto E0;
+
+            CmpDist *= W[j];
+
+            if (CmpDist > MaxCmpDist) {
+                Z[i] = j + 1; MaxCmpDist = CmpDist;
+            }
+        }
+    }
+
+E0: if (Y) free(Y);
+
+    if (Theta) {
+        for (i = 0; i < *c; i++) {
+            if (Theta[i]) delete Theta[i];
+        }
+
+        delete Theta;
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RCLRMVNORM
 
 } // extern "C"

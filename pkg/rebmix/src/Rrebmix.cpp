@@ -27,6 +27,7 @@ void RRNGMIX(int    *IDum,         // Random seed.
              double *Theta,        // Component parameters.
              int    *n,            // Number of observations.
              double *Y,            // Dataset.
+             int    *Z,            // Component membership. 
              int    *Error)        // Error code.
 {
     Rngmix *rngmix;
@@ -141,6 +142,10 @@ void RRNGMIX(int    *IDum,         // Random seed.
         for (k = 0; k < rngmix->n_; k++) {
             Y[i] = rngmix->Y_[k][j]; i++;
         }
+    }
+
+    for (i = 0; i < rngmix->n_; i++) {
+        Z[i] = rngmix->Z_[i];
     }
 
 E0: if (rngmix) delete rngmix;
@@ -1090,7 +1095,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
              char   **pdf,   // Component parameters.
              double *theta1, // Component parameters.
              double *theta2, // Component parameters.
-             double *Z,      // Pointer to the output array Z.
+             int    *Z,      // Pointer to the output array Z.
              int    *Error)  // Error code.
 {
     Rebmix               *rebmix = NULL; 
@@ -1103,6 +1108,8 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
     rebmix = new Rebmix;
 
     *Error = NULL == rebmix; if (*Error) goto E0;
+
+    rebmix->length_pdf_ = *d;
 
     Theta = new CompnentDistribution* [*c];
 
@@ -1185,11 +1192,9 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
             Y[j] = X[i + (*n) * j];
         }
 
-        Z[i] = (FLOAT)0.0; MaxCmpDist = (FLOAT)0.0;
+        Z[i] = 1; MaxCmpDist = (FLOAT)0.0;
          
         for (j = 0; j < *c; j++) {
-            rebmix->length_pdf_ = *d;
-
             *Error = rebmix->ComponentDist(Y, Theta[j], &CmpDist);
 
             if (*Error) goto E0;
@@ -1197,7 +1202,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
             CmpDist *= W[j];
 
             if (CmpDist > MaxCmpDist) {
-                Z[i] = (FLOAT)j; MaxCmpDist = CmpDist;
+                Z[i] = j + 1; MaxCmpDist = CmpDist;
             }
         }
     }

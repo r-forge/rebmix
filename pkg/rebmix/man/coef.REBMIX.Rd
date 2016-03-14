@@ -27,8 +27,8 @@ currently not used..
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
-\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
+\item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}

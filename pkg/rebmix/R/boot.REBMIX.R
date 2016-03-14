@@ -28,7 +28,7 @@ function(x,
   }
   else
   if (model@Bootstrap == .rebmix.boot$Bootstrap[2]) {
-    dataset <- as.matrix(model@x@Dataset[[which(names(model@x@Dataset) == model@x@summary[model@pos, "Dataset"])]])
+    dataset <- as.matrix(model@x@Dataset[[model@pos]])
     
     Dataset <- list()
     
@@ -172,7 +172,7 @@ function(x,
   }
   else
   if (model@Bootstrap == .rebmix.boot$Bootstrap[2]) {
-    dataset <- as.matrix(model@x@Dataset[[which(names(model@x@Dataset) == model@x@summary[model@pos, "Dataset"])]])
+    dataset <- as.matrix(model@x@Dataset[[model@pos]])
     
     Dataset <- list()
     

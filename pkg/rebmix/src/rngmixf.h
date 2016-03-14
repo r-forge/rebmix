@@ -25,6 +25,7 @@ public:
     FLOAT                **Y_;           // Dataset.
     int                  *N_;            // Numbers of observations.
     CompnentDistribution **MixTheta_;    // Mixture parameters.
+    int                  *Z_;            // Component membership.
     // Constructor.
     Rngmix();
     // Destructor.

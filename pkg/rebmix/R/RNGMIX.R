@@ -40,6 +40,7 @@ function(model, ...)
       Theta = as.double(c(theta1, theta2)),
       n = integer(1),
       Y = double(sum(model@n) * d),
+      Z = integer(sum(model@n)),      
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -53,6 +54,8 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
+    
+    model@Zt[[i]] <- as.numeric(output$Z)    
 
     IDum <- IDum - 1
   }
@@ -111,6 +114,7 @@ function(model, ...)
       Theta = as.double(c(theta1, theta2)),
       n = integer(1),
       Y = double(sum(model@n) * d),
+      Z = integer(sum(model@n)),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -124,6 +128,8 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
+    
+    model@Zt[[i]] <- as.numeric(output$Z)    
 
     IDum <- IDum - 1
   }
@@ -163,6 +169,7 @@ function(model,
   output <- RNGMIX(model = model)     
   
   model@Dataset <- output@Dataset
+  model@Zt <- output@Zt
   model@w <- output@w
   model@ymin <- output@ymin
   model@ymax <- output@ymax

@@ -28,6 +28,7 @@ Rngmix::Rngmix()
     Y_ = NULL;
     N_ = NULL;
     MixTheta_ = NULL;
+    Z_ = NULL;
 } // Rngmix
 
 // Rngmix destructor.
@@ -35,6 +36,8 @@ Rngmix::Rngmix()
 Rngmix::~Rngmix()
 {
     int i;
+
+    if (Z_) free(Z_);
 
     if (MixTheta_) {
         for (i = 0; i < c_; i++) {
@@ -84,10 +87,12 @@ int Rngmix::WriteDataFile()
         
         for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[i][j]); 
         
-        fprintf(fp, "\n");
+        fprintf(fp, "\t%d\n", Z_[i]);
     }
 
 E0: if (fp) fclose(fp);
+
+    if (Z_) free(Z_);
 
     if (Y_) {
         for (i = 0; i < n_; i++) {
@@ -346,6 +351,10 @@ int Rngmix::RNGMIX()
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
 
+    Z_ = (int*)malloc(n_ * sizeof(int));
+
+    Error = NULL == Z_; if (Error) goto E0;
+
     k = 0;
 
     for (i = 0; i < c_; i++) {
@@ -353,6 +362,8 @@ int Rngmix::RNGMIX()
 
         for (j = 0; j < N_[i]; j++) {
             Error = InvComponentDist(MixTheta_[i], Y_[k]);
+
+            Z_[k] = i + 1;
 
             if (Error) goto E0;
 

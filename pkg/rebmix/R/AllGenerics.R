@@ -57,6 +57,12 @@ setGeneric("boot",
     replace = TRUE,
     prob = numeric(0), ...)
   standardGeneric("boot"))
+  
+setGeneric("RCLRMIX",
+  function(model = "RCLRMIX",
+    x = NULL,
+    pos = 1, ...)
+  standardGeneric("RCLRMIX"))  
 
 setGeneric("RCLSMIX",
   function(model = "RCLSMIX",
@@ -64,3 +70,4 @@ setGeneric("RCLSMIX",
     Dataset = data.frame(0), 
     Zt = factor(0), ...)
   standardGeneric("RCLSMIX"))
+

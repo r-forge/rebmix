@@ -3,6 +3,8 @@
 \alias{plot-methods}
 \alias{plot,REBMIX,missing-method}
 \alias{plot,REBMVNORM,missing-method}
+\alias{plot,RCLRMIX,missing-method}
+\alias{plot,RCLRMVNORM,missing-method}
 \alias{plot,RCLSMIX,missing-method}
 \alias{plot,RCLSMVNORM,missing-method}
 \title{
@@ -20,6 +22,9 @@ densities follow the histogram, Parzen window or \emph{k}-nearest neighbour appr
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
      contour.nlevels = 12, ...)
+\S4method{plot}{RCLRMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
+     plot.cex = 0.8, plot.pch = 19, ...)        
 \S4method{plot}{RCLSMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
      fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
      plot.cex = 0.8, plot.pch = 19, ...)     
@@ -108,6 +113,8 @@ can be passed as an argument to \code{\link[graphics]{par}} to restore the param
 \describe{
 \item{\code{signature(x = "REBMIX", y = "missing")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(x = "REBMVNORM", y = "missing")}}{an object of class \code{REBMVNORM}.}
+\item{\code{signature(x = "RCLRMIX", y = "missing")}}{an object of class \code{RCLRMIX}.}
+\item{\code{signature(x = "RCLRMVNORM", y = "missing")}}{an object of class \code{RCLRMVNORM}.}
 \item{\code{signature(x = "RCLSMIX", y = "missing")}}{an object of class \code{RCLSMIX}.}
 \item{\code{signature(x = "RCLSMVNORM", y = "missing")}}{an object of class \code{RCLSMVNORM}.}
 }

@@ -8,9 +8,13 @@ function(object, ...)
   
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
 
-  print(object@summary[p], quote = FALSE, ...)
+  DF <- object@summary[p]
 
-  cat(paste("Maximum logL = ", object@summary[object@pos, "logL"], " at pos = ", object@pos, ".\n", sep = "", collapse = ""))
+  is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
+
+  print(DF, quote = FALSE, ...)
+
+  cat(paste("Maximum logL = ", DF[object@pos, "logL"], " at pos = ", object@pos, ".\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary
@@ -24,10 +28,14 @@ function(object, ...)
   }
   
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
+  
+  DF <- object@summary[p]
 
-  print(object@summary[p], quote = FALSE, ...)
+  is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
 
-  cat(paste("Maximum logL = ", object@summary[object@pos, "logL"], " at pos = ", object@pos, ".\n", sep = "", collapse = ""))
+  print(DF, quote = FALSE, ...)  
+
+  cat(paste("Maximum logL = ", DF[object@pos, "logL"], " at pos = ", object@pos, ".\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary
@@ -116,6 +124,32 @@ function(object, ...)
   print(theta2.cv, quote = FALSE, ...)
 
   cat(paste("Mode probability = ", object@c.prob, " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
+  
+  rm(list = ls()) 
+}) ## summary
+
+setMethod("summary", 
+          signature(object = "RCLRMIX"),
+function(object, ...)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
+  }
+  
+  print(object@Zp, quote = FALSE, ...)
+   
+  rm(list = ls()) 
+}) ## summary
+
+setMethod("summary", 
+          signature(object = "RCLRMVNORM"),
+function(object, ...)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
+  }
+  
+  print(object@Zp, quote = FALSE, ...)
   
   rm(list = ls()) 
 }) ## summary

@@ -28,6 +28,9 @@ Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_
 a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns represents one random variable. Number of observations \eqn{n} equals the number of rows
 in the datasets.
 }
+\item{\code{Zt}:}{
+a list of factors of length \eqn{n} containing true cluster membership.
+}
 \item{\code{w}:}{
 a vector of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.
 }

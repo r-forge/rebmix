@@ -6,6 +6,7 @@ slots = c(Dataset.name = "character",
   n = "numeric",
   Theta = "list",
   Dataset = "list",
+  Zt = "list",
   w = "numeric",
   Variables = "character",
   ymin = "numeric",
@@ -502,8 +503,12 @@ function(object)
   cat("Slot \"summary\":", "\n", sep = "")
   
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
+  
+  DF <- object@summary[object@pos, p]
 
-  print(object@summary[object@pos, p], quote = FALSE)  
+  is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
+
+  print(DF, quote = FALSE) 
 
   rm(list = ls())
 }) ## show
@@ -543,8 +548,12 @@ function(object)
   cat("Slot \"summary\":", "\n", sep = "")
   
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
+  
+  DF <- object@summary[object@pos, p]
 
-  print(object@summary[object@pos, p], quote = FALSE)  
+  is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
+
+  print(DF, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -757,6 +766,103 @@ function(object)
   rm(list = ls())
 }) ## show
 
+## Class RCLRMIX
+
+setClass("RCLRMIX",
+slots = c(x = "ANY",
+  pos = "numeric",
+  Zt = "factor",
+  Zp = "factor"),
+prototype = list(pos = 1))
+
+setMethod("initialize", "RCLRMIX", 
+function(.Object, ...,
+  x,
+  pos,
+  Zt)
+{
+  model <- gsub("RCLR", "REB", .Object@class[1])
+
+  # x.
+
+  if (missing(x) || (length(x) == 0)) {
+    stop(sQuote("x"), " must not be empty!", call. = FALSE)
+  }
+
+  if (class(x) != model) {
+    stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
+  }  
+
+  # pos.
+
+  if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
+  
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+  
+  # Zt.
+  
+  if (missing(Zt) || (length(Zt) == 0)) {
+    stop(sQuote("Zt"), " must not be empty!", call. = FALSE)  
+  }
+  
+  if (!is.factor(Zt)) {
+    stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
+  }
+  
+  levels(Zt) <- 1:length(levels(Zt))  
+  
+  callNextMethod(.Object, ...,
+    x = x,
+    pos = pos,
+    Zt = Zt)
+}) ## initialize
+
+setMethod("show",
+          signature(object = "RCLRMIX"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"Zp\":", sep = "")
+
+  print(object@Zp, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
+
+## Class RCLRMVNORM
+
+setClass("RCLRMVNORM", contains = "RCLRMIX")
+
+setMethod("show",
+          signature(object = "RCLRMVNORM"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"Zp\":", sep = "")
+
+  print(object@Zp, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
+
 ## Class RCLSMIX
 
 setClass("RCLSMIX",
@@ -767,8 +873,8 @@ slots = c(x = "list",
   ntrain = "numeric",
   P = "numeric",
   ntest = "numeric",
-  Zp = "factor",
   Zt = "factor",
+  Zp = "factor",
   CM = "table",
   Accuracy = "numeric",
   Error = "numeric",

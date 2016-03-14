@@ -35,11 +35,11 @@ a vector of length \eqn{s} containing prior probabilities \eqn{P(\bm{\Omega}_{g}
 \item{\code{ntest}:}{
 number of observations in test dataset \eqn{Y_{\mathrm{test}}}.
 }
-\item{\code{Zp}:}{
-a factor of predictive class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
-}
 \item{\code{Zt}:}{
 a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
+}
+\item{\code{Zp}:}{
+a factor of predictive class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
 }
 \item{\code{CM}:}{
 a table containing confusion matrix for multiclass classifier. It contains 

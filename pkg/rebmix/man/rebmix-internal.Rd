@@ -18,6 +18,7 @@
 \alias{SSE,ANY-method}
 \alias{REBMIX,ANY-method}
 \alias{RNGMIX,ANY-method}
+\alias{RCLRMIX,ANY-method}
 \alias{RCLSMIX,ANY-method}
 \title{Internal rebmix Functions}
 \description{
