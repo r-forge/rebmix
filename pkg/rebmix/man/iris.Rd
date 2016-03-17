@@ -47,7 +47,7 @@ data("iris")
 
 levels(iris[["Class"]])
 
-# Split iris dataset into three subsets for the three Classes
+# Split iris dataset into three subsets for three Classes
 # and remove Class column.
 
 iris_set <- subset(iris, subset = Class == "iris-setosa", select = c(-Class))
@@ -79,12 +79,12 @@ Zt <- factor(c(rep(0, nrow(iris_set_test)),
   rep(2, nrow(iris_vir_test))))
 
 # Estimate number of components, component weights and component 
-# parameters for the train subsets.
+# parameters for train subsets.
 
 n <- range(nrow(iris_set_train), nrow(iris_ver_train), nrow(iris_vir_train))
 
-K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
-  as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
+K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
 
 K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
 

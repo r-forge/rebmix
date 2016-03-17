@@ -29,7 +29,7 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 in the datasets.
 }
 \item{\code{Zt}:}{
-a list of factors of length \eqn{n} containing true cluster membership.
+a factor of true cluster membership.
 }
 \item{\code{w}:}{
 a vector of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.

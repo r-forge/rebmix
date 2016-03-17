@@ -52,4 +52,46 @@ Returns an object of class \code{RCLRMIX} or \code{RCLRMVNORM}.
 }
 }
 \author{Marko Nagode}
+\examples{
+devAskNewPage(ask = TRUE)
+
+# Generate Poisson dataset.
+
+n <- c(500, 200, 400)
+
+Theta <- list(pdf1 = "Poisson",
+  theta1.1 = 3,
+  theta2.1 = NA,
+  pdf2 = "Poisson",
+  theta1.2 = 12,
+  theta2.2 = NA,
+  pdf3 = "Poisson",
+  theta1.3 = 36,
+  theta2.3 = NA)
+
+poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = Theta)
+
+# Estimate number of components, component weights and component parameters.
+
+poissonest <- REBMIX(Dataset = poisson@Dataset,
+  Preprocessing = "histogram",
+  cmax = 6,
+  Criterion = "BIC",
+  pdf = rep("Poisson", 1),
+  K = 1)
+
+summary(poissonest)
+
+# Plot finite mixture.
+
+plot(poissonest)
+
+# Cluster dataset.
+
+poissonclu <- RCLRMIX(x = poissonest, Zt = poisson@Zt)
+
+# Plot clusters.
+
+plot(poissonclu)
+}
 \keyword{clustering}

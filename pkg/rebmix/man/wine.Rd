@@ -75,7 +75,7 @@ data("wine")
 
 levels(factor(wine[["Cultivar"]]))
 
-# Split wine dataset into three subsets for the three Cultivars
+# Split wine dataset into three subsets for three Cultivars
 # and remove Cultivar column.
 
 wine_1 <- subset(wine, subset = Cultivar == 1, select = c(-Cultivar))
@@ -105,12 +105,12 @@ wine_test = rbind(wine_1_test, wine_2_test, wine_3_test)
 Zt <- factor(c(rep(0, nrow(wine_1_test)), rep(1, nrow(wine_2_test)), rep(2, nrow(wine_3_test))))
 
 # Estimate number of components, component weights and component 
-# parameters for the train subsets.
+# parameters for train subsets.
 
 n <- range(nrow(wine_1_train), nrow(wine_2_train), nrow(wine_3_train))
 
-K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
-  as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
+K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
 
 K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))
 

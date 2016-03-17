@@ -144,8 +144,8 @@ n <- nrow(wine)
 
 # Estimate number of components, component weights and component parameters.
 
-Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
-RootN <- as.integer(2 * n^0.5) # Maximum v follows the RootN rule.
+Sturges <- as.integer(1 + log2(n)) # Minimum v follows Sturges rule.
+RootN <- as.integer(2 * n^0.5) # Maximum v follows RootN rule.
 
 K <- c(floor(Sturges^(1/13)), ceiling(RootN^(1/13)))
 

@@ -223,11 +223,11 @@ plot(poissonest, pos = 7, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2,
 \subsubsection{Clustering}
 \begin{figure}[htbp]\centering
 <<poisson-cluster-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-poissonclu <- RCLRMIX(x = poissonest, pos = 9)
+poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = poisson@Zt)
 
 plot(poissonclu)
 @
-\caption{Poisson dataset. Predictive cluster membership (coloured large circles).}
+\caption{Poisson dataset. Predictive cluster membership (coloured circles) Error (large circles).}
 \end{figure}
 \subsection{Multivariate normal dataset}
 A \texttt{wreath} dataset \citep{Fraley_2005} consist of $1000$ observations drawn from a $14$-component normal mixture in which the covariances of the components have the same size and shape but differ in orientation.
@@ -270,7 +270,7 @@ wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
 plot(wreathclu)
 @
-\caption{Dataset \texttt{wreath}. Predictive cluster membership (coloured large circles).}
+\caption{Dataset \texttt{wreath}. Predictive cluster membership (coloured circles).}
 \end{figure}
 \subsection{Multivariate normal dataset}
 A \texttt{ex4.1} dataset \citep{Baudry_2010, mclust_20__} consist of $600$ two~dimensional observations.

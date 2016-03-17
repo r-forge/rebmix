@@ -135,8 +135,8 @@ normal@Dataset[[1]][1:20, ]
 
 # Estimate number of components, component weights and component parameters. 
 
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
-  as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
+  as.integer(2 * sum(n)^0.5)) # Maximum v follows RootN rule.
 
 normalest <- REBMIX(Dataset = normal@Dataset, 
   Preprocessing = "h", 
@@ -151,7 +151,7 @@ BIC(normalest)
 
 logL(normalest)
 
-# Plot the finite mixture.
+# Plot finite mixture.
 
 plot(normalest, nrow = 2, what = c("den", "dis"), npts = 1000)
 }

@@ -6,7 +6,7 @@ slots = c(Dataset.name = "character",
   n = "numeric",
   Theta = "list",
   Dataset = "list",
-  Zt = "list",
+  Zt = "factor",
   w = "numeric",
   Variables = "character",
   ymin = "numeric",
@@ -809,9 +809,7 @@ function(.Object, ...,
   
   # Zt.
   
-  if (missing(Zt) || (length(Zt) == 0)) {
-    stop(sQuote("Zt"), " must not be empty!", call. = FALSE)  
-  }
+  if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
   
   if (!is.factor(Zt)) {
     stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
@@ -950,15 +948,13 @@ function(.Object, ...,
   
   # Zt.
   
-  if (missing(Zt) || (length(Zt) == 0)) {
-    stop(sQuote("Zt"), " must not be empty!", call. = FALSE)  
-  }
+  if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
   
   if (!is.factor(Zt)) {
     stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
   }
   
-  levels(Zt) <- 1:s
+  levels(Zt) <- 1:length(levels(Zt))
   
   callNextMethod(.Object, ...,
     x = x,

@@ -212,7 +212,7 @@ levels(adult[["Income"]])
 
 adult <- as.data.frame(data.matrix(adult))
 
-# Levels should start with 0 for discrete distributions except for the 
+# Levels should start with 0 for discrete distributions except for 
 # Dirac distribution.
 
 f <- c("Type", "Age", "Workclass", "Education", "Marital.Status", 
@@ -221,7 +221,7 @@ f <- c("Type", "Age", "Workclass", "Education", "Marital.Status",
 
 adult[, f] <- adult[, f] - 1
 
-# Split adult dataset into two train subsets for the two Incomes
+# Split adult dataset into two train subsets for two Incomes
 # and remove Type and Income columns.
 
 trainle50k <- subset(adult, subset = (Type == 1) & (Income == 0), 

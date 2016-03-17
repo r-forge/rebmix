@@ -75,8 +75,8 @@ n <- nrow(weibull)
 
 # Number of classes or nearest neighbours to be processed.
 
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
-  as.integer(10 * log10(n))) # Maximum v follows the log10 rule.
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(n))) # Maximum v follows log10 rule.
 
 # Estimate number of components, component weights and component parameters. 
 

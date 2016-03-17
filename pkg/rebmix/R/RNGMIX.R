@@ -55,7 +55,9 @@ function(model, ...)
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
     
-    model@Zt[[i]] <- as.numeric(output$Z)    
+    if (i == 1) {
+      model@Zt <- factor(output$Z)
+    }  
 
     IDum <- IDum - 1
   }
@@ -129,7 +131,9 @@ function(model, ...)
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
     
-    model@Zt[[i]] <- as.numeric(output$Z)    
+    if (i == 1) {
+      model@Zt <- factor(output$Z)
+    }  
 
     IDum <- IDum - 1
   }

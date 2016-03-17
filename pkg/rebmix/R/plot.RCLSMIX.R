@@ -53,42 +53,76 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@Dataset); et <- as.numeric(x@Zt) - 1; ep <- as.numeric(x@Zp) - 1
+  ey <- as.matrix(x@Dataset); ep <- as.numeric(x@Zp) - 1
+  
+  error <- is.error(x@Zt, x@Zp)
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
-        
-  zlim <- c(0, x@s - 1); zmax <- zlim[2]
-      
-  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255); plot.col[et != ep] <- "black" 
     
-  legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+  s <- length(levels(x@Zp))
+  
+  zlim <- c(0, s - 1); zmax <- zlim[2]
+      
+  plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
+  
+  if (.Device == "tikz output") {
+    if (sum(error) == 0) {
+      legend <- paste("$", 1:s, "$", sep = "")
+      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+      legend.pch <- rep(plot.pch, s)
+    }
+    else {
+      legend <- c(paste("$", 1:s, "$", sep = ""), "$\\mathrm{Error}$")
+      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+      legend.pch <- c(rep(plot.pch, s), 1)
+    }
+  }
+  else {
+    if (sum(error) == 0) {
+      legend <- paste(bquote(.(1:s)), sep = "")
+      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+      legend.pch <- rep(plot.pch, s)
+    }
+    else {
+      legend <- c(paste(bquote(.(1:s)), sep = ""), "Error")
+      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+      legend.pch <- c(rep(plot.pch, s), 1)
+    }  
+  }   
   
   if (N > 0) {
     figno <- 0
 
-    if (.Device == "tikz output") {
-      legend <- c(paste("$", 1:x@s, "$", sep = ""), "$\\mathrm{Error}$")
-    }
-    else {
-      legend <- c(paste(bquote(.(1:x@s)), sep = ""), "Error")  
-    }   
-
     for (i in 1:(d - 1)) {
       for (j in (i + 1):d) {
-        plot(x = ey[, i],
-          y = ey[, j],
+        plot(x = ey[which(error != 1), i],
+          y = ey[which(error != 1), j],
           type = "p",
           main = "",
           sub = "",
           xlab = "",
           ylab = "",
-          col = plot.col,
+          xlim = range(ey[, i]),
+          ylim = range(ey[, j]),
+          col = plot.col[which(error != 1)],
           axes = FALSE,
           lwd = 1,
           cex = plot.cex,
           pch = plot.pch)
+          
+        points(x = ey[which(error == 1), i],
+          y = ey[which(error == 1), j],
+          type = "p",
+          main = "",
+          sub = "",
+          xlab = "",
+          ylab = "",
+          col = "black",
+          lwd = 1,
+          cex = plot.cex * 2,
+          pch = 1)          
 
         box(col = fg, lty = "solid", lwd = 1)
 
@@ -135,7 +169,7 @@ function(x,
             legend = legend,
             col = legend.col,
             lty = 0,
-            pch = plot.pch,
+            pch = legend.pch,
             bty = "n",
             cex = 1.0,
             y.intersp = 0,
@@ -162,25 +196,32 @@ function(x,
     }
   }
   else {
-    if (.Device == "tikz output") {
-      legend <- c(paste("$", 1:x@s, "$", sep = ""), "$\\mathrm{Error}$")
-    }
-    else {
-      legend <- c(paste(bquote(.(1:x@s)), sep = ""), "Error")  
-    }   
-
-    plot(x = ey[, 1],
-      y = et + 1,
+    plot(x = ey[which(error != 1), 1],
+      y = ep[which(error != 1)] + 1,
       type = "p",
       main = "",
       sub = "",
       xlab = "",
       ylab = "",
-      col = plot.col,
+      xlim = range(ey[, 1]),
+      ylim = range(ep + 1),      
+      col = plot.col[which(error != 1)],
       axes = FALSE,
       lwd = 1,
       cex = plot.cex,
       pch = plot.pch)
+          
+    points(x = ey[which(error == 1), 1],
+      y = ep[which(error == 1)] + 1,
+      type = "p",
+      main = "",
+      sub = "",
+      xlab = "",
+      ylab = "",
+      col = "black",
+      lwd = 1,
+      cex = plot.cex * 2,
+      pch = 1)       
 
     box(col = fg, lty = "solid", lwd = 1)
 
@@ -199,10 +240,10 @@ function(x,
       padj = 1.0)
 
     if (.Device == "tikz output") {
-      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{t}(y_{1})$", sep = "")
+      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{p}(y_{1})$", sep = "")
     }
     else {
-      text <- bquote(y[1] - Z[t](y[1]))
+      text <- bquote(y[1] - Z[p](y[1]))
     }
 
     mtext(text = text,
@@ -224,7 +265,7 @@ function(x,
       legend = legend,
       col = legend.col,
       lty = 0,
-      pch = plot.pch,
+      pch = legend.pch,
       bty = "n",
       cex = 1.0,
       y.intersp = 0,
@@ -306,42 +347,76 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@Dataset); et <- as.numeric(x@Zt) - 1; ep <- as.numeric(x@Zp) - 1
+  ey <- as.matrix(x@Dataset); ep <- as.numeric(x@Zp) - 1
+  
+  error <- is.error(x@Zt, x@Zp)
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
-        
-  zlim <- c(0, x@s - 1); zmax <- zlim[2]
-      
-  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255); plot.col[et != ep] <- "black" 
     
-  legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+  s <- length(levels(x@Zp))
+  
+  zlim <- c(0, s - 1); zmax <- zlim[2]
+      
+  plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
+  
+  if (.Device == "tikz output") {
+    if (sum(error) == 0) {
+      legend <- paste("$", 1:s, "$", sep = "")
+      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+      legend.pch <- rep(plot.pch, s)
+    }
+    else {
+      legend <- c(paste("$", 1:s, "$", sep = ""), "$\\mathrm{Error}$")
+      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+      legend.pch <- c(rep(plot.pch, s), 1)
+    }
+  }
+  else {
+    if (sum(error) == 0) {
+      legend <- paste(bquote(.(1:s)), sep = "")
+      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+      legend.pch <- rep(plot.pch, s)
+    }
+    else {
+      legend <- c(paste(bquote(.(1:s)), sep = ""), "Error")
+      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
+      legend.pch <- c(rep(plot.pch, s), 1)
+    }  
+  }
   
   if (N > 0) {
     figno <- 0
 
-    if (.Device == "tikz output") {
-      legend <- c(paste("$", 1:x@s, "$", sep = ""), "$\\mathrm{Error}$")
-    }
-    else {
-      legend <- c(paste(bquote(.(1:x@s)), sep = ""), "Error")  
-    }   
-
     for (i in 1:(d - 1)) {
       for (j in (i + 1):d) {
-        plot(x = ey[, i],
-          y = ey[, j],
+        plot(x = ey[which(error != 1), i],
+          y = ey[which(error != 1), j],
           type = "p",
           main = "",
           sub = "",
           xlab = "",
           ylab = "",
-          col = plot.col,
+          xlim = range(ey[, i]),
+          ylim = range(ey[, j]),
+          col = plot.col[which(error != 1)],
           axes = FALSE,
           lwd = 1,
           cex = plot.cex,
           pch = plot.pch)
+          
+        points(x = ey[which(error == 1), i],
+          y = ey[which(error == 1), j],
+          type = "p",
+          main = "",
+          sub = "",
+          xlab = "",
+          ylab = "",
+          col = "black",
+          lwd = 1,
+          cex = plot.cex * 2,
+          pch = 1)          
 
         box(col = fg, lty = "solid", lwd = 1)
 
@@ -388,7 +463,7 @@ function(x,
             legend = legend,
             col = legend.col,
             lty = 0,
-            pch = plot.pch,
+            pch = legend.pch,
             bty = "n",
             cex = 1.0,
             y.intersp = 0,
@@ -415,25 +490,32 @@ function(x,
     }
   }
   else {
-    if (.Device == "tikz output") {
-      legend <- c(paste("$", 1:x@s, "$", sep = ""), "$\\mathrm{Error}$")
-    }
-    else {
-      legend <- c(paste(bquote(.(1:x@s)), sep = ""), "Error")  
-    }   
-
-    plot(x = ey[, 1],
-      y = et + 1,
+    plot(x = ey[which(error != 1), 1],
+      y = ep[which(error != 1)] + 1,
       type = "p",
       main = "",
       sub = "",
       xlab = "",
       ylab = "",
-      col = plot.col,
+      xlim = range(ey[, 1]),
+      ylim = range(ep + 1),      
+      col = plot.col[which(error != 1)],
       axes = FALSE,
       lwd = 1,
       cex = plot.cex,
       pch = plot.pch)
+          
+    points(x = ey[which(error == 1), 1],
+      y = ep[which(error == 1)] + 1,
+      type = "p",
+      main = "",
+      sub = "",
+      xlab = "",
+      ylab = "",
+      col = "black",
+      lwd = 1,
+      cex = plot.cex * 2,
+      pch = 1)       
 
     box(col = fg, lty = "solid", lwd = 1)
 
@@ -452,10 +534,10 @@ function(x,
       padj = 1.0)
 
     if (.Device == "tikz output") {
-      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{t}(y_{1})$", sep = "")
+      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{p}(y_{1})$", sep = "")
     }
     else {
-      text <- bquote(y[1] - Z[t](y[1]))
+      text <- bquote(y[1] - Z[p](y[1]))
     }
 
     mtext(text = text,
@@ -477,7 +559,7 @@ function(x,
       legend = legend,
       col = legend.col,
       lty = 0,
-      pch = plot.pch,
+      pch = legend.pch,
       bty = "n",
       cex = 1.0,
       y.intersp = 0,
@@ -502,4 +584,4 @@ function(x,
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-}) # plot         
+}) # plot

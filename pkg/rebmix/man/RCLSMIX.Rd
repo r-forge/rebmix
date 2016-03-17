@@ -95,7 +95,7 @@ levels(adult[["Income"]])
 
 adult <- as.data.frame(data.matrix(adult))
 
-# Levels should start with 0 for discrete distributions except for the 
+# Levels should start with 0 for discrete distributions except for 
 # Dirac distribution.
 
 f <- c("Type", "Age", "Workclass", "Education", "Marital.Status", 
@@ -104,7 +104,7 @@ f <- c("Type", "Age", "Workclass", "Education", "Marital.Status",
 
 adult[, f] <- adult[, f] - 1
 
-# Split adult dataset into two train subsets for the two Incomes
+# Split adult dataset into two train subsets for two Incomes
 # and remove Type and Income columns.
 
 trainle50k <- subset(adult, subset = (Type == 1) & (Income == 0), 
@@ -141,8 +141,8 @@ pdf <- c("Dirac", "Dirac", "gamma", "Dirac",
 
 n <- range(nrow(trainle50k), nrow(traingt50k))
 
-K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows the Sturges rule.
-  as.integer(10 * log10(n[2]))) # Maximum v follows the log10 rule.
+K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
 
 K <- list(1, 1, K[1]:K[2], 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 

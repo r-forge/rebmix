@@ -30,9 +30,9 @@ currently not used.
 
 n <- 10000
 
-Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
-Log10 <- as.integer(10 * log10(n)) # Maximum v follows the Log10 rule.
-RootN <- as.integer(2 * n^0.5) # Maximum v follows the RootN rule.
+Sturges <- as.integer(1 + log2(n)) # Minimum v follows Sturges rule.
+Log10 <- as.integer(10 * log10(n)) # Maximum v follows Log10 rule.
+RootN <- as.integer(2 * n^0.5) # Maximum v follows RootN rule.
 
 K <- kseq(from = Sturges, to = Log10, f = 0.05)
 
