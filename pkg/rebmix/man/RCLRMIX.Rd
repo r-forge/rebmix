@@ -15,7 +15,7 @@ Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 Returns as default the RCLRMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLRMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, pos = 1, Zt = factor(0), ...)
+\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, pos = 1, Zt = factor(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLRMIX}(object, ...)
 ## ... and for other signatures     
@@ -31,7 +31,7 @@ an object of class \code{REBMIX}.
 a desired row number in \code{x@summary} to be clustered. The default value is \code{1}.
 }
 \item{Zt}{
-a factor of true cluster membership. The default value is \code{factor(0)}.
+a factor of true cluster membership. The default value is \code{factor()}.
 }
 \item{object}{
 see Methods section below.

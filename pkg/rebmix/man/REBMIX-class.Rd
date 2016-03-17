@@ -47,13 +47,13 @@ rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bin
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. 
 }
 \item{\code{y0}:}{
-a vector of length \eqn{d} containing origins. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.
 }
 \item{\code{ymin}:}{
-a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric()}.
 }
 \item{\code{ymax}:}{
-a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric()}.
 }
 \item{\code{ar}:}{
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.

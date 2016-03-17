@@ -227,7 +227,7 @@ poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = poisson@Zt)
 
 plot(poissonclu)
 @
-\caption{Poisson dataset. Predictive cluster membership (coloured circles) Error (large circles).}
+\caption{Poisson dataset. Predictive cluster membership (coloured circles), error (large circles).}
 \end{figure}
 \subsection{Multivariate normal dataset}
 A \texttt{wreath} dataset \citep{Fraley_2005} consist of $1000$ observations drawn from a $14$-component normal mixture in which the covariances of the components have the same size and shape but differ in orientation.
@@ -259,9 +259,9 @@ coef(wreathest)
 \subsubsection{Plot method}
 \begin{figure}[htbp]\centering
 <<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(wreathest, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
+plot(wreathest)
 @
-\caption{Dataset \texttt{wreath}. Empirical densities (coloured large circles), predictive multivariate normal mixture density (coloured lines).}
+\caption{Dataset \texttt{wreath}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[htbp]\centering
@@ -302,7 +302,7 @@ summary(ex4.1est)
 <<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
-\caption{Dataset \texttt{ex4.1}. Empirical densities (coloured large circles), predictive multivariate normal mixture density (coloured lines).}
+\caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[htbp]\centering
@@ -311,7 +311,7 @@ ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
 
 plot(ex4.1clu)
 @
-\caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured large circles).}
+\caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
 \end{figure}
 
 

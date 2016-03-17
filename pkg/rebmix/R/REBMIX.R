@@ -27,14 +27,14 @@ function(model, ...)
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
     }
     else {
-      length.theta1 <- -d; theta1 <- numeric(0)
+      length.theta1 <- -d; theta1 <- numeric()
     }    
     
     if (length(model@theta2) > 0) {
       length.theta2 <- +d; theta2 <- model@theta2; theta2[is.na(theta2)] <- 0
     }
     else {
-      length.theta2 <- -d; theta2 <- numeric(0)
+      length.theta2 <- -d; theta2 <- numeric()
     }
         
     output <- .C("RREBMIX",
@@ -278,14 +278,14 @@ function(model, ...)
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
     }
     else {
-      length.theta1 <- -d; theta1 <- numeric(0)
+      length.theta1 <- -d; theta1 <- numeric()
     }    
     
     if (length(model@theta2) > 0) {
       length.theta2 <- +d; theta2 <- model@theta2; theta2[is.na(theta2)] <- 0
     }
     else {
-      length.theta2 <- -d; theta2 <- numeric(0)
+      length.theta2 <- -d; theta2 <- numeric()
     }
         
     output <- .C("RREBMVNORM",

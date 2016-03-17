@@ -15,10 +15,10 @@ REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(0), Preprocessing = character(0), 
-       cmax = 15, Criterion = "AIC", pdf = character(0), theta1 = numeric(0), 
-       theta2 = numeric(0), K = numeric(0), y0 = numeric(0), ymin = numeric(0), 
-       ymax = numeric(0), ar = 0.1, Restraints = "loose", ...)
+\S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(), 
+       cmax = 15, Criterion = "AIC", pdf = character(), theta1 = numeric(), 
+       theta2 = numeric(), K = numeric(), y0 = numeric(), ymin = numeric(), 
+       ymax = numeric(), ar = 0.1, Restraints = "loose", ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)   
 ## ... and for other signatures 
@@ -62,13 +62,13 @@ rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bin
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. 
 }
 \item{y0}{
-a vector of length \eqn{d} containing origins. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.
 }
 \item{ymin}{
-a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric()}.
 }
 \item{ymax}{
-a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric(0)}.
+a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric()}.
 }
 \item{ar}{
 acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.1} and in most cases does not have to be altered.

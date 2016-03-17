@@ -22,13 +22,13 @@ a character giving the bootstrap type. One of default \code{"parametric"} or \co
 number of bootstrap datasets. The default value is \code{100}.
 }
 \item{\code{n}:}{
-number of observations. The default value is \code{numeric(0)}.
+number of observations. The default value is \code{numeric()}.
 }
 \item{\code{replace}:}{
 logical. The sampling is with replacement if \code{TRUE}, see also \code{\link[base]{sample}}. The default value is \code{TRUE}.
 }
 \item{\code{prob}:}{
-a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric(0)}.
+a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric()}.
 }
 \item{\code{c}:}{
 a vector containing numbers of components for \eqn{B} bootstrap datasets.

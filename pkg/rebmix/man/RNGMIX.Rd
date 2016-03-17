@@ -14,8 +14,8 @@ Returns as default the RNGMIX univariate or multivariate random datasets for mix
 If \code{model} equals \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices are returned.
 }
 \usage{
-\S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(0), 
-       rseed = -1, n = numeric(0), Theta = list(0), ...)
+\S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(), 
+       rseed = -1, n = numeric(), Theta = list(), ...)
 ## ... and for other signatures
 }
 \arguments{

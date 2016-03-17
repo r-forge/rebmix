@@ -1,24 +1,24 @@
 setGeneric("RNGMIX",
   function(model = "RNGMIX",
-    Dataset.name = character(0),
+    Dataset.name = character(),
     rseed = -1,
-    n = numeric(0),
-    Theta = list(0), ...)
+    n = numeric(),
+    Theta = list(), ...)
   standardGeneric("RNGMIX"))
 
 setGeneric("REBMIX",
   function(model = "REBMIX",
-    Dataset = list(0),
-    Preprocessing = character(0),
+    Dataset = list(),
+    Preprocessing = character(),
     cmax = 15,
     Criterion = "AIC",
-    pdf = character(0),
-    theta1 = numeric(0),
-    theta2 = numeric(0),
-    K = numeric(0),
-    y0 = numeric(0),
-    ymin = numeric(0),
-    ymax = numeric(0),
+    pdf = character(),
+    theta1 = numeric(),
+    theta2 = numeric(),
+    K = numeric(),
+    y0 = numeric(),
+    ymin = numeric(),
+    ymax = numeric(),
     ar = 0.1,
     Restraints = "loose", ...)
   standardGeneric("REBMIX"))
@@ -53,21 +53,22 @@ setGeneric("boot",
     pos = 1,
     Bootstrap = "parametric",
     B = 100, 
-    n = numeric(0), 
+    n = numeric(), 
     replace = TRUE,
-    prob = numeric(0), ...)
+    prob = numeric(), ...)
   standardGeneric("boot"))
   
 setGeneric("RCLRMIX",
   function(model = "RCLRMIX",
     x = NULL,
-    pos = 1, ...)
+    pos = 1, 
+    Zt = factor(), ...)
   standardGeneric("RCLRMIX"))  
 
 setGeneric("RCLSMIX",
   function(model = "RCLSMIX",
-    x = list(0),
-    Dataset = data.frame(0), 
-    Zt = factor(0), ...)
+    x = list(),
+    Dataset = data.frame(), 
+    Zt = factor(), ...)
   standardGeneric("RCLSMIX"))
 

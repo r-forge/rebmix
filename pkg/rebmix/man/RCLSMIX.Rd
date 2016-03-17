@@ -15,8 +15,8 @@ Predicts Class Membership Based Upon a Model Trained by REBMIX
 Returns as default the RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLSMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{RCLSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(0), Dataset = data.frame(0),
-        Zt = factor(0), ...)
+\S4method{RCLSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(), Dataset = data.frame(),
+        Zt = factor(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLSMIX}(object, ...)
 ## ... and for other signatures     
@@ -29,14 +29,14 @@ see Methods section below.
 a list of objects of class \code{REBMIX} of length \eqn{o} obtained by running \code{\link[rebmix]{REBMIX}} on \eqn{g = 1, \ldots, s} train datasets \eqn{Y_{\mathrm{train}g}} all of length \eqn{n_{\mathrm{train}g}}.
 For the train datasets the corresponding class membership \eqn{\bm{\Omega}_{g}} is known. This yields
 \eqn{n_{\mathrm{train}} = \sum_{g = 1}^{s} n_{\mathrm{train}g}}, while \eqn{Y_{\mathrm{train}q} \cap Y_{\mathrm{train}g} = \emptyset} for all \eqn{q \neq g}.
-Each object in the list corresponds to one chunk, e.g., \eqn{(y_{1j}, y_{3j})^{\top}}. The default value is \code{list(0)}.
+Each object in the list corresponds to one chunk, e.g., \eqn{(y_{1j}, y_{3j})^{\top}}. The default value is \code{list()}.
 }
 \item{Dataset}{
 a data frame containing test dataset \eqn{Y_{\mathrm{test}}} of length \eqn{n_{\mathrm{test}}}. For the test dataset the corresponding class membership \eqn{\bm{\Omega}_{g}} is not known.
-The default value is \code{data.frame(0)}.
+The default value is \code{data.frame()}.
 }
 \item{Zt}{
-a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. The default value is \code{factor(0)}.
+a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. The default value is \code{factor()}.
 }
 \item{object}{
 see Methods section below.

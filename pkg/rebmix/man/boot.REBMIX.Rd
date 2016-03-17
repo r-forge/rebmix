@@ -19,7 +19,7 @@ component densities with unrestricted variance-covariance matrices is returned.
 } 
 \usage{ 
 \S4method{boot}{REBMIX}(x = NULL, pos = 1, Bootstrap = "parametric", 
-     B = 100, n = numeric(0), replace = TRUE, prob = numeric(0), ...)
+     B = 100, n = numeric(), replace = TRUE, prob = numeric(), ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX.boot}(object, ...)
 ## ... and for other signatures
@@ -38,13 +38,13 @@ a character giving the bootstrap type. One of default \code{"parametric"} or \co
 number of bootstrap datasets. The default value is \code{100}.
 }
 \item{n}{
-number of observations. The default value is \code{numeric(0)}.
+number of observations. The default value is \code{numeric()}.
 }
 \item{replace}{
 logical. The sampling is with replacement if \code{TRUE}, see also \code{\link[base]{sample}}. The default value is \code{TRUE}.
 }
 \item{prob}{
-a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric(0)}.
+a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric()}.
 }
 \item{\dots}{
 further arguments to \code{\link[base]{sample}}; additional arguments affecting the summary produced.

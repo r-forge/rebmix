@@ -43,14 +43,14 @@ function(x,
     theta1 <- model@x@theta1; theta1[is.na(theta1)] <- 0
   }
   else {
-    theta1 <- numeric(0)
+    theta1 <- numeric()
   }    
     
   if (length(model@x@theta2) > 0) {
     theta2 <- model@x@theta2; theta2[is.na(theta2)] <- 0
   }
   else {
-    theta2 <- numeric(0)
+    theta2 <- numeric()
   }  
     
   d <- length(model@x@pdf)
@@ -187,14 +187,14 @@ function(x,
     theta1 <- model@x@theta1; theta1[is.na(theta1)] <- 0
   }
   else {
-    theta1 <- numeric(0)
+    theta1 <- numeric()
   }    
     
   if (length(model@x@theta2) > 0) {
     theta2 <- model@x@theta2; theta2[is.na(theta2)] <- 0
   }
   else {
-    theta2 <- numeric(0)
+    theta2 <- numeric()
   }  
     
   d <- length(model@x@pdf)

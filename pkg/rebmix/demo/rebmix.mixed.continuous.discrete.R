@@ -51,7 +51,6 @@ plot(mixedest, what = c("dens", "marg", "IC", "logL"), nrow = 4, ncol = 3, npts 
 
 # Bootstrap finite mixture.
 
-mixedboot <- boot(x = mixedest, pos = 1, Bootstrap = "p", 
-  B = 100, n = numeric(0), replace = TRUE, prob = numeric(0))
+mixedboot <- boot(x = mixedest, pos = 1, Bootstrap = "p", B = 100)
 
 mixedboot
