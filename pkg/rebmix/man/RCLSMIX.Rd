@@ -146,7 +146,7 @@ K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
 
 K <- list(1, 1, K[1]:K[2], 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 
-adultest <- list()
+adultest <- list(0)
 
 for (i in c(1:14)) {
   adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]), 
