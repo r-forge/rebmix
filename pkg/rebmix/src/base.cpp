@@ -12,12 +12,6 @@
 #include <crtdbg.h>
 #endif
 
-#if (_REBMIXR)
-#include <R.h>
-#include <Rinternals.h>
-#include <R_ext/Rdynload.h>
-#endif
-
 // Base constructor.
 
 Base::Base()
@@ -392,7 +386,6 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 
         *y -= dy;
 
-        #if (_REBMIXEXE || _REBMIXR)
         if (IsNan(dy) || IsInf(dy)) {
             Error = 1; goto E0;
         }
@@ -400,7 +393,6 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
         if (*y < Eps) {
             *y = Eps; Error = 0;
         }
-        #endif
 
         if ((FLOAT)fabs(dy) < Eps) Error = 0;
 

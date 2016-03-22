@@ -473,7 +473,6 @@ int RoughLognormalParameters(FLOAT ym,
 
         Lambda -= dLambda;
 
-        #if (_REBMIXEXE || _REBMIXR)
         if (IsNan(dLambda) || IsInf(dLambda)) {
             Error = 1; goto E0;
         }
@@ -481,7 +480,6 @@ int RoughLognormalParameters(FLOAT ym,
         if (Lambda < (FLOAT)1.0 + Eps) {
             Lambda = (FLOAT)1.0 + Eps; Error = 0;
         }
-        #endif
 
         if ((FLOAT)fabs(dLambda) < Eps) Error = 0;
 
@@ -525,7 +523,6 @@ int RoughWeibullParameters(FLOAT ym,
 
         Alpha -= dAlpha;
 
-        #if (_REBMIXEXE || _REBMIXR)                                
         if (IsNan(dAlpha) || IsInf(dAlpha)) {
             Error = 1; goto E0;
         }
@@ -533,7 +530,6 @@ int RoughWeibullParameters(FLOAT ym,
         if (Alpha < (FLOAT)1.234332) {
             Alpha = (FLOAT)1.234332; Error = 0;
         }
-        #endif
 
         if ((FLOAT)fabs(dAlpha) < Eps) Error = 0;
 
@@ -580,7 +576,6 @@ int RoughGammaParameters(FLOAT ym,
 
         Alpha -= dAlpha;
 
-        #if (_REBMIXEXE || _REBMIXR)
         if (IsNan(dAlpha) || IsInf(dAlpha)) {
             Error = 1; goto E0;
         }
@@ -588,7 +583,6 @@ int RoughGammaParameters(FLOAT ym,
         if (Alpha < 1.00032) {
             Alpha = 1.00032; Error = 0;
         }
-        #endif
 
         if ((FLOAT)fabs(dAlpha) < Eps) Error = 0;
 
@@ -1564,11 +1558,9 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
@@ -1620,11 +1612,9 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
@@ -1828,11 +1818,9 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
@@ -1884,11 +1872,9 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
@@ -2093,11 +2079,9 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
@@ -2149,11 +2133,9 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                #if (_REBMIXEXE || _REBMIXR)
                 if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
                     Error = 1; goto E0;
                 }
-                #endif
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 

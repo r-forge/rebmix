@@ -6,12 +6,6 @@
 #include "rngmvnormf.h"
 #include "rebmvnormf.h"
 
-#if (_REBMIXR)
-#include <R.h>
-#include <Rinternals.h>
-#include <R_ext/Rdynload.h>
-#endif
-
 extern "C" {
 
 // Runs RRNGMVNORM in R.
