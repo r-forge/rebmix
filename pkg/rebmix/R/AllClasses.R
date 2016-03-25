@@ -920,7 +920,7 @@ function(.Object, ...,
   
   ntrain <- matrix(unlist(lapply(x, function(x) lapply(x@Dataset, nrow))), ncol = s, byrow = TRUE)
   
-  ntrain <- ntrain[!duplicated(ntrain), ] 
+  ntrain <- ntrain[!duplicated(ntrain),] 
   
   if (length(ntrain) != s) {
     stop(sQuote("Dataset"), " in ", sQuote("x"), " numbers of rows in data frames must be equal!", call. = FALSE)

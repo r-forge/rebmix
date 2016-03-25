@@ -90,15 +90,15 @@ Prob <- 0.75
 
 n_1 <- nrow(wine_1); s_1 <- sample.int(n = n_1, size = as.integer(n_1 * Prob))
 
-wine_1_train <- wine_1[s_1, ]; wine_1_test <- wine_1[-s_1, ]
+wine_1_train <- wine_1[s_1,]; wine_1_test <- wine_1[-s_1,]
 
 n_2 <- nrow(wine_2); s_2 <- sample.int(n = n_2, size = as.integer(n_2 * Prob))
 
-wine_2_train <- wine_2[s_2, ]; wine_2_test <- wine_2[-s_2, ]
+wine_2_train <- wine_2[s_2,]; wine_2_test <- wine_2[-s_2,]
 
 n_3 <- nrow(wine_3); s_3 <- sample.int(n = n_3, size = as.integer(n_3 * Prob))
 
-wine_3_train <- wine_3[s_3, ]; wine_3_test <- wine_3[-s_3, ]
+wine_3_train <- wine_3[s_3,]; wine_3_test <- wine_3[-s_3,]
 
 wine_test = rbind(wine_1_test, wine_2_test, wine_3_test)
 

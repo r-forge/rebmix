@@ -9,6 +9,7 @@
 \item Clustering is added.
 \item Datasets \code{iris} is added. 
 \item Renewed vignette.
+\item Fixed bug in C++ functions \code{RoughLognormalParameters()}, \code{RoughWeibullParameters()} and \code{RoughGammaParameters()}.
 }
 }
 \section{Changes in version 2.7.2}{ 

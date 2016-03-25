@@ -19,12 +19,12 @@ pemix <- function(x = NULL, lower.tail = TRUE, log.p = FALSE, ...)
 
   if (lower.tail == TRUE) {
     for (i in 1:n) {
-      y[i] <- sum(apply(x <= x[i, ], 1, all))
+      y[i] <- sum(apply(x <= x[i,], 1, all))
     }
   }
   else {
     for (i in 1:n) {
-      y[i] <- sum(apply(x > x[i, ], 1, all))
+      y[i] <- sum(apply(x > x[i,], 1, all))
     }
   }
 

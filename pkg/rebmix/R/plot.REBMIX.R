@@ -321,7 +321,7 @@ function(x,
             edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
           }
 
-          pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i, ], Theta[j, ])
+          pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i,], Theta[j,])
  
           zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)
 
@@ -464,7 +464,7 @@ function(x,
         for (j in (i + 1):d) {
           edist <- .dist.xy(ey[, i], ey[, j], n)
 
-          pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i, ], Theta[j, ])
+          pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i,], Theta[j,])
  
           zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
 
@@ -610,7 +610,7 @@ function(x,
         edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
       }
 
-      pdens <- .dfmix.x(py[[1]], w, Theta[1, ])
+      pdens <- .dfmix.x(py[[1]], w, Theta[1,])
 
       ylim <- c(0.0, max(edens$y, pdens))
 
@@ -678,7 +678,7 @@ function(x,
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
       edist <- .dist.x(ey[, 1], n)
 
-      pdist <- .pfmix.x(py[[1]], w, Theta[1, ])
+      pdist <- .pfmix.x(py[[1]], w, Theta[1,])
 
       ylim <- c(0.0, max(edist$y, pdist))
 
@@ -760,7 +760,7 @@ function(x,
         edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
       }
 
-      pdens <- .dfmix.x(py[[i]], w, Theta[i, ])
+      pdens <- .dfmix.x(py[[i]], w, Theta[i,])
 
       ylim <- c(0.0, max(edens$y, pdens))
 

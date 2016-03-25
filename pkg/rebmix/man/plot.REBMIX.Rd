@@ -135,7 +135,7 @@ colnames(wine)
 
 winecolnames <- !(colnames(wine) \%in\% "Cultivar")
 
-wine <- wine[ , winecolnames]
+wine <- wine[, winecolnames]
 
 # Determine number of dimensions d and wine dataset size n.
 

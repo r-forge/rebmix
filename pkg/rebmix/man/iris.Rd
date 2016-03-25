@@ -62,15 +62,15 @@ Prob <- 0.75
 
 n_set <- nrow(iris_set); s_set <- sample.int(n = n_set, size = as.integer(n_set * Prob))
 
-iris_set_train <- iris_set[s_set, ]; iris_set_test <- iris_set[-s_set, ]
+iris_set_train <- iris_set[s_set,]; iris_set_test <- iris_set[-s_set,]
 
 n_ver <- nrow(iris_ver); s_ver <- sample.int(n = n_ver, size = as.integer(n_ver * Prob))
 
-iris_ver_train <- iris_ver[s_ver, ]; iris_ver_test <- iris_ver[-s_ver, ]
+iris_ver_train <- iris_ver[s_ver,]; iris_ver_test <- iris_ver[-s_ver,]
 
 n_vir <- nrow(iris_vir); s_vir <- sample.int(n = n_vir, size = as.integer(n_vir * Prob))
 
-iris_vir_train <- iris_vir[s_vir, ]; iris_vir_test <- iris_vir[-s_vir, ]
+iris_vir_train <- iris_vir[s_vir,]; iris_vir_test <- iris_vir[-s_vir,]
 
 iris_test = rbind(iris_set_test, iris_ver_test, iris_vir_test)
 

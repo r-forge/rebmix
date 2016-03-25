@@ -35,7 +35,7 @@ function(x,
     for (i in 1:model@B) {
       R1 <- sample.int(n = nrow(dataset), size = model@n, replace = replace, prob = if (length(prob) == 0) NULL else prob)
       
-      Dataset[[i]] <- as.data.frame(dataset[R1, ], stringsAsFactors = FALSE)
+      Dataset[[i]] <- as.data.frame(dataset[R1,], stringsAsFactors = FALSE)
     }
   }
   
@@ -179,7 +179,7 @@ function(x,
     for (i in 1:model@B) {
       R1 <- sample.int(n = nrow(dataset), size = model@n, replace = replace, prob = if (length(prob) == 0) NULL else prob)
       
-      Dataset[[i]] <- as.data.frame(dataset[R1, ], stringsAsFactors = FALSE)
+      Dataset[[i]] <- as.data.frame(dataset[R1,], stringsAsFactors = FALSE)
     }
   }
   

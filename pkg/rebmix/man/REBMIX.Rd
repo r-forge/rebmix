@@ -131,7 +131,7 @@ normal <- RNGMIX(Dataset.name = "complex1",
   
 normal 
 
-normal@Dataset[[1]][1:20, ]  
+normal@Dataset[[1]][1:20,]  
 
 # Estimate number of components, component weights and component parameters. 
 
