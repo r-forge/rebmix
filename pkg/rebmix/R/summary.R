@@ -79,7 +79,7 @@ function(object, ...)
   
   print(theta2.cv, quote = FALSE, ...)
 
-  cat(paste("Mode probability = ", object@c.prob, " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
+  cat(paste("Mode probability = ", as.number(object@c.prob), " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary
@@ -123,7 +123,7 @@ function(object, ...)
   
   print(theta2.cv, quote = FALSE, ...)
 
-  cat(paste("Mode probability = ", object@c.prob, " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
+  cat(paste("Mode probability = ", as.number(object@c.prob), " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary
@@ -168,7 +168,7 @@ function(object, ...)
  
   print(CM, quote = FALSE, ...)
    
-  cat(paste("Error = ", object@Error, ".\n", sep = "", collapse = ""))
+  cat(paste("Error = ", as.number(object@Error), ".\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary
@@ -187,7 +187,7 @@ function(object, ...)
  
   print(CM, quote = FALSE, ...)
    
-  cat(paste("Error = ", object@Error, ".\n", sep = "", collapse = ""))
+  cat(paste("Error = ", as.number(object@Error), ".\n", sep = "", collapse = ""))
   
   rm(list = ls()) 
 }) ## summary

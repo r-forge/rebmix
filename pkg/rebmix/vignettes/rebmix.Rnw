@@ -147,7 +147,7 @@ coef(gamma3est)
 \subsubsection{Bootstrap methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 ## Bootstrap finite mixture.
-gamma3boot <- boot(x = gamma3est, pos = 1, Bootstrap = "p", B = 10, n = numeric(0), replace = TRUE, prob = numeric(0))
+gamma3boot <- boot(x = gamma3est, pos = 1, Bootstrap = "p", B = 10)
 
 gamma3boot
 
@@ -426,7 +426,7 @@ trainall <- subset(adult, subset = Type == 2, select = c(-Type, -Income))
 
 train <- as.factor(subset(adult, subset = Type == 2, select = c(Income))[, 1])
 @
-Two test datasets are extracted from the \texttt{adult} dataset next and the \texttt{Type} and \texttt{Income} columns are removed.
+Two test datasets are extracted from the \texttt{adult} dataset and the \texttt{Type} and \texttt{Income} columns are removed.
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 # Extract test dataset form adult dataset and remove Type
 # and Income columns.
@@ -451,12 +451,12 @@ cmax <- unlist(lapply(apply(trainall, 2, unique), length))
 adultest <- list(0)
 
 for (i in 1:14) {
-  adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]), 
+  adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]),
     as.data.frame(traingt50k[, i])),
     Preprocessing = "histogram",
-    cmax = if (cmax[i] > 120) 12 else cmax[i], 
+    cmax = if (cmax[i] > 120) 12 else cmax[i],
     Criterion = "BIC",
-    pdf = if (cmax[i] > 120) "normal" else "Dirac", 
+    pdf = if (cmax[i] > 120) "normal" else "Dirac",
     K = if (cmax[i] > 120) 13:43 else 1)
 }
 @
@@ -516,7 +516,7 @@ plot(adultcla, nrow = 5, ncol = 2)
 rm(list = ls())
 @
 \section{Summary}\label{sec:summary}
-The users of the \texttt{rebmix} package are kindly asked to inform me about bugs and wishes.
+The users of the \texttt{rebmix} package are kindly encouraged to inform the author about bugs and wishes.
 \bibliography{rebmix}
 \vspace{\baselineskip}\noindent\emph{Marko Nagode\\
 University of Ljubljana\\
