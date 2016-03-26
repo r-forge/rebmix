@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.8.1}{ 
+\itemize{
+\item Fixed isnan and isinf bug in C++ code.
+\item Fixed unstated dependencies in vignettes bug.
+}
+}
 \section{Changes in version 2.8.0}{ 
 \itemize{
 \item Object-oriented C++ code is improved considerably.

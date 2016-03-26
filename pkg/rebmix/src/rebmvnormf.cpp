@@ -121,7 +121,7 @@ S0:;
 
                 C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
 
-                if (isnan(C[q]) || isinf(C[q])) {
+                if (IsNan(C[q]) || IsInf(C[q])) {
                     C[p] = C[q] = (FLOAT)0.0;
                 }
             }
@@ -404,7 +404,7 @@ S0:;
 
                 C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
 
-                if (isnan(C[q]) || isinf(C[q])) {
+                if (IsNan(C[q]) || IsInf(C[q])) {
                     C[p] = C[q] = (FLOAT)0.0;
                 }
             }
@@ -672,7 +672,7 @@ S0:;
 
                 C[p] = C[q] /= (FLOAT)sqrt(C[o] * C[r]);
 
-                if (isnan(C[q]) || isinf(C[q])) {
+                if (IsNan(C[q]) || IsInf(C[q])) {
                     C[p] = C[q] = (FLOAT)0.0;
                 }
             }

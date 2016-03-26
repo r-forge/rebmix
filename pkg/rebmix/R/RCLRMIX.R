@@ -107,7 +107,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  message("RCLRMIX Version 2.8.0")
+  message("RCLRMIX Version 2.8.1")
  
   flush.console()
   

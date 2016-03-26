@@ -486,7 +486,7 @@ int LUdcmp(int   n,     // Size of square matrix.
 
     for (i = 0; i < n; i++) *det *= A[i * n + i];
 
-    if (isnan(*det) || ((FLOAT)fabs(*det) <= FLOAT_MIN)) {
+    if (IsNan(*det) || ((FLOAT)fabs(*det) <= FLOAT_MIN)) {
         Error = 1; goto E0;
     }
 
