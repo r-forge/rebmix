@@ -878,7 +878,8 @@ slots = c(x = "list",
   Error = "numeric",
   Precission = "numeric",
   Sensitivity = "numeric",
-  Specificity = "numeric"))
+  Specificity = "numeric"),
+prototype = list(CM = table(0)))
 
 setMethod("initialize", "RCLSMIX", 
 function(.Object, ...,

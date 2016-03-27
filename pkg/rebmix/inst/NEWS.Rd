@@ -3,7 +3,7 @@
 \section{Changes in version 2.8.1}{ 
 \itemize{
 \item Fixed isnan and isinf bug in C++ code.
-\item Fixed unstated dependencies in vignettes bug.
+\item Fixed invalid object bug in vignette.
 }
 }
 \section{Changes in version 2.8.0}{ 

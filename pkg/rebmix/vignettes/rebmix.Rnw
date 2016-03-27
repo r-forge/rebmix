@@ -32,7 +32,7 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \end{abstract}
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
-\section{What's new in version \texttt{2.8.0}}
+\section{What's new in version \texttt{2.8.1}}
 R code is extended and rewritten in S4 class system. The background C code is extended and rewritten as object-oriented C\texttt{++} code, too. The package can easier be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices are added. Clustering is added and classification is improved.
 \section{Examples}
 To illustrate the use of the REBMIX algorithm, univariate and multivariate datasets are considered. The \pkg{rebmix} is loaded and the prompt before starting new page is set to \texttt{TRUE}.

@@ -3,7 +3,7 @@ Version: 2.8.1
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si"))
 Title: Finite Mixture Modeling, Clustering & Classification
-Suggests: flexmix, mclust (>= 5.1), mixtools
+Suggests: flexmix, mclust, mixtools
 Description: R functions for random univariate and multivariate finite mixture model generation, estimation, clustering and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac parametric families.
 Imports: methods, stats, utils, graphics, grDevices, mvtnorm
 License: GPL (>= 2)
