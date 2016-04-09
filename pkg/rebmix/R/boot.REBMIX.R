@@ -53,7 +53,7 @@ function(x,
     theta2 <- numeric()
   }  
     
-  d <- length(model@x@pdf)
+  d <- length(model@x@Variables)
   
   bsampleest <- REBMIX(Dataset = Dataset,
     Preprocessing = as.character(model@x@summary[model@pos, "Preprocessing"]),
@@ -197,7 +197,7 @@ function(x,
     theta2 <- numeric()
   }  
     
-  d <- length(model@x@pdf)
+  d <- length(model@x@Variables)
   
   bsampleest <- REBMIX(model = "REBMVNORM",
     Dataset = Dataset,

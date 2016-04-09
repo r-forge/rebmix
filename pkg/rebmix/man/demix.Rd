@@ -1,66 +1,87 @@
-\name{demix}
+\name{demix-methods}
 \alias{demix}
+\alias{demix-methods}
+\alias{demix,REBMIX-method}
+\alias{demix,REBMVNORM-method}
 \title{
 Empirical Density Calculation
 }
 \description{
-\code{demix} returns (invisibly) the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
+\code{demix} returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
 densities \eqn{f_{1}, \ldots, f_{n}} for the Parzen window or \emph{k}-nearest neighbour or bin means \eqn{\bar{\bm{x}}_{1}, \ldots, \bar{\bm{x}}_{v}} 
 and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessing. Vectors \eqn{\bm{x}} and \eqn{\bar{\bm{x}}} are subvectors of 
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} and \eqn{\bar{\bm{y}} = (\bar{y}_{1}, \ldots, \bar{y}_{d})^{\top}}.
 }
 \usage{
-demix(x = NULL, Preprocessing = NULL, pdf = NULL,
-      k = NULL, xmin = NULL, xmax = NULL, ...)
+\S4method{demix}{REBMIX}(x = NULL, pos = 1, variables = numeric(), ...)
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-a vector, a matrix or a data frame containing continuous or discrete vector observations \eqn{\bm{x}}.
+see Methods section below.
 }
-\item{Preprocessing}{
-a preprocessing type. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
+\item{pos}{
+a desired row number in \code{summary} for which the empirical densities are calculated. The default value is \code{1}.
 }
-\item{pdf}{
-a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-}
-\item{k}{
-a number of bins \eqn{v} for the histogram and the Parzen window or number of nearest
-neighbours \eqn{k} for the \emph{k}-nearest neighbour.
-}
-\item{xmin}{
-a vector of length \eqn{\leq d} containing minimum observations. The default value is \code{NULL}.
-}
-\item{xmax}{
-a vector of length \eqn{\leq d} containing maximum observations. The default value is \code{NULL}.
+\item{variables}{
+a vector of length \eqn{\leq d} containig indices of variables. The default value is \code{numeric()}.
 }
 \item{\dots}{
 currently not used.
+}
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}
 \examples{
 # Generate simulated dataset.
 
-Theta <- list(pdf1 = rep("normal", 2),
-  theta1.1 = c(10, 20),
-  theta2.1 = c(3, 2),
-  pdf2 = rep("normal", 2),
-  theta1.2 = c(3, 2),
-  theta2.2 = c(20, 10))
+n <- c(15, 15)
 
-simulated <- RNGMIX(Dataset.name = "simulated",
+Theta <- list(pdf1 = rep("normal", 3),
+  theta1.1 = c(10, 20, 30),
+  theta2.1 = c(3, 2, 1),
+  pdf2 = rep("normal", 3),
+  theta1.2 = c(3, 4, 5),
+  theta2.2 = c(15, 10, 5))
+
+simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
   rseed = -1,
-  n = c(15, 15),
+  n = n,
   Theta = Theta)
+
+# Number of classes or nearest neighbours to be processed.
+
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
+
+# Estimate number of components, component weights and component parameters. 
+
+simulatedest <- REBMIX(model = "REBMVNORM",
+  Dataset = simulated@Dataset,
+  Preprocessing = "h", 
+  cmax = 4,
+  Criterion = "BIC", 
+  pdf = c("n", "n", "n"), 
+  K = K[1]:K[2])
 
 # Preprocess simulated dataset.
 
-y1y2f <- demix(x = simulated@Dataset[[1]],
-  Preprocessing = "histogram",
-  pdf = c("normal", "normal"),
-  k = 6)
-  
-y1y2f
+f <- demix(simulatedest, pos = 3, variables = c(1, 3))
+
+f
+
+# Plot finite mixture.
+
+usr <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1)
+
+par(usr = usr[[2]], mfg = c(2, 1))
+
+text(x = f[, 1], y = f[, 2], labels = format(f[, 3], digits = 3), cex = 0.8, pos = 1)
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.

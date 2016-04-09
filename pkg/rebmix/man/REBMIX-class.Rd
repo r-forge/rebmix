@@ -72,7 +72,7 @@ Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_
 }
 \item{\code{summary}:}{
 a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, information criterion type, 
-\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, optimal \eqn{h_{i}},
+\eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, \eqn{y_{i\mathrm{min}}}, \eqn{y_{i\mathrm{max}}}, optimal \eqn{h_{i}},
 information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
 }
 \item{\code{pos}:}{

@@ -24,7 +24,7 @@ setGeneric("REBMIX",
   standardGeneric("REBMIX"))
   
 setGeneric("coef",
-  function(object = NULL,
+  function(x = NULL,
     pos = 1, ...)
   standardGeneric("coef"))
   
@@ -47,6 +47,22 @@ setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))
 setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
 setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
+
+setGeneric("demix", function(x = NULL, pos = 1, variables = numeric(), ...) standardGeneric("demix"))
+setGeneric("pemix", 
+  function(x = NULL,
+    pos = 1, 
+    variables = numeric(),
+    lower.tail = TRUE, 
+    log.p = FALSE, ...) 
+  standardGeneric("pemix"))
+  
+setGeneric("dfmix", 
+  function(x = NULL,
+    Dataset = data.frame(),
+    pos = 1, 
+    variables = numeric(), ...)
+  standardGeneric("dfmix"))
 
 setGeneric("boot",
   function(x = NULL,

@@ -145,6 +145,10 @@ Rebmix::~Rebmix()
 
     if (summary_.h) free(summary_.h);
 
+    if (summary_.ymax) free(summary_.ymax);
+
+    if (summary_.ymin) free(summary_.ymin);
+
     if (summary_.y0) free(summary_.y0);
 
     if (MixTheta_) {
@@ -152,7 +156,7 @@ Rebmix::~Rebmix()
             if (MixTheta_[i]) delete MixTheta_[i];
         }
 
-        delete MixTheta_;
+        delete[] MixTheta_;
     }
 
     if (W_) free(W_);
@@ -3125,6 +3129,14 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == summary_.h; if (Error) goto E0;
 
+    summary_.ymin = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymin; if (Error) goto E0;
+
+    summary_.ymax = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymax; if (Error) goto E0;
+
     W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
 
     Error = NULL == W_; if (Error) goto E0;
@@ -3452,6 +3464,10 @@ int Rebmix::REBMIXKNN()
                 summary_.k = all_K_[i];
 
                 memmove(summary_.h, h, length_pdf_ * sizeof(FLOAT));  
+
+                memmove(summary_.ymin, ymin, length_pdf_ * sizeof(FLOAT)); 
+
+                memmove(summary_.ymax, ymax, length_pdf_ * sizeof(FLOAT));  
                 
                 summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c; 
 
@@ -3513,7 +3529,7 @@ E0: if (opt_D) free(opt_D);
             if (LooseTheta[i]) delete LooseTheta[i];
         }
 
-        delete LooseTheta;
+        delete[] LooseTheta;
     }
 
     if (RigidTheta) {
@@ -3521,7 +3537,7 @@ E0: if (opt_D) free(opt_D);
             if (RigidTheta[i]) delete RigidTheta[i];
         }
 
-        delete RigidTheta;
+        delete[] RigidTheta;
     }
 
     if (W) free(W);
@@ -3575,6 +3591,14 @@ int Rebmix::REBMIXPW()
     summary_.h = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == summary_.h; if (Error) goto E0;
+
+    summary_.ymin = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymin; if (Error) goto E0;
+
+    summary_.ymax = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymax; if (Error) goto E0;
 
     W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
 
@@ -3911,6 +3935,10 @@ int Rebmix::REBMIXPW()
                 summary_.k = all_K_[i];
 
                 memmove(summary_.h, h, length_pdf_ * sizeof(FLOAT));  
+
+                memmove(summary_.ymin, ymin, length_pdf_ * sizeof(FLOAT)); 
+
+                memmove(summary_.ymax, ymax, length_pdf_ * sizeof(FLOAT));
                 
                 summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c; 
 
@@ -3972,7 +4000,7 @@ E0: if (opt_D) free(opt_D);
             if (LooseTheta[i]) delete LooseTheta[i];
         }
 
-        delete LooseTheta;
+        delete[] LooseTheta;
     }
 
     if (RigidTheta) {
@@ -3980,7 +4008,7 @@ E0: if (opt_D) free(opt_D);
             if (RigidTheta[i]) delete RigidTheta[i];
         }
 
-        delete RigidTheta;
+        delete[] RigidTheta;
     }
 
     if (W) free(W);
@@ -4039,6 +4067,14 @@ int Rebmix::REBMIXH()
     summary_.y0 = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
     Error = NULL == summary_.y0; if (Error) goto E0;
+
+    summary_.ymin = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymin; if (Error) goto E0;
+
+    summary_.ymax = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    Error = NULL == summary_.ymax; if (Error) goto E0;
 
     W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
 
@@ -4398,6 +4434,10 @@ int Rebmix::REBMIXH()
 
                 memmove(summary_.y0, y0, length_pdf_ * sizeof(FLOAT));
 
+                memmove(summary_.ymin, ymin, length_pdf_ * sizeof(FLOAT)); 
+
+                memmove(summary_.ymax, ymax, length_pdf_ * sizeof(FLOAT));  
+
                 summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c; 
 
                 memmove(W_, W, c * sizeof(FLOAT));  
@@ -4460,7 +4500,7 @@ E0: if (opt_D) free(opt_D);
             if (LooseTheta[i]) delete LooseTheta[i];
         }
 
-        delete LooseTheta;
+        delete[] LooseTheta;
     }
 
     if (RigidTheta) {
@@ -4468,7 +4508,7 @@ E0: if (opt_D) free(opt_D);
             if (RigidTheta[i]) delete RigidTheta[i];
         }
 
-        delete RigidTheta;
+        delete[] RigidTheta;
     }
 
     if (W) free(W);
@@ -4695,6 +4735,24 @@ int Rebmix::WriteDataFile()
             }
         }
 
+        for (i = 0; i < length_pdf_; i++) {
+            if (length_pdf_ == 1)
+                sprintf(line, "%s", "ymin");
+            else
+                sprintf(line, "%s%d", "ymin", i + 1);
+                  
+            fprintf(fp0, "\t%s", line);
+        }
+
+        for (i = 0; i < length_pdf_; i++) {
+            if (length_pdf_ == 1)
+                sprintf(line, "%s", "ymax");
+            else
+                sprintf(line, "%s%d", "ymax", i + 1);
+                  
+            fprintf(fp0, "\t%s", line);
+        }
+
         fprintf(fp0, "\t%s\t%s\n", "IC",
                                    "logL");
 
@@ -4873,6 +4931,14 @@ int Rebmix::WriteDataFile()
         }
     }
 
+    for (i = 0; i < length_pdf_; i++) {
+        fprintf(fp0, "\t%E", summary_.ymin[i]);
+    }
+
+    for (i = 0; i < length_pdf_; i++) {
+        fprintf(fp0, "\t%E", summary_.ymax[i]);
+    }
+
     fprintf(fp0, "\t%E\t%E\n", summary_.IC,
                                summary_.logL);
 
@@ -4957,7 +5023,7 @@ E0: if (fp0) fclose(fp0);
             if (MixTheta_[i]) delete MixTheta_[i];
         }
 
-        delete MixTheta_; MixTheta_ = NULL;
+        delete[] MixTheta_; MixTheta_ = NULL;
     }
 
     if (W_) {
@@ -4987,7 +5053,7 @@ int Rebmix::RunTemplateFile(char *file)
     int   Error = 0;
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.8.1\n");
+    printf("REBMIX Version 2.8.2\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {

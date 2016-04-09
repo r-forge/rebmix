@@ -44,7 +44,7 @@ Rngmix::~Rngmix()
             if (MixTheta_[i]) delete MixTheta_[i];
         }
 
-        delete MixTheta_;
+        delete[] MixTheta_;
     }
 
     if (N_) free(N_);
@@ -92,7 +92,7 @@ int Rngmix::WriteDataFile()
 
 E0: if (fp) fclose(fp);
 
-    if (Z_) free(Z_);
+    if (Z_) free(Z_); Z_ = NULL;
 
     if (Y_) {
         for (i = 0; i < n_; i++) {
@@ -390,7 +390,7 @@ int Rngmix::RunTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.8.1\n");
+    printf("RNGMIX Version 2.8.2\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -576,7 +576,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 MixTheta[i] = MixTheta_[i];
             }
 
-            if (MixTheta_) delete MixTheta_;
+            if (MixTheta_) delete[] MixTheta_;
 
             MixTheta_ = MixTheta;
 

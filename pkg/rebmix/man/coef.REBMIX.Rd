@@ -11,11 +11,11 @@ Prints Univariate or Multivariate REBMIX Coefficients
 Returns the \code{w} and \code{Theta} output at \code{pos}.
 }
 \usage{
-\S4method{coef}{REBMIX}(object = NULL, pos = 1, ...)
+\S4method{coef}{REBMIX}(x = NULL, pos = 1, ...)
 ## ... and for other signatures
 }
 \arguments{
-\item{object}{
+\item{x}{
 see Methods section below.
 }
 \item{pos}{
@@ -27,8 +27,8 @@ currently not used..
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
-\item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}

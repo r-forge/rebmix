@@ -46,7 +46,7 @@ normal <- RNGMIX(model = "RNGMVNORM", Dataset.name = "normal_1", n = n, Theta = 
 # Number of classes or nearest neighbours to be processed.
 
 K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(n))) # Maximum v follows log10 rule.
+  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
 
 # Estimate number of components, component weights and component parameters.
 

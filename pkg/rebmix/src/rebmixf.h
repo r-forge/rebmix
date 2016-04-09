@@ -48,13 +48,15 @@ typedef struct roughparametertype {
 } RoughParameterType;
 
 typedef struct summaryparametertype {
-    int   c;    // Optimal number of components.
-    int   k;    // Optimal v or optimal k.
-    FLOAT *y0;  // Optimal origins of length d.
-    FLOAT *h;   // Optimal class widths of length d.
-    FLOAT IC;   // Optimal information criterion.
-    FLOAT logL; // Log-likelihood.
-    int   M;    // Degrees of freedom.
+    int   c;     // Optimal number of components.
+    int   k;     // Optimal v or optimal k.
+    FLOAT *y0;   // Optimal origins of length d.
+    FLOAT *ymin; // Minimum observations.
+    FLOAT *ymax; // Maximum observations.
+    FLOAT *h;    // Optimal class widths of length d.
+    FLOAT IC;    // Optimal information criterion.
+    FLOAT logL;  // Log-likelihood.
+    int   M;     // Degrees of freedom.
 } SummaryParameterType;
 
 typedef struct additinalparametertype {

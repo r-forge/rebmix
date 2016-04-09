@@ -16,7 +16,7 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
 
-    if (as.integer(length(model@pdf)) > 0) {
+    if (length(model@Variables) > 0) {
       length.pdf <- +d
     }
     else {
@@ -62,7 +62,9 @@ function(model, ...)
       Y = as.double(X),
       summary.k = integer(1),
       summary.h = double(d),
-      summary.y0 = double(d),      
+      summary.y0 = double(d),  
+      summary.ymin = double(d),  
+      summary.ymax = double(d),  
       summary.IC = double(1),
       summary.logL = double(1),
       summary.M = integer(1), 
@@ -149,6 +151,8 @@ function(model, ...)
         output$summary.k,
         output$K,
         output$summary.y0,
+        output$summary.ymin,
+        output$summary.ymax,        
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -165,6 +169,8 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        output$summary.ymin,
+        output$summary.ymax,        
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -180,6 +186,8 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        output$summary.ymin,
+        output$summary.ymax,        
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -206,7 +214,9 @@ function(model, ...)
       "c", 
       "v/k", 
       "K",       
-      paste("y0", if (d > 1) 1:d else "", sep = ""), 
+      paste("y0", if (d > 1) 1:d else "", sep = ""),
+      paste("ymin", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymax", if (d > 1) 1:d else "", sep = ""),        
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
       "logL",
@@ -222,7 +232,9 @@ function(model, ...)
       "Restraints", 
       "c", 
       "v/k",
-      "K", 
+      "K",
+      paste("ymin", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymax", if (d > 1) 1:d else "", sep = ""),        
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
       "logL",
@@ -237,7 +249,9 @@ function(model, ...)
       "Restraints", 
       "c", 
       "v/k",
-      "K",        
+      "K",   
+      paste("ymin", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymax", if (d > 1) 1:d else "", sep = ""),            
       paste("h", if (d > 1) 1:d else "", sep = ""),
       "IC", 
       "logL",
@@ -267,7 +281,7 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
 
-    if (as.integer(length(model@pdf)) > 0) {
+    if (length(model@Variables) > 0) {
       length.pdf <- +d
     }
     else {
@@ -313,7 +327,9 @@ function(model, ...)
       Y = as.double(X),
       summary.k = integer(1),
       summary.h = double(d),
-      summary.y0 = double(d),      
+      summary.y0 = double(d), 
+      summary.ymin = double(d),  
+      summary.ymax = double(d),           
       summary.IC = double(1),
       summary.logL = double(1),
       summary.M = integer(1), 
@@ -400,6 +416,8 @@ function(model, ...)
         output$summary.k,
         output$K,
         output$summary.y0,
+        output$summary.ymin,
+        output$summary.ymax,
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -416,6 +434,8 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        output$summary.ymin,
+        output$summary.ymax,        
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -431,6 +451,8 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        output$summary.ymin,
+        output$summary.ymax,        
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
@@ -458,6 +480,8 @@ function(model, ...)
       "v/k", 
       "K",       
       paste("y0", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymin", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymax", if (d > 1) 1:d else "", sep = ""), 
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
       "logL",
@@ -473,7 +497,9 @@ function(model, ...)
       "Restraints", 
       "c", 
       "v/k",
-      "K", 
+      "K",
+      paste("ymin", if (d > 1) 1:d else "", sep = ""),
+      paste("ymax", if (d > 1) 1:d else "", sep = ""),      
       paste("h", if (d > 1) 1:d else "", sep = ""), 
       "IC", 
       "logL",
@@ -488,7 +514,9 @@ function(model, ...)
       "Restraints", 
       "c", 
       "v/k",
-      "K",        
+      "K",
+      paste("ymin", if (d > 1) 1:d else "", sep = ""), 
+      paste("ymax", if (d > 1) 1:d else "", sep = ""),               
       paste("h", if (d > 1) 1:d else "", sep = ""),
       "IC", 
       "logL",
@@ -519,7 +547,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.8.1")
+  message("REBMIX Version 2.8.2")
  
   flush.console()
   

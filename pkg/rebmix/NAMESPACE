@@ -2,10 +2,7 @@ useDynLib("rebmix")
 
 import("methods", "stats", "utils", "graphics", "grDevices", "mvtnorm")
 
-export("demix",
-       "pemix",
-       "dfmix",
-       "pfmix",
+export("pfmix",
        "kseq")
 
 exportClasses("RNGMIX",
@@ -21,7 +18,7 @@ exportClasses("RNGMIX",
 
 exportMethods("RNGMIX",
               "REBMIX",
-              "RCLRMIX",              
+              "RCLRMIX",
               "RCLSMIX",
               "logL",
               "AIC",
@@ -44,4 +41,7 @@ exportMethods("RNGMIX",
               "summary",
               "plot",
               "coef",
-              "boot")
+              "boot",
+              "demix",
+              "pemix",
+              "dfmix")

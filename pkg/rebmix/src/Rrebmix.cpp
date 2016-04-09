@@ -172,6 +172,8 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              int    *summary_k,      // Optimal v or optimal k.
              double *summary_h,      // Optimal class widths of length d.
              double *summary_y0,     // Optimal origins of length d.
+             double *summary_ymin,   // Optimal minimum observations of length d.
+             double *summary_ymax,   // Optimal maximum observations of length d.
              double *summary_IC,     // Optimal information criterion.
              double *summary_logL,   // Log-likelihood.
              int    *summary_M,      // Degrees of freedom.
@@ -436,6 +438,14 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
 
     if (rebmix->summary_.y0) for (i = 0; i < rebmix->length_pdf_; i++) {
         summary_y0[i] = rebmix->summary_.y0[i];
+    }
+
+    if (rebmix->summary_.ymin) for (i = 0; i < rebmix->length_pdf_; i++) {
+        summary_ymin[i] = rebmix->summary_.ymin[i];
+    }
+
+    if (rebmix->summary_.ymax) for (i = 0; i < rebmix->length_pdf_; i++) {
+        summary_ymax[i] = rebmix->summary_.ymax[i];
     }
 
     *summary_IC = rebmix->summary_.IC;
@@ -1045,15 +1055,15 @@ E0: if (Y) free(Y);
                             if (Theta[i][j][k]) delete Theta[i][j][k];
                         }
                         
-                        delete Theta[i][j];
+                        delete[] Theta[i][j];
                     }
                 }
 
-                delete Theta[i];
+                delete[] Theta[i];
             }
         }
 
-        delete Theta;
+        delete[] Theta;
     }
 
     if (Q) {
@@ -1208,19 +1218,19 @@ E0: if (Y) free(Y);
             if (Theta[i]) delete Theta[i];
         }
 
-        delete Theta;
+        delete[] Theta;
     }
 
     if (rebmix) delete rebmix;
 } // RCLRMIX
 
-void RPreprocessingKNN(int    *k,     // k-nearest neighbours.
-                       double *h,     // Normalizing vector.
-                       int    *n,     // Total number of independent observations.
-                       int    *d,     // Number of independent random variables.
-                       double *x,     // Pointer to the input array x.
-                       double *y,     // Pointer to the output array y.
-                       int    *Error) // Error code.
+void RPreprocessingKNNMIX(int    *k,     // k-nearest neighbours.
+                          double *h,     // Normalizing vector.
+                          int    *n,     // Total number of independent observations.
+                          int    *d,     // Number of independent random variables.
+                          double *x,     // Pointer to the input array x.
+                          double *y,     // Pointer to the output array y.
+                          int    *Error) // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1272,14 +1282,14 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RPreprocessingKNN 
+} // RPreprocessingKNNMIX 
 
-void RPreprocessingPW(double *h,     // Sides of the hypersquare.
-                      int    *n,     // Total number of independent observations.
-                      int    *d,     // Number of independent random variables.
-                      double *x,     // Pointer to the input array x.
-                      double *y,     // Pointer to the output array y.
-                      int    *Error) // Error code.
+void RPreprocessingPWMIX(double *h,     // Sides of the hypersquare.
+                         int    *n,     // Total number of independent observations.
+                         int    *d,     // Number of independent random variables.
+                         double *x,     // Pointer to the input array x.
+                         double *y,     // Pointer to the output array y.
+                         int    *Error) // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL; 
@@ -1331,18 +1341,18 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RPreprocessingPW 
+} // RPreprocessingPWMIX 
 
-void RPreprocessingH(double *h,          // Sides of the hypersquare.
-                     double *y0,         // Origins.
-                     int    *length_pdf, // Length of pdf.
-                     char   **pdf,       // Parametric family types.
-                     int    *k,          // Total number of bins.
-                     int    *n,          // Total number of independent observations.
-                     int    *d,          // Number of independent random variables.
-                     double *x,          // Pointer to the input array x.
-                     double *y,          // Pointer to the output array y.
-                     int    *Error)      // Error code.
+void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
+                        double *y0,         // Origins.
+                        int    *length_pdf, // Length of pdf.
+                        char   **pdf,       // Parametric family types.
+                        int    *k,          // Total number of bins.
+                        int    *n,          // Total number of independent observations.
+                        int    *d,          // Number of independent random variables.
+                        double *x,          // Pointer to the input array x.
+                        double *y,          // Pointer to the output array y.
+                        int    *Error)      // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1446,26 +1456,26 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RPreprocessingH
+} // RPreprocessingHMIX
 
-void RInformationCriterionKNN(double *h,            // Sides of the hypersquare.
-                              int    *k,            // Total number of bins.
-                              int    *d,            // Number of independent random variables.
-                              char   **Criterion,   // Information criterion type.
-                              int    *c,            // Number of components.
-                              double *W,            // Component weights.
-                              int    *length_pdf,   // Length of pdf.
-                              int    *length_Theta, // Length of Theta.
-                              int    *length_theta, // Length of Theta[i].
-                              char   **pdf,         // Parametric family types.
-                              double *Theta,        // Component parameters.
-                              int    *n,            // Number of observations.
-                              double *x,            // Dataset.
-                              double *IC,           // Information criterion.
-                              double *logL,         // log-likelihood.
-                              int    *M,            // Degrees of freedom.
-                              double *D,            // Total of positive relative deviations.
-                              int    *Error)        // Error code.
+void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersquare.
+                                 int    *k,            // Total number of bins.
+                                 int    *d,            // Number of independent random variables.
+                                 char   **Criterion,   // Information criterion type.
+                                 int    *c,            // Number of components.
+                                 double *W,            // Component weights.
+                                 int    *length_pdf,   // Length of pdf.
+                                 int    *length_Theta, // Length of Theta.
+                                 int    *length_theta, // Length of Theta[i].
+                                 char   **pdf,         // Parametric family types.
+                                 double *Theta,        // Component parameters.
+                                 int    *n,            // Number of observations.
+                                 double *x,            // Dataset.
+                                 double *IC,           // Information criterion.
+                                 double *logL,         // log-likelihood.
+                                 int    *M,            // Degrees of freedom.
+                                 double *D,            // Total of positive relative deviations.
+                                 int    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1474,8 +1484,6 @@ void RInformationCriterionKNN(double *h,            // Sides of the hypersquare.
     rebmix = new Rebmix;
 
     *Error = NULL == rebmix; if (*Error) goto E0;
-
-    rebmix->length_pdf_ = *d;
 
     if (!strcmp(Criterion[0], "AIC"))
         rebmix->Criterion_ = icAIC;
@@ -1555,26 +1563,33 @@ void RInformationCriterionKNN(double *h,            // Sides of the hypersquare.
     if (*Error) goto E0;
 
     for (i = 0; i < rebmix->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal"))
+        if (!strcmp(pdf[i], "normal")) {
             rebmix->IniTheta_->pdf_[i] = pfNormal;
+        }
         else
-        if (!strcmp(pdf[i], "lognormal"))
+        if (!strcmp(pdf[i], "lognormal")) {
             rebmix->IniTheta_->pdf_[i] = pfLognormal;
+        }
         else
-        if (!strcmp(pdf[i], "Weibull"))
+        if (!strcmp(pdf[i], "Weibull")) {
             rebmix->IniTheta_->pdf_[i] = pfWeibull;
+        }
         else
-        if (!strcmp(pdf[i], "gamma"))
+        if (!strcmp(pdf[i], "gamma")) {
             rebmix->IniTheta_->pdf_[i] = pfGamma;
+        }
         else
-        if (!strcmp(pdf[i], "binomial"))
+        if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
+        }
         else
-        if (!strcmp(pdf[i], "Poisson"))
+        if (!strcmp(pdf[i], "Poisson")) {
             rebmix->IniTheta_->pdf_[i] = pfPoisson;
+        }
         else
-        if (!strcmp(pdf[i], "Dirac"))
+        if (!strcmp(pdf[i], "Dirac")) {
             rebmix->IniTheta_->pdf_[i] = pfDirac;
+        }
         else {
             *Error = 1; goto E0;
         }
@@ -1640,6 +1655,8 @@ void RInformationCriterionKNN(double *h,            // Sides of the hypersquare.
         Y[i] = (FLOAT*)malloc((rebmix->length_pdf_ + 3) * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmix->length_pdf_; j++) Y[i][j] = rebmix->Y_[i][j];
     }
 
     *Error = rebmix->PreprocessingKNN(*k, h, Y);
@@ -1669,25 +1686,25 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RInformationCriterionKNN 
+} // RInformationCriterionKNNMIX 
 
-void RInformationCriterionPW(double *h,            // Sides of the hypersquare.
-                             int    *d,            // Number of independent random variables.
-                             char   **Criterion,   // Information criterion type.
-                             int    *c,            // Number of components.
-                             double *W,            // Component weights.
-                             int    *length_pdf,   // Length of pdf.
-                             int    *length_Theta, // Length of Theta.
-                             int    *length_theta, // Length of Theta[i].
-                             char   **pdf,         // Parametric family types.
-                             double *Theta,        // Component parameters.
-                             int    *n,            // Number of observations.
-                             double *x,            // Dataset.
-                             double *IC,           // Information criterion.
-                             double *logL,         // log-likelihood.
-                             int    *M,            // Degrees of freedom.
-                             double *D,            // Total of positive relative deviations.
-                             int    *Error)        // Error code.
+void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquare.
+                                int    *d,            // Number of independent random variables.
+                                char   **Criterion,   // Information criterion type.
+                                int    *c,            // Number of components.
+                                double *W,            // Component weights.
+                                int    *length_pdf,   // Length of pdf.
+                                int    *length_Theta, // Length of Theta.
+                                int    *length_theta, // Length of Theta[i].
+                                char   **pdf,         // Parametric family types.
+                                double *Theta,        // Component parameters.
+                                int    *n,            // Number of observations.
+                                double *x,            // Dataset.
+                                double *IC,           // Information criterion.
+                                double *logL,         // log-likelihood.
+                                int    *M,            // Degrees of freedom.
+                                double *D,            // Total of positive relative deviations.
+                                int    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1697,8 +1714,6 @@ void RInformationCriterionPW(double *h,            // Sides of the hypersquare.
     rebmix = new Rebmix;
 
     *Error = NULL == rebmix; if (*Error) goto E0;
-
-    rebmix->length_pdf_ = *d;
 
     if (!strcmp(Criterion[0], "AIC"))
         rebmix->Criterion_ = icAIC;
@@ -1778,26 +1793,33 @@ void RInformationCriterionPW(double *h,            // Sides of the hypersquare.
     if (*Error) goto E0;
 
     for (i = 0; i < rebmix->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal"))
+        if (!strcmp(pdf[i], "normal")) {
             rebmix->IniTheta_->pdf_[i] = pfNormal;
+        }
         else
-        if (!strcmp(pdf[i], "lognormal"))
+        if (!strcmp(pdf[i], "lognormal")) {
             rebmix->IniTheta_->pdf_[i] = pfLognormal;
+        }
         else
-        if (!strcmp(pdf[i], "Weibull"))
+        if (!strcmp(pdf[i], "Weibull")) {
             rebmix->IniTheta_->pdf_[i] = pfWeibull;
+        }
         else
-        if (!strcmp(pdf[i], "gamma"))
+        if (!strcmp(pdf[i], "gamma")) {
             rebmix->IniTheta_->pdf_[i] = pfGamma;
+        }
         else
-        if (!strcmp(pdf[i], "binomial"))
+        if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
+        }
         else
-        if (!strcmp(pdf[i], "Poisson"))
+        if (!strcmp(pdf[i], "Poisson")) {
             rebmix->IniTheta_->pdf_[i] = pfPoisson;
+        }
         else
-        if (!strcmp(pdf[i], "Dirac"))
+        if (!strcmp(pdf[i], "Dirac")) {
             rebmix->IniTheta_->pdf_[i] = pfDirac;
+        }
         else {
             *Error = 1; goto E0;
         }
@@ -1863,6 +1885,8 @@ void RInformationCriterionPW(double *h,            // Sides of the hypersquare.
         Y[i] = (FLOAT*)malloc((rebmix->length_pdf_ + 2) * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmix->length_pdf_; j++) Y[i][j] = rebmix->Y_[i][j];
     }
 
     *Error = rebmix->PreprocessingPW(h, Y); 
@@ -1898,27 +1922,27 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RInformationCriterionPW 
+} // RInformationCriterionPWMIX 
 
-void RInformationCriterionH(double *h,            // Sides of the hypersquare.
-                            double *y0,           // Origins.
-                            int    *k,            // Total number of bins.
-                            int    *d,            // Number of independent random variables.
-                            char   **Criterion,   // Information criterion type.
-                            int    *c,            // Number of components.
-                            double *W,            // Component weights.
-                            int    *length_pdf,   // Length of pdf.
-                            int    *length_Theta, // Length of Theta.
-                            int    *length_theta, // Length of Theta[i].
-                            char   **pdf,         // Parametric family types.
-                            double *Theta,        // Component parameters.
-                            int    *n,            // Number of observations.
-                            double *x,            // Dataset.
-                            double *IC,           // Information criterion.
-                            double *logL,         // log-likelihood.
-                            int    *M,            // Degrees of freedom.
-                            double *D,            // Total of positive relative deviations.
-                            int    *Error)        // Error code.
+void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare.
+                               double *y0,           // Origins.
+                               int    *k,            // Total number of bins.
+                               int    *d,            // Number of independent random variables.
+                               char   **Criterion,   // Information criterion type.
+                               int    *c,            // Number of components.
+                               double *W,            // Component weights.
+                               int    *length_pdf,   // Length of pdf.
+                               int    *length_Theta, // Length of Theta.
+                               int    *length_theta, // Length of Theta[i].
+                               char   **pdf,         // Parametric family types.
+                               double *Theta,        // Component parameters.
+                               int    *n,            // Number of observations.
+                               double *x,            // Dataset.
+                               double *IC,           // Information criterion.
+                               double *logL,         // log-likelihood.
+                               int    *M,            // Degrees of freedom.
+                               double *D,            // Total of positive relative deviations.
+                               int    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1928,8 +1952,6 @@ void RInformationCriterionH(double *h,            // Sides of the hypersquare.
     rebmix = new Rebmix;    
 
     *Error = NULL == rebmix; if (*Error) goto E0;
-
-    rebmix->length_pdf_ = *d;
 
     if (!strcmp(Criterion[0], "AIC"))
         rebmix->Criterion_ = icAIC;
@@ -2009,26 +2031,33 @@ void RInformationCriterionH(double *h,            // Sides of the hypersquare.
     if (*Error) goto E0;
     
     for (i = 0; i < rebmix->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal"))
+        if (!strcmp(pdf[i], "normal")) {
             rebmix->IniTheta_->pdf_[i] = pfNormal;
+        }
         else
-        if (!strcmp(pdf[i], "lognormal"))
+        if (!strcmp(pdf[i], "lognormal")) {
             rebmix->IniTheta_->pdf_[i] = pfLognormal;
+        }
         else
-        if (!strcmp(pdf[i], "Weibull"))
+        if (!strcmp(pdf[i], "Weibull")) {
             rebmix->IniTheta_->pdf_[i] = pfWeibull;
+        }
         else
-        if (!strcmp(pdf[i], "gamma"))
+        if (!strcmp(pdf[i], "gamma")) {
             rebmix->IniTheta_->pdf_[i] = pfGamma;
+        }
         else
-        if (!strcmp(pdf[i], "binomial"))
+        if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
+        }
         else
-        if (!strcmp(pdf[i], "Poisson"))
+        if (!strcmp(pdf[i], "Poisson")) {
             rebmix->IniTheta_->pdf_[i] = pfPoisson;
+        }
         else
-        if (!strcmp(pdf[i], "Dirac"))
+        if (!strcmp(pdf[i], "Dirac")) {
             rebmix->IniTheta_->pdf_[i] = pfDirac;
+        }
         else {
             *Error = 1; goto E0;
         }
@@ -2130,6 +2159,6 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RInformationCriterionH
+} // RInformationCriterionHMIX
 
 } // extern "C"

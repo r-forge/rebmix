@@ -24,7 +24,7 @@ function(x,
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
   }
-
+  
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
@@ -84,7 +84,9 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  opar <- par(mfrow = c(nrow, ncol),
+  usr <- list(); iusr <- 1
+  
+  par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
     fg = fg,
@@ -392,11 +394,11 @@ function(x,
 
             contour(x = py[[i]],
               y = py[[j]],
-              z = pdens / zmax,
-              levels = levels,
+              z = pdens,
+              levels = levels * zmax,
               xlim = lim[, i],
               ylim = lim[, j],
-              zlim = zlim,
+              zlim = zlim * zmax,
               labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
               axes = FALSE, frame.plot = FALSE,
               col = rgb(ramp(levels), maxColorValue = 255),
@@ -449,6 +451,8 @@ function(x,
 
             figno <- 0
           }
+          
+          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
         }
       }
     }
@@ -535,11 +539,11 @@ function(x,
 
             contour(x = py[[i]],
               y = py[[j]],
-              z = pdist / zmax,
-              levels = levels,
+              z = pdist,
+              levels = levels * zmax,
               xlim = lim[, i],
               ylim = lim[, j],
-              zlim = zlim,
+              zlim = zlim * zmax,
               labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
               axes = FALSE, frame.plot = FALSE,
               col = rgb(ramp(levels), maxColorValue = 255),
@@ -592,6 +596,8 @@ function(x,
 
             figno <- 0
           }
+          
+          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
         }
       }
     }
@@ -672,7 +678,9 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      }        
+      }
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
@@ -740,7 +748,9 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      }        
+      } 
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
   }
   
@@ -830,6 +840,8 @@ function(x,
       else {
         m <- m - 1
       }
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
   }
   
@@ -896,7 +908,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    } 
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
@@ -962,7 +976,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    } 
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }  
   
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
@@ -1028,7 +1044,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
@@ -1094,12 +1112,14 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
-  rm(list = ls()[!(ls() %in% c("opar"))])
+  rm(list = ls()[!(ls() %in% c("usr"))])
 
-  invisible(opar)
+  invisible(usr)
 }) ## plot
 
 setMethod("plot", 
@@ -1188,7 +1208,9 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  opar <- par(mfrow = c(nrow, ncol),
+  usr <- list(); iusr <- 1
+  
+  par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
     fg = fg,
@@ -1496,11 +1518,11 @@ function(x,
 
             contour(x = py[[i]],
               y = py[[j]],
-              z = pdens / zmax,
-              levels = levels,
+              z = pdens,
+              levels = levels * zmax,
               xlim = lim[, i],
               ylim = lim[, j],
-              zlim = zlim,
+              zlim = zlim * zmax,
               labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
               axes = FALSE, frame.plot = FALSE,
               col = rgb(ramp(levels), maxColorValue = 255),
@@ -1553,6 +1575,8 @@ function(x,
 
             figno <- 0
           }
+          
+          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
         }
       }
     }
@@ -1639,11 +1663,11 @@ function(x,
 
             contour(x = py[[i]],
               y = py[[j]],
-              z = pdist / zmax,
-              levels = levels,
+              z = pdist,
+              levels = levels * zmax,
               xlim = lim[, i],
               ylim = lim[, j],
-              zlim = zlim,
+              zlim = zlim * zmax,
               labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
               axes = FALSE, frame.plot = FALSE,
               col = rgb(ramp(levels), maxColorValue = 255),
@@ -1696,6 +1720,8 @@ function(x,
 
             figno <- 0
           }
+          
+          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
         }
       }
     }
@@ -1776,7 +1802,9 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      }        
+      }
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
@@ -1844,7 +1872,9 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      }        
+      }
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
   }
   
@@ -1934,6 +1964,8 @@ function(x,
       else {
         m <- m - 1
       }
+      
+      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
     }
   }
   
@@ -2000,7 +2032,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
@@ -2066,7 +2100,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }  
   
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
@@ -2132,7 +2168,9 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
@@ -2198,10 +2236,12 @@ function(x,
     }
     else {
       m <- m - 1
-    }      
+    }
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
   }
   
-  rm(list = ls()[!(ls() %in% c("opar"))])
+  rm(list = ls()[!(ls() %in% c("usr"))])
 
-  invisible(opar)
+  invisible(usr)
 }) # plot         

@@ -111,7 +111,7 @@ simulated <- RNGMIX(model = "RNGMVNORM",
   
 simulated
 
-# Generate and print multivariate mixed continuous-discrete dataset.
+# Generate and print multivariate mixed continuous-discrete datasets.
 
 n <- c(400, 100, 500)
 

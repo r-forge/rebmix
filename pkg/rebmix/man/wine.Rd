@@ -109,7 +109,7 @@ Zt <- factor(c(rep(0, nrow(wine_1_test)), rep(1, nrow(wine_2_test)), rep(2, nrow
 
 n <- range(nrow(wine_1_train), nrow(wine_2_train), nrow(wine_3_train))
 
-K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
+K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
 
 K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))

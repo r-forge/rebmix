@@ -106,8 +106,8 @@ further arguments to \code{\link[graphics]{par}}.
 }
 }
 \value{
-\code{par} is returned in an invisible named list. Such a list
-can be passed as an argument to \code{\link[graphics]{par}} to restore the parameter values.
+Returns (invisibly) a list containing \code{usr} coordinates of the
+plotting regions. Such a list can be passed as an argument to \code{\link[graphics]{par}} to restore the parameter values.
 }
 \section{Methods}{
 \describe{

@@ -40,7 +40,9 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  opar <- par(mfrow = c(nrow, ncol),
+  usr <- list(); iusr <- 1  
+  
+  par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
     fg = fg,
@@ -67,30 +69,9 @@ function(x,
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
-  if (.Device == "tikz output") {
-    if (sum(error) == 0) {
-      legend <- paste("$", 1:s, "$", sep = "")
-      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
-      legend.pch <- rep(plot.pch, s)
-    }
-    else {
-      legend <- c(paste("$", 1:s, "$", sep = ""), "$\\mathrm{Error}$")
-      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
-      legend.pch <- c(rep(plot.pch, s), 1)
-    }
-  }
-  else {
-    if (sum(error) == 0) {
-      legend <- paste(bquote(.(1:s)), sep = "")
-      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
-      legend.pch <- rep(plot.pch, s)
-    }
-    else {
-      legend <- c(paste(bquote(.(1:s)), sep = ""), "Error")
-      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
-      legend.pch <- c(rep(plot.pch, s), 1)
-    }  
-  }     
+  legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+  
+  legend.pch <- rep(plot.pch, s)  
   
   if (N > 0) {
     figno <- 0
@@ -165,17 +146,7 @@ function(x,
           
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-          legend("bottom", 
-            legend = legend,
-            col = legend.col,
-            lty = 0,
-            pch = legend.pch,
-            bty = "n",
-            cex = 1.0,
-            y.intersp = 0,
-            horiz = TRUE,
-            inset = c(0, 0),
-            xpd = TRUE)
+          .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
   
           par(mfrow = c(nrow, ncol),
             cex = cex,
@@ -192,6 +163,8 @@ function(x,
 
           figno <- 0
         }
+        
+        usr[[iusr]] <- par("usr"); iusr <- iusr + 1        
       }
     }
   }
@@ -261,17 +234,7 @@ function(x,
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-    legend("bottom", 
-      legend = legend,
-      col = legend.col,
-      lty = 0,
-      pch = legend.pch,
-      bty = "n",
-      cex = 1.0,
-      y.intersp = 0,
-      horiz = TRUE,
-      inset = c(0, 0),
-      xpd = TRUE)
+    .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
       
     par(mfrow = c(nrow, ncol),
       cex = cex,
@@ -285,11 +248,13 @@ function(x,
       tcl = tcl, ...)
       
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1    
   }
   
-  rm(list = ls()[!(ls() %in% c("opar"))])
+  rm(list = ls()[!(ls() %in% c("usr"))])
 
-  invisible(opar)
+  invisible(usr)
 }) # plot         
 
 setMethod("plot", 
@@ -334,7 +299,9 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  opar <- par(mfrow = c(nrow, ncol),
+  usr <- list(); iusr <- 1  
+  
+  par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
     fg = fg,
@@ -361,30 +328,9 @@ function(x,
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
-  if (.Device == "tikz output") {
-    if (sum(error) == 0) {
-      legend <- paste("$", 1:s, "$", sep = "")
-      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
-      legend.pch <- rep(plot.pch, s)
-    }
-    else {
-      legend <- c(paste("$", 1:s, "$", sep = ""), "$\\mathrm{Error}$")
-      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
-      legend.pch <- c(rep(plot.pch, s), 1)
-    }
-  }
-  else {
-    if (sum(error) == 0) {
-      legend <- paste(bquote(.(1:s)), sep = "")
-      legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
-      legend.pch <- rep(plot.pch, s)
-    }
-    else {
-      legend <- c(paste(bquote(.(1:s)), sep = ""), "Error")
-      legend.col <- c(rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255), "black")
-      legend.pch <- c(rep(plot.pch, s), 1)
-    }  
-  }    
+  legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+  
+  legend.pch <- rep(plot.pch, s)    
   
   if (N > 0) {
     figno <- 0
@@ -459,17 +405,7 @@ function(x,
           
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-          legend("bottom", 
-            legend = legend,
-            col = legend.col,
-            lty = 0,
-            pch = legend.pch,
-            bty = "n",
-            cex = 1.0,
-            y.intersp = 0,
-            horiz = TRUE,
-            inset = c(0, 0),
-            xpd = TRUE)
+          .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
   
           par(mfrow = c(nrow, ncol),
             cex = cex,
@@ -486,6 +422,8 @@ function(x,
 
           figno <- 0
         }
+        
+        usr[[iusr]] <- par("usr"); iusr <- iusr + 1            
       }
     }
   }
@@ -555,17 +493,7 @@ function(x,
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-    legend("bottom", 
-      legend = legend,
-      col = legend.col,
-      lty = 0,
-      pch = legend.pch,
-      bty = "n",
-      cex = 1.0,
-      y.intersp = 0,
-      horiz = TRUE,
-      inset = c(0, 0),
-      xpd = TRUE)
+    .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
       
     par(mfrow = c(nrow, ncol),
       cex = cex,
@@ -579,9 +507,11 @@ function(x,
       tcl = tcl, ...)
       
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
+    
+    usr[[iusr]] <- par("usr"); iusr <- iusr + 1        
   }
   
-  rm(list = ls()[!(ls() %in% c("opar"))])
+  rm(list = ls()[!(ls() %in% c("usr"))])
 
-  invisible(opar)
+  invisible(usr)
 }) # plot

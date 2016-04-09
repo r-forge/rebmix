@@ -143,6 +143,8 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 int    *summary_k,      // Optimal v or optimal k.
                 double *summary_h,      // Optimal class widths of length d.
                 double *summary_y0,     // Optimal origins of length d.
+                double *summary_ymin,   // Optimal minimum observations of length d.
+                double *summary_ymax,   // Optimal maximum observations of length d.
                 double *summary_IC,     // Optimal information criterion.
                 double *summary_logL,   // Log-likelihood.
                 int    *summary_M,      // Degrees of freedom.
@@ -381,6 +383,14 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         summary_y0[i] = rebmvnorm->summary_.y0[i];
     }
 
+    if (rebmvnorm->summary_.ymin) for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        summary_ymin[i] = rebmvnorm->summary_.ymin[i];
+    }
+
+    if (rebmvnorm->summary_.ymax) for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        summary_ymax[i] = rebmvnorm->summary_.ymax[i];
+    }
+
     *summary_IC = rebmvnorm->summary_.IC;
     *summary_logL = rebmvnorm->summary_.logL;
     *summary_M = rebmvnorm->summary_.M;
@@ -617,15 +627,15 @@ E0: if (Y) free(Y);
                             if (Theta[i][j][k]) delete Theta[i][j][k];
                         }
                         
-                        delete Theta[i][j];
+                        delete[] Theta[i][j];
                     }
                 }
 
-                delete Theta[i];
+                delete[] Theta[i];
             }
         }
 
-        delete Theta;
+        delete[] Theta;
     }
 
     if (Q) {
@@ -759,10 +769,869 @@ E0: if (Y) free(Y);
             if (Theta[i]) delete Theta[i];
         }
 
-        delete Theta;
+        delete[] Theta;
     }
 
     if (rebmvnorm) delete rebmvnorm;
 } // RCLRMVNORM
+
+void RPreprocessingKNNMVNORM(int    *k,     // k-nearest neighbours.
+                             double *h,     // Normalizing vector.
+                             int    *n,     // Total number of independent observations.
+                             int    *d,     // Number of independent random variables.
+                             double *x,     // Pointer to the input array x.
+                             double *y,     // Pointer to the output array y.
+                             int    *Error) // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->n_ = *n;
+    rebmvnorm->length_pdf_ = *d;
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 3) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            Y[l][j] = x[i]; i++;
+        }
+    }
+
+    *Error = rebmvnorm->PreprocessingKNN(*k, h, Y);
+
+    if (*Error) goto E0;
+
+    i = 0;
+    
+    for (j = 0; j < rebmvnorm->length_pdf_ + 3; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            y[i] = Y[l][j]; i++;
+        }
+    }
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+         
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RPreprocessingKNNMVNORM 
+
+void RPreprocessingPWMVNORM(double *h,     // Sides of the hypersquare.
+                            int    *n,     // Total number of independent observations.
+                            int    *d,     // Number of independent random variables.
+                            double *x,     // Pointer to the input array x.
+                            double *y,     // Pointer to the output array y.
+                            int    *Error) // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL; 
+    int       i, j, l;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->n_ = *n;
+    rebmvnorm->length_pdf_ = *d;
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 2) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            Y[l][j] = x[i]; i++;
+        }
+    }
+
+    *Error = rebmvnorm->PreprocessingPW(h, Y); 
+
+    if (*Error) goto E0;
+    
+    i = 0;
+    
+    for (j = 0; j < rebmvnorm->length_pdf_ + 2; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            y[i] = Y[l][j]; i++;
+        }
+    }
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+         
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RPreprocessingPWMVNORM
+
+void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
+                           double *y0,         // Origins.
+                           int    *length_pdf, // Length of pdf.
+                           char   **pdf,       // Parametric family types.
+                           int    *k,          // Total number of bins.
+                           int    *n,          // Total number of independent observations.
+                           int    *d,          // Number of independent random variables.
+                           double *x,          // Pointer to the input array x.
+                           double *y,          // Pointer to the output array y.
+                           int    *Error)      // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->length_pdf_ = *d;
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, 0, NULL);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->IniTheta_->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+    
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 1) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->PreprocessingH(h, y0, k, Y);
+
+    if (*Error) goto E0;
+
+    i = 0;
+    
+    for (j = 0; j < rebmvnorm->length_pdf_ + 1; j++) {
+        for (l = 0; l < *k; l++) {
+            y[i] = Y[l][j]; i++;
+        }
+    }
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+         
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RPreprocessingHMVNORM
+
+void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypersquare.
+                                    int    *k,            // Total number of bins.
+                                    int    *d,            // Number of independent random variables.
+                                    char   **Criterion,   // Information criterion type.
+                                    int    *c,            // Number of components.
+                                    double *W,            // Component weights.
+                                    int    *length_pdf,   // Length of pdf.
+                                    int    *length_Theta, // Length of Theta.
+                                    int    *length_theta, // Length of Theta[i].
+                                    char   **pdf,         // Parametric family types.
+                                    double *Theta,        // Component parameters.
+                                    int    *n,            // Number of observations.
+                                    double *x,            // Dataset.
+                                    double *IC,           // Information criterion.
+                                    double *logL,         // log-likelihood.
+                                    int    *M,            // Degrees of freedom.
+                                    double *D,            // Total of positive relative deviations.
+                                    int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    if (!strcmp(Criterion[0], "AIC"))
+        rebmvnorm->Criterion_ = icAIC;
+    else
+    if (!strcmp(Criterion[0], "AIC3"))
+        rebmvnorm->Criterion_ = icAIC3;
+    else
+    if (!strcmp(Criterion[0], "AIC4"))
+        rebmvnorm->Criterion_ = icAIC4;
+    else
+    if (!strcmp(Criterion[0], "AICc"))
+        rebmvnorm->Criterion_ = icAICc;
+    else
+    if (!strcmp(Criterion[0], "BIC"))
+        rebmvnorm->Criterion_ = icBIC;
+    else
+    if (!strcmp(Criterion[0], "CAIC"))
+        rebmvnorm->Criterion_ = icCAIC;
+    else
+    if (!strcmp(Criterion[0], "HQC"))
+        rebmvnorm->Criterion_ = icHQC;
+    else
+    if (!strcmp(Criterion[0], "MDL2"))
+        rebmvnorm->Criterion_ = icMDL2;
+    else
+    if (!strcmp(Criterion[0], "MDL5"))
+        rebmvnorm->Criterion_ = icMDL5;
+    else
+    if (!strcmp(Criterion[0], "AWE"))
+        rebmvnorm->Criterion_ = icAWE;
+    else
+    if (!strcmp(Criterion[0], "CLC"))
+        rebmvnorm->Criterion_ = icCLC;
+    else
+    if (!strcmp(Criterion[0], "ICL"))
+        rebmvnorm->Criterion_ = icICL;
+    else
+    if (!strcmp(Criterion[0], "PC"))
+        rebmvnorm->Criterion_ = icPC;
+    else
+    if (!strcmp(Criterion[0], "ICL-BIC"))
+        rebmvnorm->Criterion_ = icICLBIC;
+    else
+    if (!strcmp(Criterion[0], "D"))
+        rebmvnorm->Criterion_ = icD;
+    else
+    if (!strcmp(Criterion[0], "SSE"))
+        rebmvnorm->Criterion_ = icSSE;
+    else {
+        *Error = 1; goto E0;
+    }
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[*c];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 3) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+    }
+
+    *Error = rebmvnorm->PreprocessingKNN(*k, h, Y);
+
+    if (*Error) goto E0;
+
+    rebmvnorm->cmax_ = *c;
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->InformationCriterionKNN(*k, 
+                                                Y, 
+                                                *c, 
+                                                rebmvnorm->W_, 
+                                                rebmvnorm->MixTheta_, 
+                                                IC, 
+                                                logL,
+                                                M,
+                                                D);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RInformationCriterionKNNMVNORM 
+
+void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersquare.
+                                   int    *d,            // Number of independent random variables.
+                                   char   **Criterion,   // Information criterion type.
+                                   int    *c,            // Number of components.
+                                   double *W,            // Component weights.
+                                   int    *length_pdf,   // Length of pdf.
+                                   int    *length_Theta, // Length of Theta.
+                                   int    *length_theta, // Length of Theta[i].
+                                   char   **pdf,         // Parametric family types.
+                                   double *Theta,        // Component parameters.
+                                   int    *n,            // Number of observations.
+                                   double *x,            // Dataset.
+                                   double *IC,           // Information criterion.
+                                   double *logL,         // log-likelihood.
+                                   int    *M,            // Degrees of freedom.
+                                   double *D,            // Total of positive relative deviations.
+                                   int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    FLOAT     V;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    if (!strcmp(Criterion[0], "AIC"))
+        rebmvnorm->Criterion_ = icAIC;
+    else
+    if (!strcmp(Criterion[0], "AIC3"))
+        rebmvnorm->Criterion_ = icAIC3;
+    else
+    if (!strcmp(Criterion[0], "AIC4"))
+        rebmvnorm->Criterion_ = icAIC4;
+    else
+    if (!strcmp(Criterion[0], "AICc"))
+        rebmvnorm->Criterion_ = icAICc;
+    else
+    if (!strcmp(Criterion[0], "BIC"))
+        rebmvnorm->Criterion_ = icBIC;
+    else
+    if (!strcmp(Criterion[0], "CAIC"))
+        rebmvnorm->Criterion_ = icCAIC;
+    else
+    if (!strcmp(Criterion[0], "HQC"))
+        rebmvnorm->Criterion_ = icHQC;
+    else
+    if (!strcmp(Criterion[0], "MDL2"))
+        rebmvnorm->Criterion_ = icMDL2;
+    else
+    if (!strcmp(Criterion[0], "MDL5"))
+        rebmvnorm->Criterion_ = icMDL5;
+    else
+    if (!strcmp(Criterion[0], "AWE"))
+        rebmvnorm->Criterion_ = icAWE;
+    else
+    if (!strcmp(Criterion[0], "CLC"))
+        rebmvnorm->Criterion_ = icCLC;
+    else
+    if (!strcmp(Criterion[0], "ICL"))
+        rebmvnorm->Criterion_ = icICL;
+    else
+    if (!strcmp(Criterion[0], "PC"))
+        rebmvnorm->Criterion_ = icPC;
+    else
+    if (!strcmp(Criterion[0], "ICL-BIC"))
+        rebmvnorm->Criterion_ = icICLBIC;
+    else
+    if (!strcmp(Criterion[0], "D"))
+        rebmvnorm->Criterion_ = icD;
+    else
+    if (!strcmp(Criterion[0], "SSE"))
+        rebmvnorm->Criterion_ = icSSE;
+    else {
+        *Error = 1; goto E0;
+    }
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[*c];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 2) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+    }
+
+    *Error = rebmvnorm->PreprocessingPW(h, Y); 
+
+    if (*Error) goto E0;
+ 
+    rebmvnorm->cmax_ = *c;
+
+    V = (FLOAT)1.0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        V *= h[i];
+    }
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->InformationCriterionPW(V, 
+                                               Y, 
+                                               *c, 
+                                               rebmvnorm->W_, 
+                                               rebmvnorm->MixTheta_, 
+                                               IC,
+                                               logL,
+                                               M,
+                                               D);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RInformationCriterionPWMVNORM 
+
+void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersquare.
+                                  double *y0,           // Origins.
+                                  int    *k,            // Total number of bins.
+                                  int    *d,            // Number of independent random variables.
+                                  char   **Criterion,   // Information criterion type.
+                                  int    *c,            // Number of components.
+                                  double *W,            // Component weights.
+                                  int    *length_pdf,   // Length of pdf.
+                                  int    *length_Theta, // Length of Theta.
+                                  int    *length_theta, // Length of Theta[i].
+                                  char   **pdf,         // Parametric family types.
+                                  double *Theta,        // Component parameters.
+                                  int    *n,            // Number of observations.
+                                  double *x,            // Dataset.
+                                  double *IC,           // Information criterion.
+                                  double *logL,         // log-likelihood.
+                                  int    *M,            // Degrees of freedom.
+                                  double *D,            // Total of positive relative deviations.
+                                  int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    FLOAT     V;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;    
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    if (!strcmp(Criterion[0], "AIC"))
+        rebmvnorm->Criterion_ = icAIC;
+    else
+    if (!strcmp(Criterion[0], "AIC3"))
+        rebmvnorm->Criterion_ = icAIC3;
+    else
+    if (!strcmp(Criterion[0], "AIC4"))
+        rebmvnorm->Criterion_ = icAIC4;
+    else
+    if (!strcmp(Criterion[0], "AICc"))
+        rebmvnorm->Criterion_ = icAICc;
+    else
+    if (!strcmp(Criterion[0], "BIC"))
+        rebmvnorm->Criterion_ = icBIC;
+    else
+    if (!strcmp(Criterion[0], "CAIC"))
+        rebmvnorm->Criterion_ = icCAIC;
+    else
+    if (!strcmp(Criterion[0], "HQC"))
+        rebmvnorm->Criterion_ = icHQC;
+    else
+    if (!strcmp(Criterion[0], "MDL2"))
+        rebmvnorm->Criterion_ = icMDL2;
+    else
+    if (!strcmp(Criterion[0], "MDL5"))
+        rebmvnorm->Criterion_ = icMDL5;
+    else
+    if (!strcmp(Criterion[0], "AWE"))
+        rebmvnorm->Criterion_ = icAWE;
+    else
+    if (!strcmp(Criterion[0], "CLC"))
+        rebmvnorm->Criterion_ = icCLC;
+    else
+    if (!strcmp(Criterion[0], "ICL"))
+        rebmvnorm->Criterion_ = icICL;
+    else
+    if (!strcmp(Criterion[0], "PC"))
+        rebmvnorm->Criterion_ = icPC;
+    else
+    if (!strcmp(Criterion[0], "ICL-BIC"))
+        rebmvnorm->Criterion_ = icICLBIC;
+    else
+    if (!strcmp(Criterion[0], "D"))
+        rebmvnorm->Criterion_ = icD;
+    else
+    if (!strcmp(Criterion[0], "SSE"))
+        rebmvnorm->Criterion_ = icSSE;
+    else {
+        *Error = 1; goto E0;
+    }
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+    
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution* [*c];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+    
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 1) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->PreprocessingH(h, y0, k, Y);
+
+    if (*Error) goto E0;
+
+    rebmvnorm->cmax_ = *c;
+
+    V = (FLOAT)1.0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        V *= h[i];
+    }
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->InformationCriterionH(V, 
+                                              *k, 
+                                              Y, 
+                                              *c, 
+                                              rebmvnorm->W_, 
+                                              rebmvnorm->MixTheta_, 
+                                              IC,
+                                              logL,
+                                              M,
+                                              D);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+         
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RInformationCriterionHMVNORM
 
 } // extern "C"
