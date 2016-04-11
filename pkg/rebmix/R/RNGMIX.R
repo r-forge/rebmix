@@ -112,7 +112,6 @@ function(model, ...)
       length.pdf = as.integer(d),
       length.Theta = as.integer(3),
       length.theta = as.integer(c(d, length(theta2) / c, -length(theta2) / c)),
-      pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
       n = integer(1),
       Y = double(sum(model@n) * d),

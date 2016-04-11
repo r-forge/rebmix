@@ -51,7 +51,7 @@ int CompnentDistribution::Realloc(int length_pdf, int length_Theta, int *length_
 
     Error = NULL == length_theta_; if (Error) goto E0;
 
-    Theta_ = (FLOAT**)calloc(length_Theta_, sizeof(FLOAT*));
+    Theta_ = (FLOAT**)calloc((size_t)length_Theta_, sizeof(FLOAT*));
 
     Error = NULL == Theta_; if (Error) goto E0;
 
@@ -2742,7 +2742,7 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
             SSE += E;
 
             break;
-        default:
+        case icAIC: case icAIC3: case icAIC4: case icAICc: case icBIC: case icCAIC: case icHQC: case icMDL2: case icMDL5: case icPC: case icD: default:
             EN = SSE = PC = (FLOAT)0.0;
         }
     }
@@ -2882,7 +2882,7 @@ int Rebmix::InformationCriterionPW(FLOAT                V,          // Volume of
             SSE += E;
 
             break;
-        default:
+        case icAIC: case icAIC3: case icAIC4: case icAICc: case icBIC: case icCAIC: case icHQC: case icMDL2: case icMDL5: case icPC: case icD: default:
             EN = SSE = PC = (FLOAT)0.0;
         }
     }
@@ -3023,7 +3023,7 @@ int Rebmix::InformationCriterionH(FLOAT                V,          // Volume of 
             SSE += E;
 
             break;
-        default:
+        case icAIC: case icAIC3: case icAIC4: case icAICc: case icBIC: case icCAIC: case icHQC: case icMDL2: case icMDL5: case icPC: case icD: default:
             EN = SSE = PC = (FLOAT)0.0;
         }
     }
@@ -3113,10 +3113,10 @@ int Rebmix::REBMIXKNN()
     CompnentDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
     FLOAT                **FirstM = NULL, **SecondM = NULL;
     int                  opt_length;    
-    int                  *opt_c;        
-    FLOAT                *opt_IC;       
-    FLOAT                *opt_logL;     
-    FLOAT                *opt_D;
+    int                  *opt_c = NULL;        
+    FLOAT                *opt_IC = NULL;       
+    FLOAT                *opt_logL = NULL;     
+    FLOAT                *opt_D = NULL;
     int                  c = 0, i, I, j, J, l, m, M;
     FLOAT                Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
     int                  Error = 0, Stop = 0, Found = 0;
@@ -3141,7 +3141,7 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    MixTheta_ = new CompnentDistribution* [cmax_];
+    MixTheta_ = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == MixTheta_; if (Error) goto E0;
 
@@ -3175,7 +3175,7 @@ int Rebmix::REBMIXKNN()
 
     all_length_ = K_[length_K_ - 1] - K_[0] + 1;
 
-    all_K_ = (int*)calloc(all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
@@ -3267,7 +3267,7 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = new CompnentDistribution* [cmax_];
+    RigidTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
@@ -3285,7 +3285,7 @@ int Rebmix::REBMIXKNN()
         if (Error) goto E0;
     }
 
-    LooseTheta = new CompnentDistribution* [cmax_];
+    LooseTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 
@@ -3576,10 +3576,10 @@ int Rebmix::REBMIXPW()
     CompnentDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
     FLOAT                **FirstM = NULL, **SecondM = NULL;
     int                  opt_length;
-    int                  *opt_c;
-    FLOAT                *opt_IC;
-    FLOAT                *opt_logL;
-    FLOAT                *opt_D;
+    int                  *opt_c = NULL;
+    FLOAT                *opt_IC = NULL;
+    FLOAT                *opt_logL = NULL;
+    FLOAT                *opt_D = NULL;
     int                  c = 0, i, I, j, J, l, m, M;
     FLOAT                V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
     int                  Error = 0, Stop = 0, Found = 0;
@@ -3604,7 +3604,7 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    MixTheta_ = new CompnentDistribution* [cmax_];
+    MixTheta_ = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == MixTheta_; if (Error) goto E0;
 
@@ -3638,7 +3638,7 @@ int Rebmix::REBMIXPW()
 
     all_length_ = K_[length_K_ - 1] - K_[0] + 1;
 
-    all_K_ = (int*)calloc(all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
@@ -3726,7 +3726,7 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = new CompnentDistribution* [cmax_];
+    RigidTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
@@ -3744,7 +3744,7 @@ int Rebmix::REBMIXPW()
         if (Error) goto E0;
     }
 
-    LooseTheta = new CompnentDistribution* [cmax_];
+    LooseTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 
@@ -4048,10 +4048,10 @@ int Rebmix::REBMIXH()
     CompnentDistribution **RigidTheta = NULL, **LooseTheta = NULL; 
     FLOAT                **FirstM = NULL, **SecondM = NULL;
     int                  opt_length;
-    int                  *opt_c;
-    FLOAT                *opt_IC;       
-    FLOAT                *opt_logL;     
-    FLOAT                *opt_D;
+    int                  *opt_c = NULL;
+    FLOAT                *opt_IC = NULL;       
+    FLOAT                *opt_logL = NULL;     
+    FLOAT                *opt_D = NULL;
     int                  c = 0, i, I, j, J, k, l, m, M;
     FLOAT                V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
     int                  Error = 0, Stop = 0, Found = 0;
@@ -4080,7 +4080,7 @@ int Rebmix::REBMIXH()
 
     Error = NULL == W_; if (Error) goto E0;
 
-    MixTheta_ = new CompnentDistribution* [cmax_];
+    MixTheta_ = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == MixTheta_; if (Error) goto E0;
 
@@ -4114,7 +4114,7 @@ int Rebmix::REBMIXH()
 
     all_length_ = K_[length_K_ - 1] - K_[0] + 1;
 
-    all_K_ = (int*)calloc(all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
@@ -4208,7 +4208,7 @@ int Rebmix::REBMIXH()
 
     Error = NULL == W; if (Error) goto E0;
 
-    RigidTheta = new CompnentDistribution* [cmax_];
+    RigidTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == RigidTheta; if (Error) goto E0;
 
@@ -4226,7 +4226,7 @@ int Rebmix::REBMIXH()
         if (Error) goto E0;
     }
 
-    LooseTheta = new CompnentDistribution* [cmax_];
+    LooseTheta = new CompnentDistribution* [(unsigned int)cmax_];
 
     Error = NULL == LooseTheta; if (Error) goto E0;
 

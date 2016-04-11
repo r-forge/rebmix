@@ -29,7 +29,7 @@ public:
     // Constructor.
     Rngmix();
     // Destructor.
-    ~Rngmix();
+    virtual ~Rngmix();
     // Methods.
     virtual int InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y);
     int RNGMIX();

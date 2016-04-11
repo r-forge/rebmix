@@ -10,8 +10,6 @@
     y0 = as.double(y0),
     hx = as.double(hx),
     hy = as.double(hy),
-    cx = as.integer(cx == .rebmix$Variables[2]),
-    cy = as.integer(cy == .rebmix$Variables[2]),
     px = as.character(px),
     py = as.character(py),        
     error = integer(1),

@@ -1,82 +1,100 @@
-\name{pfmix}
+\name{pfmix-methods}
 \alias{pfmix}
+\alias{pfmix-methods}
+\alias{pfmix,REBMIX-method}
+\alias{pfmix,REBMVNORM-method}
 \title{
-Predictive Distribution Function Calculation
+Predictive Marginal Distribution Function Calculation
 }
 \description{
-\code{pfmix} returns (invisibly) the vector containing predictive distribution functions \eqn{F(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vector \eqn{\bm{x}} ia a subvector of \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
+\code{pfmix} returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and 
+predictive marginal distribution functions \eqn{F(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vectors \eqn{\bm{x}} are subvectors of 
+\eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
-pfmix(x = NULL, w = NULL, Theta = NULL, lower.tail = TRUE, log.p = FALSE, ...)
+\S4method{pfmix}{REBMIX}(x = NULL, Dataset = data.frame(), pos = 1, 
+      variables = expression(1:d), lower.tail = TRUE, log.p = FALSE, ...)
+## ... and for other signatures
 }
 \arguments{
 \item{x}{
-a vector, a matrix or a data frame containing continuous or discrete vector observations \eqn{\bm{x}}.
+see Methods section below.
 }
-\item{w}{
-a vector containing \eqn{c} component weights \eqn{w_{l}} summing to 1.
+\item{Dataset}{
+a data frame containing observations \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} for which the predictive marginal distribution functions are calculated. The default value is \code{data.frame()}.
 }
-\item{Theta}{
-a list containing \eqn{c} parametric family types \code{pdfi}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
-Component parameters \code{theta1.i} follow the parametric family types. One of \eqn{\mu_{il}} for normal and lognormal distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.i} follow \code{theta1.i}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions and \eqn{p_{il}} for binomial distribution.
+\item{pos}{
+a desired row number in \code{summary} for which the predictive marginal distribution functions are calculated. The default value is \code{1}.
+}
+\item{variables}{
+a vector containig indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
 }
 \item{lower.tail}{
-logical. If \code{TRUE} (default), probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}.
+logical. If \code{TRUE}, probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}. The default value is \code{TRUE}.
 }
 \item{log.p}{
-logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}. The default value is \code{FALSE}.
 }
 \item{\dots}{
 currently not used.
+}
+}
+\section{Methods}{
+\describe{
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX}.}
+\item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
 \author{Marko Nagode}
 \examples{
 # Generate simulated dataset.
 
-Theta <- list(pdf1 = c("normal", "Weibull"),
-  theta1.1 = c(10, 3),
-  theta2.1 = c(3, 2),
-  pdf2 = c("normal", "Weibull"),
-  theta1.2 = c(20, 2),
-  theta2.2 = c(2, 10))
+n <- c(15, 15)
 
-simulated <- RNGMIX(Dataset.name = "simulated",
+Theta <- list(pdf1 = rep("normal", 3),
+  theta1.1 = c(10, 20, 30),
+  theta2.1 = c(3, 2, 1),
+  pdf2 = rep("normal", 3),
+  theta1.2 = c(3, 4, 5),
+  theta2.2 = c(15, 10, 5))
+
+simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
   rseed = -1,
-  n = c(15, 25),
+  n = n,
   Theta = Theta)
 
-# Estimate number of components, component weights and component parameters.
+# Number of classes or nearest neighbours to be processed.
+
+K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
+  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
+
+# Estimate number of components, component weights and component parameters. 
 
 simulatedest <- REBMIX(Dataset = simulated@Dataset,
-  Preprocessing = "Parzen window",
+  Preprocessing = "h", 
   cmax = 4,
-  Criterion = "BIC",
-  pdf = c("normal", "Weibull"),
-  K = 8)
+  Criterion = "BIC", 
+  pdf = c("n", "n", "n"), 
+  K = K[1]:K[2])
 
-# Predictive distribution calculation.
+# Preprocess simulated dataset.
 
-i <- 1
+Dataset <- data.frame(c(25, 5, -20), NA, c(31, 20, 20))
 
-x <- simulatedest@Dataset[[1]][, i]
+f <- pfmix(simulatedest, Dataset = Dataset, pos = 3, variables = c(1, 3))
 
-F <- pfmix(x = x,
-  w = simulatedest@w[[1]],
-  Theta = lapply(simulatedest@Theta[[1]], "[", i))
-  
-plot(x, F)
+f
 
-i <- 2
+# Plot finite mixture.
 
-x <- simulatedest@Dataset[[1]][, i]
+usr <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1,
+  what = "dist", contour.drawlabels = TRUE, contour.labcex = 0.6)
 
-F <- pfmix(x = x,
-  w = simulatedest@w[[1]],
-  Theta = lapply(simulatedest@Theta[[1]], "[", i))
-  
-plot(x, F)
+par(usr = usr[[2]], mfg = c(2, 1))
+
+points(x = f[, 1], y = f[, 2])
+
+text(x = f[, 1], y = f[, 2], labels = format(f[, 3], digits = 3), cex = 0.8, pos = 4)
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.

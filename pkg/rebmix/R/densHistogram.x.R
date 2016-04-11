@@ -7,7 +7,6 @@
     y = double(length(x)),
     x0 = as.double(x0),
     hx = as.double(hx),
-    cx = as.integer(cx == .rebmix$Variables[2]),
     px = as.character(px),
     error = integer(1),
     PACKAGE = "rebmix")

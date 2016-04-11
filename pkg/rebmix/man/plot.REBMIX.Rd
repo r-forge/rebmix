@@ -3,6 +3,8 @@
 \alias{plot-methods}
 \alias{plot,REBMIX,missing-method}
 \alias{plot,REBMVNORM,missing-method}
+\alias{plot,RNGMIX,missing-method}
+\alias{plot,RNGMVNORM,missing-method}
 \alias{plot,RCLRMIX,missing-method}
 \alias{plot,RCLRMVNORM,missing-method}
 \alias{plot,RCLSMIX,missing-method}
@@ -16,6 +18,9 @@ or pairs of empirical and predictive bivariate marginal mixture densities for \e
 densities follow the histogram, Parzen window or \emph{k}-nearest neighbour approach.
 }
 \usage{
+\S4method{plot}{RNGMIX,missing}(x, y, pos = 1, nrow = 1, ncol = 1, cex = 0.8,
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
+     plot.cex = 0.8, plot.pch = 19, ...) 
 \S4method{plot}{REBMIX,missing}(x, y, pos = 1, what = c("density"),
      nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
      lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
@@ -111,6 +116,8 @@ plotting regions. Such a list can be passed as an argument to \code{\link[graphi
 }
 \section{Methods}{
 \describe{
+\item{\code{signature(x = "RNGMIX", y = "missing")}}{an object of class \code{RNGMIX}.}
+\item{\code{signature(x = "RNGMVNORM", y = "missing")}}{an object of class \code{RNGMVNORM}.}
 \item{\code{signature(x = "REBMIX", y = "missing")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(x = "REBMVNORM", y = "missing")}}{an object of class \code{REBMVNORM}.}
 \item{\code{signature(x = "RCLRMIX", y = "missing")}}{an object of class \code{RCLRMIX}.}

@@ -1354,9 +1354,9 @@ int Rebmvnorm::ComponentDist(FLOAT                *Y,        // Pointer to the i
     return Error;
 } // ComponentDist
 
-int Rebmvnorm::DegreesOffreedom(int                  c,          // Number of components.
-                                CompnentDistribution **MixTheta, // Mixture parameters.
-                                int                  *M)         // Degrees of freedom.
+int Rebmvnorm::DegreesOffreedom(int c,                  // Number of components.
+                                CompnentDistribution**, // Mixture parameters.
+                                int *M)                 // Degrees of freedom.
 {
     int i;
     int Error = 0;

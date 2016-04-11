@@ -94,7 +94,7 @@ void RRNGMIX(int    *IDum,         // Random seed.
         }
     }
 
-    rngmix->MixTheta_ = new CompnentDistribution* [rngmix->c_];
+    rngmix->MixTheta_ = new CompnentDistribution* [(unsigned int)rngmix->c_];
 
     *Error = NULL == rngmix->MixTheta_; if (*Error) goto E0;
 
@@ -595,8 +595,6 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
                       double *y0,    // Origin.
                       double *hx,    // Side of the hypersquare.
                       double *hy,    // Side of the hypersquare.
-                      int    *cx,    // If x discrete then cx = 1 else cx = 0.
-                      int    *cy,    // If y discrete then cy = 1 else cy = 0.
                       char   **px,   // Parametric family type.
                       char   **py,   // Parametric family type.
                       int    *Error) // Error code.
@@ -679,7 +677,7 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-        default:
+        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
@@ -690,7 +688,7 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         y[*k] = (*y0) + j * (*hy);
 
         switch (pdfy) {
-        default:
+        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (y[*k] <= FLOAT_MIN) y[*k] += (*hy);
@@ -794,7 +792,6 @@ void RdensHistogramX(int    *k,     // Total number of bins.
                      double *p,     // Pointer to the output array p.
                      double *x0,    // Origin.
                      double *hx,    // Side of the hypersquare.
-                     int    *cx,    // If x discrete then cx = 1 else cx = 0.
                      char   **px,   // Parametric family type.
                      int    *Error) // Error code.
 {
@@ -845,7 +842,7 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-        default:
+        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
@@ -928,19 +925,19 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
         }
     }
 
-    Theta = new CompnentDistribution*** [*s];
+    Theta = new CompnentDistribution*** [(unsigned int)(*s)];
 
     *Error = NULL == Theta; if (*Error) goto E0;
 
     i = 0;
 
     for (j = 0; j < *s; j++) {
-        Theta[j] = new CompnentDistribution** [*o];
+        Theta[j] = new CompnentDistribution** [(unsigned int)(*o)];
 
         *Error = NULL == Theta[j]; if (*Error) goto E0;
 
         for (k = 0; k < *o; k++) {
-            Theta[j][k] = new CompnentDistribution* [C[j][k]];
+            Theta[j][k] = new CompnentDistribution* [(unsigned int)C[j][k]];
 
             *Error = NULL == Theta[j][k]; if (*Error) goto E0;
 
@@ -1115,7 +1112,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
 
     rebmix->length_pdf_ = *d;
 
-    Theta = new CompnentDistribution* [*c];
+    Theta = new CompnentDistribution* [(unsigned int)(*c)];
 
     *Error = NULL == Theta; if (*Error) goto E0;
 
@@ -1460,7 +1457,6 @@ E0: if (Y) {
 
 void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersquare.
                                  int    *k,            // Total number of bins.
-                                 int    *d,            // Number of independent random variables.
                                  char   **Criterion,   // Information criterion type.
                                  int    *c,            // Number of components.
                                  double *W,            // Component weights.
@@ -1595,7 +1591,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
         }
     }
 
-    rebmix->MixTheta_ = new CompnentDistribution*[*c];
+    rebmix->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
 
     *Error = NULL == rebmix->MixTheta_; if (*Error) goto E0;
 
@@ -1689,7 +1685,6 @@ E0: if (Y) {
 } // RInformationCriterionKNNMIX 
 
 void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquare.
-                                int    *d,            // Number of independent random variables.
                                 char   **Criterion,   // Information criterion type.
                                 int    *c,            // Number of components.
                                 double *W,            // Component weights.
@@ -1825,7 +1820,7 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
         }
     }
 
-    rebmix->MixTheta_ = new CompnentDistribution*[*c];
+    rebmix->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
 
     *Error = NULL == rebmix->MixTheta_; if (*Error) goto E0;
 
@@ -1927,7 +1922,6 @@ E0: if (Y) {
 void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare.
                                double *y0,           // Origins.
                                int    *k,            // Total number of bins.
-                               int    *d,            // Number of independent random variables.
                                char   **Criterion,   // Information criterion type.
                                int    *c,            // Number of components.
                                double *W,            // Component weights.
@@ -2063,7 +2057,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
         }
     }
 
-    rebmix->MixTheta_ = new CompnentDistribution* [*c];
+    rebmix->MixTheta_ = new CompnentDistribution* [(unsigned int)(*c)];
 
     *Error = NULL == rebmix->MixTheta_; if (*Error) goto E0;
 

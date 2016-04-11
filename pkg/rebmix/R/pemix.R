@@ -1,8 +1,8 @@
 setMethod("pemix",
           signature(x = "REBMIX"),
-function(x, 
+function(x = NULL, 
   pos = 1, 
-  variables = numeric(), 
+  variables = expression(1:d), 
   lower.tail = TRUE, 
   log.p = FALSE, ...)
 {
@@ -24,7 +24,7 @@ function(x,
   
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
   
-  d <- ncol(Dataset); dini <- d
+  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
   
   if (length(variables) != 0) {
@@ -41,6 +41,14 @@ function(x,
   else {
     variables <- 1:d
   }
+  
+  if (!is.logical(lower.tail)) {
+    stop(sQuote("lower.tail"), " logical is requested!", call. = FALSE)
+  }
+  
+  if (!is.logical(log.p)) {
+    stop(sQuote("log.p"), " logical is requested!", call. = FALSE)
+  }   
   
   Dataset <- as.matrix(Dataset[, variables])
    
@@ -76,9 +84,9 @@ function(x,
 
 setMethod("pemix",
           signature(x = "REBMVNORM"),
-function(x, 
+function(x = NULL, 
   pos = 1, 
-  variables = numeric(), 
+  variables = expression(1:d), 
   lower.tail = TRUE, 
   log.p = FALSE, ...)
 {
@@ -100,7 +108,7 @@ function(x,
   
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
   
-  d <- ncol(Dataset); dini <- d
+  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
   
   if (length(variables) != 0) {
@@ -117,6 +125,14 @@ function(x,
   else {
     variables <- 1:d
   }
+  
+  if (!is.logical(lower.tail)) {
+    stop(sQuote("lower.tail"), " logical is requested!", call. = FALSE)
+  }
+  
+  if (!is.logical(log.p)) {
+    stop(sQuote("log.p"), " logical is requested!", call. = FALSE)
+  }  
   
   Dataset <- as.matrix(Dataset[, variables])
    

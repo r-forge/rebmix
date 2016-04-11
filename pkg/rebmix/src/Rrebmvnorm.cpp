@@ -17,7 +17,6 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
                 int    *length_pdf,   // Length of pdf.
                 int    *length_Theta, // Length of Theta.
                 int    *length_theta, // Length of Theta[i].
-                char   **pdf,         // Parametric family types.
                 double *Theta,        // Component parameters.
                 int    *n,            // Number of observations.
                 double *Y,            // Dataset.
@@ -65,7 +64,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
         rngmvnorm->IniTheta_->pdf_[i] = pfNormal;
     }
 
-    rngmvnorm->MixTheta_ = new CompnentDistribution*[rngmvnorm->c_];
+    rngmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned int)rngmvnorm->c_];
 
     *Error = NULL == rngmvnorm->MixTheta_; if (*Error) goto E0;
 
@@ -509,17 +508,17 @@ void RCLSMVNORM(int    *n,      // Total number of independent observations.
         }
     }
 
-    Theta = new CompnentDistribution*** [*s];
+    Theta = new CompnentDistribution*** [(unsigned int)(*s)];
 
     *Error = NULL == Theta; if (*Error) goto E0;
 
     for (j = 0; j < *s; j++) {
-        Theta[j] = new CompnentDistribution** [*o];
+        Theta[j] = new CompnentDistribution** [(unsigned int)(*o)];
 
         *Error = NULL == Theta[j]; if (*Error) goto E0;
 
         for (k = 0; k < *o; k++) {
-            Theta[j][k] = new CompnentDistribution* [C[j][k]];
+            Theta[j][k] = new CompnentDistribution* [(unsigned int)C[j][k]];
 
             *Error = NULL == Theta[j][k]; if (*Error) goto E0;
 
@@ -687,7 +686,7 @@ void RCLRMVNORM(int    *n,      // Total number of independent observations.
 
     rebmvnorm->length_pdf_ = *d;
 
-    Theta = new CompnentDistribution* [*c];
+    Theta = new CompnentDistribution* [(unsigned int)(*c)];
 
     *Error = NULL == Theta; if (*Error) goto E0;
 
@@ -987,7 +986,6 @@ E0: if (Y) {
 
 void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypersquare.
                                     int    *k,            // Total number of bins.
-                                    int    *d,            // Number of independent random variables.
                                     char   **Criterion,   // Information criterion type.
                                     int    *c,            // Number of components.
                                     double *W,            // Component weights.
@@ -1098,7 +1096,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
         }
     }
 
-    rebmvnorm->MixTheta_ = new CompnentDistribution*[*c];
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
 
     *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
 
@@ -1198,7 +1196,6 @@ E0: if (Y) {
 } // RInformationCriterionKNNMVNORM 
 
 void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersquare.
-                                   int    *d,            // Number of independent random variables.
                                    char   **Criterion,   // Information criterion type.
                                    int    *c,            // Number of components.
                                    double *W,            // Component weights.
@@ -1310,7 +1307,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
         }
     }
 
-    rebmvnorm->MixTheta_ = new CompnentDistribution*[*c];
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
 
     *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
 
@@ -1418,7 +1415,6 @@ E0: if (Y) {
 void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersquare.
                                   double *y0,           // Origins.
                                   int    *k,            // Total number of bins.
-                                  int    *d,            // Number of independent random variables.
                                   char   **Criterion,   // Information criterion type.
                                   int    *c,            // Number of components.
                                   double *W,            // Component weights.
@@ -1530,7 +1526,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
         }
     }
 
-    rebmvnorm->MixTheta_ = new CompnentDistribution* [*c];
+    rebmvnorm->MixTheta_ = new CompnentDistribution* [(unsigned int)(*c)];
 
     *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
 

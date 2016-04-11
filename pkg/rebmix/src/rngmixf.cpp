@@ -564,7 +564,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
             Error = isI < 1; if (Error) goto E0;
 
-            MixTheta = new CompnentDistribution* [c_ + 1];
+            MixTheta = new CompnentDistribution* [(unsigned int)(c_ + 1)];
 
             Error = NULL == MixTheta; if (Error) goto E0;
 

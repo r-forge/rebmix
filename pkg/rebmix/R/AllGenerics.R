@@ -48,11 +48,16 @@ setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))
 setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
 
-setGeneric("demix", function(x = NULL, pos = 1, variables = numeric(), ...) standardGeneric("demix"))
+setGeneric("demix", 
+  function(x = NULL, 
+    pos = 1, 
+    variables = expression(1:d), ...)
+  standardGeneric("demix"))
+
 setGeneric("pemix", 
   function(x = NULL,
     pos = 1, 
-    variables = numeric(),
+    variables = expression(1:d),
     lower.tail = TRUE, 
     log.p = FALSE, ...) 
   standardGeneric("pemix"))
@@ -61,8 +66,17 @@ setGeneric("dfmix",
   function(x = NULL,
     Dataset = data.frame(),
     pos = 1, 
-    variables = numeric(), ...)
+    variables = expression(1:d), ...)
   standardGeneric("dfmix"))
+  
+setGeneric("pfmix", 
+  function(x = NULL,
+    Dataset = data.frame(),  
+    pos = 1, 
+    variables = expression(1:d),
+    lower.tail = TRUE, 
+    log.p = FALSE, ...) 
+  standardGeneric("pfmix"))
 
 setGeneric("boot",
   function(x = NULL,

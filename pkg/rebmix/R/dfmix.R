@@ -3,7 +3,7 @@ setMethod("dfmix",
 function(x = NULL,
   Dataset = data.frame(),
   pos = 1, 
-  variables = numeric(), ...)          
+  variables = expression(1:d), ...)          
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -19,7 +19,7 @@ function(x = NULL,
     stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
   }
 
-  d <- length(x@Variables)
+  d <- length(x@Variables); variables <- eval(variables)
 
   if (ncol(Dataset) != d) {
     stop(sQuote("Dataset"), " number of columns in data frame must equal ", d, "!", call. = FALSE)
@@ -124,7 +124,7 @@ setMethod("dfmix",
 function(x = NULL,
   Dataset = data.frame(),
   pos = 1, 
-  variables = numeric(), ...)          
+  variables = expression(1:d), ...)          
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -140,7 +140,7 @@ function(x = NULL,
     stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
   }
 
-  d <- length(x@Variables)
+  d <- length(x@Variables); variables <- eval(variables)
 
   if (ncol(Dataset) != d) {
     stop(sQuote("Dataset"), " number of columns in data frame must equal ", d, "!", call. = FALSE)

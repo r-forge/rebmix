@@ -8,12 +8,11 @@ Empirical Distribution Function Calculation
 }
 \description{
 \code{pemix} returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
-distribution functions \eqn{F_{1}, \ldots, F_{n}} for the Parzen window or \emph{k}-nearest neighbour or bin means \eqn{\bar{\bm{x}}_{1}, \ldots, \bar{\bm{x}}_{v}} 
-and empirical distribution functions \eqn{F_{1}, \ldots, F_{v}} for the histogram preprocessing. Vectors \eqn{\bm{x}} and \eqn{\bar{\bm{x}}} are subvectors of 
-\eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} and \eqn{\bar{\bm{y}} = (\bar{y}_{1}, \ldots, \bar{y}_{d})^{\top}}.
+distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subvectors of 
+\eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
-\S4method{pemix}{REBMIX}(x = NULL, pos = 1, variables = numeric(), 
+\S4method{pemix}{REBMIX}(x = NULL, pos = 1, variables = expression(1:d), 
       lower.tail = TRUE, log.p = FALSE, ...)
 ## ... and for other signatures
 }
@@ -25,13 +24,13 @@ see Methods section below.
 a desired row number in \code{summary} for which the empirical distribution functions are calculated. The default value is \code{1}.
 }
 \item{variables}{
-a vector of length \eqn{\leq d} containig indices of variables. The default value is \code{numeric()}.
+a vector containig indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
 }
 \item{lower.tail}{
-logical. If \code{TRUE} (default), probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}.
+logical. If \code{TRUE}, probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}. The default value is \code{TRUE}.
 }
 \item{log.p}{
-logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+logical. if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}. The default value is \code{FALSE}.
 }
 \item{\dots}{
 currently not used.

@@ -1,6 +1,11 @@
 #ifndef REBMIXF_H_INCLUDED
 #define REBMIXF_H_INCLUDED
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4514)
+#pragma warning(disable: 4820)
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -131,7 +136,7 @@ public:
     // Constructor.
     Rebmix();
     // Destructor.
-    ~Rebmix();
+    virtual ~Rebmix();
     // Methods.
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingPW(FLOAT *h, FLOAT **Y);

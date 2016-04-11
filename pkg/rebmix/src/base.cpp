@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#pragma warning(disable: 4514)
+#endif
+
 #include <math.h>
 #include <limits.h>
 #include <stdio.h>
@@ -542,7 +546,7 @@ int LUinvdet(int   n,     // Size of square matrix.
     FLOAT *b = NULL, *B = NULL;
     int   Error = 0;
 
-    indx = (int*)calloc(n, sizeof(int));
+    indx = (int*)calloc((size_t)n, sizeof(int));
 
     Error = NULL == indx; if (Error) goto E0;
 

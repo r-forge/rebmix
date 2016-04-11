@@ -13,7 +13,7 @@ and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessi
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} and \eqn{\bar{\bm{y}} = (\bar{y}_{1}, \ldots, \bar{y}_{d})^{\top}}.
 }
 \usage{
-\S4method{demix}{REBMIX}(x = NULL, pos = 1, variables = numeric(), ...)
+\S4method{demix}{REBMIX}(x = NULL, pos = 1, variables = expression(1:d), ...)
 ## ... and for other signatures
 }
 \arguments{
@@ -24,7 +24,7 @@ see Methods section below.
 a desired row number in \code{summary} for which the empirical densities are calculated. The default value is \code{1}.
 }
 \item{variables}{
-a vector of length \eqn{\leq d} containig indices of variables. The default value is \code{numeric()}.
+a vector containig indices of variables in subvectors \eqn{\bm{x}} or \eqn{\bar{\bm{x}}}. The default value is \code{1:d}.
 }
 \item{\dots}{
 currently not used.

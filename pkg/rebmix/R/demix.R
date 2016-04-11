@@ -1,8 +1,8 @@
 setMethod("demix",
           signature(x = "REBMIX"),
-function(x, 
+function(x = NULL, 
   pos = 1, 
-  variables = numeric(), ...)
+  variables = expression(1:d), ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -22,7 +22,8 @@ function(x,
   
   Dataset <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
   
-  d <- ncol(Dataset); dini <- d
+  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
+  
   n <- nrow(Dataset)
   
   if (length(variables) != 0) {
@@ -146,9 +147,9 @@ function(x,
 
 setMethod("demix",
           signature(x = "REBMVNORM"),
-function(x, 
+function(x = NULL, 
   pos = 1, 
-  variables = numeric(), ...)
+  variables = expression(1:d), ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -168,7 +169,7 @@ function(x,
   
   Dataset <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
   
-  d <- ncol(Dataset); dini <- d
+  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
   
   if (length(variables) != 0) {
