@@ -3,7 +3,9 @@
 \section{Changes in version 2.8.2}{ 
 \itemize{
 \item Fixed information criterion bug in C++ and R code.
-\item Fixed invalid object bug in vignette.
+\item Fixed heap block freed with an inappropriate deallocation function bug in C++ code.
+\item Method \code{plot} is improved.
+\item Methods \code{demix}, \code{dfmix}, \code{pemix} and \code{pfmix} are improved.
 }
 }
 \section{Changes in version 2.8.1}{ 
