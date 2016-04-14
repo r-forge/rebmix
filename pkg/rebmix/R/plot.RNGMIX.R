@@ -51,7 +51,7 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  usr <- list(); iusr <- 1  
+  opar <- list(); ipar <- 1  
   
   par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -161,7 +161,7 @@ function(x,
           figno <- 0
         }
         
-        usr[[iusr]] <- par("usr"); iusr <- iusr + 1        
+        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1        
       }
     }
   }
@@ -234,12 +234,12 @@ function(x,
       
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1    
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1    
   }
   
-  rm(list = ls()[!(ls() %in% c("usr"))])
+  rm(list = ls()[!(ls() %in% c("opar"))])
 
-  invisible(usr)
+  invisible(opar)
 }) # plot
 
 setMethod("plot", 
@@ -295,7 +295,7 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  usr <- list(); iusr <- 1  
+  opar <- list(); ipar <- 1  
   
   par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -405,7 +405,7 @@ function(x,
           figno <- 0
         }
         
-        usr[[iusr]] <- par("usr"); iusr <- iusr + 1        
+        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1        
       }
     }
   }
@@ -478,10 +478,10 @@ function(x,
       
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1    
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1    
   }
   
-  rm(list = ls()[!(ls() %in% c("usr"))])
+  rm(list = ls()[!(ls() %in% c("opar"))])
 
-  invisible(usr)
+  invisible(opar)
 }) # plot

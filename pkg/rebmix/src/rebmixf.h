@@ -106,7 +106,7 @@ public:
     char                       *save_;         // Path to the save data file.
     PreprocessingType_e        Preprocessing_; // Preprocessing type.
     int                        cmax_;          // Maximum number of components.
-    InformationCriterionType_e Criterion_;     // Infromation criterion type.
+    InformationCriterionType_e Criterion_;     // Information criterion type.
     VariablesType_e            *Variables_;    // Types of variables.
     CompnentDistribution       *IniTheta_;     // Initial component parameters.
     int                        length_K_;      // Length of K_.

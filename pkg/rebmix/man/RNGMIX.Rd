@@ -60,6 +60,8 @@ W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Re
 of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 }
 \examples{
+devAskNewPage(ask = TRUE)
+
 # Generate and print multivariate normal datasets with diagonal 
 # variance-covariance matrices.
 
@@ -88,6 +90,8 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:25, sep = ""),
   
 simulated
 
+plot(simulated, pos = 22, nrow = 2, ncol = 3)
+
 # Generate and print multivariate normal datasets with unrestricted 
 # variance-covariance matrices.
 
@@ -111,6 +115,8 @@ simulated <- RNGMIX(model = "RNGMVNORM",
   
 simulated
 
+plot(simulated, pos = 2, nrow = 3, ncol = 1)
+
 # Generate and print multivariate mixed continuous-discrete datasets.
 
 n <- c(400, 100, 500)
@@ -130,7 +136,9 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:5, sep = ""),
   n = n,
   Theta = Theta)
   
-simulated  
+simulated
+
+plot(simulated, pos = 4, nrow = 2, ncol = 3) 
 
 # Generate and print univariate mixed Weibull dataset.
 
@@ -158,6 +166,8 @@ simulated <- RNGMIX(Dataset.name = "simulated",
   Theta = Theta)
   
 simulated
+
+plot(simulated, pos = 1)
 }
 \keyword{random number generation}
 

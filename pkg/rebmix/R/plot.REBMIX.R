@@ -84,7 +84,7 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  usr <- list(); iusr <- 1
+  opar <- list(); ipar <- 1
   
   par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -452,7 +452,7 @@ function(x,
             figno <- 0
           }
           
-          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
@@ -597,7 +597,7 @@ function(x,
             figno <- 0
           }
           
-          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
@@ -680,7 +680,7 @@ function(x,
           cex = cex)
       }
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
@@ -750,7 +750,7 @@ function(x,
           cex = cex)
       } 
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
   
@@ -841,7 +841,7 @@ function(x,
         m <- m - 1
       }
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
   
@@ -910,7 +910,7 @@ function(x,
       m <- m - 1
     } 
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
@@ -978,7 +978,7 @@ function(x,
       m <- m - 1
     } 
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }  
   
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
@@ -1046,7 +1046,7 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
@@ -1114,12 +1114,12 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
-  rm(list = ls()[!(ls() %in% c("usr"))])
+  rm(list = ls()[!(ls() %in% c("opar"))])
 
-  invisible(usr)
+  invisible(opar)
 }) ## plot
 
 setMethod("plot", 
@@ -1208,7 +1208,7 @@ function(x,
 
   N <- d * (d - 1) / 2
   
-  usr <- list(); iusr <- 1
+  opar <- list(); ipar <- 1
   
   par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -1576,7 +1576,7 @@ function(x,
             figno <- 0
           }
           
-          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
@@ -1721,7 +1721,7 @@ function(x,
             figno <- 0
           }
           
-          usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
@@ -1804,7 +1804,7 @@ function(x,
           cex = cex)
       }
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
@@ -1874,7 +1874,7 @@ function(x,
           cex = cex)
       }
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
   
@@ -1965,7 +1965,7 @@ function(x,
         m <- m - 1
       }
       
-      usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
   
@@ -2034,7 +2034,7 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
@@ -2102,7 +2102,7 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }  
   
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
@@ -2170,7 +2170,7 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
@@ -2238,10 +2238,10 @@ function(x,
       m <- m - 1
     }
     
-    usr[[iusr]] <- par("usr"); iusr <- iusr + 1
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
   
-  rm(list = ls()[!(ls() %in% c("usr"))])
+  rm(list = ls()[!(ls() %in% c("opar"))])
 
-  invisible(usr)
+  invisible(opar)
 }) # plot         

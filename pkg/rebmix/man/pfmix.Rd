@@ -24,10 +24,10 @@ see Methods section below.
 a data frame containing observations \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} for which the predictive marginal distribution functions are calculated. The default value is \code{data.frame()}.
 }
 \item{pos}{
-a desired row number in \code{summary} for which the predictive marginal distribution functions are calculated. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the predictive marginal distribution functions are calculated. The default value is \code{1}.
 }
 \item{variables}{
-a vector containig indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
+a vector containing indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
 }
 \item{lower.tail}{
 logical. If \code{TRUE}, probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}. The default value is \code{TRUE}.
@@ -87,10 +87,10 @@ f
 
 # Plot finite mixture.
 
-usr <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1,
+opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1,
   what = "dist", contour.drawlabels = TRUE, contour.labcex = 0.6)
 
-par(usr = usr[[2]], mfg = c(2, 1))
+par(usr = opar[[2]]$usr, mfg = c(2, 1))
 
 points(x = f[, 1], y = f[, 2])
 

@@ -158,7 +158,7 @@ function(model,
   
   model@Error <- 1.0 - model@Accuracy
   
-  model@Precission <- diag(model@CM) / apply(model@CM, 1, sum)
+  model@Precision <- diag(model@CM) / apply(model@CM, 1, sum)
   
   model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
   

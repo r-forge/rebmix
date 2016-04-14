@@ -51,9 +51,9 @@ proportion of all test observations that are classified correctly. \eqn{\mathrm{
 \item{\code{Error}:}{
 proportion of all test observations that are classified wrongly. \eqn{\mathrm{Error} = 1 - \mathrm{Accuracy}}.
 }
-\item{\code{Precission}:}{
+\item{\code{Precision}:}{
 a vector containing proportions of predictive observations in class \eqn{g} that are
-classified correctly into class \eqn{g}. \eqn{\mathrm{Precission}(g) = \frac{x_{gg}}{\sum_{q = 1}^{s} x_{qg}}}.
+classified correctly into class \eqn{g}. \eqn{\mathrm{Precision}(g) = \frac{x_{gg}}{\sum_{q = 1}^{s} x_{qg}}}.
 }
 \item{\code{Sensitivity}:}{
 a vector containing proportions of test observations in class \eqn{g} that are classified

@@ -20,7 +20,7 @@ a character vector, giving the preprocessing types. One of \code{"histogram"}, \
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
 \item{\code{Criterion}:}{
-a character vector giving the infromation criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"}, 
+a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"}, 
 Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"}, minimum description length \code{"MDL2"} or \code{"MDL5"}, 
 approximate weight of evidence \code{"AWE"}, classification likelihood \code{"CLC"}, 
 integrated classification likelihood \code{"ICL"} or \code{"ICL-BIC"}, partition coefficient \code{"PC"}, 

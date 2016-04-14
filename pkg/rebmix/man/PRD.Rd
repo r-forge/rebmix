@@ -18,7 +18,7 @@ Returns the total of positive relative deviations \code{D} at \code{pos}.
 see Methods section below.
 }
 \item{pos}{
-a desired row number in \code{summary} for which the information criterion is calculated. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the information criterion is calculated. The default value is \code{1}.
 }
 \item{\dots}{
 currently not used.

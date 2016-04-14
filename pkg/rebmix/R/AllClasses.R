@@ -876,7 +876,7 @@ slots = c(x = "list",
   CM = "table",
   Accuracy = "numeric",
   Error = "numeric",
-  Precission = "numeric",
+  Precision = "numeric",
   Sensitivity = "numeric",
   Specificity = "numeric"),
 prototype = list(CM = table(0)))
@@ -981,11 +981,11 @@ function(object)
 
   print(object@Error, quote = FALSE)
   
-  cat("Slot \"Precission\":", "\n", sep = "")
+  cat("Slot \"Precision\":", "\n", sep = "")
   
-  names(object@Precission) <- NULL
+  names(object@Precision) <- NULL
 
-  print(object@Precission, quote = FALSE) 
+  print(object@Precision, quote = FALSE) 
   
   cat("Slot \"Sensitivity\":", "\n", sep = "")
   
@@ -1024,11 +1024,11 @@ function(object)
 
   print(object@Error, quote = FALSE)
   
-  cat("Slot \"Precission\":", "\n", sep = "")
+  cat("Slot \"Precision\":", "\n", sep = "")
   
-  names(object@Precission) <- NULL
+  names(object@Precision) <- NULL
 
-  print(object@Precission, quote = FALSE) 
+  print(object@Precision, quote = FALSE) 
   
   cat("Slot \"Sensitivity\":", "\n", sep = "")
   

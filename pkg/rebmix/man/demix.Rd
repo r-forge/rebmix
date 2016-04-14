@@ -21,10 +21,10 @@ and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessi
 see Methods section below.
 }
 \item{pos}{
-a desired row number in \code{summary} for which the empirical densities are calculated. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the empirical densities are calculated. The default value is \code{1}.
 }
 \item{variables}{
-a vector containig indices of variables in subvectors \eqn{\bm{x}} or \eqn{\bar{\bm{x}}}. The default value is \code{1:d}.
+a vector containing indices of variables in subvectors \eqn{\bm{x}} or \eqn{\bar{\bm{x}}}. The default value is \code{1:d}.
 }
 \item{\dots}{
 currently not used.
@@ -77,9 +77,9 @@ f
 
 # Plot finite mixture.
 
-usr <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1)
+opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1)
 
-par(usr = usr[[2]], mfg = c(2, 1))
+par(usr = opar[[2]]$usr, mfg = c(2, 1))
 
 text(x = f[, 1], y = f[, 2], labels = format(f[, 3], digits = 3), cex = 0.8, pos = 1)
 }

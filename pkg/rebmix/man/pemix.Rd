@@ -21,10 +21,10 @@ distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subv
 see Methods section below.
 }
 \item{pos}{
-a desired row number in \code{summary} for which the empirical distribution functions are calculated. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the empirical distribution functions are calculated. The default value is \code{1}.
 }
 \item{variables}{
-a vector containig indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
+a vector containing indices of variables in subvectors \eqn{\bm{x}}. The default value is \code{1:d}.
 }
 \item{lower.tail}{
 logical. If \code{TRUE}, probabilities are \eqn{P[X \leq x]}, otherwise, \eqn{P[X > x]}. The default value is \code{TRUE}.
@@ -82,9 +82,9 @@ f
 
 # Plot finite mixture.
 
-usr <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "dist")
+opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "dist")
 
-par(usr = usr[[1]], mfg = c(1, 1))
+par(usr = opar[[1]]$usr, mfg = c(1, 1))
 
 text(x = f[20:25, 1], y = f[20:25, 2], labels = format(f[20:25, 3], 
   digits = 3), cex = 0.8, pos = 1)

@@ -149,7 +149,7 @@ E0: if (rngmix) delete rngmix;
 
 void RREBMIX(char   **Preprocessing, // Preprocessing type.
              int    *cmax,           // Maximum number of components.
-             char   **Criterion,     // Infromation criterion type.
+             char   **Criterion,     // Information criterion type.
              int    *d,              // Number of independent random variables.
              char   **Variables,     // Types of variables.
              int    *length_pdf,     // Length of pdf.
