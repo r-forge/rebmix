@@ -1,4 +1,4 @@
-setGeneric("RNGMIX",
+setGeneric("RNGMIX", 
   function(model = "RNGMIX",
     Dataset.name = character(),
     rseed = -1,
@@ -6,7 +6,7 @@ setGeneric("RNGMIX",
     Theta = list(), ...)
   standardGeneric("RNGMIX"))
 
-setGeneric("REBMIX",
+setGeneric("REBMIX", 
   function(model = "REBMIX",
     Dataset = list(),
     Preprocessing = character(),
@@ -23,12 +23,12 @@ setGeneric("REBMIX",
     Restraints = "loose", ...)
   standardGeneric("REBMIX"))
   
-setGeneric("coef",
+setGeneric("coef", 
   function(x = NULL,
     pos = 1, ...)
   standardGeneric("coef"))
   
-setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC"))
+setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC")) 
   
 setGeneric("logL", function(x = NULL, pos = 1, ...) standardGeneric("logL")) 
 setGeneric("AIC", function(x = NULL, pos = 1, ...) standardGeneric("AIC"))     
@@ -62,14 +62,14 @@ setGeneric("pemix",
     log.p = FALSE, ...) 
   standardGeneric("pemix"))
   
-setGeneric("dfmix", 
+setGeneric("dfmix",  
   function(x = NULL,
     Dataset = data.frame(),
     pos = 1, 
     variables = expression(1:d), ...)
   standardGeneric("dfmix"))
   
-setGeneric("pfmix", 
+setGeneric("pfmix",  
   function(x = NULL,
     Dataset = data.frame(),  
     pos = 1, 
@@ -77,8 +77,14 @@ setGeneric("pfmix",
     lower.tail = TRUE, 
     log.p = FALSE, ...) 
   standardGeneric("pfmix"))
+  
+setGeneric("split", 
+  function(p = NULL,
+    Dataset = data.frame(),  
+    class = numeric(), ...) 
+  standardGeneric("split"))  
 
-setGeneric("boot",
+setGeneric("boot", 
   function(x = NULL,
     pos = 1,
     Bootstrap = "parametric",
@@ -88,14 +94,14 @@ setGeneric("boot",
     prob = numeric(), ...)
   standardGeneric("boot"))
   
-setGeneric("RCLRMIX",
+setGeneric("RCLRMIX", 
   function(model = "RCLRMIX",
     x = NULL,
     pos = 1, 
     Zt = factor(), ...)
   standardGeneric("RCLRMIX"))  
 
-setGeneric("RCLSMIX",
+setGeneric("RCLSMIX", 
   function(model = "RCLSMIX",
     x = list(),
     Dataset = data.frame(), 

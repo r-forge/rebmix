@@ -169,7 +169,7 @@ data("adult")
 
 # Find complete cases.
 
-adult <- adult[complete.cases(adult), ]
+adult <- adult[complete.cases(adult),]
 
 # Show level attributes for binary and discrete variables.
 

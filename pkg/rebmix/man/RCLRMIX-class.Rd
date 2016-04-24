@@ -72,4 +72,4 @@ normalclu <- RCLRMIX(model = "RCLRMVNORM", x = normalest, Zt = normal@Zt)
 
 plot(normalclu)
 }
-\keyword{clusters}
+\keyword{classes}

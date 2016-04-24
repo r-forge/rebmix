@@ -1,8 +1,6 @@
 setMethod("demix",
           signature(x = "REBMIX"),
-function(x = NULL, 
-  pos = 1, 
-  variables = expression(1:d), ...)
+function(x, pos, variables, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -147,9 +145,7 @@ function(x = NULL,
 
 setMethod("demix",
           signature(x = "REBMVNORM"),
-function(x = NULL, 
-  pos = 1, 
-  variables = expression(1:d), ...)
+function(x, pos, variables, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   

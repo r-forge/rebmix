@@ -1,9 +1,9 @@
 setMethod("dfmix",
           signature(x = "REBMIX"),
-function(x = NULL,
-  Dataset = data.frame(),
-  pos = 1, 
-  variables = expression(1:d), ...)          
+function(x,
+  Dataset,
+  pos, 
+  variables, ...)          
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -121,10 +121,10 @@ function(x = NULL,
 
 setMethod("dfmix",
           signature(x = "REBMVNORM"),
-function(x = NULL,
-  Dataset = data.frame(),
-  pos = 1, 
-  variables = expression(1:d), ...)          
+function(x,
+  Dataset,
+  pos, 
+  variables, ...)          
 {
   digits <- getOption("digits"); options(digits = 15)
   

@@ -61,5 +61,5 @@ coef(simulatedest, pos = 3)
 
 plot(simulatedest)
 }
-\keyword{coef}
+\keyword{parameter estimation}
 

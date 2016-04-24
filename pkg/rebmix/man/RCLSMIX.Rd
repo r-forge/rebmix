@@ -69,7 +69,7 @@ data("adult")
 
 # Find complete cases.
 
-adult <- adult[complete.cases(adult), ]
+adult <- adult[complete.cases(adult),]
 
 # Replace levels with numbers.
 

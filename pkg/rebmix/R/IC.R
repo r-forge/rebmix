@@ -1,8 +1,6 @@
 setMethod(".IC",
           signature(x = "REBMIX"),
-function(x, 
-  Criterion = "AIC",
-  pos = 1, ...)
+function(x, Criterion, pos, ...)
 {
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
@@ -142,9 +140,7 @@ function(x,
 
 setMethod(".IC",
           signature(x = "REBMVNORM"),
-function(x, 
-  Criterion = "AIC",
-  pos = 1, ...)
+function(x, Criterion, pos, ...)
 {
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMVNORM is requested!", call. = FALSE)
@@ -284,8 +280,7 @@ function(x,
 
 setMethod("logL",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -302,8 +297,7 @@ function(x,
 
 setMethod("AIC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -320,8 +314,7 @@ function(x,
 
 setMethod("AIC3",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -338,8 +331,7 @@ function(x,
 
 setMethod("AIC4",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -356,8 +348,7 @@ function(x,
 
 setMethod("AICc",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -374,8 +365,7 @@ function(x,
 
 setMethod("BIC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -392,8 +382,7 @@ function(x,
 
 setMethod("CAIC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -410,8 +399,7 @@ function(x,
 
 setMethod("HQC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -428,8 +416,7 @@ function(x,
 
 setMethod("MDL2",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -446,8 +433,7 @@ function(x,
 
 setMethod("MDL5",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -464,8 +450,7 @@ function(x,
 
 setMethod("AWE",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -482,8 +467,7 @@ function(x,
 
 setMethod("CLC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -500,8 +484,7 @@ function(x,
 
 setMethod("ICL",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -518,8 +501,7 @@ function(x,
 
 setMethod("ICLBIC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -536,8 +518,7 @@ function(x,
 
 setMethod("PRD",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -554,8 +535,7 @@ function(x,
 
 setMethod("SSE",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -572,8 +552,7 @@ function(x,
 
 setMethod("PC",
           signature(x = "ANY"),
-function(x, 
-  pos = 1, ...)
+function(x, pos, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 

@@ -44,4 +44,5 @@ exportMethods("RNGMIX",
               "demix",
               "pemix",
               "dfmix",
-              "pfmix")
+              "pfmix",
+              "split")

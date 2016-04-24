@@ -75,39 +75,16 @@ data("wine")
 
 levels(factor(wine[["Cultivar"]]))
 
-# Split wine dataset into three subsets for three Cultivars
-# and remove Cultivar column.
-
-wine_1 <- subset(wine, subset = Cultivar == 1, select = c(-Cultivar))
-wine_2 <- subset(wine, subset = Cultivar == 2, select = c(-Cultivar))
-wine_3 <- subset(wine, subset = Cultivar == 3, select = c(-Cultivar))
-
-# Split datasets into train (75%) and test (25%) subsets.
+# Split dataset into train (75%) and test (25%) subsets.
 
 set.seed(3)
 
-Prob <- 0.75
-
-n_1 <- nrow(wine_1); s_1 <- sample.int(n = n_1, size = as.integer(n_1 * Prob))
-
-wine_1_train <- wine_1[s_1,]; wine_1_test <- wine_1[-s_1,]
-
-n_2 <- nrow(wine_2); s_2 <- sample.int(n = n_2, size = as.integer(n_2 * Prob))
-
-wine_2_train <- wine_2[s_2,]; wine_2_test <- wine_2[-s_2,]
-
-n_3 <- nrow(wine_3); s_3 <- sample.int(n = n_3, size = as.integer(n_3 * Prob))
-
-wine_3_train <- wine_3[s_3,]; wine_3_test <- wine_3[-s_3,]
-
-wine_test = rbind(wine_1_test, wine_2_test, wine_3_test)
-
-Zt <- factor(c(rep(0, nrow(wine_1_test)), rep(1, nrow(wine_2_test)), rep(2, nrow(wine_3_test))))
+Wine <- split(p = 0.75, Dataset = wine, class = 14)
 
 # Estimate number of components, component weights and component 
 # parameters for train subsets.
 
-n <- range(nrow(wine_1_train), nrow(wine_2_train), nrow(wine_3_train))
+n <- range(Wine$ntrain)
 
 K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
@@ -115,9 +92,7 @@ K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
 K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))
 
 wineest <- REBMIX(model = "REBMVNORM",
-  Dataset = list(wine_1_train = wine_1_train,
-                 wine_2_train = wine_2_train,
-                 wine_3_train = wine_3_train),
+  Dataset = Wine$train,
   Preprocessing = "Parzen window",
   cmax = 10,
   Criterion = "ICL-BIC",
@@ -133,8 +108,8 @@ plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
 
 predictive <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(wineest),
-  Dataset = wine_test,
-  Zt = Zt)
+  Dataset = Wine$test,
+  Zt = Wine$Zt)
 
 predictive
 

@@ -7,7 +7,7 @@
 Empirical Distribution Function Calculation
 }
 \description{
-\code{pemix} returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
+Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
 distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subvectors of 
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }

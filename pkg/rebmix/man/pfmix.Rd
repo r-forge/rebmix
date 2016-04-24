@@ -7,7 +7,7 @@
 Predictive Marginal Distribution Function Calculation
 }
 \description{
-\code{pfmix} returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and 
+Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and 
 predictive marginal distribution functions \eqn{F(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vectors \eqn{\bm{x}} are subvectors of 
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }

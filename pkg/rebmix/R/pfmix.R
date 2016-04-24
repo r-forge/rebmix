@@ -1,11 +1,11 @@
 setMethod("pfmix",
           signature(x = "REBMIX"),
-function(x = NULL,
-  Dataset = data.frame(),
-  pos = 1, 
-  variables = expression(1:d), 
-  lower.tail = TRUE, 
-  log.p = FALSE, ...)
+function(x,
+  Dataset,
+  pos, 
+  variables, 
+  lower.tail, 
+  log.p, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -131,12 +131,12 @@ function(x = NULL,
 
 setMethod("pfmix",
           signature(x = "REBMVNORM"),
-function(x = NULL,
-  Dataset = data.frame(),
-  pos = 1, 
-  variables = expression(1:d), 
-  lower.tail = TRUE, 
-  log.p = FALSE, ...)
+function(x,
+  Dataset,
+  pos, 
+  variables, 
+  lower.tail, 
+  log.p, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
