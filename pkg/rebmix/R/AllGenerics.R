@@ -82,7 +82,12 @@ setGeneric("split",
   function(p = NULL,
     Dataset = data.frame(),  
     class = numeric(), ...) 
-  standardGeneric("split"))  
+  standardGeneric("split"))
+  
+setGeneric("chunk", 
+  function(x = NULL,
+    variables = expression(1:d)) 
+  standardGeneric("chunk"))    
 
 setGeneric("boot", 
   function(x = NULL,

@@ -7,11 +7,12 @@
 Splits Dataset into Train and Test Datasets
 }
 \description{
-Returns (invisibly) the \code{s}, \code{ntrain}, \code{train}, \code{ntest}, \code{test} and \code{Zt} output for \code{Dataset}.
+Returns (invisibly) the object containing train and test observations \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}} as well as true class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
 }
 \usage{
 \S4method{split}{numeric}(p = 0.75, Dataset = data.frame(), class = numeric(), ...)
 \S4method{split}{list}(p = list(), Dataset = data.frame(), class = numeric(), ...)
+## ... and for other signatures
 }
 \arguments{
 \item{p}{
@@ -29,24 +30,7 @@ further arguments to \code{\link[base]{sample.int}}.
 }
 }
 \value{
-\item{s}{
-finite set of size \eqn{s} of classes \eqn{\bm{\Omega} = \{\bm{\Omega}_{g}; \ g = 1, \ldots, s\}}.
-}
-\item{ntrain}{
-a vector of length \eqn{s} containing numbers of observations in train datasets \eqn{Y_{\mathrm{train}g}}.
-}
-\item{train}{
-a list of data frames containing train datasets \eqn{Y_{\mathrm{train}g}} of length \eqn{n_{\mathrm{train}g}}.
-}
-\item{ntest}{
-number of observations in test dataset \eqn{Y_{\mathrm{test}}}.
-}
-\item{test}{
-a data frame containing test dataset \eqn{Y_{\mathrm{test}}} of length \eqn{n_{\mathrm{test}}}.
-}
-\item{Zt}{
-a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
-}
+Returns an object of class \code{RCLS}.
 }
 \section{Methods}{
 \describe{
@@ -57,6 +41,15 @@ The default value is \code{list()}.}
 }
 \author{Marko Nagode}
 \examples{
+data("iris")
+
+# Split dataset into train (75%) and test (25%) subsets.
+
+set.seed(5)
+
+Iris <- split(p = 0.75, Dataset = iris, class = 5)
+
+Iris
 }
 \keyword{classification}
 

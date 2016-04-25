@@ -861,6 +861,16 @@ function(object)
   rm(list = ls())
 }) ## show
 
+## Class RCLS
+
+setClass("RCLS",
+slots = c(s = "numeric",
+  ntrain = "numeric",
+  train = "list",
+  ntest = "numeric",
+  test = "data.frame",
+  Zt = "factor"))
+
 ## Class RCLSMIX
 
 setClass("RCLSMIX",

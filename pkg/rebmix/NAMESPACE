@@ -12,6 +12,7 @@ exportClasses("RNGMIX",
               "REBMVNORM.boot",
               "RCLRMIX",
               "RCLRMVNORM",
+              "RCLS",
               "RCLSMIX",
               "RCLSMVNORM")
 
@@ -45,4 +46,5 @@ exportMethods("RNGMIX",
               "pemix",
               "dfmix",
               "pfmix",
-              "split")
+              "split",
+              "chunk")

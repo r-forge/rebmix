@@ -56,7 +56,7 @@ Iris <- split(p = 0.75, Dataset = iris, class = 5)
 # Estimate number of components, component weights and component 
 # parameters for train subsets.
 
-n <- range(Iris$ntrain)
+n <- range(Iris@ntrain)
 
 K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
@@ -64,7 +64,7 @@ K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
 K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
 
 irisest <- REBMIX(model = "REBMVNORM",
-  Dataset = Iris$train,
+  Dataset = Iris@train,
   Preprocessing = "Parzen window",
   cmax = 10,
   Criterion = "ICL-BIC",
@@ -77,18 +77,18 @@ plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("den"))
 
 # Selected features.
 
-predictive <- RCLSMIX(model = "RCLSMVNORM", 
+iriscla <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(irisest),
-  Dataset = Iris$test,
-  Zt = Iris$Zt)
+  Dataset = Iris@test,
+  Zt = Iris@Zt)
 
-predictive
+iriscla
 
-summary(predictive)
+summary(iriscla)
 
 # Plot selected features.
 
-plot(predictive, nrow = 3, ncol = 2)
+plot(iriscla, nrow = 3, ncol = 2)
 }
 }
 \keyword{datasets}

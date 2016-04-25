@@ -30,30 +30,29 @@ function(p = 0.75, Dataset, class, ...)
   
   Dataset <- base::split(Dataset, Dataset[, class])
 
-  output <- list(s = NULL, ntrain = array(), train = list(), 
-                 ntest = NULL, test = NULL, Zt = NULL)
+  output <- new("RCLS")
 
-  output$s <- length(Dataset)
+  output@s <- length(Dataset)
 
-  for (i in 1:output$s) {
+  for (i in 1:output@s) {
     n <- nrow(Dataset[[i]]) 
 
-    output$ntrain[i] <- as.integer(n * p)
+    output@ntrain[i] <- as.integer(n * p)
 
-    sample <- sample.int(n = n, size = output$ntrain[i], ...)
+    sample <- sample.int(n = n, size = output@ntrain[i], ...)
 
-    output$train[[i]] <- Dataset[[i]][sample,]
+    output@train[[i]] <- Dataset[[i]][sample,]
 
-    output$test <- rbind(output$test, Dataset[[i]][-sample,])
+    output@test <- rbind(output@test, Dataset[[i]][-sample,])
   }
 
-  output$ntest <- nrow(output$test)
+  output@ntest <- nrow(output@test)
 
-  output$train <- lapply(output$train, function(x) x[, -class])
+  output@train <- lapply(output@train, function(x) x[, -class])
 
-  output$Zt <- factor(output$test[, class])
+  output@Zt <- factor(output@test[, class])
 
-  output$test <- output$test[, -class]
+  output@test <- output@test[, -class]
 
   rm(list = ls()[!(ls() %in% c("output"))]) 
 
@@ -100,10 +99,9 @@ function(p = list(), Dataset, class, ...)
 
   if ((p$type < 1) || (p$type > ncol(Dataset))) {
     stop(sQuote("p$type"), " must be greater than 0 and less or equal than ", ncol(Dataset), "!", call. = FALSE)
-  }  
+  }
   
-  output <- list(s = NULL, ntrain = array(), train = list(), 
-                 ntest = NULL, test = NULL, Zt = NULL)
+  output <- new("RCLS") 
                  
   type <- as.character(unique(Dataset[, p$type]))
                  
@@ -115,27 +113,27 @@ function(p = list(), Dataset, class, ...)
     stop(sQuote("p$test"), " should be one of ", paste(dQuote(type), collapse = ", "), "!", call. = FALSE)
   }                  
                  
-  output$test <- subset(Dataset, subset = Dataset[, p$type] == p$test)
+  output@test <- subset(Dataset, subset = Dataset[, p$type] == p$test)
   
-  output$ntest <- nrow(output$test)
+  output@ntest <- nrow(output@test)
   
-  output$Zt <- factor(output$test[, class])
+  output@Zt <- factor(output@test[, class])
 
-  output$test <- output$test[, c(-class, -p$type)]
+  output@test <- output@test[, c(-class, -p$type)]
   
   Dataset <- subset(Dataset, subset = Dataset[, p$type] == p$train)
   
   Dataset <- base::split(Dataset, Dataset[, class])
   
-  output$s <- length(Dataset)
+  output@s <- length(Dataset)
   
-  for (i in 1:output$s) {
-    output$ntrain[i] <- nrow(Dataset[[i]])
+  for (i in 1:output@s) {
+    output@ntrain[i] <- nrow(Dataset[[i]])
     
-    output$train[[i]] <- Dataset[[i]]
+    output@train[[i]] <- Dataset[[i]]
   }
   
-  output$train <- lapply(output$train, function(x) x[, c(-class, -p$type)])  
+  output@train <- lapply(output@train, function(x) x[, c(-class, -p$type)])  
 
   rm(list = ls()[!(ls() %in% c("output"))]) 
 
