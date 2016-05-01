@@ -112,4 +112,12 @@ setGeneric("RCLSMIX",
     Dataset = data.frame(), 
     Zt = factor(), ...)
   standardGeneric("RCLSMIX"))
+  
+setGeneric("BFSMIX",
+  function(model = "RCLSMIX",
+    x = list(),
+    Dataset = data.frame(),
+    Zt = factor(), ...)
+  standardGeneric("BFSMIX"))
+
 

@@ -30,7 +30,7 @@ WNmodel <- function (formula = .~.) {
 
   retval@defineComponent <- expression({
     logLik <- function(x, y) {
-      logLik <- array(0)
+      logLik <- array()
 
       for (i in 1:nrow(y)) {
         logLik[i] <- dweibull(y[i, 1], shape = beta, scale = theta, log = TRUE) + 

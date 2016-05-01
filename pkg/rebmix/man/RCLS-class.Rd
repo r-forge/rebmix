@@ -11,6 +11,9 @@ Objects can be created by calls of the form \code{new("RCLS", ...)}.
 \item{\code{s}:}{
 finite set of size \eqn{s} of classes \eqn{\bm{\Omega} = \{\bm{\Omega}_{g}; \ g = 1, \ldots, s\}}.
 }
+\item{\code{levels}:}{
+a character vector of length \eqn{s} containing class names \eqn{\bm{\Omega}_{g}}.
+}
 \item{\code{ntrain}:}{
 a vector of length \eqn{s} containing numbers of observations in train datasets \eqn{Y_{\mathrm{train}g}}.
 }

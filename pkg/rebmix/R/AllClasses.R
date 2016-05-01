@@ -865,6 +865,7 @@ function(object)
 
 setClass("RCLS",
 slots = c(s = "numeric",
+  levels = "character",
   ntrain = "numeric",
   train = "list",
   ntest = "numeric",
@@ -888,7 +889,8 @@ slots = c(x = "list",
   Error = "numeric",
   Precision = "numeric",
   Sensitivity = "numeric",
-  Specificity = "numeric"),
+  Specificity = "numeric",
+  Features = "numeric"),
 prototype = list(CM = table(0)))
 
 setMethod("initialize", "RCLSMIX", 
@@ -1007,7 +1009,13 @@ function(object)
   
   names(object@Specificity) <- NULL
 
-  print(object@Specificity, quote = FALSE)      
+  print(object@Specificity, quote = FALSE)
+  
+  cat("Slot \"Features\":", "\n", sep = "")  
+  
+  names(object@Features) <- NULL
+
+  print(object@Features, quote = FALSE)          
 
   rm(list = ls())
 }) ## show
@@ -1050,7 +1058,13 @@ function(object)
   
   names(object@Specificity) <- NULL
 
-  print(object@Specificity, quote = FALSE)      
+  print(object@Specificity, quote = FALSE)
+  
+  cat("Slot \"Features\":", "\n", sep = "")  
+  
+  names(object@Features) <- NULL
+
+  print(object@Features, quote = FALSE)              
 
   rm(list = ls())
 }) ## show

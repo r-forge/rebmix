@@ -20,6 +20,7 @@
 \alias{RNGMIX,ANY-method}
 \alias{RCLRMIX,ANY-method}
 \alias{RCLSMIX,ANY-method}
+\alias{BFSMIX,ANY-method}
 \title{Internal rebmix Functions}
 \description{
 Internal rebmix functions, methods and classes.

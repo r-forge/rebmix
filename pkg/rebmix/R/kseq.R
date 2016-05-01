@@ -32,7 +32,7 @@ kseq <- function(from = NULL, to = NULL, f = 0.05, ...)
     stop(sQuote("f"), " must be greater than 0.0 and less than 1.0!", call. = FALSE)
   }  
 
-  K <- array(0)
+  K <- array()
 
   i <- 1; K[i] <- from
 

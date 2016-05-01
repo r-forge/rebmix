@@ -104,7 +104,7 @@ test <- as.factor(subset(adult, subset = Type == 1, select = c(Income))[, 1])
 
 cmax <- unlist(lapply(apply(trainall, 2, unique), length))
 
-adultest <- list(0)
+adultest <- list()
 
 for (i in 1:14) {
   adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]), 

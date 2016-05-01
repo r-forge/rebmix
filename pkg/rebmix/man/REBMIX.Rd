@@ -32,7 +32,7 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 represents one random variable. Number of observations \eqn{n} equals the number of rows in the datasets.
 }
 \item{Preprocessing}{
-a character vector, giving the preprocessing types. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
+a character vector giving the preprocessing types. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
 }
 \item{cmax}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.

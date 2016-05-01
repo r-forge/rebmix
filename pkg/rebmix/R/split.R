@@ -26,11 +26,13 @@ function(p = 0.75, Dataset, class, ...)
   
   if ((p < 0.0) || (p > 1.0)) {
     stop(sQuote("p"), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
-  }   
+  }
+  
+  output <- new("RCLS")  
+  
+  output@levels <- levels(factor(Dataset[, class]))
   
   Dataset <- base::split(Dataset, Dataset[, class])
-
-  output <- new("RCLS")
 
   output@s <- length(Dataset)
 
@@ -122,6 +124,8 @@ function(p = list(), Dataset, class, ...)
   output@test <- output@test[, c(-class, -p$type)]
   
   Dataset <- subset(Dataset, subset = Dataset[, p$type] == p$train)
+  
+  output@levels <- levels(factor(Dataset[, class]))
   
   Dataset <- base::split(Dataset, Dataset[, class])
   

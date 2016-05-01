@@ -164,9 +164,105 @@ function(model,
   
   model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
   
+  model@Features <- 1:length(x)
+  
   options(digits = digits)  
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
   return(model)
 }) ## RCLSMIX
+
+setMethod("BFSMIX",
+          signature(model = "ANY"),
+function(model,
+  x,
+  Dataset, 
+  Zt, ...)
+{
+  digits <- getOption("digits"); options(digits = 15)
+  
+  message("BFSMIX Version 2.8.2")
+  
+  flush.console()
+  
+  temp <- new(model,
+    x = x,
+    Dataset = Dataset,
+    Zt = Zt)
+    
+  Zr <- factor(rep(1:temp@s, temp@ntrain))
+  
+  rm(temp)
+    
+  OPEN <- 1:length(x); CLOSED <- numeric(); Error <- 1.0
+
+  repeat {
+    k <- NA
+
+    for (j in OPEN) {
+      EVAL <- c(CLOSED, j)
+      
+      temp <- new(model,
+        x = x[EVAL],
+        Dataset = do.call("cbind", lapply(x[EVAL], function(x) do.call("rbind", x@Dataset))),
+        Zt = Zr)      
+       
+      temp <- RCLSMIX(model = temp, ...)
+      
+      temp@CM <- table(temp@Zt, temp@Zp)
+  
+      temp@Accuracy <- sum(diag(temp@CM)) / temp@ntest
+  
+      temp@Error <- 1.0 - temp@Accuracy
+  
+      temp@Precision <- diag(temp@CM) / apply(temp@CM, 1, sum)
+  
+      temp@Sensitivity <- diag(temp@CM) / apply(temp@CM, 2, sum)
+  
+      temp@Specificity <- (temp@ntest - apply(temp@CM, 1, sum)) / (temp@ntest - apply(temp@CM, 2, sum))
+      
+      temp@Features <- EVAL
+      
+      if (temp@Error < Error) {
+        Error <- temp@Error; k <- j
+      }
+      
+      rm(temp)      
+    }
+
+    if (is.na(k)) {
+      break
+    }
+    else {
+      OPEN <- OPEN[-which(OPEN == k)]; CLOSED <- c(CLOSED, k)
+    }
+  }
+  
+  model <- new(model,
+    x = x[CLOSED],
+    Dataset = Dataset[, CLOSED],
+    Zt = Zt)      
+       
+  model <- RCLSMIX(model = model, ...)
+  
+  model@CM <- table(model@Zt, model@Zp)
+  
+  model@Accuracy <- sum(diag(model@CM)) / model@ntest
+  
+  model@Error <- 1.0 - model@Accuracy
+  
+  model@Precision <- diag(model@CM) / apply(model@CM, 1, sum)
+  
+  model@Sensitivity <- diag(model@CM) / apply(model@CM, 2, sum)
+  
+  model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
+  
+  model@Features <- CLOSED
+  
+  options(digits = digits)  
+
+  rm(list = ls()[!(ls() %in% c("model"))])
+
+  return(model)
+}) ## BFSMIX

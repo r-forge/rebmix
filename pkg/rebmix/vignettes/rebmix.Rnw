@@ -138,6 +138,13 @@ gamma3est <- REBMIX(Dataset = gamma3@Dataset,
   pdf = "gamma",
   K = 30:80)
 @
+\subsubsection{Plot method}
+\begin{figure}[h]\centering
+<<gamma2-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(gamma2est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+@
+\caption{Gamma 2 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
+\end{figure}
 \subsubsection{Summary and coef methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(gamma2est)
@@ -153,14 +160,6 @@ gamma3boot
 
 summary(gamma3boot)
 @
-\subsubsection{Plot method}
-\begin{figure}[tbp]\centering
-<<gamma2-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(gamma2est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
-@
-\caption{Gamma 2 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
-\end{figure}
-
 \subsection{Poisson dataset}
 Dataset consists of $n = 600$ two~dimensional observations obtained by generating data points separately from each of three Poisson distributions. The component~dataset sizes and parameters, which are those studied in \citet{Jinwen_2009}, are displayed below
 \begin{center}
@@ -205,6 +204,22 @@ poissonest <- REBMIX(Dataset = poisson@Dataset,
   pdf = rep("Poisson", 2),
   K = 1)
 @
+\subsubsection{Plot method}
+\begin{figure}[h]\centering
+<<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(poissonest, pos = 7, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
+@
+\caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
+\end{figure}
+\subsubsection{Clustering}
+\begin{figure}[h]\centering
+<<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = poisson@Zt)
+
+plot(poissonclu)
+@
+\caption{Poisson dataset. Predictive cluster membership (coloured circles), error (large circles).}
+\end{figure}
 \subsubsection{Summary and coef methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 ## Visualize results.
@@ -213,28 +228,13 @@ summary(poissonest)
 
 coef(poissonest, pos = 9)
 @
-\subsubsection{Plot method}
-\begin{figure}[tbp]\centering
-<<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(poissonest, pos = 7, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
-@
-\caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
-\end{figure}
-\subsubsection{Clustering}
-\begin{figure}[tbp]\centering
-<<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = poisson@Zt)
-
-plot(poissonclu)
-@
-\caption{Poisson dataset. Predictive cluster membership (coloured circles), error (large circles).}
-\end{figure}
 \subsection{Multivariate normal \texttt{wreath} dataset}
 A \texttt{wreath} dataset \citep{Fraley_2005} consist of $1000$ observations drawn from a $14$-component normal mixture in which the covariances of the components have the same size and shape but differ in orientation.
-\subsubsection{Finite mixture estimation}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 data("wreath", package = "mclust")
-
+@
+\subsubsection{Finite mixture estimation}
+<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
 n <- nrow(wreath)
@@ -257,15 +257,15 @@ summary(wreathest)
 coef(wreathest)
 @
 \subsubsection{Plot method}
-\begin{figure}[tbp]\centering
+\begin{figure}[h]\centering
 <<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(wreathest)
 @
 \caption{Dataset \texttt{wreath}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
-\begin{figure}[tbp]\centering
-<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+\begin{figure}[h]\centering
+<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
 plot(wreathclu)
@@ -274,10 +274,11 @@ plot(wreathclu)
 \end{figure}
 \subsection{Multivariate normal \texttt{ex4.1} dataset}
 A \texttt{ex4.1} dataset \citep{Baudry_2010, mclust_20__} consist of $600$ two~dimensional observations.
-\subsubsection{Finite mixture estimation}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 data("Baudry_etal_2010_JCGS_examples", package = "mclust")
-
+@
+\subsubsection{Finite mixture estimation}
+<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
 n <- nrow(ex4.1)
@@ -298,15 +299,15 @@ ex4.1est <- REBMIX(model = "REBMVNORM",
 summary(ex4.1est)
 @
 \subsubsection{Plot method}
-\begin{figure}[tbp]\centering
-<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+\begin{figure}[h]\centering
+<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
-\begin{figure}[tbp]\centering
-<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+\begin{figure}[h]\centering
+<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
 
 plot(ex4.1clu)
@@ -322,57 +323,26 @@ data("iris")
 
 levels(iris[["Class"]])
 
-# Split iris dataset into three subsets for three Classes
-# and remove Class column.
-
-iris_set <- subset(iris, subset = Class == "iris-setosa", select = c(-Class))
-iris_ver <- subset(iris, subset = Class == "iris-versicolor", select = c(-Class))
-iris_vir <- subset(iris, subset = Class == "iris-virginica", select = c(-Class))
-@
-The datasets are split into train ($75\%$) and test ($25\%$) datasets.
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-# Split datasets into train (75%) and test (25%) subsets.
+# Split dataset into train (75%) and test (25%) subsets.
 
 set.seed(5)
 
-Prob <- 0.75
-
-n_set <- nrow(iris_set); s_set <- sample.int(n = n_set, size = as.integer(n_set * Prob))
-
-iris_set_train <- iris_set[s_set,]; iris_set_test <- iris_set[-s_set,]
-
-n_ver <- nrow(iris_ver); s_ver <- sample.int(n = n_ver, size = as.integer(n_ver * Prob))
-
-iris_ver_train <- iris_ver[s_ver,]; iris_ver_test <- iris_ver[-s_ver,]
-
-n_vir <- nrow(iris_vir); s_vir <- sample.int(n = n_vir, size = as.integer(n_vir * Prob))
-
-iris_vir_train <- iris_vir[s_vir,]; iris_vir_test <- iris_vir[-s_vir,]
-
-iris_test = rbind(iris_set_test, iris_ver_test, iris_vir_test)
-@
-Factor $Z_{t}$ of true class membership is stored for the test datasets.
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-Zt <- factor(c(rep(0, nrow(iris_set_test)),
-  rep(1, nrow(iris_ver_test)),
-  rep(2, nrow(iris_vir_test))))
+Iris <- split(p = 0.75, Dataset = iris, class = 5)
 @
 \subsubsection{Finite mixture estimation}
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
 # Estimate number of components, component weights and component
 # parameters for train subsets.
 
-n <- range(nrow(iris_set_train), nrow(iris_ver_train), nrow(iris_vir_train))
+n <- range(Iris@ntrain)
 
-K <- c(as.integer(1 + log2(sum(n[1]))), # Minimum v follows Sturges rule.
+K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
 
 K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
 
 irisest <- REBMIX(model = "REBMVNORM",
-  Dataset = list(iris_set_train = iris_set_train,
-                 iris_ver_train = iris_ver_train,
-                 iris_vir_train = iris_vir_train),
+  Dataset = Iris@train,
   Preprocessing = "Parzen window",
   cmax = 10,
   Criterion = "ICL-BIC",
@@ -381,10 +351,12 @@ irisest <- REBMIX(model = "REBMVNORM",
 @
 \subsubsection{Classification}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
+# Selected features.
+
 iriscla <- RCLSMIX(model = "RCLSMVNORM",
   x = list(irisest),
-  Dataset = iris_test,
-  Zt = Zt)
+  Dataset = Iris@test,
+  Zt = Iris@Zt)
 @
 \subsubsection{Show and summary methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -393,8 +365,10 @@ iriscla
 summary(iriscla)
 @
 \subsubsection{Plot method}
-\begin{figure}[tbp]\centering
+\begin{figure}[h]\centering
 <<iris-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+# Plot selected features.
+
 plot(iriscla, nrow = 3, ncol = 2)
 @
 \caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (large circles).}
