@@ -65,7 +65,7 @@ function(x,
     
   s <- length(levels(x@Zp))
   
-  zlim <- c(0, s - 1); zmax <- zlim[2]
+  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
@@ -324,7 +324,7 @@ function(x,
     
   s <- length(levels(x@Zp))
   
-  zlim <- c(0, s - 1); zmax <- zlim[2]
+  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   

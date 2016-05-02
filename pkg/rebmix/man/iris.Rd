@@ -75,7 +75,7 @@ plot(irisest, pos = 1, nrow = 3, ncol = 2, what = c("den"))
 plot(irisest, pos = 2, nrow = 3, ncol = 2, what = c("den"))
 plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("den"))
 
-# Selected features.
+# Selected chunks.
 
 iriscla <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(irisest),
@@ -86,7 +86,7 @@ iriscla
 
 summary(iriscla)
 
-# Plot selected features.
+# Plot selected chunks.
 
 plot(iriscla, nrow = 3, ncol = 2)
 }

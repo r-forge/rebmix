@@ -75,87 +75,43 @@ adult <- adult[complete.cases(adult),]
 
 adult <- as.data.frame(data.matrix(adult))
 
-# Split adult dataset into two train subsets for two Incomes
+# Find numbers of levels.
+
+cmax <- unlist(lapply(apply(adult[, c(-1, -16)], 2, unique), length))
+
+cmax
+
+# Split adult dataset into train and test subsets for two Incomes
 # and remove Type and Income columns.
 
-trainle50k <- subset(adult, subset = (Type == 2) & (Income == 1), 
-  select = c(-Type, -Income))
-traingt50k <- subset(adult, subset = (Type == 2) & (Income == 2), 
-  select = c(-Type, -Income))
+Adult <- split(p = list(type = 1, train = 2, test = 1),
+  Dataset = adult, class = 16)
 
-trainall <- subset(adult, subset = Type == 2, select = c(-Type, -Income))
-
-train <- as.factor(subset(adult, subset = Type == 2, select = c(Income))[, 1])
-
-# Extract test dataset form adult dataset and remove Type 
-# and Income columns.
-
-testle50k <- subset(adult, subset = (Type == 1) & (Income == 1), 
-  select = c(-Type, -Income))
-testgt50k <- subset(adult, subset = (Type == 1) & (Income == 2), 
-  select = c(-Type, -Income))
-
-testall <- subset(adult, subset = Type == 1, select = c(-Type, -Income))
-
-test <- as.factor(subset(adult, subset = Type == 1, select = c(Income))[, 1])
-
-# Estimate number of components, component weights and component 
-# parameters for Naive Bayes.
-
-cmax <- unlist(lapply(apply(trainall, 2, unique), length))
+# Estimate number of components, component weights and component parameters
+# for the set of chunks 1:14.
 
 adultest <- list()
 
 for (i in 1:14) {
-  adultest[[i]] <- REBMIX(Dataset = list(as.data.frame(trainle50k[, i]), 
-    as.data.frame(traingt50k[, i])),
+  adultest[[i]] <- REBMIX(Dataset = chunk(Adult, i)@train,
     Preprocessing = "histogram",
-    cmax = if (cmax[i] > 120) 12 else cmax[i],
+    cmax = min(120, cmax[i]),
     Criterion = "BIC",
-    pdf = if (cmax[i] > 120) "normal" else "Dirac",
-    K = if (cmax[i] > 120) 13:43 else 1)
+    pdf = "Dirac",
+    K = 1)
 }
 
-# Best-first feature subset selection.
+# Class membership prediction based upon the best first search algorithm.
 
-c <- NULL; rvs <- 1:14; Error <- 1.0
-
-for (i in 1:14) {
-  k <- NA
-
-  for (j in rvs) {
-    adultcla <- RCLSMIX(x = adultest[c(c, j)],
-      Dataset = as.data.frame(trainall[, c(c, j)]),
-      Zt = train) 
-
-    if (adultcla@Error < Error) {
-      Error <- adultcla@Error; k <- j
-    }
-  }
-
-  if (is.na(k)) {
-    break
-  }
-  else {
-    c <- c(c, k); rvs <- rvs[-which(rvs == k)]
-  }
-}
-
-# Error on train dataset.
-
-Error
-
-# Selected features.
-
-adultcla <- RCLSMIX(x = adultest[c],
-  Dataset = as.data.frame(testall[, c]), 
-  Zt = test)
+adultcla <- BFSMIX(x = adultest, 
+  Dataset = Adult@test, 
+  Zt = Adult@Zt)
 
 adultcla
-  
+
 summary(adultcla)
 
-# Plot selected features.
+# Plot selected chunks.
 
 plot(adultcla, nrow = 5, ncol = 2)
 }

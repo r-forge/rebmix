@@ -104,7 +104,7 @@ plot(wineest, pos = 1, nrow = 7, ncol = 6, what = c("den"))
 plot(wineest, pos = 2, nrow = 7, ncol = 6, what = c("den"))
 plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
 
-# Selected features.
+# Selected chunks.
 
 winecla <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(wineest),
@@ -115,7 +115,7 @@ winecla
 
 summary(winecla)
 
-# Plot selected features.
+# Plot selected chunks.
 
 plot(winecla, nrow = 7, ncol = 6)
 }

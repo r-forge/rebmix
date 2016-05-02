@@ -890,7 +890,7 @@ slots = c(x = "list",
   Precision = "numeric",
   Sensitivity = "numeric",
   Specificity = "numeric",
-  Features = "numeric"),
+  Chunks = "numeric"),
 prototype = list(CM = table(0)))
 
 setMethod("initialize", "RCLSMIX", 
@@ -1011,11 +1011,11 @@ function(object)
 
   print(object@Specificity, quote = FALSE)
   
-  cat("Slot \"Features\":", "\n", sep = "")  
+  cat("Slot \"Chunks\":", "\n", sep = "")  
   
-  names(object@Features) <- NULL
+  names(object@Chunks) <- NULL
 
-  print(object@Features, quote = FALSE)          
+  print(object@Chunks, quote = FALSE)          
 
   rm(list = ls())
 }) ## show
@@ -1060,11 +1060,11 @@ function(object)
 
   print(object@Specificity, quote = FALSE)
   
-  cat("Slot \"Features\":", "\n", sep = "")  
+  cat("Slot \"Chunks\":", "\n", sep = "")  
   
-  names(object@Features) <- NULL
+  names(object@Chunks) <- NULL
 
-  print(object@Features, quote = FALSE)              
+  print(object@Chunks, quote = FALSE)              
 
   rm(list = ls())
 }) ## show

@@ -164,7 +164,7 @@ function(model,
   
   model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
   
-  model@Features <- 1:length(x)
+  model@Chunks <- 1:length(x)
   
   options(digits = digits)  
 
@@ -222,7 +222,7 @@ function(model,
   
       temp@Specificity <- (temp@ntest - apply(temp@CM, 1, sum)) / (temp@ntest - apply(temp@CM, 2, sum))
       
-      temp@Features <- EVAL
+      temp@Chunks <- EVAL
       
       if (temp@Error < Error) {
         Error <- temp@Error; k <- j
@@ -241,7 +241,7 @@ function(model,
   
   model <- new(model,
     x = x[CLOSED],
-    Dataset = Dataset[, CLOSED],
+    Dataset = as.data.frame(Dataset[, CLOSED]),
     Zt = Zt)      
        
   model <- RCLSMIX(model = model, ...)
@@ -258,7 +258,7 @@ function(model,
   
   model@Specificity <- (model@ntest - apply(model@CM, 1, sum)) / (model@ntest - apply(model@CM, 2, sum))
   
-  model@Features <- CLOSED
+  model@Chunks <- CLOSED
   
   options(digits = digits)  
 
