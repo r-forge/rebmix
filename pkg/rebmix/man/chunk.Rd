@@ -1,7 +1,7 @@
 \name{chunk-methods}
 \alias{chunk}
 \alias{chunk-methods}
-\alias{chunk,RCLS-method}
+\alias{chunk,RCLS.chunk-method}
 \title{
 Extracts Chunk from Train and Test Datasets
 }
@@ -10,7 +10,7 @@ Returns (invisibly) the object containing train and test observations \eqn{\bm{x
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
-\S4method{chunk}{RCLS}(x = NULL, variables = expression(1:d))
+\S4method{chunk}{RCLS.chunk}(x = NULL, variables = expression(1:d))
 ## ... and for other signatures
 }
 \arguments{
@@ -22,11 +22,11 @@ a vector containing indices of variables in subvectors \eqn{\bm{x}}. The default
 }
 }
 \value{
-Returns an object of class \code{RCLS}.
+Returns an object of class \code{RCLS.chunk}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(x = "RCLS")}}{an object of class \code{RCLS}.}
+\item{\code{signature(x = "RCLS.chunk")}}{an object of class \code{RCLS.chunk}.}
 }
 }
 \author{Marko Nagode}

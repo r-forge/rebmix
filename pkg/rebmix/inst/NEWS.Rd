@@ -6,7 +6,8 @@
 \item Fixed heap block freed with an inappropriate deallocation function bug in C++ code.
 \item Method \code{plot} is improved.
 \item Methods \code{demix}, \code{dfmix}, \code{pemix} and \code{pfmix} are improved.
-\item Method \code{split}, \code{chunk} and \code{BFSMIX} are added.
+\item Method \code{split}, \code{chunk}, \code{BFSMIX} and \code{combine} are added.
+\item Class \code{REBMIX.combine} is added.
 \item Renewed vignette.
 }
 }

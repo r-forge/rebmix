@@ -30,7 +30,7 @@ further arguments to \code{\link[base]{sample.int}}.
 }
 }
 \value{
-Returns an object of class \code{RCLS}.
+Returns an object of class \code{RCLSMIX.chunk}.
 }
 \section{Methods}{
 \describe{

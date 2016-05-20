@@ -325,6 +325,8 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
             Y[i] = CmpDist->Theta_[0][i];
 
             break;
+        case pfUniform: 
+           Y[i] = CmpDist->Theta_[0][i] + Ran1(&IDum_) * (CmpDist->Theta_[1][i] - CmpDist->Theta_[0][i]);
         default:;
         }
     }
@@ -543,6 +545,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 else
                 if (!strcmp(pchar, "DIRAC"))
                     IniTheta_->pdf_[i] = pfDirac;
+                else
+                if (!strcmp(pchar, "UNIFORM"))
+                    IniTheta_->pdf_[i] = pfUniform;
                 else {
                     Error = 1; goto E0;
                 }

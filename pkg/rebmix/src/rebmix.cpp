@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 
     Rngmix *rngmix = NULL;
     Rebmix *rebmix = NULL;
-    int       Error = 0;
+    int    Error = 0;
 
     if (argc != 3) goto E0;
 

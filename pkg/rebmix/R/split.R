@@ -28,7 +28,7 @@ function(p = 0.75, Dataset, class, ...)
     stop(sQuote("p"), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
   }
   
-  output <- new("RCLS")  
+  output <- new("RCLS.chunk")  
   
   output@levels <- levels(factor(Dataset[, class]))
   
@@ -103,7 +103,7 @@ function(p = list(), Dataset, class, ...)
     stop(sQuote("p$type"), " must be greater than 0 and less or equal than ", ncol(Dataset), "!", call. = FALSE)
   }
   
-  output <- new("RCLS") 
+  output <- new("RCLS.chunk") 
                  
   type <- as.character(unique(Dataset[, p$type]))
                  

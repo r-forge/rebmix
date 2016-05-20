@@ -861,9 +861,9 @@ function(object)
   rm(list = ls())
 }) ## show
 
-## Class RCLS
+## Class RCLS.chunk
 
-setClass("RCLS",
+setClass("RCLS.chunk",
 slots = c(s = "numeric",
   levels = "character",
   ntrain = "numeric",
@@ -1065,6 +1065,115 @@ function(object)
   names(object@Chunks) <- NULL
 
   print(object@Chunks, quote = FALSE)              
+
+  rm(list = ls())
+}) ## show
+
+## Class REBMIX.combine
+
+setClass("REBMIX.combine",
+slots = c(x = "ANY",
+  pos = "numeric",
+  from = "numeric",
+  to = "numeric", 
+  EN = "numeric",
+  ED = "numeric"),
+prototype = list(pos = 1))
+
+setMethod("initialize", "REBMIX.combine", 
+function(.Object, ...,
+  x,
+  pos)
+{
+  model <- gsub("\\.combine", "", .Object@class[1])
+  
+  # x.
+
+  if (missing(x) || (length(x) == 0)) {
+    stop(sQuote("x"), " must not be empty!", call. = FALSE)
+  }
+
+  if (class(x) != model) {
+    stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
+  }
+
+  # pos.
+
+  if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
+  
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+  
+  callNextMethod(.Object, ...,
+    x = x,
+    pos = pos)
+}) ## initialize
+
+setMethod("show",
+          signature(object = "REBMIX.combine"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMIX.combine is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"from\":", "\n", sep = "")
+
+  print(object@from, quote = FALSE)
+  
+  cat("Slot \"to\":", "\n", sep = "")
+
+  print(object@to, quote = FALSE)
+  
+  cat("Slot \"EN\":", "\n", sep = "")
+
+  print(object@EN, quote = FALSE)
+  
+  cat("Slot \"ED\":", "\n", sep = "")
+
+  print(object@ED, quote = FALSE)  
+
+  rm(list = ls())
+}) ## show
+
+## Class REBMVNORM.combine
+
+setClass("REBMVNORM.combine", contains = "REBMIX.combine")
+
+setMethod("show",
+          signature(object = "REBMIX.combine"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class REBMVNORM.combine is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
+  
+  cat("Slot \"from\":", "\n", sep = "")
+
+  print(object@from, quote = FALSE)
+  
+  cat("Slot \"to\":", "\n", sep = "")
+
+  print(object@to, quote = FALSE)
+  
+  cat("Slot \"EN\":", "\n", sep = "")
+
+  print(object@EN, quote = FALSE)
+  
+  cat("Slot \"ED\":", "\n", sep = "")
+
+  print(object@ED, quote = FALSE)  
 
   rm(list = ls())
 }) ## show

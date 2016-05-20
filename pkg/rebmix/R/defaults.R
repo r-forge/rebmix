@@ -2,9 +2,9 @@
 Preprocessing = c("histogram", "Parzen window", "k-nearest neighbour"),
 Criterion = c("AIC", "AIC3", "AIC4", "AICc", "BIC", "CAIC", "HQC", "MDL2", "MDL5", "AWE", "CLC", "ICL", "ICL-BIC", "PC", "D", "SSE"),
 Variables = c("continuous", "discrete"),
-pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma"),
-pdf.nargs = c(2, 2, 2, 2, 1, 1, 2),
-pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous"),
+pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma", "uniform"),
+pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2),
+pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous", "continuous"),
 Restraints = c("rigid", "loose")),
 .Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints"))
 

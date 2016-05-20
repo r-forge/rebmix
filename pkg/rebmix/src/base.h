@@ -114,7 +114,8 @@ typedef enum {
     pfGamma,     // Gamma distribution.
     pfBinomial,  // Binomial distribution.
     pfPoisson,   // Poisson distribution.
-    pfDirac      // Dirac distribution.
+    pfDirac,     // Dirac distribution.
+    pfUniform    // Uniform distribution.
 } ParametricFamilyType_e;
 
 typedef struct componetdistributiontype {

@@ -985,7 +985,7 @@ E0: if (Y) {
 } // RPreprocessingHMVNORM
 
 void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypersquare.
-                                    int    *k,            // Total number of bins.
+                                    int    *k,            // k-nearest neighbours.
                                     char   **Criterion,   // Information criterion type.
                                     int    *c,            // Number of components.
                                     double *W,            // Component weights.
@@ -1629,5 +1629,478 @@ E0: if (Y) {
 
     if (rebmvnorm) delete rebmvnorm;
 } // RInformationCriterionHMVNORM
+
+void RCombineComponentsKNNMVNORM(double *h,            // Sides of the hypersquare.
+                                 int    *k,            // k-nearest neighbours.
+                                 int    *c,            // Number of components.
+                                 double *W,            // Component weights.
+                                 int    *length_pdf,   // Length of pdf.
+                                 int    *length_Theta, // Length of Theta.
+                                 int    *length_theta, // Length of Theta[i].
+                                 char   **pdf,         // Parametric family types.
+                                 double *Theta,        // Component parameters.
+                                 int    *n,            // Number of observations.
+                                 double *x,            // Dataset.
+                                 int    *F,            // From components.
+                                 int    *T,            // To components.
+                                 double *EN,           // Entropy.
+                                 double *ED,           // Entropy decrease.
+                                 int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 3) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+    }
+
+    *Error = rebmvnorm->PreprocessingKNN(*k, h, Y);
+
+    if (*Error) goto E0;
+
+    rebmvnorm->cmax_ = *c;
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->CombineComponentsKNN(Y, 
+                                             *c, 
+                                             rebmvnorm->W_, 
+                                             rebmvnorm->MixTheta_, 
+                                             F, 
+                                             T,
+                                             EN,
+                                             ED);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RCombineComponentsKNNMVNORM 
+
+void RCombineComponentsPWMVNORM(double *h,            // Sides of the hypersquare.
+                                int    *c,            // Number of components.
+                                double *W,            // Component weights.
+                                int    *length_pdf,   // Length of pdf.
+                                int    *length_Theta, // Length of Theta.
+                                int    *length_theta, // Length of Theta[i].
+                                char   **pdf,         // Parametric family types.
+                                double *Theta,        // Component parameters.
+                                int    *n,            // Number of observations.
+                                double *x,            // Dataset.
+                                int    *F,            // From components.
+                                int    *T,            // To components.
+                                double *EN,           // Entropy.
+                                double *ED,           // Entropy decrease.
+                                int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned int)(*c)];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 2) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+    }
+
+    *Error = rebmvnorm->PreprocessingPW(h, Y); 
+
+    if (*Error) goto E0;
+ 
+    rebmvnorm->cmax_ = *c;
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->CombineComponentsPW(Y, 
+                                            *c, 
+                                            rebmvnorm->W_, 
+                                            rebmvnorm->MixTheta_, 
+                                            F,
+                                            T,
+                                            EN,
+                                            ED);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RCombineComponentsPWMVNORM 
+
+void RCombineComponentsHMVNORM(double *h,            // Sides of the hypersquare.
+                               double *y0,           // Origins.
+                               int    *k,            // Total number of bins.
+                               int    *c,            // Number of components.
+                               double *W,            // Component weights.
+                               int    *length_pdf,   // Length of pdf.
+                               int    *length_Theta, // Length of Theta.
+                               int    *length_theta, // Length of Theta[i].
+                               char   **pdf,         // Parametric family types.
+                               double *Theta,        // Component parameters.
+                               int    *n,            // Number of observations.
+                               double *x,            // Dataset.
+                               int    *F,            // From components.
+                               int    *T,            // To components.
+                               double *EN,           // Entropy.
+                               double *ED,           // Entropy decrease.
+                               int    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    FLOAT     **Y = NULL;
+    int       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;    
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
+        rebmvnorm->length_theta_[i] = length_theta[i];
+    }
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+    if (*Error) goto E0;
+    
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution* [(unsigned int)(*c)];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->n_; l++) {
+            rebmvnorm->Y_[l][j] = x[i]; i++;
+        }
+    }
+    
+    Y = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        Y[i] = (FLOAT*)malloc((rebmvnorm->length_pdf_ + 1) * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->PreprocessingH(h, y0, k, Y);
+
+    if (*Error) goto E0;
+
+    rebmvnorm->cmax_ = *c;
+
+    for (i = 0; i < *c; i++) {
+        *Error = LUinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->CombineComponentsH(*k, 
+                                           Y, 
+                                           *c, 
+                                           rebmvnorm->W_, 
+                                           rebmvnorm->MixTheta_, 
+                                           F,
+                                           T,
+                                           EN,
+                                           ED);
+
+    if (*Error) goto E0;
+
+E0: if (Y) {
+        for (i = 0; i < rebmvnorm->n_; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+         
+        free(Y);
+    }
+
+    if (rebmvnorm) delete rebmvnorm;
+} // RCombineComponentsHMVNORM
 
 } // extern "C"
