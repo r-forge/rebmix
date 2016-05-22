@@ -21,9 +21,25 @@ a factor of true cluster membership.
 \item{\code{Zp}:}{
 a factor of predictive cluster membership.
 }
+\item{\code{from}:}{
+a vector of length \eqn{c} containing clusters merged to \code{to} clusters.
+}
+\item{\code{to}:}{
+a vector of length \eqn{c} containing clusters originating from \code{from} clusters.
+}
+\item{\code{EN}:}{
+a vector of length \eqn{c} containing entropies for combined clusters.
+}
+\item{\code{ED}:}{
+a vector of length \eqn{c} containing decrease of entropies for combined clusters.
+}
 }
 }
 \author{Marko Nagode}
+\references{
+J. P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo. Combining mixture components for clustering.
+Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \url{http://dx.doi.org/10.1198/jcgs.2010.08111}
+}
 \examples{
 devAskNewPage(ask = TRUE)
 

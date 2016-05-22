@@ -2,6 +2,7 @@ setMethod("plot",
           signature(x = "RCLRMIX", y = "missing"),
 function(x,
   y,
+  s = expression(c),
   nrow = 1,
   ncol = 1,
   cex = 0.8,
@@ -34,6 +35,18 @@ function(x,
   }
 
   d <- ncol(x@x@Dataset[[x@pos]])
+  
+  c <- length(x@x@w[[x@pos]]); s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }  
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -261,6 +274,7 @@ setMethod("plot",
           signature(x = "RCLRMVNORM", y = "missing"),
 function(x,
   y,
+  s = expression(c),
   nrow = 1,
   ncol = 1,
   cex = 0.8,
@@ -293,7 +307,19 @@ function(x,
   }
 
   d <- ncol(x@x@Dataset[[x@pos]])
+  
+  c <- length(x@x@w[[x@pos]]); s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
 
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }  
+ 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 

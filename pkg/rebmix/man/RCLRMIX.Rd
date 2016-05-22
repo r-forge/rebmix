@@ -12,7 +12,7 @@
 Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 }
 \description{
-Returns as default the RCLRMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"RCLRMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
+Returns as default the RCLRMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities, following the methodology proposed in the article cited in the references. If \code{model} equals \code{"RCLRMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
 \S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, pos = 1, Zt = factor(), ...)
@@ -52,6 +52,10 @@ Returns an object of class \code{RCLRMIX} or \code{RCLRMVNORM}.
 }
 }
 \author{Marko Nagode}
+\references{
+J. P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo. Combining mixture components for clustering.
+Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \url{http://dx.doi.org/10.1198/jcgs.2010.08111}
+}
 \examples{
 devAskNewPage(ask = TRUE)
 
@@ -89,6 +93,8 @@ plot(poissonest)
 # Cluster dataset.
 
 poissonclu <- RCLRMIX(x = poissonest, Zt = poisson@Zt)
+
+summary(poissonclu)
 
 # Plot clusters.
 

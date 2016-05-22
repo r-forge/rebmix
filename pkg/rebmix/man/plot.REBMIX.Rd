@@ -29,7 +29,7 @@ Plots predictive classes and wrongly classified observations if \code{x} equals 
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
      contour.labcex = 0.8, contour.method = "flattest", 
      contour.nlevels = 12, ...)
-\S4method{plot}{RCLRMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
+\S4method{plot}{RCLRMIX,missing}(x, y, s = expression(c), nrow = 1, ncol = 1, cex = 0.8,
      fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
      plot.cex = 0.8, plot.pch = 19, ...)        
 \S4method{plot}{RCLSMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
@@ -46,6 +46,9 @@ currently not used.
 }
 \item{pos}{
 a desired row number in \code{x@summary} or a desired element number in \code{x@Dataset} to be plotted. The default value is \code{1}.
+}
+\item{s}{
+a desired number of clusters to be plotted. The default value is \code{expression(c)}.
 }
 \item{what}{
 a character vector giving the plot types. One of \code{"density"} for probability density function, \code{"marginal"} for marginal probability density function, \code{"IC"} for information criterion depending on numbers of components \eqn{c}, \code{"logL"} for log likelihood, \code{"D"} for total of positive relative deviations, \code{"distribution"} for distribution function or \code{"K"} for information criterion depending on bins \eqn{v} or numbers of nearest neighbours \eqn{k}.

@@ -136,7 +136,20 @@ function(object, ...)
     stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
   }
   
-  print(object@Zp, quote = FALSE, ...)
+  c <- length(object@x@w[[object@pos]])  
+  
+  combine <- rbind(as.number(1:c), as.number(object@from), as.number(object@to), as.number(object@EN), as.number(object@ED))
+  
+  combine <- gsub(" ", "", combine, fixed = TRUE)
+  
+  rownames(combine) <- c("Number of clusters", "From cluster", "To cluster", "Entropy", "Entropy decrease")
+  colnames(combine) <- rep("", c)
+  
+  combine <- capture.output(combine)[-1]
+  combine <- paste(combine, "\n", sep = "") 
+  combine <- gsub("\"", " ", combine, fixed = TRUE)
+  
+  cat(combine, sep = "")
    
   rm(list = ls()) 
 }) ## summary
@@ -149,7 +162,20 @@ function(object, ...)
     stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
   }
   
-  print(object@Zp, quote = FALSE, ...)
+  c <- length(object@x@w[[object@pos]])  
+  
+  combine <- rbind(as.number(1:c), as.number(object@from), as.number(object@to), as.number(object@EN), as.number(object@ED))
+  
+  combine <- gsub(" ", "", combine, fixed = TRUE)
+  
+  rownames(combine) <- c("Number of clusters", "From cluster", "To cluster", "Entropy", "Entropy decrease")
+  colnames(combine) <- rep("", c)
+  
+  combine <- capture.output(combine)[-1]
+  combine <- paste(combine, "\n", sep = "") 
+  combine <- gsub("\"", " ", combine, fixed = TRUE)
+  
+  cat(combine, sep = "")
   
   rm(list = ls()) 
 }) ## summary

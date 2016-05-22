@@ -3256,7 +3256,7 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
             }
         }
 
-        F[i - 2] = C[J], T[i - 2] = C[II];
+        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
 
         for (j = 0; j < n_; j++) {
             Tau[II][j] += Tau[J][j];
@@ -3378,7 +3378,7 @@ int Rebmix::CombineComponentsPW(FLOAT                **Y,        // Pointer to t
             }
         }
 
-        F[i - 2] = C[J], T[i - 2] = C[II];
+        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
 
         for (j = 0; j < n_; j++) {
             Tau[II][j] += Tau[J][j];
@@ -3501,7 +3501,7 @@ int Rebmix::CombineComponentsH(int                  k,          // Total number 
             }
         }
 
-        F[i - 2] = C[J], T[i - 2] = C[II];
+        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
 
         for (j = 0; j < k; j++) {
             Tau[II][j] += Tau[J][j];

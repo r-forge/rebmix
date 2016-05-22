@@ -119,10 +119,5 @@ setGeneric("BFSMIX",
     Dataset = data.frame(),
     Zt = factor(), ...)
   standardGeneric("BFSMIX"))
-  
-setGeneric("combine",
-  function(x = NULL, 
-    pos = 1, ...)
-  standardGeneric("combine")) 
 
 
