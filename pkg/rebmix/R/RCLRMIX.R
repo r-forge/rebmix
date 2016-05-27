@@ -128,8 +128,8 @@ function(model, ...)
   if (output$error == 1) {
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
-
-  model@Zp <- as.factor(output$Z)
+  
+  model@Zp <- as.factor(output$Z) 
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -266,7 +266,7 @@ function(model, ...)
   if (output$error == 1) {
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
-
+  
   model@Zp <- as.factor(output$Z)
 
   rm(list = ls()[!(ls() %in% c("model"))])

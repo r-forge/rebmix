@@ -837,7 +837,7 @@ function(object)
   
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
   
-  cat("Slot \"Zp\":", sep = "")
+  cat("Slot \"Zp\":", "\n", sep = "")
 
   print(object@Zp, quote = FALSE)
   
@@ -874,7 +874,7 @@ function(object)
   
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
   
-  cat("Slot \"Zp\":", sep = "")
+  cat("Slot \"Zp\":", "\n", sep = "")
 
   print(object@Zp, quote = FALSE)
   
@@ -1021,7 +1021,7 @@ function(object)
   
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
   
-  cat("Slot \"CM\":", sep = "")
+  cat("Slot \"CM\":", "\n", sep = "")
 
   print(object@CM, quote = FALSE)
   
@@ -1070,7 +1070,7 @@ function(object)
   
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
   
-  cat("Slot \"CM\":", sep = "")
+  cat("Slot \"CM\":", "\n", sep = "")
 
   print(object@CM, quote = FALSE)
   

@@ -36,7 +36,7 @@ function(x,
 
   d <- ncol(x@x@Dataset[[x@pos]])
   
-  c <- length(x@x@w[[x@pos]]); s <- eval(s)
+  c <- length(x@from); s <- eval(s)
   
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
@@ -46,7 +46,17 @@ function(x,
 
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
-  }  
+  }
+  
+  i <- c - 1
+  
+  while (s < length(unique(x@Zp))) {
+    x@Zp[x@Zp == x@from[i]] = x@to[i]
+   
+    i <- i - 1
+  }
+  
+  x@Zp <- factor(x@Zp)  
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -308,7 +318,7 @@ function(x,
 
   d <- ncol(x@x@Dataset[[x@pos]])
   
-  c <- length(x@x@w[[x@pos]]); s <- eval(s)
+  c <- length(x@from); s <- eval(s)
   
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
@@ -318,8 +328,18 @@ function(x,
 
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+  
+  i <- c - 1
+  
+  while (s < length(unique(x@Zp))) {
+    x@Zp[x@Zp == x@from[i]] = x@to[i]
+   
+    i <- i - 1
   }  
- 
+  
+  x@Zp <- factor(x@Zp)
+   
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
