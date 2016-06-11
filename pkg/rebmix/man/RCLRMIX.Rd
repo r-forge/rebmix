@@ -99,5 +99,7 @@ summary(poissonclu)
 # Plot clusters.
 
 plot(poissonclu)
+
+summary(poissonclu)
 }
 \keyword{clustering}

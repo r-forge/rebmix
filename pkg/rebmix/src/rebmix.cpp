@@ -20,9 +20,11 @@ int main(int argc, char* argv[])
     _CrtMemCheckpoint(&s1);
     #endif
 
-    Rngmix *rngmix = NULL;
-    Rebmix *rebmix = NULL;
-    int    Error = 0;
+    Rngmix    *rngmix = NULL;
+    Rebmix    *rebmix = NULL;
+    Rngmvnorm *rngmvnorm = NULL;
+    Rebmvnorm *rebmvnorm = NULL;
+    int       Error = 0;
 
     if (argc != 3) goto E0;
 
@@ -36,6 +38,16 @@ int main(int argc, char* argv[])
         if (Error) goto E0;
     }
     else
+    if (!strcmp(argv[2], "RNGMVNORM")) {
+        rngmvnorm = new Rngmvnorm;
+
+        Error = NULL == rngmvnorm; if (Error) goto E0;
+
+        Error = rngmvnorm->RunTemplateFile(argv[1]);
+
+        if (Error) goto E0;
+    }
+    else
     if (!strcmp(argv[2], "REBMIX")) {
         rebmix = new Rebmix;
 
@@ -45,9 +57,23 @@ int main(int argc, char* argv[])
 
         if (Error) goto E0;
     }
+    else
+    if (!strcmp(argv[2], "REBMVNORM")) {
+        rebmvnorm = new Rebmvnorm;
+
+        Error = NULL == rebmvnorm; if (Error) goto E0;
+ 
+        Error = rebmvnorm->RunTemplateFile(argv[1]);
+
+        if (Error) goto E0;
+    }
+
 
 E0: if (rngmix) delete rngmix;
     if (rebmix) delete rebmix;
+
+    if (rngmvnorm) delete rngmvnorm;
+    if (rebmvnorm) delete rebmvnorm;
 
     #if (_MEMORY_LEAK_SWITCH)
     _CrtMemCheckpoint(&s2);

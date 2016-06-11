@@ -268,10 +268,14 @@ plot(wreathest)
 <<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
-plot(wreathclu)
+plot(wreathclu, s = 14)
 @
 \caption{Dataset \texttt{wreath}. Predictive cluster membership (coloured circles).}
 \end{figure}
+\subsubsection{Summary method}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+summary(wreathclu)
+@
 \subsection{Multivariate normal \texttt{ex4.1} dataset}
 A \texttt{ex4.1} dataset \citep{Baudry_2010, mclust_20__} consist of $600$ two~dimensional observations.
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
@@ -300,14 +304,14 @@ summary(ex4.1est)
 @
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
 
 plot(ex4.1clu)
@@ -358,12 +362,6 @@ iriscla <- RCLSMIX(model = "RCLSMVNORM",
   Dataset = Iris@test,
   Zt = Iris@Zt)
 @
-\subsubsection{Show and summary methods}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-iriscla
-
-summary(iriscla)
-@
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
 <<iris-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
@@ -373,6 +371,12 @@ plot(iriscla, nrow = 3, ncol = 2)
 @
 \caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (large circles).}
 \end{figure}
+\subsubsection{Show and summary methods}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+iriscla
+
+summary(iriscla)
+@
 \subsection{Multivariate \texttt{adult} dataset}
 The \texttt{adult} dataset containing $48842$ instances with $16$ continuous, binary and discrete variables was extracted from the census bureau database \citet{Asuncion_Newman_2007}. Extraction was done by Barry Becker from the 1994 census bureau database. The \texttt{adult} dataset is loaded, complete cases are extracted and levels are replaced with numbers.
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
@@ -428,21 +432,21 @@ adultcla <- BFSMIX(x = adultest,
   Dataset = Adult@test,
   Zt = Adult@Zt)
 @
-\subsubsection{Show and summary methods}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-adultcla
-
-summary(adultcla)
-@
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<adult-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<adult-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected chunks.
 
 plot(adultcla, nrow = 5, ncol = 2)
 @
 \caption{Dataset \texttt{adult}. Predictive class membership (coloured circles), error (large circles).}
 \end{figure}
+\subsubsection{Show and summary methods}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+adultcla
+
+summary(adultcla)
+@
 <<rebmix-code, split = FALSE, echo = FALSE, results = hide, keep.source = FALSE>>=
 rm(list = ls())
 @

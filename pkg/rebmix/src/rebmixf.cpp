@@ -2802,11 +2802,16 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
 
                 if (Error) goto E0;
 
-                tau = W[j] * CmpDist / MixDist;
+                if (MixDist > FLOAT_MIN) {
+                    tau = W[j] * CmpDist / MixDist;
 
-                if (tau > FLOAT_MIN) {
-                    EN -= tau * (FLOAT)log(tau); PC += tau * tau;
+                    if (tau < FLOAT_MIN) tau = FLOAT_MIN;
                 }
+                else {
+                    tau = (FLOAT)1.0;
+                }
+
+                EN -= tau * (FLOAT)log(tau); PC += tau * tau;
             }
 
             break;
@@ -2942,11 +2947,16 @@ int Rebmix::InformationCriterionPW(FLOAT                V,          // Volume of
 
                 if (Error) goto E0;
 
-                tau = W[j] * CmpDist / MixDist;
+                if (MixDist > FLOAT_MIN) {
+                    tau = W[j] * CmpDist / MixDist;
 
-                if (tau > FLOAT_MIN) {
-                    EN -= tau * (FLOAT)log(tau); PC += tau * tau;
+                    if (tau < FLOAT_MIN) tau = FLOAT_MIN;
                 }
+                else {
+                    tau = (FLOAT)1.0;
+                }
+
+                EN -= tau * (FLOAT)log(tau); PC += tau * tau;
             }
 
             break;
@@ -3083,11 +3093,16 @@ int Rebmix::InformationCriterionH(FLOAT                V,          // Volume of 
 
                 if (Error) goto E0;
 
-                tau = W[j] * CmpDist / MixDist;
+                if (MixDist > FLOAT_MIN) {
+                    tau = W[j] * CmpDist / MixDist;
 
-                if (tau > FLOAT_MIN) {
-                    EN -= Y[i][length_pdf_] * tau * (FLOAT)log(tau); PC += Y[i][length_pdf_] * tau * tau;
+                    if (tau < FLOAT_MIN) tau = FLOAT_MIN;
                 }
+                else {
+                    tau = (FLOAT)1.0;
+                }
+
+                EN -= Y[i][length_pdf_] * tau * (FLOAT)log(tau); PC += Y[i][length_pdf_] * tau * tau;
             }
 
             break;
@@ -3211,10 +3226,15 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
 
             if (Error) goto E0;
 
-            Tau[j][i] = W[j] * CmpDist / MixDist;
+            if (MixDist > FLOAT_MIN) {
+                Tau[j][i] = W[j] * CmpDist / MixDist;
 
-            if (Tau[j][i] > FLOAT_MIN) {
-                en -= Y[i][length_pdf_] * Tau[j][i] * (FLOAT)log(Tau[j][i]);
+                if (Tau[j][i] < FLOAT_MIN) Tau[j][i] = FLOAT_MIN;
+
+                en -= Tau[j][i] * (FLOAT)log(Tau[j][i]);
+            }
+            else {
+                Tau[j][i] = (FLOAT)1.0;
             }
         }
     }
@@ -3237,17 +3257,9 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
                 ed = (FLOAT)0.0;
  
                 for (jj = 0; jj < n_; jj++) {
-                    if (Tau[ii][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                    }
-
-                    if (Tau[j][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[j][jj] * (FLOAT)log(Tau[j][jj]);
-                    }
+                    ed -= Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]) + Tau[j][jj] * (FLOAT)log(Tau[j][jj]);
                 
-                    if (Tau[ii][jj] + Tau[j][jj] > FLOAT_MIN) {
-                        ed += Y[jj][length_pdf_] * (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
-                    }
+                    ed += (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
                 }
 
                 if (ed > ED[i - 2]) {
@@ -3274,9 +3286,7 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
 
         for (ii = 0; ii < i - 1; ii++) {
             for (jj = 0; jj < n_; jj++) {
-                if (Tau[ii][jj] > FLOAT_MIN) {
-                    EN[i - 2] -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                }
+                EN[i - 2] -= Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
             }
         }
 
@@ -3333,10 +3343,15 @@ int Rebmix::CombineComponentsPW(FLOAT                **Y,        // Pointer to t
 
             if (Error) goto E0;
 
-            Tau[j][i] = W[j] * CmpDist / MixDist;
+            if (MixDist > FLOAT_MIN) {
+                Tau[j][i] = W[j] * CmpDist / MixDist;
 
-            if (Tau[j][i] > FLOAT_MIN) {
-                en -= Y[i][length_pdf_] * Tau[j][i] * (FLOAT)log(Tau[j][i]);
+                if (Tau[j][i] < FLOAT_MIN) Tau[j][i] = FLOAT_MIN;
+
+                en -= Tau[j][i] * (FLOAT)log(Tau[j][i]);
+            }
+            else {
+                Tau[j][i] = (FLOAT)1.0;
             }
         }
     }
@@ -3359,17 +3374,9 @@ int Rebmix::CombineComponentsPW(FLOAT                **Y,        // Pointer to t
                 ed = (FLOAT)0.0;
  
                 for (jj = 0; jj < n_; jj++) {
-                    if (Tau[ii][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                    }
-
-                    if (Tau[j][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[j][jj] * (FLOAT)log(Tau[j][jj]);
-                    }
+                    ed -= Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]) + Tau[j][jj] * (FLOAT)log(Tau[j][jj]);
                 
-                    if (Tau[ii][jj] + Tau[j][jj] > FLOAT_MIN) {
-                        ed += Y[jj][length_pdf_] * (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
-                    }
+                    ed += (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
                 }
 
                 if (ed > ED[i - 2]) {
@@ -3396,9 +3403,7 @@ int Rebmix::CombineComponentsPW(FLOAT                **Y,        // Pointer to t
 
         for (ii = 0; ii < i - 1; ii++) {
             for (jj = 0; jj < n_; jj++) {
-                if (Tau[ii][jj] > FLOAT_MIN) {
-                    EN[i - 2] -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                }
+                EN[i - 2] -= Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
             }
         }
 
@@ -3456,10 +3461,15 @@ int Rebmix::CombineComponentsH(int                  k,          // Total number 
 
             if (Error) goto E0;
 
-            Tau[j][i] = W[j] * CmpDist / MixDist;
+            if (MixDist > FLOAT_MIN) {
+                Tau[j][i] = W[j] * CmpDist / MixDist;
 
-            if (Tau[j][i] > FLOAT_MIN) {
+                if (Tau[j][i] < FLOAT_MIN) Tau[j][i] = FLOAT_MIN;
+
                 en -= Y[i][length_pdf_] * Tau[j][i] * (FLOAT)log(Tau[j][i]);
+            }
+            else {
+                Tau[j][i] = (FLOAT)1.0;
             }
         }
     }
@@ -3482,17 +3492,9 @@ int Rebmix::CombineComponentsH(int                  k,          // Total number 
                 ed = (FLOAT)0.0;
  
                 for (jj = 0; jj < k; jj++) {
-                    if (Tau[ii][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                    }
-
-                    if (Tau[j][jj] > FLOAT_MIN) {
-                        ed -= Y[jj][length_pdf_] * Tau[j][jj] * (FLOAT)log(Tau[j][jj]);
-                    }
+                    ed -= Y[jj][length_pdf_] * (Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]) + Tau[j][jj] * (FLOAT)log(Tau[j][jj]));
                 
-                    if (Tau[ii][jj] + Tau[j][jj] > FLOAT_MIN) {
-                        ed += Y[jj][length_pdf_] * (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
-                    }
+                    ed += Y[jj][length_pdf_] * (Tau[ii][jj] + Tau[j][jj]) * (FLOAT)log(Tau[ii][jj] + Tau[j][jj]);
                 }
 
                 if (ed > ED[i - 2]) {
@@ -3519,9 +3521,7 @@ int Rebmix::CombineComponentsH(int                  k,          // Total number 
 
         for (ii = 0; ii < i - 1; ii++) {
             for (jj = 0; jj < k; jj++) {
-                if (Tau[ii][jj] > FLOAT_MIN) {
-                    EN[i - 2] -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
-                }
+                EN[i - 2] -= Y[jj][length_pdf_] * Tau[ii][jj] * (FLOAT)log(Tau[ii][jj]);
             }
         }
 
