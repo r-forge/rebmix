@@ -40,6 +40,10 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
 
     for (i = 0; i < rngmvnorm->c_; i++) rngmvnorm->N_[i] = N[i];
 
+    rngmvnorm->IniTheta_ = new CompnentDistribution(rngmvnorm);
+
+    *Error = NULL == rngmvnorm->IniTheta_; if (*Error) goto E0;
+
     rngmvnorm->length_pdf_ = *length_pdf;
 
     rngmvnorm->length_Theta_ = *length_Theta;
@@ -48,15 +52,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
 
     *Error = NULL == rngmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rngmvnorm->length_Theta_; i++) {
-        rngmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rngmvnorm->IniTheta_ = new CompnentDistribution(rngmvnorm);
-
-    *Error = NULL == rngmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rngmvnorm->IniTheta_->Realloc(rngmvnorm->length_pdf_, rngmvnorm->length_Theta_, rngmvnorm->length_theta_);
+    *Error = rngmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1067,6 +1063,10 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1075,15 +1075,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1118,7 +1110,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1278,6 +1270,10 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1286,15 +1282,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1329,7 +1317,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1497,6 +1485,10 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1505,15 +1497,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
     
@@ -1548,7 +1532,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1661,6 +1645,10 @@ void RCombineComponentsKNNMVNORM(double *h,            // Sides of the hypersqua
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1669,15 +1657,7 @@ void RCombineComponentsKNNMVNORM(double *h,            // Sides of the hypersqua
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1712,7 +1692,7 @@ void RCombineComponentsKNNMVNORM(double *h,            // Sides of the hypersqua
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1818,6 +1798,10 @@ void RCombineComponentsPWMVNORM(double *h,            // Sides of the hypersquar
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1826,15 +1810,7 @@ void RCombineComponentsPWMVNORM(double *h,            // Sides of the hypersquar
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1869,7 +1845,7 @@ void RCombineComponentsPWMVNORM(double *h,            // Sides of the hypersquar
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1977,6 +1953,10 @@ void RCombineComponentsHMVNORM(double *h,            // Sides of the hypersquare
 
     for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
 
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
     rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
@@ -1985,15 +1965,7 @@ void RCombineComponentsHMVNORM(double *h,            // Sides of the hypersquare
 
     *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_Theta_; i++) {
-        rebmvnorm->length_theta_[i] = length_theta[i];
-    }
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
     
@@ -2028,7 +2000,7 @@ void RCombineComponentsHMVNORM(double *h,            // Sides of the hypersquare
 
     i = 0;
 
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) {
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
                 rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];

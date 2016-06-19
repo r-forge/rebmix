@@ -203,7 +203,7 @@ function(x, Criterion, pos, ...)
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, d * d, 1)),      
+      length.theta = as.integer(c(d, d * d, -d * d, -1)),      
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
       n = as.integer(n),
@@ -228,7 +228,7 @@ function(x, Criterion, pos, ...)
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, d * d, 1)),
+      length.theta = as.integer(c(d, d * d, -d * d, -1)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
       n = as.integer(n),
@@ -256,7 +256,7 @@ function(x, Criterion, pos, ...)
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
       length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, d * d, 1)),
+      length.theta = as.integer(c(d, d * d, -d * d, -1)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
       n = as.integer(n),
@@ -566,7 +566,3 @@ function(x, pos, ...)
   
   output
 }) ## PC
-
-
-
-

@@ -41,6 +41,10 @@ void RRNGMIX(int    *IDum,         // Random seed.
 
     for (i = 0; i < rngmix->c_; i++) rngmix->N_[i] = N[i];
 
+    rngmix->IniTheta_ = new CompnentDistribution(rngmix);
+
+    *Error = NULL == rngmix->IniTheta_; if (*Error) goto E0;
+
     rngmix->length_pdf_ = *length_pdf;
 
     rngmix->length_Theta_ = *length_Theta;
@@ -49,15 +53,7 @@ void RRNGMIX(int    *IDum,         // Random seed.
 
     *Error = NULL == rngmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rngmix->length_Theta_; i++) {
-        rngmix->length_theta_[i] = length_theta[i];
-    }
-
-    rngmix->IniTheta_ = new CompnentDistribution(rngmix);
-
-    *Error = NULL == rngmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rngmix->IniTheta_->Realloc(rngmix->length_pdf_, rngmix->length_Theta_, rngmix->length_theta_);
+    *Error = rngmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1576,6 +1572,10 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -1584,15 +1584,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1655,7 +1647,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -1809,6 +1801,10 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -1817,15 +1813,7 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -1888,7 +1876,7 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -2050,6 +2038,10 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -2058,15 +2050,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
     
@@ -2129,7 +2113,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -2236,6 +2220,10 @@ void RCombineComponentsKNNMIX(double *h,            // Sides of the hypersquare.
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -2244,15 +2232,7 @@ void RCombineComponentsKNNMIX(double *h,            // Sides of the hypersquare.
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -2315,7 +2295,7 @@ void RCombineComponentsKNNMIX(double *h,            // Sides of the hypersquare.
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -2415,6 +2395,10 @@ void RCombineComponentsPWMIX(double *h,            // Sides of the hypersquare.
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -2423,15 +2407,7 @@ void RCombineComponentsPWMIX(double *h,            // Sides of the hypersquare.
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
 
@@ -2494,7 +2470,7 @@ void RCombineComponentsPWMIX(double *h,            // Sides of the hypersquare.
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];
@@ -2596,6 +2572,10 @@ void RCombineComponentsHMIX(double *h,            // Sides of the hypersquare.
 
     for (i = 0; i < *c; i++) rebmix->W_[i] = W[i];
 
+    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
+
+    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
+
     rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
@@ -2604,15 +2584,7 @@ void RCombineComponentsHMIX(double *h,            // Sides of the hypersquare.
 
     *Error = NULL == rebmix->length_theta_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_Theta_; i++) {
-        rebmix->length_theta_[i] = length_theta[i];
-    }
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, rebmix->length_Theta_, rebmix->length_theta_);
+    *Error = rebmix->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
 
     if (*Error) goto E0;
     
@@ -2675,7 +2647,7 @@ void RCombineComponentsHMIX(double *h,            // Sides of the hypersquare.
 
     i = 0;
 
-    for (j = 0; j < rebmix->length_Theta_; j++) {
+    for (j = 0; j < rebmix->length_Theta_; j++) if (rebmix->IniTheta_->Theta_[j]) {
         for (l = 0; l < *c; l++) {
             for (m = 0; m < rebmix->length_theta_[j]; m++) {
                 rebmix->MixTheta_[l]->Theta_[j][m] = Theta[i];

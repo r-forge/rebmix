@@ -16,12 +16,7 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
 
-    if (length(model@Variables) > 0) {
-      length.pdf <- +d
-    }
-    else {
-      length.pdf <- -d
-    }
+    length.pdf <- d
     
     if (length(model@theta1) > 0) {
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
@@ -46,7 +41,7 @@ function(model, ...)
       length.pdf = length.pdf,
       pdf = as.character(model@pdf),
       length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.theta = as.integer(c(length.theta1, length.theta2)),
       Theta = as.double(c(theta1, theta2)),
       length.K = as.integer(length(model@K)),
       K = as.integer(model@K),
@@ -281,12 +276,7 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
 
-    if (length(model@Variables) > 0) {
-      length.pdf <- +d
-    }
-    else {
-      length.pdf <- -d
-    }
+    length.pdf <- d
     
     if (length(model@theta1) > 0) {
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
@@ -296,10 +286,10 @@ function(model, ...)
     }    
     
     if (length(model@theta2) > 0) {
-      length.theta2 <- +d; theta2 <- model@theta2; theta2[is.na(theta2)] <- 0
+      length.theta2 <- +d * d; length.theta3 <- +1; theta2 <- model@theta2; theta2[is.na(theta2)] <- 0
     }
     else {
-      length.theta2 <- -d; theta2 <- numeric()
+      length.theta2 <- -d * d; length.theta3 <- -1; theta2 <- numeric()
     }
         
     output <- .C("RREBMVNORM",
@@ -311,7 +301,7 @@ function(model, ...)
       length.pdf = length.pdf,
       pdf = as.character(model@pdf),
       length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, d * d, 1)),
+      length.theta = as.integer(c(length.theta1, length.theta2, length.theta2, length.theta3)),
       Theta = as.double(c(theta1, theta2)),
       length.K = as.integer(length(model@K)),
       K = as.integer(model@K),
