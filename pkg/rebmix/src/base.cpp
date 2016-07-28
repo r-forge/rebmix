@@ -578,10 +578,6 @@ int LUinvdet(int   n,     // Size of square matrix.
         if (Error) goto E0;
 
         for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
-
-        if (Ainv[j * n + j] <= FLOAT_MIN) {
-            Error = 1; goto E0;
-        }
     }
 
 E0: if (B) free(B);	
@@ -636,6 +632,4 @@ int Choldc(int   n,   // Size of square matrix.
     if (p) free(p);
 
 E0: return (Error);
-} // Choldc 
-
-
+} // Choldc
