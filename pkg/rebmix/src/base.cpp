@@ -410,6 +410,17 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 E0: return (Error);
 } // GammaInv
 
+// Returns the inverse of the Weibull c.d.f. for the specified Theta and Beta.
+
+FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta)
+{
+    FLOAT y;
+
+    y = Theta * (FLOAT)pow(-(FLOAT)log((FLOAT)1.0 - Fy), (FLOAT)1.0 / Beta);
+
+    return (y);
+} // WeibullInv
+
 // Returns the error function erf(y). See http://www.nr.com/.
 
 int ErrorF(FLOAT y,     // Variable y.

@@ -100,6 +100,7 @@ class Rebmix : public Base {
     int WriteDataFile();
 public:
     // Input members.
+    FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 0.001. 
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.
     char                       **open_;        // Paths to open data files.
@@ -144,7 +145,7 @@ public:
     virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
-    virtual int ComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual int ComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
     virtual int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationPW(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
