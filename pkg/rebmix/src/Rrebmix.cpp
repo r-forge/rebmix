@@ -1226,7 +1226,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
         Z[i] = 1; MaxCmpDist = (FLOAT)0.0;
          
         for (j = 0; j < *c; j++) {
-            *Error = rebmix->ComponentDist(Y, Theta[j], &CmpDist);
+            *Error = rebmix->ComponentDist(Y, Theta[j], &CmpDist, NULL);
 
             if (*Error) goto E0;
 
