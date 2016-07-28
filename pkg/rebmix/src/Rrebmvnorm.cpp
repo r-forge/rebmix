@@ -745,7 +745,7 @@ void RCLRMVNORM(int    *n,      // Total number of independent observations.
         Z[i] = 1; MaxCmpDist = (FLOAT)0.0;
          
         for (j = 0; j < *c; j++) {
-            *Error = rebmvnorm->ComponentDist(Y, Theta[j], &CmpDist);
+            *Error = rebmvnorm->ComponentDist(Y, Theta[j], &CmpDist, NULL);
 
             if (*Error) goto E0;
 
