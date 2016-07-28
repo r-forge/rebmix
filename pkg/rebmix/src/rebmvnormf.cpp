@@ -131,7 +131,9 @@ S0:;
             C[i * length_pdf_ + i] = (FLOAT)1.0; 
         }
 
-        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+        Stop = LUinvdet(length_pdf_, C, Cinv, &Cdet);
+
+        if (Stop || (Cdet < (FLOAT)0.05)) {
             for (i = 0; i < length_pdf_; i++) {
                 o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -414,7 +416,9 @@ S0:;
             C[i * length_pdf_ + i] = (FLOAT)1.0; 
         }
 
-        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+        Stop = LUinvdet(length_pdf_, C, Cinv, &Cdet);
+
+        if (Stop || (Cdet < (FLOAT)0.05)) {
             for (i = 0; i < length_pdf_; i++) {
                 o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -682,7 +686,9 @@ S0:;
             C[i * length_pdf_ + i] = (FLOAT)1.0; 
         }
 
-        if (LUinvdet(length_pdf_, C, Cinv, &Cdet)) {
+        Stop = LUinvdet(length_pdf_, C, Cinv, &Cdet);
+
+        if (Stop || (Cdet < (FLOAT)0.05)) {
             for (i = 0; i < length_pdf_; i++) {
                 o = i * length_pdf_ + i; C[o] = Cinv[o] = (FLOAT)1.0; 
 
@@ -918,6 +924,10 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
     if (Error) goto E0;
 
+    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+        Error = 1; goto E0;
+    }
+
     Error = LooseTheta->Memmove(EnhanTheta);
 
     if (Error) goto E0;
@@ -990,6 +1000,10 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
     Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
 
     if (Error) goto E0;
+
+    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+        Error = 1; goto E0;
+    }
 
     Error = LooseTheta->Memmove(EnhanTheta);
 
@@ -1065,6 +1079,10 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
 
     if (Error) goto E0;
 
+    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+        Error = 1; goto E0;
+    }
+
     Error = LooseTheta->Memmove(EnhanTheta);
 
     if (Error) goto E0;
@@ -1109,7 +1127,7 @@ int Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
                                       FLOAT                **FirstM,   // First moments.
                                       FLOAT                **SecondM)  // Second moments.
 {
-    int   i, j, jj, l, o, p, q;
+    int   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW;
     int   Error = 0;
 
@@ -1117,27 +1135,27 @@ int Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
         if (Y[i][length_pdf_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist, &outlier);
 
             if (Error) goto E0;
 
-            Max = W[l] * CmpDist;
+            Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, &outlier);
 
                 if (Error) goto E0;
 
                 Tmp = W[j] * CmpDist;
 
                 if (Tmp > Max) {
-                    l = j; Max = Tmp;
+                    l = j; Max = Tmp; Outlier = outlier;
                 }
             }
 
             dW = Y[i][length_pdf_] / n_; W[l] += dW;
 
-            for (j = 0; j < length_pdf_; j++) {
+            if (!Outlier) for (j = 0; j < length_pdf_; j++) {
                 FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                 o = j * length_pdf_ + j;
@@ -1185,7 +1203,7 @@ int Rebmvnorm::BayesClassificationPW(FLOAT                **Y,        // Pointer
                                      FLOAT                **FirstM,   // First moments.
                                      FLOAT                **SecondM)  // Second moments.
 {
-    int   i, j, jj, l, o, p, q;
+    int   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW;
     int   Error = 0;
 
@@ -1193,27 +1211,27 @@ int Rebmvnorm::BayesClassificationPW(FLOAT                **Y,        // Pointer
         if (Y[i][length_pdf_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist, &outlier);
 
             if (Error) goto E0;
 
-            Max = W[l] * CmpDist;
+            Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, &outlier);
 
                 if (Error) goto E0;
 
                 Tmp = W[j] * CmpDist;
 
                 if (Tmp > Max) {
-                    l = j; Max = Tmp;
+                    l = j; Max = Tmp; Outlier = outlier;
                 }
             }
 
             dW = Y[i][length_pdf_] / n_; W[l] += dW;
 
-            for (j = 0; j < length_pdf_; j++) {
+            if (!Outlier) for (j = 0; j < length_pdf_; j++) {
                 FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                 o = j * length_pdf_ + j;
@@ -1262,7 +1280,7 @@ int Rebmvnorm::BayesClassificationH(int                  k,          // Total nu
                                     FLOAT                **FirstM,   // First moments.
                                     FLOAT                **SecondM)  // Second moments.
 {
-    int   i, j, jj, l, o, p, q;
+    int   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW;
     int   Error = 0;
 
@@ -1270,27 +1288,27 @@ int Rebmvnorm::BayesClassificationH(int                  k,          // Total nu
         if (Y[i][length_pdf_] > FLOAT_MIN) {
             l = 0;
 
-            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist);
+            Error = ComponentDist(Y[i], MixTheta[l], &CmpDist, &outlier);
 
             if (Error) goto E0;
 
-            Max = W[l] * CmpDist;
+            Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
-                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist);
+                Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, &outlier);
 
                 if (Error) goto E0;
 
                 Tmp = W[j] * CmpDist;
 
                 if (Tmp > Max) {
-                    l = j; Max = Tmp;
+                    l = j; Max = Tmp; Outlier = outlier; 
                 }
             }
 
             dW = Y[i][length_pdf_] / n_; W[l] += dW;
 
-            for (j = 0; j < length_pdf_; j++) {
+            if (!Outlier) for (j = 0; j < length_pdf_; j++) {
                 FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                 o = j * length_pdf_ + j;
@@ -1333,7 +1351,8 @@ E0: return Error;
 
 int Rebmvnorm::ComponentDist(FLOAT                *Y,        // Pointer to the input point [y0,...,yd-1].
                              CompnentDistribution *CmpTheta, // Component parameters.
-                             FLOAT                *CmpDist)  // Component distribution.
+                             FLOAT                *CmpDist,  // Component distribution.
+                             int                  *Outlier)  // 1 if outlier otherwise 0.
 {
     FLOAT y, yi, yj;
     int   i, j;
@@ -1347,6 +1366,10 @@ int Rebmvnorm::ComponentDist(FLOAT                *Y,        // Pointer to the i
         for (j = i + 1; j < CmpTheta->length_pdf_; j++) {
             yj = Y[j] - CmpTheta->Theta_[0][j]; y += CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + j] * yi * yj;
         }
+    }
+
+    if (Outlier) {
+        *Outlier = (FLOAT)2.0 * y > ChiSqr_;
     }
 
     *CmpDist = (FLOAT)exp(-y) / (FLOAT)sqrt((FLOAT)pow((FLOAT)2.0 * Pi, CmpTheta->length_pdf_) * CmpTheta->Theta_[3][0]);
