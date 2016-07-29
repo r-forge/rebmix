@@ -68,7 +68,6 @@ int main(int argc, char* argv[])
         if (Error) goto E0;
     }
 
-
 E0: if (rngmix) delete rngmix;
     if (rebmix) delete rebmix;
 

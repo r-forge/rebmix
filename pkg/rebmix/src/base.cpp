@@ -279,7 +279,7 @@ int GammaSer(FLOAT a,       // Constant a > 0.
             i++;
         }
 
-        if (Error) goto E0;
+        if (Error) Error = 0; // ItMax too small.
 
         *GamSer = Sum * (FLOAT)exp(-y + a * log(y) - *Gamln);
     }
@@ -331,7 +331,7 @@ int GammaCfg(FLOAT a,       // Constant a > 0.
             i++;
         }
 
-        if (Error) goto E0;
+        if (Error) Error = 0; // ItMax too small.
 
         *GamCfg = (FLOAT)exp(-y + a * log(y) - *Gamln) * G;
     }

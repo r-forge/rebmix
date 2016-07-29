@@ -2,6 +2,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.8.3}{ 
 \itemize{
+\item Fixed convergence bug in C++ code.
+\item Bayes classification is improved by introducing outliers.
 }
 }
 \section{Changes in version 2.8.2}{ 

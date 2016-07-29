@@ -98,6 +98,7 @@ int CompnentDistribution::Memmove(CompnentDistribution *CmpTheta)
 
 Rebmix::Rebmix()
 {
+    p_value_ = (FLOAT)0.0005;
     ChiSqr_ = (FLOAT)0.0;
     curr_ = NULL;
     o_ = 0;
@@ -1441,11 +1442,11 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
         case pfWeibull:
             if (Y[i] > FLOAT_MIN) {
                 if (Outlier) {
-                    y = WeibullInv((FLOAT)0.9995, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+                    y = WeibullInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
 
                     *Outlier |= Y[i] > y;
 
-                    y = WeibullInv((FLOAT)0.0005, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+                    y = WeibullInv(p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
 
                     *Outlier |= Y[i] < y;
                 }
@@ -1462,13 +1463,13 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
         case pfGamma:
             if (Y[i] > FLOAT_MIN) {
                 if (Outlier) {
-                    Error = GammaInv((FLOAT)0.9995, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i], &y);
+                    Error = GammaInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i], &y);
 
                     if (Error) goto E0;
 
                     *Outlier |= Y[i] > y;
 
-                    Error = GammaInv((FLOAT)0.0005, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i], &y);
+                    Error = GammaInv(p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i], &y);
 
                     if (Error) goto E0;
 
@@ -1486,11 +1487,11 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             break;
         case pfBinomial:
             if (Outlier) {
-                y = BinomialInv((FLOAT)0.9995, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+                y = BinomialInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
 
                 *Outlier |= Y[i] > y;
 
-                y = BinomialInv((FLOAT)0.0005, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+                y = BinomialInv(p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
 
                 *Outlier |= Y[i] < y;
             }
@@ -1515,11 +1516,11 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             break;
         case pfPoisson:
             if (Outlier) {
-                y = PoissonInv((FLOAT)0.9995, CmpTheta->Theta_[0][i]);
+                y = PoissonInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i]);
 
                 *Outlier |= Y[i] > y;
 
-                y = PoissonInv((FLOAT)0.0005, CmpTheta->Theta_[0][i]);
+                y = PoissonInv(p_value_, CmpTheta->Theta_[0][i]);
 
                 *Outlier |= Y[i] < y;
             }
@@ -3835,7 +3836,7 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)0.999, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     if (Error) goto E0;
 
@@ -4297,7 +4298,7 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)0.999, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     if (Error) goto E0;
 
@@ -4783,7 +4784,7 @@ int Rebmix::REBMIXH()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)0.999, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     if (Error) goto E0;
 
