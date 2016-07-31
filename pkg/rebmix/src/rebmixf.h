@@ -140,6 +140,7 @@ public:
     // Destructor.
     virtual ~Rebmix();
     // Methods.
+    virtual int Initialize();
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingPW(FLOAT *h, FLOAT **Y);
     int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y);
