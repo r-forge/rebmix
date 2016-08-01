@@ -24,7 +24,7 @@ void RRNGMIX(int    *IDum,         // Random seed.
              int    *Z,            // Component membership. 
              int    *Error)        // Error code.
 {
-    Rngmix *rngmix;
+    Rngmix *rngmix = NULL;
     int    i, j, k, l;
 
     rngmix = new Rngmix;

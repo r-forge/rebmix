@@ -12,6 +12,7 @@ private:
     int ComponentConditionalDist(int i, FLOAT *Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpMrgDist);
 public:
     // Methods.
+    int Initialize();
     int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);

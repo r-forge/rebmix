@@ -1,8 +1,8 @@
-.legendA <- function(s, col, pch, error) 
+.legendA <- function(s, text, col, pch, error) 
 {
   for (i in s:1) {
     if (.Device == "tikz output") {
-      legend <- paste("$", 1:i, "$", sep = ""); j <- i
+      legend <- paste("$", text[1:i], "$", sep = ""); j <- i
       
       if (i < s) {
         legend <- c(legend, "$\\mathrm{...}$"); j <- i + 1
@@ -13,7 +13,7 @@
       }
     }
     else {
-      legend <- paste(bquote(.(1:i)), sep = ""); j <- i
+      legend <- paste(bquote(.(text[1:i])), sep = ""); j <- i
       
       if (i < s) {
         legend <- c(legend, "..."); j <- i + 1

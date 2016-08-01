@@ -23,7 +23,7 @@ void RRNGMVNORM(int    *IDum,         // Random seed.
                 int    *Z,            // Component membership. 
                 int    *Error)        // Error code.
 {
-    Rngmvnorm *rngmvnorm;
+    Rngmvnorm *rngmvnorm = NULL;
     int       i, j, k, l;
 
     rngmvnorm = new Rngmvnorm;

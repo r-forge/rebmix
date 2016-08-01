@@ -86,9 +86,10 @@ function(x,
     space = "rgb",
     interpolate = "linear")
     
-  s <- length(levels(x@Zp))
-  
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
+# s <- length(levels(x@Zp))
+  s <- length(unique(x@Zp)) 
+    
+  zlim <- c(0, max(1, c - 1)); zmax <- zlim[2]
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
@@ -330,16 +331,17 @@ function(x,
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
   
+  Zp <- as.numeric(levels(x@Zp))[x@Zp]
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]   
+  
   i <- c - 1
   
-  while (s < length(unique(x@Zp))) {
-    x@Zp[x@Zp == x@from[i]] = x@to[i]
+  while (s < length(unique(Zp))) {
+    Zp[Zp == x@from[i]] = x@to[i]
    
     i <- i - 1
   }  
   
-  x@Zp <- factor(x@Zp)
-   
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
@@ -360,21 +362,23 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- as.numeric(x@Zp) - 1
+  ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- Zp - 1
   
-  error <- is.error(x@Zt, x@Zp)
+  error <- is.error(Zt, Zp)
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
     
-  s <- length(levels(x@Zp))
+  s <- length(unique(Zp))   
   
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
+  zlim <- c(0, max(1, c - 1)); zmax <- zlim[2]
       
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
-  legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+  legend.col <- rgb(ramp(sort(unique(Zp) - 1) / zmax), maxColorValue = 255)
+  
+  legend.text <- as.character(sort(unique(Zp)))
   
   legend.pch <- rep(plot.pch, s)    
   
@@ -451,7 +455,7 @@ function(x,
           
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-          .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
+          .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
   
           par(mfrow = c(nrow, ncol),
             cex = cex,
@@ -539,7 +543,7 @@ function(x,
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-    .legendA(s = s, col = legend.col, pch = legend.pch, error = sum(error) != 0)
+    .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
       
     par(mfrow = c(nrow, ncol),
       cex = cex,

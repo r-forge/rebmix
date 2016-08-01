@@ -262,6 +262,17 @@ int Rebmix::Golden()
     return (Stop);
 } // Golden
 
+// Perform necessary initializations.
+
+int Rebmix::Initialize()
+{
+    int Error = 0;
+
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, (FLOAT)1.0 / (FLOAT)2.0, &ChiSqr_);
+
+    return (Error);
+} // Initialize
+
 // Preprocessing of observations for k-nearest neighbour.
 
 int Rebmix::PreprocessingKNN(int   k,   // k-nearest neighbours.
@@ -1559,7 +1570,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                                   CompnentDistribution *RigidTheta, // Rigid parameters.
                                   CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                A[4], T[2];
     int                  i, j, l;
     FLOAT                dP, MrgVar, TmpVar;
@@ -1823,7 +1834,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
                                  CompnentDistribution *RigidTheta, // Rigid parameters.
                                  CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                A[4], T[2];
     int                  i, j, l;
     FLOAT                dP, MrgVar, TmpVar;
@@ -2088,7 +2099,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
                                 CompnentDistribution *RigidTheta, // Rigid parameters.
                                 CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                A[4], T[2];
     int                  i, j, l;
     FLOAT                dP, MrgVar, TmpVar;
@@ -3836,7 +3847,7 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = Initialize();
 
     if (Error) goto E0;
 
@@ -4298,7 +4309,7 @@ int Rebmix::REBMIXPW()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = Initialize();
 
     if (Error) goto E0;
 
@@ -4784,7 +4795,7 @@ int Rebmix::REBMIXH()
 
     Error = NULL == opt_D; if (Error) goto E0;
 
-    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+    Error = Initialize();
 
     if (Error) goto E0;
 

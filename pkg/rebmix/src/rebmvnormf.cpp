@@ -8,6 +8,17 @@
 #include "base.h"
 #include "rebmvnormf.h"
 
+// Perform necessary initializations.
+
+int Rebmvnorm::Initialize()
+{
+    int Error = 0;
+
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
+
+    return (Error);
+} // Initialize
+
 int Rebmvnorm::ComponentConditionalDist(int                  i,           // Index of variable y.
                                         FLOAT                *Y,          // Pointer to the input point [y0,...,yd-1].
                                         FLOAT                *Cinv,       // Inverse correlation matrix.
@@ -24,9 +35,9 @@ int Rebmvnorm::ComponentConditionalDist(int                  i,           // Ind
 
     Stdev = (FLOAT)sqrt(CmpTheta->Theta_[1][o] / Cinv[o]);
 
-    y = (Y[i] - Mean) / (Sqrt2 * Stdev);
+    y = (Y[i] - Mean) / (Sqrt2 * Stdev); y *= y;
 
-    *CmpMrgDist = (FLOAT)exp(-(y * y)) / (Sqrt2Pi * Stdev);
+    *CmpMrgDist = (FLOAT)exp(-y) / (Sqrt2Pi * Stdev);
 
     return Error;
 } // ComponentConditionalDist
@@ -867,7 +878,7 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
                                      CompnentDistribution *RigidTheta, // Rigid parameters.
                                      CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     int                  i, ii, j, o;
     int                  Error = 0;
@@ -880,57 +891,54 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
     if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        EnhanTheta->pdf_[i] = pfNormal;
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            EnhanTheta->pdf_[i] = pfNormal;
 
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * Y[j][i];
-        }
-
-        EnhanTheta->Theta_[0][i] = Sum / nl;
-
-        o = i * length_pdf_ + i;
-
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
-        }
-
-        EnhanTheta->Theta_[1][o] = Sum / nl;
-
-        if (EnhanTheta->Theta_[1][o] <= FLOAT_MIN) {
-            Error = 1; goto E0;
-        }
-
-        if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
-            Error = 1; goto E0;
-        }
-
-        for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
-        
+
             for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                Sum += Y[j][length_pdf_] * Y[j][i];
             }
 
-            EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            EnhanTheta->Theta_[0][i] = Sum / nl;
+
+            o = i * length_pdf_ + i;
+
+            Sum = (FLOAT)0.0;
+
+            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
+            }
+
+            EnhanTheta->Theta_[1][o] = Sum / nl;
+
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+                Error = 1; goto E0;
+            }
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                }
+
+                EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            }
         }
+
+        Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
+
+        if (Error) goto E0;
+
+        Error = LooseTheta->Memmove(EnhanTheta);
+
+        if (Error) goto E0;
     }
-
-    Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
-
-    if (Error) goto E0;
-
-    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+    else {
         Error = 1; goto E0;
     }
-
-    Error = LooseTheta->Memmove(EnhanTheta);
-
-    if (Error) goto E0;
 
 E0: if (EnhanTheta) delete EnhanTheta;
 
@@ -944,7 +952,7 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
                                     CompnentDistribution *RigidTheta, // Rigid parameters.
                                     CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     int                  i, ii, j, o;
     int                  Error = 0;
@@ -957,57 +965,54 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
 
     if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        EnhanTheta->pdf_[i] = pfNormal;
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            EnhanTheta->pdf_[i] = pfNormal;
 
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * Y[j][i];
-        }
-
-        EnhanTheta->Theta_[0][i] = Sum / nl;
-
-        o = i * length_pdf_ + i;
-
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
-        }
-
-        EnhanTheta->Theta_[1][o] = Sum / nl;
-
-        if (EnhanTheta->Theta_[1][o] <= FLOAT_MIN) {
-            Error = 1; goto E0;
-        }
-
-        if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
-            Error = 1; goto E0;
-        }
-
-        for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
-        
+
             for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                Sum += Y[j][length_pdf_] * Y[j][i];
             }
 
-            EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            EnhanTheta->Theta_[0][i] = Sum / nl;
+
+            o = i * length_pdf_ + i;
+
+            Sum = (FLOAT)0.0;
+
+            for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
+            }
+
+            EnhanTheta->Theta_[1][o] = Sum / nl;
+
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+                Error = 1; goto E0;
+            }
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < n_; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                }
+
+                EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            }
         }
+
+        Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
+
+        if (Error) goto E0;
+
+        Error = LooseTheta->Memmove(EnhanTheta);
+
+        if (Error) goto E0;
     }
-
-    Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
-
-    if (Error) goto E0;
-
-    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+    else {
         Error = 1; goto E0;
     }
-
-    Error = LooseTheta->Memmove(EnhanTheta);
-
-    if (Error) goto E0;
 
 E0: if (EnhanTheta) delete EnhanTheta;
 
@@ -1022,7 +1027,7 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
                                    CompnentDistribution *RigidTheta, // Rigid parameters.
                                    CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    CompnentDistribution *EnhanTheta;
+    CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     int                  i, ii, j, o;
     int                  Error = 0;
@@ -1035,57 +1040,54 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
 
     if (Error) goto E0;
 
-    for (i = 0; i < length_pdf_; i++) {
-        EnhanTheta->pdf_[i] = pfNormal;
+    if (nl >= length_pdf_) {
+        for (i = 0; i < length_pdf_; i++) {
+            EnhanTheta->pdf_[i] = pfNormal;
 
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * Y[j][i];
-        }
-
-        EnhanTheta->Theta_[0][i] = Sum / nl;
-
-        o = i * length_pdf_ + i;
-
-        Sum = (FLOAT)0.0;
-
-        for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-            Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
-        }
-
-        EnhanTheta->Theta_[1][o] = Sum / nl;
-
-        if (EnhanTheta->Theta_[1][o] <= FLOAT_MIN) {
-            Error = 1; goto E0;
-        }
-
-        if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
-            Error = 1; goto E0;
-        }
-
-        for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
-        
+
             for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
-                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                Sum += Y[j][length_pdf_] * Y[j][i];
             }
 
-            EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            EnhanTheta->Theta_[0][i] = Sum / nl;
+
+            o = i * length_pdf_ + i;
+
+            Sum = (FLOAT)0.0;
+
+            for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][i] - EnhanTheta->Theta_[0][i]);
+            }
+
+            EnhanTheta->Theta_[1][o] = Sum / nl;
+
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+                Error = 1; goto E0;
+            }
+
+            for (ii = 0; ii < i; ii++) {
+                Sum = (FLOAT)0.0;
+        
+                for (j = 0; j < k; j++) if (Y[j][length_pdf_] > FLOAT_MIN) {
+                    Sum += Y[j][length_pdf_] * (Y[j][i] - EnhanTheta->Theta_[0][i]) * (Y[j][ii] - EnhanTheta->Theta_[0][ii]);
+                }
+
+                EnhanTheta->Theta_[1][i * length_pdf_ + ii] = EnhanTheta->Theta_[1][ii * length_pdf_ + i] = Sum / nl;
+            }
         }
+
+        Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
+
+        if (Error) goto E0;
+
+        Error = LooseTheta->Memmove(EnhanTheta);
+
+        if (Error) goto E0;
     }
-
-    Error = LUinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
-
-    if (Error) goto E0;
-
-    if (EnhanTheta->Theta_[3] < RigidTheta->Theta_[3]) {
+    else {
         Error = 1; goto E0;
     }
-
-    Error = LooseTheta->Memmove(EnhanTheta);
-
-    if (Error) goto E0;
 
 E0: if (EnhanTheta) delete EnhanTheta;
 
