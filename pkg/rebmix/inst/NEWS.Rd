@@ -4,6 +4,7 @@
 \itemize{
 \item Fixed convergence bug in C++ code.
 \item Bayes classification is improved by introducing outliers.
+\item Method \code{plot} is improved.
 }
 }
 \section{Changes in version 2.8.2}{ 
