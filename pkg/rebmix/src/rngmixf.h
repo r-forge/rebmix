@@ -21,7 +21,6 @@ public:
     int                  c_;             // Number of components.
     CompnentDistribution *IniTheta_;     // Initial component parameters.
     int                  n_;             // Number of observations.
-    char                 *Dataset_;      // Dataset name.
     FLOAT                **Y_;           // Dataset.
     int                  *N_;            // Numbers of observations.
     CompnentDistribution **MixTheta_;    // Mixture parameters.

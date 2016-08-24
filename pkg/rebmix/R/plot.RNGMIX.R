@@ -44,6 +44,8 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]  
+
   d <- ncol(x@Dataset[[pos]])
 
   nrow <- max(1, nrow)
@@ -65,20 +67,22 @@ function(x,
     tcl = tcl, ...)
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
-
-  ey <- as.matrix(x@Dataset[[pos]]); et <- as.numeric(x@Zt) - 1
+  
+  ey <- as.matrix(x@Dataset[[pos]]); et <- Zt - 1
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
     
-  s <- length(levels(x@Zt))
+  unique.Zt <- unique(Zt); s <- length(unique.Zt); sort.unique.Zt <- sort(unique.Zt)
   
-  zlim <- c(0, s - 1); zmax <- zlim[2]
+  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
       
-  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255);
+  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255)
   
-  legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+  legend.col <- rgb(ramp((sort.unique.Zt - 1) / zmax), maxColorValue = 255)
+  
+  legend.text <- as.character(sort.unique.Zt)
   
   legend.pch <- rep(plot.pch, s)  
   
@@ -143,7 +147,7 @@ function(x,
           
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-          .legendA(s = s, col = legend.col, pch = legend.pch, error = 0)
+          .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = 0)          
   
           par(mfrow = c(nrow, ncol),
             cex = cex,
@@ -218,8 +222,8 @@ function(x,
       new = TRUE)
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
-    .legendA(s = s, col = legend.col, pch = legend.pch, error = 0)
+    
+    .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = 0)          
       
     par(mfrow = c(nrow, ncol),
       cex = cex,
@@ -287,6 +291,8 @@ function(x,
   if (ncol < 1) {
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
+  
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]    
 
   d <- ncol(x@Dataset[[pos]])
 
@@ -310,19 +316,21 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@Dataset[[pos]]); et <- as.numeric(x@Zt) - 1
+  ey <- as.matrix(x@Dataset[[pos]]); et <- Zt - 1
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
     
-  s <- length(levels(x@Zt))
+  unique.Zt <- unique(Zt); s <- length(unique.Zt); sort.unique.Zt <- sort(unique.Zt)
   
-  zlim <- c(0, s - 1); zmax <- zlim[2]
+  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
+  
+  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255)  
       
-  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255);
+  legend.col <- rgb(ramp((sort.unique.Zt - 1) / zmax), maxColorValue = 255)
   
-  legend.col <- rgb(ramp(zlim[1]:zlim[2] / zmax), maxColorValue = 255)
+  legend.text <- as.character(sort.unique.Zt)
   
   legend.pch <- rep(plot.pch, s)  
   
@@ -387,7 +395,7 @@ function(x,
           
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-          .legendA(s = s, col = legend.col, pch = legend.pch, error = 0)
+          .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = 0)          
   
           par(mfrow = c(nrow, ncol),
             cex = cex,
@@ -463,7 +471,7 @@ function(x,
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
           
-    .legendA(s = s, col = legend.col, pch = legend.pch, error = 0)
+    .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = 0)          
       
     par(mfrow = c(nrow, ncol),
       cex = cex,

@@ -24,7 +24,6 @@ Rngmix::Rngmix()
     c_ = 0;
     IniTheta_ = NULL;
     n_ = 0;
-    Dataset_ = NULL;
     Y_ = NULL;
     N_ = NULL;
     MixTheta_ = NULL;

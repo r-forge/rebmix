@@ -422,6 +422,16 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
         *Error = NULL == rebmix->Y_[i]; if (*Error) goto E0;
     }
 
+    rebmix->X_ = (FLOAT**)malloc(rebmix->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmix->X_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->n_; i++) {
+        rebmix->X_[i] = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmix->X_[i]; if (*Error) goto E0;
+    }
+
     i = 0;
 
     for (j = 0; j < rebmix->length_pdf_; j++) {

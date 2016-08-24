@@ -5,6 +5,7 @@
 \item Fixed convergence bug in C++ code.
 \item Bayes classification is improved by introducing outliers.
 \item Method \code{plot} is improved.
+\item Fixed bug in C++ functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
 }
 }
 \section{Changes in version 2.8.2}{ 

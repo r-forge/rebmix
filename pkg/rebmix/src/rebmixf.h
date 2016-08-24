@@ -101,7 +101,7 @@ class Rebmix : public Base {
 public:
     // Input members.
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
-    FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 0.001. 
+    FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_. 
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.
     char                       **open_;        // Paths to open data files.
@@ -120,8 +120,8 @@ public:
     PestraintsType_e           Restraints_;    // Restraints type.
     // Input members.
     int                        n_;             // Number of observations.
-    char                       *Dataset_;      // Dataset name.
     FLOAT                      **Y_;           // Dataset.
+    FLOAT                      **X_;           // Temporary dataset.
     // Output members.
     FLOAT                      *W_;            // Component weights.
     CompnentDistribution       **MixTheta_;    // Mixture parameters.

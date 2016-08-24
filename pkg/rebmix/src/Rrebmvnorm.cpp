@@ -356,6 +356,16 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
 
+    rebmvnorm->X_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->X_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->n_; i++) {
+        rebmvnorm->X_[i] = (FLOAT*)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->X_[i]; if (*Error) goto E0;
+    }
+
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
