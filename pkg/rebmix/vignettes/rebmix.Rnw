@@ -140,10 +140,10 @@ gamma3est <- REBMIX(Dataset = gamma3@Dataset,
 @
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<gamma2-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(gamma2est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+<<gamma3-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(gamma3est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
 @
-\caption{Gamma 2 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
+\caption{Gamma 3 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
 \end{figure}
 \subsubsection{Summary and coef methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=

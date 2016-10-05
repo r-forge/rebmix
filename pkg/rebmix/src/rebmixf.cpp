@@ -404,64 +404,349 @@ E0: return Error;
 
 // Global mode detection for k-nearest neighbour.
 
-int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
-                          FLOAT **Y) // Pointer to the input array [y0,...,yd-1,kl].
+int Rebmix::GlobalModeKNN(int   *m,    // Global mode.
+                          FLOAT *ymin, // Minimum observations.
+                          FLOAT *ymax, // Maximum observations.
+                          FLOAT **Y)   // Pointer to the input array [y0,...,yd-1,kl].
 {
-    int i, j;
-    int Error = 0;
+    FLOAT Dc, Opt, p, R, Sum, **D = NULL, **X = NULL;
+    int   i, j, l, n, *I = NULL;
+    int   Error = 0;
 
     j = 0;
 
-    for (i = 1; i < n_; i++) if (Y[i][length_pdf_] > FLOAT_MIN) {
-        if (Y[i][length_pdf_] / Y[i][length_pdf_ + 1] > Y[j][length_pdf_] / Y[j][length_pdf_ + 1]) {
-            j = i;
-        }
+    for (i = 1; i < n_; i++) if (Y[i][length_pdf_] / Y[i][length_pdf_ + 1] > Y[j][length_pdf_] / Y[j][length_pdf_ + 1]) {
+        j = i;
     }
 
     *m = j;
+
+    // Refine search.
+
+    n = 0; p = ((FLOAT)1.0 - (FLOAT)2.0 * p_value_) * Y[*m][length_pdf_] / Y[*m][length_pdf_ + 1];
+
+    for (i = 0; i < n_; i++) if (Y[i][length_pdf_] / Y[i][length_pdf_ + 1] > p) {
+        n++;
+    }
+
+    if (n > 2) {
+        X = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == X; if (Error) goto E0;
+
+        D = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == D; if (Error) goto E0;
+
+        I = (int*)malloc(n * sizeof(int*));
+
+        Error = NULL == I; if (Error) goto E0;
+
+        // Set of mode candidates.
+
+        j = 0;
+
+        for (i = 0; i < n_; i++) if (Y[i][length_pdf_] / Y[i][length_pdf_ + 1] > p) {
+            X[j] = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+            Error = NULL == X[j]; if (Error) goto E0;
+
+            D[j] = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+            Error = NULL == D[j]; if (Error) goto E0;
+
+            memmove(X[j], Y[i], length_pdf_ * sizeof(FLOAT));
+
+            I[j] = i; j++;
+        }
+
+        // Euclidean distance and Shepard’s universal law of generalization.
+
+        p = (FLOAT)log(p_value_);
+
+        for (i = 0; i < n; i++) {
+            D[i][i] = (FLOAT)0.0;
+
+            for (j = i + 1; j < n; j++) {
+                Dc = (FLOAT)0.0;
+
+                for (l = 0; l < length_pdf_; l++) {
+                    R = (X[i][l] - X[j][l]) / (ymax[l] - ymin[l]); Dc += R * R;
+                }
+
+                Dc = (FLOAT)sqrt(Dc);
+
+                D[i][j] = D[j][i] = (FLOAT)exp(p * Dc);
+            }
+        }
+
+        // Mode selection.
+
+        Opt = (FLOAT)0.0;
+
+        for (i = 0; i < n; i++) {
+            Sum = (FLOAT)0.0;
+ 
+            for (j = 0; j < n; j++) {
+                Sum += D[i][j];
+            }
+
+            if (Sum > Opt) {
+                Opt = Sum; *m = I[i];
+            }
+        } 
+    }
+
+E0: if (I) free(I);
+
+    if (D) {
+        for (i = 0; i < n; i++) {
+            if (D[i]) free(D[i]);
+        }
+
+        free(D);
+    }
+
+    if (X) {
+        for (i = 0; i < n; i++) {
+            if (X[i]) free(X[i]);
+        }
+
+        free(X);
+    }
 
     return Error;
 } // GlobalModeKNN 
 
 // Global mode detection for Parzen window.
 
-int Rebmix::GlobalModePW(int   *m,  // Global mode.
-                         FLOAT **Y) // Pointer to the input array [y0,...,yd-1,kl].
+int Rebmix::GlobalModePW(int   *m,    // Global mode.
+                         FLOAT *ymin, // Minimum observations.
+                         FLOAT *ymax, // Maximum observations.
+                         FLOAT **Y)   // Pointer to the input array [y0,...,yd-1,kl].
 {
-    int i, j;
-    int Error = 0;
+    FLOAT Dc, Opt, p, R, Sum, **D = NULL, **X = NULL;
+    int   i, j, l, n, *I = NULL;
+    int   Error = 0;
 
     j = 0;
 
-    for (i = 1; i < n_; i++) if (Y[i][length_pdf_] > FLOAT_MIN) {
-        if (Y[i][length_pdf_] * Y[i][length_pdf_ + 1] > Y[j][length_pdf_] * Y[j][length_pdf_ + 1]) {
-            j = i;
-        }
+    for (i = 1; i < n_; i++) if (Y[i][length_pdf_] * Y[i][length_pdf_ + 1] > Y[j][length_pdf_] * Y[j][length_pdf_ + 1]) {
+        j = i;
     }
 
     *m = j;
+
+    // Refine search.
+
+    n = 0; p = ((FLOAT)1.0 - (FLOAT)2.0 * p_value_) * Y[*m][length_pdf_] * Y[*m][length_pdf_ + 1];
+
+    for (i = 0; i < n_; i++) if (Y[i][length_pdf_] * Y[i][length_pdf_ + 1] > p) {
+        n++;
+    }
+
+    if (n > 2) {
+        X = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == X; if (Error) goto E0;
+
+        D = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == D; if (Error) goto E0;
+
+        I = (int*)malloc(n * sizeof(int*));
+
+        Error = NULL == I; if (Error) goto E0;
+
+        // Set of mode candidates.
+
+        j = 0;
+
+        for (i = 0; i < n_; i++) if (Y[i][length_pdf_] * Y[i][length_pdf_ + 1] > p) {
+            X[j] = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+            Error = NULL == X[j]; if (Error) goto E0;
+
+            D[j] = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+            Error = NULL == D[j]; if (Error) goto E0;
+
+            memmove(X[j], Y[i], length_pdf_ * sizeof(FLOAT));
+
+            I[j] = i; j++;
+        }
+
+        // Euclidean distance and Shepard’s universal law of generalization.
+
+        p = (FLOAT)log(p_value_);
+
+        for (i = 0; i < n; i++) {
+            D[i][i] = (FLOAT)0.0;
+
+            for (j = i + 1; j < n; j++) {
+                Dc = (FLOAT)0.0;
+
+                for (l = 0; l < length_pdf_; l++) {
+                    R = (X[i][l] - X[j][l]) / (ymax[l] - ymin[l]); Dc += R * R;
+                }
+
+                Dc = (FLOAT)sqrt(Dc);
+
+                D[i][j] = D[j][i] = (FLOAT)exp(p * Dc);
+            }
+        }
+
+        // Mode selection.
+
+        Opt = (FLOAT)0.0;
+
+        for (i = 0; i < n; i++) {
+            Sum = (FLOAT)0.0;
+ 
+            for (j = 0; j < n; j++) {
+                Sum += D[i][j];
+            }
+
+            if (Sum > Opt) {
+                Opt = Sum; *m = I[i];
+            }
+        } 
+    }
+
+E0: if (I) free(I);
+
+    if (D) {
+        for (i = 0; i < n; i++) {
+            if (D[i]) free(D[i]);
+        }
+
+        free(D);
+    }
+
+    if (X) {
+        for (i = 0; i < n; i++) {
+            if (X[i]) free(X[i]);
+        }
+
+        free(X);
+    }
 
     return Error;
 } // GlobalModePW
 
 // Global mode detection for histogram.
 
-int Rebmix::GlobalModeH(int   *m,  // Global mode.
-                        int   k,   // Total number of bins.
-                        FLOAT **Y) // Pointer to the input array [y0,...,yd-1,kl].
+int Rebmix::GlobalModeH(int   *m,    // Global mode.
+                        FLOAT *ymin, // Minimum observations.
+                        FLOAT *ymax, // Maximum observations.
+                        int   k,     // Total number of bins.
+                        FLOAT **Y)   // Pointer to the input array [y0,...,yd-1,kl].
 {
-    int i, j;
-    int Error = 0;
+    FLOAT Dc, Opt, p, R, Sum, **D = NULL, **X = NULL;
+    int   i, j, l, n, *I = NULL;
+    int   Error = 0;
 
     j = 0;
 
-    for (i = 1; i < k; i++) if (Y[i][length_pdf_] > FLOAT_MIN) {
-        if (Y[i][length_pdf_] > Y[j][length_pdf_]) {
-            j = i;
-        }
+    for (i = 1; i < k; i++) if (Y[i][length_pdf_] > Y[j][length_pdf_]) {
+        j = i;
     }
 
     *m = j;
+
+    // Refine search.
+
+    n = 0; p = ((FLOAT)1.0 - (FLOAT)2.0 * p_value_) * Y[*m][length_pdf_];
+
+    for (i = 0; i < k; i++) if (Y[i][length_pdf_] > p) {
+        n++;
+    }
+
+    if (n > 2) {
+        X = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == X; if (Error) goto E0;
+
+        D = (FLOAT**)malloc(n * sizeof(FLOAT*));
+
+        Error = NULL == D; if (Error) goto E0;
+
+        I = (int*)malloc(n * sizeof(int*));
+
+        Error = NULL == I; if (Error) goto E0;
+
+        // Set of mode candidates.
+
+        j = 0;
+
+        for (i = 0; i < k; i++) if (Y[i][length_pdf_] > p) {
+            X[j] = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+            Error = NULL == X[j]; if (Error) goto E0;
+
+            D[j] = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+            Error = NULL == D[j]; if (Error) goto E0;
+
+            memmove(X[j], Y[i], length_pdf_ * sizeof(FLOAT));
+
+            I[j] = i; j++;
+        }
+
+        // Euclidean distance and Shepard’s universal law of generalization.
+
+        p = (FLOAT)log(p_value_);
+
+        for (i = 0; i < n; i++) {
+            D[i][i] = (FLOAT)0.0;
+
+            for (j = i + 1; j < n; j++) {
+                Dc = (FLOAT)0.0;
+
+                for (l = 0; l < length_pdf_; l++) {
+                    R = (X[i][l] - X[j][l]) / (ymax[l] - ymin[l]); Dc += R * R;
+                }
+
+                Dc = (FLOAT)sqrt(Dc);
+
+                D[i][j] = D[j][i] = (FLOAT)exp(p * Dc);
+            }
+        }
+
+        // Mode selection.
+
+        Opt = (FLOAT)0.0;
+
+        for (i = 0; i < n; i++) {
+            Sum = (FLOAT)0.0;
+ 
+            for (j = 0; j < n; j++) {
+                Sum += D[i][j];
+            }
+
+            if (Sum > Opt) {
+                Opt = Sum; *m = I[i];
+            }
+        } 
+    }
+
+E0: if (I) free(I);
+
+    if (D) {
+        for (i = 0; i < n; i++) {
+            if (D[i]) free(D[i]);
+        }
+
+        free(D);
+    }
+
+    if (X) {
+        for (i = 0; i < n; i++) {
+            if (X[i]) free(X[i]);
+        }
+
+        free(X);
+    }
 
     return Error;
 } // GlobalModeH
@@ -3930,7 +4215,7 @@ int Rebmix::REBMIXKNN()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModeKNN(&m, Y);
+                Error = GlobalModeKNN(&m, ymin, ymax, Y);
 
                 if (Error) goto E0;
 
@@ -4405,7 +4690,7 @@ int Rebmix::REBMIXPW()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModePW(&m, Y);
+                Error = GlobalModePW(&m, ymin, ymax, Y);
 
                 if (Error) goto E0;
 
@@ -4905,7 +5190,7 @@ int Rebmix::REBMIXH()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModeH(&m, all_K_[i], Y);
+                Error = GlobalModeH(&m, ymin, ymax, all_K_[i], Y);
 
                 if (Error) goto E0;
 

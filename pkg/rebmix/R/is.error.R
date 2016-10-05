@@ -4,7 +4,7 @@ is.error <- function(Zt, # A vector of true cluster membership.
   error <- array(data = 0, dim = length(Zp))
 
   if (length(Zt) != 0) {
-    zt <- sort(table(Zt), decreasing = TRUE)
+    zt <- as.numeric(names(sort(table(Zt), decreasing = TRUE)))
     zp <- sort(unique(Zp))  
 
     for (i in 1:length(zt)) {
