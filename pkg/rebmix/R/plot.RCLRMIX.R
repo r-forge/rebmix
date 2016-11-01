@@ -120,7 +120,7 @@ function(x,
           col = plot.col[which.not.error],
           axes = FALSE,
           lwd = 1,
-          cex = plot.cex * plot.mul,
+          cex = plot.cex * plot.mul[which.not.error],
           pch = plot.pch)
           
         points(x = ey[which.error, i],
@@ -211,7 +211,7 @@ function(x,
       col = plot.col[which.not.error],
       axes = FALSE,
       lwd = 1,
-      cex = plot.cex * plot.mul,
+      cex = plot.cex * plot.mul[which.not.error],
       pch = plot.pch)
           
     points(x = ey[which.error, 1],
@@ -409,7 +409,7 @@ function(x,
           col = plot.col[which.not.error],
           axes = FALSE,
           lwd = 1,
-          cex = plot.cex * plot.mul,
+          cex = plot.cex * plot.mul[which.not.error],
           pch = plot.pch)
           
         points(x = ey[which.error, i],
@@ -500,7 +500,7 @@ function(x,
       col = plot.col[which.not.error],
       axes = FALSE,
       lwd = 1,
-      cex = plot.cex * plot.mul,
+      cex = plot.cex * plot.mul[which.not.error],
       pch = plot.pch)
           
     points(x = ey[which.error, 1],

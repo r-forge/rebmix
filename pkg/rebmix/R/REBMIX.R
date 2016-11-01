@@ -18,6 +18,26 @@ function(model, ...)
 
     length.pdf <- d
     
+    if (is.character(model@K)) {
+      if (model@Preprocessing == "k-nearest neighbour") {
+        RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+      
+        K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))
+         
+        K <- unique(K)
+      }
+      else {
+        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+        
+        K <- Sturges:Log10
+        
+        K <- unique(K)
+      }
+    }
+    else {
+      K <- model@K
+    }
+    
     if (length(model@theta1) > 0) {
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
     }
@@ -43,8 +63,8 @@ function(model, ...)
       length.Theta = as.integer(2),
       length.theta = as.integer(c(length.theta1, length.theta2)),
       Theta = as.double(c(theta1, theta2)),
-      length.K = as.integer(length(model@K)),
-      K = as.integer(model@K),
+      length.K = as.integer(length(K)),
+      K = as.integer(K),
       length.y0 = as.integer(length(model@y0)),
       y0 = as.double(model@y0),      
       length.ymin = as.integer(length(model@ymin)),
@@ -73,8 +93,8 @@ function(model, ...)
       opt.logL = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
-      all.K = integer(max(model@K) - min(model@K) + 1),
-      all.IC = double(max(model@K) - min(model@K) + 1),
+      all.K = integer(max(K) - min(K) + 1),
+      all.IC = double(max(K) - min(K) + 1),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -131,7 +151,7 @@ function(model, ...)
       model@Theta[[i]][[3 + (j - 1) * 3]][M] <- NA
     }
     
-    output$K <- paste("c(", paste(model@K, collapse = ","), ")", sep = "")
+    output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
     
     if (model@Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d    
@@ -278,6 +298,26 @@ function(model, ...)
 
     length.pdf <- d
     
+    if (is.character(model@K)) {
+      if (model@Preprocessing == "k-nearest neighbour") {
+        RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+      
+        K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))
+         
+        K <- unique(K)
+      }
+      else {
+        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+        
+        K <- Sturges:Log10
+        
+        K <- unique(K)
+      }
+    }
+    else {
+      K <- model@K
+    }    
+    
     if (length(model@theta1) > 0) {
       length.theta1 <- +d; theta1 <- model@theta1; theta1[is.na(theta1)] <- 0
     }
@@ -303,8 +343,8 @@ function(model, ...)
       length.Theta = as.integer(4),
       length.theta = as.integer(c(length.theta1, length.theta2, length.theta2, length.theta3)),
       Theta = as.double(c(theta1, theta2)),
-      length.K = as.integer(length(model@K)),
-      K = as.integer(model@K),
+      length.K = as.integer(length(K)),
+      K = as.integer(K),
       length.y0 = as.integer(length(model@y0)),
       y0 = as.double(model@y0),      
       length.ymin = as.integer(length(model@ymin)),
@@ -333,8 +373,8 @@ function(model, ...)
       opt.logL = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
-      all.K = integer(max(model@K) - min(model@K) + 1),
-      all.IC = double(max(model@K) - min(model@K) + 1),
+      all.K = integer(max(K) - min(K) + 1),
+      all.IC = double(max(K) - min(K) + 1),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -391,7 +431,7 @@ function(model, ...)
       model@Theta[[i]][[3 + (j - 1) * 3]][M] <- NA
     }
     
-    output$K <- paste("c(", paste(model@K, collapse = ","), ")", sep = "")
+    output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
     
     if (model@Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d    
@@ -537,7 +577,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.8.3")
+  message("REBMIX Version 2.8.4")
  
   flush.console()
   

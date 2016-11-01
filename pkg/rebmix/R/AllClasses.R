@@ -390,7 +390,7 @@ function(.Object, ...,
     }
   }
   else {
-    stop(sQuote("K"), " list of integer vectors or integer vector is requested!", call. = FALSE)
+    K <- "auto"
   }
   
   # y0.

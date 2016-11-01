@@ -68,7 +68,7 @@ function(x,
     
   unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)     
   
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]    
+  zlim <- c(0, max(1, x@s - 1)); zmax <- zlim[2]    
     
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
   
@@ -334,9 +334,9 @@ function(x,
     
   unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)     
   
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
+  zlim <- c(0, max(1, x@s - 1)); zmax <- zlim[2]
       
-  plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255);
+  plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
   
   legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
   

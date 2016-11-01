@@ -48,4 +48,5 @@ exportMethods("RNGMIX",
               "pfmix",
               "split",
               "chunk",
-              "BFSMIX")
+              "BFSMIX",
+              "Zp")

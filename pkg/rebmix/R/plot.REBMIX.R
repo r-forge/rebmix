@@ -290,6 +290,10 @@ function(x,
     else {
       lim[, i] <- c(0.0, 1.0)
     }
+    
+    if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
+      lim[2, i] <- lim[1, i] + 1.0
+    }    
 
     if (Variables[i] == .rebmix$Variables[2]) {
       py[[i]] <- sort(unique(ey[, i]))
@@ -1415,6 +1419,10 @@ function(x,
     }
     else {
       lim[, i] <- c(0.0, 1.0)
+    }
+    
+    if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
+      lim[2, i] <- lim[1, i] + 1.0
     }
 
     py[[i]] <- seq(from = lim[1, i], to = lim[2, i], length.out = npts)

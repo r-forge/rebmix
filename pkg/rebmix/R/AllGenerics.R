@@ -15,7 +15,7 @@ setGeneric("REBMIX",
     pdf = character(),
     theta1 = numeric(),
     theta2 = numeric(),
-    K = numeric(),
+    K = "auto",
     y0 = numeric(),
     ymin = numeric(),
     ymax = numeric(),
@@ -47,6 +47,8 @@ setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))
 setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
 setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
+
+setGeneric("Zp", function(x = NULL, s = expression(c)) standardGeneric("Zp"))
 
 setGeneric("demix", 
   function(x = NULL, 
@@ -104,7 +106,7 @@ setGeneric("RCLRMIX",
     x = NULL,
     pos = 1, 
     Zt = factor(), ...)
-  standardGeneric("RCLRMIX"))  
+  standardGeneric("RCLRMIX"))
 
 setGeneric("RCLSMIX", 
   function(model = "RCLSMIX",
@@ -119,5 +121,3 @@ setGeneric("BFSMIX",
     Dataset = data.frame(),
     Zt = factor(), ...)
   standardGeneric("BFSMIX"))
-
-

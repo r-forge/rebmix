@@ -90,9 +90,9 @@ public:
 class Rebmix : public Base {
     // Methods.
     int Golden();
-    int GlobalModeKNN(int *m, FLOAT *ymin, FLOAT *ymax, FLOAT **Y);
-    int GlobalModePW(int *m, FLOAT *ymin, FLOAT *ymax, FLOAT **Y);
-    int GlobalModeH(int *m, FLOAT *ymin, FLOAT *ymax, int k, FLOAT **Y);
+    int GlobalModeKNN(int *m, FLOAT **Y, int *O);
+    int GlobalModePW(int *m, FLOAT **Y, int *O);
+    int GlobalModeH(int *m, int k, FLOAT **Y, int *O);
     int REBMIXKNN();
     int REBMIXPW();
     int REBMIXH();

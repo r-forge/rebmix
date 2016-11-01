@@ -391,7 +391,7 @@ int Rngmix::RunTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.8.3\n");
+    printf("RNGMIX Version 2.8.4\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
