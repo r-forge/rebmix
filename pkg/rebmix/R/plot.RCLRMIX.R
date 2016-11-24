@@ -36,7 +36,17 @@ function(x,
 
   d <- ncol(x@x@Dataset[[x@pos]])
   
-  c <- length(x@from); s <- eval(s)
+  Zp <- as.numeric(levels(x@Zp))[x@Zp]
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]
+  
+  if (length(Zt) == 0) {
+    zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
+  }
+  else {
+    zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]
+  }
+  
+  c <- x@c; s <- eval(s)
   
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
@@ -47,17 +57,16 @@ function(x,
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
-  
-  Zp <- as.numeric(levels(x@Zp))[x@Zp]
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]   
-  
+ 
   i <- c - 1
   
   while (s < length(unique(Zp))) {
     Zp[Zp == x@from[i]] <- x@to[i]
    
     i <- i - 1
-  }  
+  }
+  
+  unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
   
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -87,13 +96,14 @@ function(x,
     space = "rgb",
     interpolate = "linear")
     
-  unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)     
-  
-  zlim <- c(0, max(1, c - 1)); zmax <- zlim[2]
-      
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
   
-  plot.mul <- ifelse((Zp == x@from[s - 1]) | (Zp == x@to[s - 1]), 1.5, 1)
+  if (i > 0) {
+    plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
+  }
+  else {
+    plot.mul <- rep(1.0, length(Zp)) 
+  }
   
   legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
   
@@ -132,7 +142,7 @@ function(x,
           ylab = "",
           col = "black",
           lwd = 1,
-          cex = plot.cex * 2,
+          cex = plot.cex * plot.mul[which.error],
           pch = 1)          
 
         box(col = fg, lty = "solid", lwd = 1)
@@ -223,7 +233,7 @@ function(x,
       ylab = "",
       col = "black",
       lwd = 1,
-      cex = plot.cex * 2,
+      cex = plot.cex * plot.mul[which.error],
       pch = 1)       
 
     box(col = fg, lty = "solid", lwd = 1)
@@ -325,7 +335,17 @@ function(x,
 
   d <- ncol(x@x@Dataset[[x@pos]])
   
-  c <- length(x@from); s <- eval(s)
+  Zp <- as.numeric(levels(x@Zp))[x@Zp]
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]
+  
+  if (length(Zt) == 0) {
+    zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
+  }
+  else {
+    zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]
+  }
+  
+  c <- x@c; s <- eval(s)
   
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
@@ -336,17 +356,16 @@ function(x,
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
-  
-  Zp <- as.numeric(levels(x@Zp))[x@Zp]
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]   
-  
+ 
   i <- c - 1
   
   while (s < length(unique(Zp))) {
     Zp[Zp == x@from[i]] <- x@to[i]
    
     i <- i - 1
-  }  
+  }
+  
+  unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
   
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -376,13 +395,14 @@ function(x,
     space = "rgb",
     interpolate = "linear")
     
-  unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)     
-  
-  zlim <- c(0, max(1, c - 1)); zmax <- zlim[2]
-      
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
   
-  plot.mul <- ifelse((Zp == x@from[s - 1]) | (Zp == x@to[s - 1]), 1.5, 1)
+  if (i > 0) {
+    plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
+  }
+  else {
+    plot.mul <- rep(1.0, length(Zp)) 
+  }
   
   legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
   
@@ -421,7 +441,7 @@ function(x,
           ylab = "",
           col = "black",
           lwd = 1,
-          cex = plot.cex * 2,
+          cex = plot.cex * plot.mul[which.error],
           pch = 1)          
 
         box(col = fg, lty = "solid", lwd = 1)
@@ -512,7 +532,7 @@ function(x,
       ylab = "",
       col = "black",
       lwd = 1,
-      cex = plot.cex * 2,
+      cex = plot.cex * plot.mul[which.error],
       pch = 1)       
 
     box(col = fg, lty = "solid", lwd = 1)

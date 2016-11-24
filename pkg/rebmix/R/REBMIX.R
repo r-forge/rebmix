@@ -19,7 +19,7 @@ function(model, ...)
     length.pdf <- d
     
     if (is.character(model@K)) {
-      if (model@Preprocessing == "k-nearest neighbour") {
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
         RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
       
         K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))
@@ -299,7 +299,7 @@ function(model, ...)
     length.pdf <- d
     
     if (is.character(model@K)) {
-      if (model@Preprocessing == "k-nearest neighbour") {
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
         RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
       
         K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))

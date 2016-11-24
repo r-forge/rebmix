@@ -86,7 +86,7 @@ function(.Object, ...,
   
   length(grep("pdf", Names))  
   
-  j <- 0; length.pdf <- length(Theta[[1]])
+  j <- 0; length.pdf <- length(Theta[[grep("pdf", Names)[1]]])
   
   for (i in grep("pdf", Names)) {  
     pdf <- as.character(Theta[[i]])
@@ -104,7 +104,7 @@ function(.Object, ...,
     stop(sQuote("pdfi"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
   
-  j <- 0; length.theta1 <- length(Theta[[2]])
+  j <- 0; length.theta1 <- length(Theta[[grep("theta1", Names)[1]]])
   
   for (i in grep("theta1", Names)) {  
     theta1 <- as.numeric(Theta[[i]])
@@ -120,7 +120,7 @@ function(.Object, ...,
     stop(sQuote("theta1.i"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
   
-  j <- 0; length.theta2 <- length(Theta[[3]])
+  j <- 0; length.theta2 <- length(Theta[[grep("theta2", Names)[1]]])
   
   for (i in grep("theta2", Names)) {  
     theta2 <- as.numeric(Theta[[i]])
@@ -773,6 +773,8 @@ slots = c(x = "ANY",
   pos = "numeric",
   Zt = "factor",
   Zp = "factor",
+  c = "numeric",
+  prob = "numeric",
   from = "numeric",
   to = "numeric", 
   EN = "numeric",

@@ -21,17 +21,23 @@ a factor of true cluster membership.
 \item{\code{Zp}:}{
 a factor of predictive cluster membership.
 }
+\item{\code{c}:}{
+number of clusters.
+}
+\item{\code{prob}:}{
+a vector of length \eqn{c} containing probabilities of correct clustering for \eqn{s = 1, \ldots, c}.
+}
 \item{\code{from}:}{
-a vector of length \eqn{c} containing clusters merged to \code{to} clusters.
+a vector of length \eqn{c - 1} containing clusters merged to \code{to} clusters.
 }
 \item{\code{to}:}{
-a vector of length \eqn{c} containing clusters originating from \code{from} clusters.
+a vector of length \eqn{c - 1} containing clusters originating from \code{from} clusters.
 }
 \item{\code{EN}:}{
-a vector of length \eqn{c} containing entropies for combined clusters.
+a vector of length \eqn{c - 1} containing entropies for combined clusters.
 }
 \item{\code{ED}:}{
-a vector of length \eqn{c} containing decrease of entropies for combined clusters.
+a vector of length \eqn{c - 1} containing decrease of entropies for combined clusters.
 }
 }
 }

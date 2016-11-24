@@ -14,6 +14,8 @@ int Rebmvnorm::Initialize()
 {
     int Error = 0;
 
+    p_value_ = (FLOAT)0.0005;
+
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     return (Error);

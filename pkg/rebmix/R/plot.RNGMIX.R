@@ -44,7 +44,9 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]  
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]
+  
+  zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2] 
 
   d <- ncol(x@Dataset[[pos]])
 
@@ -76,8 +78,6 @@ function(x,
     
   unique.Zt <- unique(Zt); s <- length(unique.Zt); sort.unique.Zt <- sort(unique.Zt)
   
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
-      
   plot.col <- rgb(ramp(et / zmax), maxColorValue = 255)
   
   legend.col <- rgb(ramp((sort.unique.Zt - 1) / zmax), maxColorValue = 255)
@@ -265,7 +265,7 @@ function(x,
   if (missing(x)) {
     stop(sQuote("x"), " object of class RNGMVNORM is requested!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
@@ -291,8 +291,10 @@ function(x,
   if (ncol < 1) {
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
+
+  Zt <- as.numeric(levels(x@Zt))[x@Zt]
   
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]    
+  zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2] 
 
   d <- ncol(x@Dataset[[pos]])
 
@@ -315,7 +317,7 @@ function(x,
     tcl = tcl, ...)
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
-
+  
   ey <- as.matrix(x@Dataset[[pos]]); et <- Zt - 1
   
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
@@ -324,10 +326,8 @@ function(x,
     
   unique.Zt <- unique(Zt); s <- length(unique.Zt); sort.unique.Zt <- sort(unique.Zt)
   
-  zlim <- c(0, max(1, s - 1)); zmax <- zlim[2]
+  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255)
   
-  plot.col <- rgb(ramp(et / zmax), maxColorValue = 255)  
-      
   legend.col <- rgb(ramp((sort.unique.Zt - 1) / zmax), maxColorValue = 255)
   
   legend.text <- as.character(sort.unique.Zt)
@@ -470,7 +470,7 @@ function(x,
       new = TRUE)
           
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
+    
     .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = 0)          
       
     par(mfrow = c(nrow, ncol),

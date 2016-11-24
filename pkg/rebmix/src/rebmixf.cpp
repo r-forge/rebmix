@@ -98,7 +98,7 @@ int CompnentDistribution::Memmove(CompnentDistribution *CmpTheta)
 
 Rebmix::Rebmix()
 {
-    p_value_ = (FLOAT)0.0005;
+    p_value_ = (FLOAT)0.0;
     ChiSqr_ = (FLOAT)0.0;
     curr_ = NULL;
     o_ = 0;
@@ -276,7 +276,9 @@ int Rebmix::Initialize()
 {
     int Error = 0;
 
-    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, (FLOAT)1.0 / (FLOAT)2.0, &ChiSqr_);
+    p_value_ = (FLOAT)0.0005;
+
+    Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     return (Error);
 } // Initialize
@@ -410,7 +412,7 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
 {
     FLOAT Cur, Max;
     int   i, j;
-    int   Error = 0;
+    int   Error = 0, Stop = 0;
 
 S0: j = 0; Max = (FLOAT)0.0;
 
@@ -422,8 +424,8 @@ S0: j = 0; Max = (FLOAT)0.0;
         }
     }
 
-    if (Max < FLOAT_MIN) {
-        memset(O, 0, n_ * sizeof(int)); goto S0;
+    if ((Max < FLOAT_MIN) && !Stop) {
+        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
     }
 
     *m = j;
@@ -439,7 +441,7 @@ int Rebmix::GlobalModePW(int   *m,  // Global mode.
 {
     FLOAT Cur, Max;
     int   i, j;
-    int   Error = 0;
+    int   Error = 0, Stop = 0;
 
 S0: j = 0; Max = (FLOAT)0.0;
 
@@ -451,8 +453,8 @@ S0: j = 0; Max = (FLOAT)0.0;
         }
     }
 
-    if (Max < FLOAT_MIN) {
-        memset(O, 0, n_ * sizeof(int)); goto S0;
+    if ((Max < FLOAT_MIN) && !Stop) {
+        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
     }
 
     *m = j;
@@ -469,7 +471,7 @@ int Rebmix::GlobalModeH(int   *m,  // Global mode.
 {
     FLOAT Cur, Max;
     int   i, j;
-    int   Error = 0;
+    int   Error = 0, Stop = 0;
 
 S0: j = 0; Max = (FLOAT)0.0;
 
@@ -481,8 +483,8 @@ S0: j = 0; Max = (FLOAT)0.0;
         }
     }
 
-    if (Max < FLOAT_MIN) {
-        memset(O, 0, n_ * sizeof(int)); goto S0;
+    if ((Max < FLOAT_MIN) && !Stop) {
+        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
     }
 
     *m = j;
@@ -3946,14 +3948,14 @@ int Rebmix::REBMIXKNN()
 
         if (Error) goto E0;
 
-        memset(O, 0, n_ * sizeof(int));
-
         Found = 0; Dmin = (FLOAT)0.25; J = 1;
 
         // Outer loop.
 
         while (J <= ItMax) {
             l = 0; r = (FLOAT)n_; nl = (FLOAT)n_;
+
+            memset(O, 0, n_ * sizeof(int));
 
             // Middle loop.
 
@@ -3981,16 +3983,11 @@ int Rebmix::REBMIXKNN()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][length_pdf_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, NULL);
 
                             if (Error) goto E0;
 
-                            if (Outlier) {
-                                E[j] = Y[j][length_pdf_];
-                            }
-                            else {
-                                E[j] = Y[j][length_pdf_] - nl * fl * Y[j][length_pdf_ + 1] / all_K_[i]; O[j] = 1;
-                            }
+                            E[j] = Y[j][length_pdf_] - nl * fl * Y[j][length_pdf_ + 1] / all_K_[i];
 
                             if (E[j] > (FLOAT)0.0) {
                                 Epsilon[j] = E[j] / Y[j][length_pdf_]; 
@@ -4031,7 +4028,17 @@ int Rebmix::REBMIXKNN()
                     }
 
                     I++;
-                } 
+                }
+
+                // Outlier detection.
+
+                for (j = 0; j < n_; j++) {
+                    Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+
+                    if (Error) goto E0;
+ 
+                    if (!Outlier) O[j] = 1;
+                }
 
                 // Moments calculation.
 
@@ -4434,14 +4441,14 @@ int Rebmix::REBMIXPW()
 
         if (Error) goto E0;
 
-        memset(O, 0, n_ * sizeof(int));
-
         Found = 0; Dmin = (FLOAT)0.25; J = 1;
 
         // Outer loop.
 
         while (J <= ItMax) {
             l = 0; r = (FLOAT)n_; nl = (FLOAT)n_;
+
+            memset(O, 0, n_ * sizeof(int));
 
             // Middle loop.
 
@@ -4469,16 +4476,11 @@ int Rebmix::REBMIXPW()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][length_pdf_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, NULL);
 
                             if (Error) goto E0;
 
-                            if (Outlier) {
-                                E[j] = Y[j][length_pdf_];
-                            }
-                            else {
-                                E[j] = Y[j][length_pdf_] - nl * fl * V / Y[j][length_pdf_ + 1]; O[j] = 1;
-                            }
+                            E[j] = Y[j][length_pdf_] - nl * fl * V / Y[j][length_pdf_ + 1];
 
                             if (E[j] > (FLOAT)0.0) {
                                 Epsilon[j] = E[j] / Y[j][length_pdf_];
@@ -4519,6 +4521,16 @@ int Rebmix::REBMIXPW()
                     }
 
                     I++;
+                }
+
+                // Outlier detection.
+
+                for (j = 0; j < n_; j++) {
+                    Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+
+                    if (Error) goto E0;
+ 
+                    if (!Outlier) O[j] = 1;
                 }
 
                 // Moments calculation.
@@ -4947,14 +4959,14 @@ int Rebmix::REBMIXH()
 
         for (j = 0; j < all_K_[i]; j++) K[j] = Y[j][length_pdf_];
 
-        memset(O, 0, n_ * sizeof(int));
-
         Found = 0; Dmin = (FLOAT)0.25; J = 1;
 
         // Outer loop.
 
         while (J <= ItMax) {
             l = 0; r = (FLOAT)n_; nl = (FLOAT)n_;
+
+            memset(O, 0, n_ * sizeof(int));
 
             // Middle loop.
 
@@ -4982,16 +4994,11 @@ int Rebmix::REBMIXH()
                         E[j] = Epsilon[j] = (FLOAT)0.0;
 
                         if ((Y[j][length_pdf_] > FLOAT_MIN) || (R[j] > FLOAT_MIN)) {
-                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+                            Error = ComponentDist(Y[j], LooseTheta[l], &fl, NULL);
 
                             if (Error) goto E0;
 
-                            if (Outlier) {
-                                E[j] = Y[j][length_pdf_];
-                            }
-                            else {
-                                E[j] = Y[j][length_pdf_] - nl * fl * V; O[j] = 1;
-                            }
+                            E[j] = Y[j][length_pdf_] - nl * fl * V;
 
                             if (E[j] > (FLOAT)0.0) {
                                 Epsilon[j] = E[j] / Y[j][length_pdf_]; 
@@ -5032,6 +5039,16 @@ int Rebmix::REBMIXH()
                     }
 
                     I++;
+                }
+
+                // Outlier detection.
+
+                for (j = 0; j < all_K_[i]; j++) {
+                    Error = ComponentDist(Y[j], LooseTheta[l], &fl, &Outlier);
+
+                    if (Error) goto E0;
+ 
+                    if (!Outlier) O[j] = 1;
                 }
 
                 // Moments calculation.

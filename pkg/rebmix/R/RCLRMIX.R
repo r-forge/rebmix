@@ -129,6 +129,17 @@ function(model, ...)
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
   
+  unique.Z <- unique(output$Z)
+  
+  model@c <- length(unique.Z)
+  
+  i <- model@from %in% unique.Z
+  
+  model@from <- model@from[i]
+  model@to <- model@to[i] 
+  model@EN <- model@EN[i] 
+  model@ED <- model@ED[i]  
+  
   model@Zp <- as.factor(output$Z) 
 
   rm(list = ls()[!(ls() %in% c("model"))])
@@ -267,6 +278,17 @@ function(model, ...)
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
   
+  unique.Z <- unique(output$Z)
+  
+  model@c <- length(unique.Z)
+  
+  i <- model@from %in% unique.Z
+  
+  model@from <- model@from[i]
+  model@to <- model@to[i] 
+  model@EN <- model@EN[i] 
+  model@ED <- model@ED[i] 
+  
   model@Zp <- as.factor(output$Z)
 
   rm(list = ls()[!(ls() %in% c("model"))])
@@ -293,6 +315,25 @@ function(model,
     Zt = Zt)
      
   model <- RCLRMIX(model = model, ...)
+  
+  Zp <- as.numeric(levels(model@Zp))[model@Zp]
+  Zt <- as.numeric(levels(model@Zt))[model@Zt]
+  
+  if (length(Zt) > 0) {
+    prob <- array(data = 0.0, dim = model@c)
+  
+    for (i in model@c:1) {
+      if (i < model@c) {
+        Zp[Zp == model@from[i]] <- model@to[i]
+      }
+  
+      error <- is.error(Zt, Zp)
+    
+      prob[i] <- length(error[error == 0]) / length(error)
+    }
+    
+    model@prob <- as.numeric(prob)
+  }
   
   options(digits = digits)  
 

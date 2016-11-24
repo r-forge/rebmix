@@ -43,7 +43,7 @@ devAskNewPage(ask = TRUE)
 
 data("iris")
 
-# Show level attributes discrete variables.
+# Show level attributes.
 
 levels(iris[["Class"]])
 

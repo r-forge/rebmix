@@ -4,7 +4,9 @@
 \itemize{
 \item Method \code{Zp} is added.
 \item Fixed bugs in \code{plot} method.
-\item Fixed bug in \code{RCLSMIX} method.
+\item Fixed bugs in \code{split} method.
+\item Fixed bugs in \code{RCLRMIX} method.
+\item Fixed bugs in \code{RCLSMIX} method.
 \item Improved C++ functions \code{GlobalModeKNN()}, \code{GlobalModePW()} and \code{GlobalModeH()}.
 \item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXPW()} and \code{REBMIXH()}.
 }

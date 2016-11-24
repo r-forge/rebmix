@@ -71,7 +71,7 @@ devAskNewPage(ask = TRUE)
 
 data("wine")
 
-# Show level attributes discrete variables.
+# Show level attributes.
 
 levels(factor(wine[["Cultivar"]]))
 

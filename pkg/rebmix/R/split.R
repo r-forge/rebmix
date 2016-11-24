@@ -50,11 +50,11 @@ function(p = 0.75, Dataset, class, ...)
 
   output@ntest <- nrow(output@test)
 
-  output@train <- lapply(output@train, function(x) x[, -class])
+  output@train <- lapply(output@train, function(x) data.frame(x[, -class]))
 
   output@Zt <- factor(output@test[, class])
 
-  output@test <- output@test[, -class]
+  output@test <- data.frame(output@test[, -class])
 
   rm(list = ls()[!(ls() %in% c("output"))]) 
 
@@ -121,7 +121,7 @@ function(p = list(), Dataset, class, ...)
   
   output@Zt <- factor(output@test[, class])
 
-  output@test <- output@test[, c(-class, -p$type)]
+  output@test <- data.frame(output@test[, c(-class, -p$type)])
   
   Dataset <- subset(Dataset, subset = Dataset[, p$type] == p$train)
   
@@ -137,7 +137,7 @@ function(p = list(), Dataset, class, ...)
     output@train[[i]] <- Dataset[[i]]
   }
   
-  output@train <- lapply(output@train, function(x) x[, c(-class, -p$type)])  
+  output@train <- lapply(output@train, function(x) data.frame(x[, c(-class, -p$type)]))  
 
   rm(list = ls()[!(ls() %in% c("output"))]) 
 
