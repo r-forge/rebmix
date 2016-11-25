@@ -8,7 +8,7 @@ is.error <- function(Zt, # A vector of true cluster membership.
     error <- array(data = 1, dim = length(Zp))
   
     zt <- as.numeric(names(table(Zt))); zp <- unique(Zp)
-
+    
     iset <- 1:length(zt)
 
     while (1) {
@@ -17,15 +17,22 @@ is.error <- function(Zt, # A vector of true cluster membership.
       for (i in iset) {
         Zti <- Zt[which(Zt == zt[i])]
         Zpi <- Zp[which(Zt == zt[i])]
-
+        
         j <- as.numeric(names(sort(table(Zpi), decreasing = TRUE)))
-      
+        
         k <- match(j, zp); k <- k[!is.na(k)]
-
+        
         if (length(k) > 0) {
           j <- zp[k[1]]; which.not.error <- which(Zt == zt[i] & Zp == j)
-
-          P <- length(which.not.error) / length(Zti)
+          
+          P.n <- length(which.not.error); P.d <- length(Zti)
+          
+          if (P.n == P.d) {
+            P <- P.d
+          }
+          else {
+            P <- P.n / P.d
+          }
 
           if (P > Pmax) {
             imax <- i; jmax <- j; which.not.errormax <- which.not.error; Pmax <- P 
@@ -46,36 +53,3 @@ is.error <- function(Zt, # A vector of true cluster membership.
   
   error
 } ## is.error
-
-is.error.old <- function(Zt, # A vector of true cluster membership.
-                         Zp) # A vector of predictive cluster membership.
-{
-  error <- array(data = 0, dim = length(Zp))
-
-  if (length(Zt) != 0) {
-    zt <- as.numeric(names(sort(table(Zt), decreasing = TRUE)))
-    zp <- sort(unique(Zp))
-    
-    for (i in 1:length(zt)) {
-      Zti <- Zt[which(Zt == zt[i])]
-      Zpi <- Zp[which(Zt == zt[i])]
-
-      j <- as.numeric(names(sort(table(Zpi), decreasing = TRUE)))
-      
-      k <- match(j, zp); k <- k[!is.na(k)]
-
-      if (length(k) == 0) {
-        error[which(Zt == zt[i])] <- 1
-      }
-      else {
-        j <- zp[k[1]] 
-      
-        error[which(Zt == zt[i] & Zp != j)] <- 1
-
-        zp <- zp[which(zp != j)] 
-      }
-    }
-  }
-  
-  error
-} ## is.error.old
