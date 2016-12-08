@@ -38,7 +38,7 @@ function(x,
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
   
-  zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]   
+  zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]   
   
   unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)
   
@@ -304,7 +304,7 @@ function(x,
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
   
-  zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]   
+  zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]   
   
   unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)
   

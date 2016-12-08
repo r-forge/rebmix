@@ -276,7 +276,9 @@ int Rebmix::Initialize()
 {
     int Error = 0;
 
-    p_value_ = (FLOAT)0.0005;
+    p_value_ = (FLOAT)0.0001;
+
+    min_dist_mul_ = (FLOAT)2.5;
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
@@ -408,27 +410,68 @@ E0: return Error;
 
 int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
                           FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
-                          int   *O)  // Pointer to the already processed observations. 
+                          FLOAT *h,  // Normalizing vector.
+                          int   *I)  // Pointer to the inlier observations. 
 {
-    FLOAT Cur, Max;
-    int   i, j;
+    FLOAT Dc, R, cur, imax, omax, in, on;
+    int   i, im, om, j, l;
     int   Error = 0, Stop = 0;
 
-S0: j = 0; Max = (FLOAT)0.0;
+    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
 
-    for (i = 0; i < n_; i++) if (!O[i]) {
-        Cur = Y[i][length_pdf_] / Y[i][length_pdf_ + 1];
-  
-        if (Cur > Max) {
-            j = i; Max = Cur;
+    for (i = 0; i < n_; i++) {
+        cur = Y[i][length_pdf_] / Y[i][length_pdf_ + 1];
+
+        if (I[i]) {
+            in += cur;
+
+            if (cur > imax) {
+                im = i; imax = cur;
+            }
+        }
+        else {
+            on += cur;
+
+            if (cur > omax) {
+                om = i; omax = cur;
+            }
         }
     }
 
-    if ((Max < FLOAT_MIN) && !Stop) {
-        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
+    if (im < 0) {
+        *m = om;
     }
+    else
+    if (om < 0) {
+        *m = im;
+    }
+    else
+    if (omax > imax) {
+        *m = om;
+    }
+    else {
+        *m = om;       
 
-    *m = j;
+        for (i = 0; i < n_; i++) if (I[i]) {
+            for (j = 0; j < n_; j++) if (!I[j]) {
+                Dc = (FLOAT)0.0;
+
+                for (l = 0; l < length_pdf_; l++) {
+                    R = (Y[i][l] - Y[j][l]) / h[l]; Dc += R * R;
+                }
+
+                R = (FLOAT)sqrt(Dc);
+
+                Stop = R < min_dist_mul_ * (FLOAT)0.5 * (Y[i][length_pdf_ + 2] + Y[j][length_pdf_ + 2]);
+
+                if (Stop) {
+                    *m = im; break;
+                }
+            }
+
+            if (Stop) break;
+        }
+    }
 
     return Error;
 } // GlobalModeKNN 
@@ -437,27 +480,64 @@ S0: j = 0; Max = (FLOAT)0.0;
 
 int Rebmix::GlobalModePW(int   *m,  // Global mode.
                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
-                         int   *O)  // Pointer to the already processed observations.  
+                         FLOAT *h,  // Sides of the hypersquare.
+                         int   *I)  // Pointer to the inlier observations.   
 {
-    FLOAT Cur, Max;
-    int   i, j;
+    FLOAT cur, imax, omax, in, on;
+    int   i, im, om, j, l;
     int   Error = 0, Stop = 0;
 
-S0: j = 0; Max = (FLOAT)0.0;
+    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
 
-    for (i = 0; i < n_; i++) if (!O[i]) {
-        Cur = Y[i][length_pdf_] * Y[i][length_pdf_ + 1];
-  
-        if (Cur > Max) {
-            j = i; Max = Cur;
+    for (i = 0; i < n_; i++) {
+        cur = Y[i][length_pdf_] * Y[i][length_pdf_ + 1];
+
+        if (I[i]) {
+            in += cur;
+
+            if (cur > imax) {
+                im = i; imax = cur;
+            }
+        }
+        else {
+            on += cur;
+
+            if (cur > omax) {
+                om = i; omax = cur;
+            }
         }
     }
 
-    if ((Max < FLOAT_MIN) && !Stop) {
-        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
+    if (im < 0) {
+        *m = om;
     }
+    else
+    if (om < 0) {
+        *m = im;
+    }
+    else
+    if (omax > imax) {
+        *m = om;
+    }
+    else {
+        *m = om;       
 
-    *m = j;
+        for (i = 0; i < n_; i++) if (I[i]) {
+            for (j = 0; j < n_; j++) if (!I[j]) {
+                Stop = 1;
+        
+                for (l = 0; l < length_pdf_; l++) {
+                    Stop &= (FLOAT)fabs(Y[i][l] - Y[j][l]) < min_dist_mul_ * h[l];
+                }
+
+                if (Stop) {
+                    *m = im; break;
+                }
+            }
+
+            if (Stop) break;
+        }
+    }
 
     return Error;
 } // GlobalModePW
@@ -467,27 +547,64 @@ S0: j = 0; Max = (FLOAT)0.0;
 int Rebmix::GlobalModeH(int   *m,  // Global mode.
                         int   k,   // Total number of bins.
                         FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
-                        int   *O)  // Pointer to the already processed observations. 
+                        FLOAT *h,  // Sides of the hypersquare.
+                        int   *I)  // Pointer to the inlier observations. 
 {
-    FLOAT Cur, Max;
-    int   i, j;
+    FLOAT cur, imax, omax, in, on;
+    int   i, im, om, j, l;
     int   Error = 0, Stop = 0;
 
-S0: j = 0; Max = (FLOAT)0.0;
+    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
 
-    for (i = 0; i < k; i++) if (!O[i]) {
-        Cur = Y[i][length_pdf_];
-  
-        if (Cur > Max) {
-            j = i; Max = Cur;
+    for (i = 0; i < k; i++) {
+        cur = Y[i][length_pdf_];
+
+        if (I[i]) {
+            in += cur;
+
+            if (cur > imax) {
+                im = i; imax = cur;
+            }
+        }
+        else {
+            on += cur;
+
+            if (cur > omax) {
+                om = i; omax = cur;
+            }
         }
     }
 
-    if ((Max < FLOAT_MIN) && !Stop) {
-        memset(O, 0, n_ * sizeof(int)); Stop = 1; goto S0;
+    if (im < 0) {
+        *m = om;
     }
+    else
+    if (om < 0) {
+        *m = im;
+    }
+    else
+    if (omax > imax) {
+        *m = om;
+    }
+    else {
+        *m = om;       
 
-    *m = j;
+        for (i = 0; i < k; i++) if (I[i]) {
+            for (j = 0; j < k; j++) if (!I[j]) {
+                Stop = 1;
+        
+                for (l = 0; l < length_pdf_; l++) {
+                    Stop &= (FLOAT)fabs(Y[i][l] - Y[j][l]) < min_dist_mul_ * h[l];
+                }
+
+                if (Stop) {
+                    *m = im; break;
+                }
+            }
+
+            if (Stop) break;
+        }
+    }
 
     return Error;
 } // GlobalModeH
@@ -3962,7 +4079,7 @@ int Rebmix::REBMIXKNN()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModeKNN(&m, Y, O);
+                Error = GlobalModeKNN(&m, Y, h, O);
 
                 if (Error) goto E0;
 
@@ -4455,7 +4572,7 @@ int Rebmix::REBMIXPW()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModePW(&m, Y, O);
+                Error = GlobalModePW(&m, Y, h, O);
 
                 if (Error) goto E0;
 
@@ -4973,7 +5090,7 @@ int Rebmix::REBMIXH()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModeH(&m, all_K_[i], Y, O);
+                Error = GlobalModeH(&m, all_K_[i], Y, h, O);
 
                 if (Error) goto E0;
 

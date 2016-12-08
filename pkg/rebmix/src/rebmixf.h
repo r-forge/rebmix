@@ -90,9 +90,9 @@ public:
 class Rebmix : public Base {
     // Methods.
     int Golden();
-    int GlobalModeKNN(int *m, FLOAT **Y, int *O);
-    int GlobalModePW(int *m, FLOAT **Y, int *O);
-    int GlobalModeH(int *m, int k, FLOAT **Y, int *O);
+    int GlobalModeKNN(int *m, FLOAT **Y, FLOAT *h, int *I);
+    int GlobalModePW(int *m, FLOAT **Y, FLOAT *h, int *I);
+    int GlobalModeH(int *m, int k, FLOAT **Y, FLOAT *h, int *I);
     int REBMIXKNN();
     int REBMIXPW();
     int REBMIXH();
@@ -101,7 +101,8 @@ class Rebmix : public Base {
 public:
     // Input members.
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
-    FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_. 
+    FLOAT                      min_dist_mul_;  // Minimum distance multiplier.
+    FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_.
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.
     char                       **open_;        // Paths to open data files.

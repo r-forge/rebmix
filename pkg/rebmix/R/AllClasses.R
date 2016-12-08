@@ -320,18 +320,23 @@ function(.Object, ...,
   
   # pdf.
   
-  if (missing(pdf) || (length(pdf) == 0)) {
-    stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
+  if (.Object@class[1] == "REBMVNORM") {
+    pdf <- rep(.rebmix$pdf[1], d)
   }
+  else {
+    if (missing(pdf) || (length(pdf) == 0)) {
+      stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
+    }
 
-  if (!is.character(pdf)) {
-    stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
-  } 
+    if (!is.character(pdf)) {
+      stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
+    } 
 
-  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
+    pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
 
-  if (length(pdf) != d) {
-    stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    if (length(pdf) != d) {
+      stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
   }
   
   # theta1.

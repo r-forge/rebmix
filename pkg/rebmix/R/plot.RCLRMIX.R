@@ -39,12 +39,7 @@ function(x,
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
   
-  if (length(Zt) == 0) {
-    zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-  }
-  else {
-    zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]
-  }
+  zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
   
   c <- x@c; s <- eval(s)
   
@@ -338,12 +333,7 @@ function(x,
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
   
-  if (length(Zt) == 0) {
-    zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-  }
-  else {
-    zlim <- c(0, max(1, max(Zt) - 1)); zmax <- zlim[2]
-  }
+  zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
   
   c <- x@c; s <- eval(s)
   
