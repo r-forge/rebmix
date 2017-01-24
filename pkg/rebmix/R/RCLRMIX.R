@@ -133,12 +133,39 @@ function(model, ...)
   
   model@c <- length(unique.Z)
   
-  i <- model@from %in% unique.Z
-  
-  model@from <- model@from[i]
-  model@to <- model@to[i] 
-  model@EN <- model@EN[i] 
-  model@ED <- model@ED[i]  
+  i <- length(model@from)
+
+  while (i > 1) {
+    from.in.unique.Z <- model@from[i] %in% unique.Z
+    to.in.unique.Z <- model@to[i] %in% unique.Z
+ 
+    if (from.in.unique.Z && to.in.unique.Z) {
+    }
+    else
+    if (from.in.unique.Z) {
+      j <- 1
+
+      while (j < i) {
+        if (model@from[j] == model@to[i]) model@from[j] <- model@from[i]
+        if (model@to[j] == model@to[i]) model@to[j] <- model@from[i]
+
+        j <- j + 1
+      }
+
+      model@from <- model@from[-i]
+      model@to <- model@to[-i]
+      model@EN <- model@EN[-i]
+      model@ED <- model@ED[-i]
+    }
+    else {
+      model@from <- model@from[-i]
+      model@to <- model@to[-i]
+      model@EN <- model@EN[-i]
+      model@ED <- model@ED[-i]
+    }
+
+    i <- i - 1 
+  }
   
   model@Zp <- as.factor(output$Z) 
 
@@ -282,12 +309,39 @@ function(model, ...)
   
   model@c <- length(unique.Z)
   
-  i <- model@from %in% unique.Z
-  
-  model@from <- model@from[i]
-  model@to <- model@to[i] 
-  model@EN <- model@EN[i] 
-  model@ED <- model@ED[i] 
+  i <- length(model@from)
+
+  while (i > 1) {
+    from.in.unique.Z <- model@from[i] %in% unique.Z
+    to.in.unique.Z <- model@to[i] %in% unique.Z
+ 
+    if (from.in.unique.Z && to.in.unique.Z) {
+    }
+    else
+    if (from.in.unique.Z) {
+      j <- 1
+
+      while (j < i) {
+        if (model@from[j] == model@to[i]) model@from[j] <- model@from[i]
+        if (model@to[j] == model@to[i]) model@to[j] <- model@from[i]
+
+        j <- j + 1
+      }
+
+      model@from <- model@from[-i]
+      model@to <- model@to[-i]
+      model@EN <- model@EN[-i]
+      model@ED <- model@ED[-i]
+    }
+    else {
+      model@from <- model@from[-i]
+      model@to <- model@to[-i]
+      model@EN <- model@EN[-i]
+      model@ED <- model@ED[-i]
+    }
+
+    i <- i - 1 
+  }
   
   model@Zp <- as.factor(output$Z)
 
@@ -305,7 +359,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  message("RCLRMIX Version 2.8.4")
+  message("RCLRMIX Version 2.9.0")
  
   flush.console()
   

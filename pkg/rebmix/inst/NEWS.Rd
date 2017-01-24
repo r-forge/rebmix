@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9.0}{ 
+\itemize{
+\item Fixed bugs in \code{RCLRMIX} method.
+}
+}
 \section{Changes in version 2.8.4}{ 
 \itemize{
 \item Method \code{Zp} is added.

@@ -32,8 +32,8 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \end{abstract}
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
-\section{What's new in version \texttt{2.8.4}}
-This version is thoroughly debugged and improved version 2.8.0. The R code is extended and rewritten in S4 class system. The background C code is extended and rewritten as object-oriented C\texttt{++} code, too. The package can easier be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices are added. Clustering is added and classification is improved.
+\section{What's new in version \texttt{2.9.0}}
+This version is further debugged version 2.8.4. The R code is extended and rewritten in S4 class system. The background C code is extended and rewritten as object-oriented C\texttt{++} code, too. The package can easier be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices are added. Clustering is added and classification is improved.
 \section{Examples}
 To illustrate the use of the REBMIX algorithm, univariate and multivariate datasets are considered. The \pkg{rebmix} is loaded and the prompt before starting new page is set to \texttt{TRUE}.
 <<rebmix-code, split = FALSE, echo = FALSE, keep.source = FALSE>>=
@@ -147,7 +147,7 @@ plot(gamma3est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(gamma2est)
 
-coef(gamma3est)
+coef(gamma1est, pos = 2)
 @
 \subsubsection{Bootstrap methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -204,19 +204,19 @@ poissonest <- REBMIX(Dataset = poisson@Dataset,
 @
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(poissonest, pos = 6, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
+<<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(poissonest, pos = 9, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
 @
 \caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-poissonclu <- RCLRMIX(x = poissonest, pos = 6, Zt = poisson@Zt)
+<<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = poisson@Zt)
 
 plot(poissonclu)
 @
-\caption{Poisson dataset. Predictive cluster membership (coloured circles), error (large circles).}
+\caption{Poisson dataset. Predictive cluster membership (coloured circles), error (black circles).}
 \end{figure}
 \subsubsection{Summary and coef methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -224,7 +224,7 @@ plot(poissonclu)
 
 summary(poissonest)
 
-coef(poissonest, pos = 6)
+coef(poissonest, pos = 9)
 @
 \subsection{Multivariate normal \texttt{wreath} dataset}
 A \texttt{wreath} dataset \citep{Fraley_2005} consist of $1000$ observations drawn from a $14$-component normal mixture in which the covariances of the components have the same size and shape but differ in orientation.
@@ -235,41 +235,34 @@ data("wreath", package = "mclust")
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
-n <- nrow(wreath)
-
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
-  as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
-
 wreathest <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(wreath)),
   Preprocessing = "histogram",
   cmax = 20,
-  Criterion = "BIC",
-  pdf = rep("normal", ncol(wreath)),
-  K = K[1]:K[2])
-@
-\subsubsection{Summary and coef methods}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(wreathest)
-
-coef(wreathest)
+  Criterion = "BIC")
 @
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(wreathest)
 @
 \caption{Dataset \texttt{wreath}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
 plot(wreathclu, s = 14)
 @
 \caption{Dataset \texttt{wreath}. Predictive cluster membership (coloured circles).}
 \end{figure}
+\subsubsection{Summary and coef methods}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+summary(wreathest)
+
+coef(wreathest)
+@
 \subsubsection{Summary method}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(wreathclu)
@@ -283,39 +276,32 @@ data("Baudry_etal_2010_JCGS_examples", package = "mclust")
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
-n <- nrow(ex4.1)
-
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows the Sturges rule.
-  as.integer(2 * sum(n)^0.5)) # Maximum v follows the RootN rule.
-
 ex4.1est <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "Parzen window",
   cmax = 10,
-  Criterion = "AIC",
-  pdf = rep("normal", ncol(ex4.1)),
-  K = K[1]:K[2])
-@
-\subsubsection{Summary method}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(ex4.1est)
+  Criterion = "AIC")
 @
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
 
 plot(ex4.1clu)
 @
 \caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
 \end{figure}
+\subsubsection{Summary method}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+summary(ex4.1est)
+@
 \subsection{Multivariate \texttt{iris} dataset}
 The well known set of iris data as collected originally by \citet{Anderson_1936} and first analysed by \citet{Fisher_1936} is considered here. It is available at \citet{Asuncion_Newman_2007} consisting of the measurements of the length and width of both sepals and petals of $50$ plants for each of the three types of iris species setosa, versicolor and virginica.  The iris dataset is loaded, split into three subsets for the three classes and the \texttt{Class} column is removed.
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -336,20 +322,11 @@ Iris <- split(p = 0.75, Dataset = iris, class = 5)
 # Estimate number of components, component weights and component
 # parameters for train subsets.
 
-n <- range(Iris@ntrain)
-
-K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
-
-K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
-
 irisest <- REBMIX(model = "REBMVNORM",
   Dataset = Iris@train,
   Preprocessing = "Parzen window",
   cmax = 10,
-  Criterion = "ICL-BIC",
-  pdf = rep("normal", 4),
-  K = K[1]:K[2])
+  Criterion = "ICL-BIC")
 @
 \subsubsection{Classification}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
@@ -360,6 +337,12 @@ iriscla <- RCLSMIX(model = "RCLSMVNORM",
   Dataset = Iris@test,
   Zt = Iris@Zt)
 @
+\subsubsection{Show and summary methods}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+iriscla
+
+summary(iriscla)
+@
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
 <<iris-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
@@ -367,14 +350,8 @@ iriscla <- RCLSMIX(model = "RCLSMVNORM",
 
 plot(iriscla, nrow = 3, ncol = 2)
 @
-\caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (large circles).}
+\caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (black circles).}
 \end{figure}
-\subsubsection{Show and summary methods}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-iriscla
-
-summary(iriscla)
-@
 \subsection{Multivariate \texttt{adult} dataset}
 The \texttt{adult} dataset containing $48842$ instances with $16$ continuous, binary and discrete variables was extracted from the census bureau database \citet{Asuncion_Newman_2007}. Extraction was done by Barry Becker from the 1994 census bureau database. The \texttt{adult} dataset is loaded, complete cases are extracted and levels are replaced with numbers.
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
@@ -430,6 +407,12 @@ adultcla <- BFSMIX(x = adultest,
   Dataset = Adult@test,
   Zt = Adult@Zt)
 @
+\subsubsection{Show and summary methods}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+adultcla
+
+summary(adultcla)
+@
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
 <<adult-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
@@ -437,14 +420,8 @@ adultcla <- BFSMIX(x = adultest,
 
 plot(adultcla, nrow = 5, ncol = 2)
 @
-\caption{Dataset \texttt{adult}. Predictive class membership (coloured circles), error (large circles).}
+\caption{Dataset \texttt{adult}. Predictive class membership (coloured circles), error (black circles).}
 \end{figure}
-\subsubsection{Show and summary methods}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-adultcla
-
-summary(adultcla)
-@
 <<rebmix-code, split = FALSE, echo = FALSE, results = hide, keep.source = FALSE>>=
 rm(list = ls())
 @

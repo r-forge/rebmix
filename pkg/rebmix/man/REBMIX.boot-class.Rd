@@ -55,13 +55,13 @@ a vector containing standard errors of component weights \code{w}.
 a vector containing coefficients of variation of component weights \code{w}.
 }
 \item{\code{Theta}:}{
-a list of matrices containing component parameters \code{theta1.i} and \code{theta2.i} for \eqn{\leq B} bootstrap datasets.
+a list of matrices containing component parameters \code{theta1.l} and \code{theta2.l} for \eqn{\leq B} bootstrap datasets.
 }
 \item{\code{Theta.se}:}{
-a list of vectors containing standard errors of component parameters \code{theta1.i} and \code{theta2.i}.
+a list of vectors containing standard errors of component parameters \code{theta1.l} and \code{theta2.l}.
 }
 \item{\code{Theta.cv}:}{
-a list of vectors containing coefficients of variation of component parameters \code{theta1.i} and \code{theta2.i}.
+a list of vectors containing coefficients of variation of component parameters \code{theta1.l} and \code{theta2.l}.
 }
 }
 }
