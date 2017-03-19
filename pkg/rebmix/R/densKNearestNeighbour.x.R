@@ -1,6 +1,6 @@
 .densKNearestNeighbour.x <- function(x, k, hx, npts)
 {
-  output <- .C("RdensKNearestNeighbourX",
+  output <- .C(C_RdensKNearestNeighbourX,
     n = as.integer(length(x)),
     x = as.double(x),
     y = double(length(x)),

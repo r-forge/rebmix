@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9.1}{ 
+\itemize{
+\item Properly registered native routines and disabled symbol search in C++ code.
+}
+}
 \section{Changes in version 2.9.0}{ 
 \itemize{
 \item Fixed bugs in \code{RCLRMIX} method.

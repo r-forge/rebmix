@@ -31,7 +31,7 @@ function(model, ...)
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(model@x@summary[model@pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
 
-    output <- .C("RCombineComponentsHMIX",
+    output <- .C(C_RCombineComponentsHMIX,
       h = as.double(h),
       y0 = as.double(y0),
       k = as.integer(model@x@summary[model@pos, "v/k"]),
@@ -57,7 +57,7 @@ function(model, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C("RCombineComponentsPWMIX",
+    output <- .C(C_RCombineComponentsPWMIX,
       h = as.double(h),
       c = as.integer(c),
       w = as.double(model@x@w[[model@pos]]),
@@ -83,7 +83,7 @@ function(model, ...)
   if (C == .rebmix$Preprocessing[3]) {
     k <- as.integer(model@x@summary[model@pos, "v/k"]) 
 
-    output <- .C("RCombineComponentsKNNMIX",
+    output <- .C(C_RCombineComponentsKNNMIX,
       h = as.double(h),
       k = as.integer(model@x@summary[model@pos, "v/k"]),
       c = as.integer(c),
@@ -112,7 +112,7 @@ function(model, ...)
   model@EN <- output$EN
   model@ED <- output$ED
 
-  output <- .C("RCLRMIX",
+  output <- .C(C_RCLRMIX,
     n = n,
     X = as.double(dataset),
     d = as.integer(d),
@@ -207,7 +207,7 @@ function(model, ...)
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(model@x@summary[model@pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
 
-    output <- .C("RCombineComponentsHMVNORM",
+    output <- .C(C_RCombineComponentsHMVNORM,
       h = as.double(h),
       y0 = as.double(y0),
       k = as.integer(model@x@summary[model@pos, "v/k"]),
@@ -233,7 +233,7 @@ function(model, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C("RCombineComponentsPWMVNORM",
+    output <- .C(C_RCombineComponentsPWMVNORM,
       h = as.double(h),
       c = as.integer(c),
       w = as.double(model@x@w[[model@pos]]),
@@ -259,7 +259,7 @@ function(model, ...)
   if (C == .rebmix$Preprocessing[3]) {
     k <- as.integer(model@x@summary[model@pos, "v/k"]) 
 
-    output <- .C("RCombineComponentsKNNMVNORM",
+    output <- .C(C_RCombineComponentsKNNMVNORM,
       h = as.double(h),
       k = as.integer(model@x@summary[model@pos, "v/k"]),
       c = as.integer(c),
@@ -288,7 +288,7 @@ function(model, ...)
   model@EN <- output$EN
   model@ED <- output$ED
 
-  output <- .C("RCLRMVNORM",
+  output <- .C(C_RCLRMVNORM,
     n = n,
     X = as.double(dataset),
     d = as.integer(d),
@@ -359,7 +359,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  message("RCLRMIX Version 2.9.0")
+  message("RCLRMIX Version 2.9.1")
  
   flush.console()
   

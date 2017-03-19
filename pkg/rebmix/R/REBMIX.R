@@ -52,7 +52,7 @@ function(model, ...)
       length.theta2 <- -d; theta2 <- numeric()
     }
         
-    output <- .C("RREBMIX",
+    output <- .C(C_RREBMIX,
       Preprocessing = as.character(model@Preprocessing), 
       cmax = as.integer(model@cmax),
       Criterion = as.character(model@Criterion),
@@ -332,7 +332,7 @@ function(model, ...)
       length.theta2 <- -d * d; length.theta3 <- -1; theta2 <- numeric()
     }
         
-    output <- .C("RREBMVNORM",
+    output <- .C(C_RREBMVNORM,
       Preprocessing = as.character(model@Preprocessing), 
       cmax = as.integer(model@cmax),
       Criterion = as.character(model@Criterion),
@@ -577,7 +577,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.9.0")
+  message("REBMIX Version 2.9.1")
  
   flush.console()
   

@@ -38,7 +38,7 @@ function(model, ...)
     }
   }
 
-  output <- .C("RCLSMIX",
+  output <- .C(C_RCLSMIX,
     n = model@ntest,
     X = as.double(unlist(model@Dataset)),
     s = as.integer(model@s),
@@ -105,7 +105,7 @@ function(model, ...)
     }
   }
   
-  output <- .C("RCLSMVNORM",
+  output <- .C(C_RCLSMVNORM,
     n = model@ntest,
     X = as.double(unlist(model@Dataset)),
     s = as.integer(model@s),
@@ -141,7 +141,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  message("RCLSMIX Version 2.9.0")
+  message("RCLSMIX Version 2.9.1")
  
   flush.console()
   
@@ -184,7 +184,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
   
-  message("BFSMIX Version 2.9.0")
+  message("BFSMIX Version 2.9.1")
   
   flush.console()
   

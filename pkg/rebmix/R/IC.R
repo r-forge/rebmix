@@ -54,7 +54,7 @@ function(x, Criterion, pos, ...)
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
 
-    output <- .C("RInformationCriterionHMIX",
+    output <- .C(C_RInformationCriterionHMIX,
       h = as.double(h),
       y0 = as.double(y0),
       k = as.integer(x@summary[pos, "v/k"]),
@@ -81,7 +81,7 @@ function(x, Criterion, pos, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C("RInformationCriterionPWMIX",
+    output <- .C(C_RInformationCriterionPWMIX,
       h = as.double(h),
       Criterion = as.character(Criterion),
       c = as.integer(c),
@@ -108,7 +108,7 @@ function(x, Criterion, pos, ...)
   if (C == .rebmix$Preprocessing[3]) {
     k <- as.integer(x@summary[pos, "v/k"]) 
 
-    output <- .C("RInformationCriterionKNNMIX",
+    output <- .C(C_RInformationCriterionKNNMIX,
       h = as.double(h),
       k = as.integer(x@summary[pos, "v/k"]),
       Criterion = as.character(Criterion),
@@ -194,7 +194,7 @@ function(x, Criterion, pos, ...)
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
 
-    output <- .C("RInformationCriterionHMVNORM",
+    output <- .C(C_RInformationCriterionHMVNORM,
       h = as.double(h),
       y0 = as.double(y0),
       k = as.integer(x@summary[pos, "v/k"]),
@@ -221,7 +221,7 @@ function(x, Criterion, pos, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C("RInformationCriterionPWMVNORM",
+    output <- .C(C_RInformationCriterionPWMVNORM,
       h = as.double(h),
       Criterion = as.character(Criterion),
       c = as.integer(c),
@@ -248,7 +248,7 @@ function(x, Criterion, pos, ...)
   if (C == .rebmix$Preprocessing[3]) {
     k <- as.integer(x@summary[pos, "v/k"]) 
 
-    output <- .C("RInformationCriterionKNNMVNORM",
+    output <- .C(C_RInformationCriterionKNNMVNORM,
       h = as.double(h),
       k = as.integer(x@summary[pos, "v/k"]),
       Criterion = as.character(Criterion),

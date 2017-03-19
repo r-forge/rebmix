@@ -1,6 +1,6 @@
 .densHistogram.x <- function(k, x, x0, hx, cx, px)
 {
-  output <- .C("RdensHistogramX",
+  output <- .C(C_RdensHistogramX,
     k = as.integer(k),
     n = as.integer(length(x)),
     x = as.double(x),

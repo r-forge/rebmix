@@ -2726,4 +2726,4 @@ E0: if (Y) {
     if (rebmix) delete rebmix;
 } // RCombineComponentsHMIX
 
-} // extern "C"
+}

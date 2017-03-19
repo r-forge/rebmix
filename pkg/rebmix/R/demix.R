@@ -59,7 +59,7 @@ function(x, pos, variables, ...)
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables] 
     y0 <- x@summary[pos, grep("y0", Names)]; y0 <- y0[variables]
 
-    output <- .C("RPreprocessingHMIX",
+    output <- .C(C_RPreprocessingHMIX,
       h = as.double(h),
       y0 = as.double(y0),
       length.pdf = as.integer(d),
@@ -88,7 +88,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[2]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]   
       
-    output <- .C("RPreprocessingPWMIX",
+    output <- .C(C_RPreprocessingPWMIX,
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),
@@ -113,7 +113,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[3]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables] 
 
-    output <- .C("RPreprocessingKNNMIX",
+    output <- .C(C_RPreprocessingKNNMIX,
       k = as.integer(k),
       h = as.double(h),
       n = as.integer(n),
@@ -203,7 +203,7 @@ function(x, pos, variables, ...)
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables] 
     y0 <- x@summary[pos, grep("y0", Names)]; y0 <- y0[variables]
 
-    output <- .C("RPreprocessingHMVNORM",
+    output <- .C(C_RPreprocessingHMVNORM,
       h = as.double(h),
       y0 = as.double(y0),
       length.pdf = as.integer(d),
@@ -232,7 +232,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[2]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]   
       
-    output <- .C("RPreprocessingPWMVNORM",
+    output <- .C(C_RPreprocessingPWMVNORM,
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),
@@ -257,7 +257,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[3]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables] 
 
-    output <- .C("RPreprocessingKNNMVNORM",
+    output <- .C(C_RPreprocessingKNNMVNORM,
       k = as.integer(k),
       h = as.double(h),
       n = as.integer(n),

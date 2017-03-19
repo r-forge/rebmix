@@ -1,6 +1,6 @@
 .densParzenWindow.x <- function(x, hx, npts)
 {
-  output <- .C("RdensParzenWindowX",
+  output <- .C(C_RdensParzenWindowX,
     n = as.integer(length(x)),
     x = as.double(x),
     y = double(length(x)),

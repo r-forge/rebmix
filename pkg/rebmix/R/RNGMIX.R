@@ -28,7 +28,7 @@ function(model, ...)
 
     flush.console()
 
-    output <- .C("RRNGMIX",
+    output <- .C(C_RRNGMIX,
       IDum = as.integer(IDum), 
       d = as.integer(d),
       c = as.integer(c),
@@ -104,7 +104,7 @@ function(model, ...)
 
     flush.console()
 
-    output <- .C("RRNGMVNORM",
+    output <- .C(C_RRNGMVNORM,
       IDum = as.integer(IDum), 
       d = as.integer(d),
       c = as.integer(c),
@@ -159,7 +159,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.9.0")
+  message("RNGMIX Version 2.9.1")
   
   flush.console()
   

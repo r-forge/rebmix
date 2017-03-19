@@ -2085,4 +2085,4 @@ E0: if (Y) {
     if (rebmvnorm) delete rebmvnorm;
 } // RCombineComponentsHMVNORM
 
-} // extern "C"
+}
