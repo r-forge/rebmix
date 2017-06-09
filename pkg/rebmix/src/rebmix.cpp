@@ -38,12 +38,12 @@ int main(int argc, char* argv[])
         if (Error) goto E0;
     }
     else
-    if (!strcmp(argv[2], "RNGMVNORM")) {
-        rngmvnorm = new Rngmvnorm;
+    if (!strcmp(argv[2], "REBMIX")) {
+		rebmix = new Rebmix;
 
-        Error = NULL == rngmvnorm; if (Error) goto E0;
+		Error = NULL == rebmix; if (Error) goto E0;
 
-        Error = rngmvnorm->RunTemplateFile(argv[1]);
+		Error = rebmix->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
     }

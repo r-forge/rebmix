@@ -1,5 +1,13 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9.2}{ 
+\itemize{
+\item Continuous circular parametric family \code{"vonMises"} is added.
+\item Fixed bug in C++ function \code{REBMIXH}.
+\item Improved C++ functions \code{InformationCriterionKNN()}, \code{InformationCriterionPW()} and \code{InformationCriterionH()}.
+\item Improved C++ functions \code{EnhancedEstimationKNN()}, \code{EnhancedEstimationPW()} and \code{EnhancedEstimationPW()}.
+}
+}
 \section{Changes in version 2.9.1}{ 
 \itemize{
 \item Properly registered native routines and disabled symbol search in C++ code.

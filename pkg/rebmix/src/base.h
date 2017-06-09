@@ -31,20 +31,24 @@
 #define Pi (FLOAT)3.1415926535897932384626433832795
 #endif
 
+#ifndef Pi2            
+#define Pi2 (FLOAT)6.2831853071795864769252867665590
+#endif
+
 #ifndef SqrtPi            
 #define SqrtPi (FLOAT)1.7724538509055160272981674833411
 #endif
 
-#ifndef Sqrt2Pi
-#define Sqrt2Pi (FLOAT)2.506628274631000502415765284811
+#ifndef SqrtPi2
+#define SqrtPi2 (FLOAT)2.506628274631000502415765284811
 #endif
 
 #ifndef LogPi
 #define LogPi (FLOAT)1.1447298858494001741434273513531
 #endif
 
-#ifndef LogSqrt2Pi
-#define LogSqrt2Pi (FLOAT)0.91893853320467274178032973640562
+#ifndef LogSqrtPi2
+#define LogSqrtPi2 (FLOAT)0.91893853320467274178032973640562
 #endif 
 
 #ifndef Euler       
@@ -116,17 +120,12 @@ typedef enum {
     pfLognormal, // Lognormal distribution.
     pfWeibull,   // Weibull distribution.
     pfGamma,     // Gamma distribution.
+	pfvonMises,  // Von Mises distribution.
     pfBinomial,  // Binomial distribution.
     pfPoisson,   // Poisson distribution.
     pfDirac,     // Dirac distribution.
     pfUniform    // Uniform distribution.
 } ParametricFamilyType_e;
-
-typedef struct componetdistributiontype {
-    ParametricFamilyType_e *pdf;    // Parametric family types.
-    FLOAT                  *Theta1; // Component parameters.
-    FLOAT                  *Theta2; // Component parameters.
-} ComponentDistributionType;
 
 class Base {
 public:
@@ -213,5 +212,17 @@ int LUinvdet(int   n,      // Size of square matrix.
 int Choldc(int   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
            FLOAT *L); // Lower triangular factors.
+
+// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+
+FLOAT BesselI0(FLOAT y);
+
+// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+
+FLOAT BesselI1(FLOAT y);
+
+// Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
+
+FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa);
 
 #endif

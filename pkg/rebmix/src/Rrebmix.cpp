@@ -74,6 +74,10 @@ void RRNGMIX(int    *IDum,         // Random seed.
             rngmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rngmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rngmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -318,6 +322,10 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -635,6 +643,10 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         pdfx = pfGamma;
     }
     else
+	if (!strcmp(px[0], "vonMises")) {
+		pdfx = pfvonMises;
+	}
+	else
     if (!strcmp(px[0], "binomial")) {
         pdfx = pfBinomial;
     }
@@ -670,6 +682,10 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         pdfy = pfGamma;
     }
     else
+	if (!strcmp(py[0], "vonMises")) {
+		pdfy = pfvonMises;
+	}
+	else
     if (!strcmp(py[0], "binomial")) {
         pdfy = pfBinomial;
     }
@@ -699,8 +715,8 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-            break;
+		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
+			break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
         }
@@ -710,8 +726,8 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         y[*k] = (*y0) + j * (*hy);
 
         switch (pdfy) {
-        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-            break;
+		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
+			break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (y[*k] <= FLOAT_MIN) y[*k] += (*hy);
         }
@@ -839,6 +855,10 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         pdfx = pfGamma;
     }
     else
+	if (!strcmp(px[0], "vonMises")) {
+		pdfx = pfvonMises;
+	}
+	else
     if (!strcmp(px[0], "binomial")) {
         pdfx = pfBinomial;
     }
@@ -868,8 +888,8 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-        case pfNormal: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-            break;
+		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
+			break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
         }
@@ -1007,6 +1027,13 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
                         Theta[j][k][l]->Theta_[1][m] = theta2[i];
                     }
                     else
+					if (!strcmp(pdf[i], "vonMises")) {
+						Theta[j][k][l]->pdf_[m] = pfvonMises;
+
+						Theta[j][k][l]->Theta_[0][m] = theta1[i];
+						Theta[j][k][l]->Theta_[1][m] = theta2[i];
+					}
+					else
                     if (!strcmp(pdf[i], "binomial")) {
                         Theta[j][k][l]->pdf_[m] = pfBinomial;
 
@@ -1191,6 +1218,13 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
                 Theta[j]->Theta_[1][k] = theta2[i];
             }
             else
+			if (!strcmp(pdf[i], "vonMises")) {
+				Theta[j]->pdf_[k] = pfvonMises;
+
+				Theta[j]->Theta_[0][k] = theta1[i];
+				Theta[j]->Theta_[1][k] = theta2[i];
+			}
+			else
             if (!strcmp(pdf[i], "binomial")) {
                 Theta[j]->pdf_[k] = pfBinomial;
 
@@ -1426,6 +1460,10 @@ void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -1615,6 +1653,10 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -1844,6 +1886,10 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2081,6 +2127,10 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2263,6 +2313,10 @@ void RCombineComponentsKNNMIX(double *h,            // Sides of the hypersquare.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2438,6 +2492,10 @@ void RCombineComponentsPWMIX(double *h,            // Sides of the hypersquare.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2615,6 +2673,10 @@ void RCombineComponentsHMIX(double *h,            // Sides of the hypersquare.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
+		if (!strcmp(pdf[i], "vonMises")) {
+			rebmix->IniTheta_->pdf_[i] = pfvonMises;
+		}
+		else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2725,5 +2787,66 @@ E0: if (Y) {
 
     if (rebmix) delete rebmix;
 } // RCombineComponentsHMIX
+
+void RvonMisesPdf(int *n, double *y, double *Mean, double *Kappa, double *f)
+{
+	FLOAT A;
+	int   i;
+
+	A = Pi2 * BesselI0(*Kappa);
+
+	for (i = 0; i < *n; i++) {
+		if (y[i] > Pi2) {
+			f[i] = (FLOAT)0.0;
+		}
+		else
+		if (y[i] < (FLOAT)0.0) {
+			f[i] = (FLOAT)0.0;
+		}
+		else {
+			f[i] = (FLOAT)exp(*Kappa * (FLOAT)cos(y[i] - *Mean)) / A;
+		}
+    }
+} // RvonMisesPdf
+
+void RvonMisesCdf(int *n, double *y, double *Mean, double *Kappa, double *F)
+{
+	FLOAT A[3], Io, In, I0, I1;
+	int   i, j, Error;
+
+	I0 = BesselI0(*Kappa); I1 = BesselI1(*Kappa);
+
+	A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / I0;
+
+	for (i = 0; i < *n; i++) {
+		if (y[i] > Pi2) {
+			F[i] = (FLOAT)1.0;
+		}
+		else
+		if (y[i] < (FLOAT)0.0) {
+			F[i] = (FLOAT)0.0;
+		}
+		else {
+			Io = I0; In = I1; j = 1; F[i] = A[0] * y[i]; Error = 1;
+			while ((j <= ItMax) && Error) {
+				F[i] += A[1] * In * ((FLOAT)sin(j * (y[i] - *Mean)) + (FLOAT)sin(j * *Mean)) / j;
+
+				if (In < Eps) Error = 0;
+
+				A[2] = Io - (FLOAT)2.0 * j * In / *Kappa; Io = In; In = A[2];
+
+				j++;
+			}
+
+			if (F[i] >(FLOAT)1.0) {
+				F[i] = (FLOAT)1.0;
+			}
+			else
+			if (F[i] < (FLOAT)0.0) {
+				F[i] = (FLOAT)0.0;
+			}
+		}
+	}
+} // RvonMisesCdf
 
 }

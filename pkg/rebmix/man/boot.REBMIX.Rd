@@ -13,7 +13,7 @@ Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Vari
 }
 \description{
 Returns as default the boot output for mixtures of conditionally independent normal, 
-lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If 
+lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities. If 
 \code{x} is of class \code{RNGMVNORM} the boot output for mixtures of multivariate normal 
 component densities with unrestricted variance-covariance matrices is returned.
 } 
@@ -58,7 +58,7 @@ Returns an object of class \code{REBMIX.boot} or \code{REBMVNORM.boot}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(x = "REBMIX")}}{an object of class \code{REBMIX} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities.}
 \item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 \item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}

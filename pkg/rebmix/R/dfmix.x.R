@@ -1,6 +1,8 @@
 .dfmix.x <- function(x, w, xTheta, ...)
 {
-  f <- array(data = 0.0, dim = length(x), dimnames = NULL)
+  n <- length(x)
+  
+  f <- array(data = 0.0, dim = n, dimnames = NULL)
 
   for (i in 1:length(w)) {
     if (xTheta[[i]]$pdf == .rebmix$pdf[1]) {
@@ -29,7 +31,19 @@
     else
     if (xTheta[[i]]$pdf == .rebmix$pdf[7]) {
       fix <- dgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
-    }    
+    }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[9]) {
+      output <- .C(C_RvonMisesPdf,
+        n = as.integer(n),
+        y = as.double(x),
+        Mean = as.double(xTheta[[i]]$theta1),
+        Kappa = as.double(xTheta[[i]]$theta2),
+        f = double(n),
+        PACKAGE = "rebmix")
+          
+      fix <- output$f
+    }     
 
     f <- f + w[i] * fix
   }

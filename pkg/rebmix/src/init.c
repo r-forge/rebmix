@@ -55,6 +55,9 @@ extern void RCombineComponentsKNNMVNORM(void *, void *, void *, void *, void *, 
 extern void RCombineComponentsPWMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RCombineComponentsHMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
+extern void RvonMisesPdf(void *, void *, void *, void *, void *);
+extern void RvonMisesCdf(void *, void *, void *, void *, void *);
+
 static const R_CMethodDef CMethods[] = {
 	{"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
 	{"RREBMIX", (DL_FUNC) &RREBMIX, 43},
@@ -88,6 +91,8 @@ static const R_CMethodDef CMethods[] = {
 	{"RCombineComponentsKNNMVNORM", (DL_FUNC) &RCombineComponentsKNNMVNORM, 16},
 	{"RCombineComponentsPWMVNORM", (DL_FUNC) &RCombineComponentsPWMVNORM, 15},
 	{"RCombineComponentsHMVNORM", (DL_FUNC) &RCombineComponentsHMVNORM, 17},
+	{"RvonMisesPdf", (DL_FUNC) &RvonMisesPdf, 5},
+	{"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
     {NULL, NULL, 0}
 };
 

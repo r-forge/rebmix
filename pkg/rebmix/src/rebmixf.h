@@ -47,6 +47,7 @@ typedef enum {
 } InformationCriterionType_e;
 
 typedef struct roughparametertype {
+	FLOAT h;   // Mode class width;
     FLOAT ym;  // Mode position.
     FLOAT flm; // Component conditional empirical density.
     FLOAT klm; // Component conditional total number of observations.
@@ -102,6 +103,7 @@ public:
     // Input members.
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
     FLOAT                      min_dist_mul_;  // Minimum distance multiplier.
+	FLOAT                      var_mul_;       // Variance multiplier.
     FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_.
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.

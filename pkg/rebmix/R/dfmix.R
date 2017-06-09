@@ -102,7 +102,19 @@ function(x,
       else
       if (pdf[[i]][j] == .rebmix$pdf[7]) {
         fi <- fi * dgamma(as.numeric(Dataset[, j]), scale = as.numeric(theta1[[i]][j]), shape = as.numeric(theta2[[i]][j]), ...)
-      }      
+      }
+      else
+      if (pdf[[i]][j] == .rebmix$pdf[9]) {
+        output <- .C(C_RvonMisesPdf,
+          n = as.integer(n),
+          y = as.double(Dataset[, j]),
+          Mean = as.double(theta1[[i]][j]),
+          Kappa = as.double(theta2[[i]][j]),
+          f = double(n),
+          PACKAGE = "rebmix")
+          
+        fi <- fi * output$f
+      }       
     }
     
     f <- f + as.numeric(w[i]) * fi

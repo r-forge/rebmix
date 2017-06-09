@@ -12,7 +12,7 @@
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
+Returns as default the REBMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(), 
@@ -45,7 +45,7 @@ integrated classification likelihood \code{"ICL"} or \code{"ICL-BIC"}, partition
 total of positive relative deviations \code{"D"} or sum of squares error \code{"SSE"}.
 }
 \item{pdf}{
-a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"} or \code{"Dirac"}.
+a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or \code{"vonMises"}.
 }
 \item{theta1}{
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{Number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise. 
@@ -89,7 +89,7 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac component densities.}
+\item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities.}
 \item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 \item{\code{signature(object = "REBMIX")}}{an object of class \code{REBMIX}.}
 \item{\code{signature(object = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}

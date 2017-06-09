@@ -18,6 +18,8 @@ int Rebmvnorm::Initialize()
 
     min_dist_mul_ = (FLOAT)2.5;
 
+	var_mul_ = (FLOAT)0.25;
+
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
     return (Error);
@@ -41,7 +43,7 @@ int Rebmvnorm::ComponentConditionalDist(int                  i,           // Ind
 
     y = (Y[i] - Mean) / (Sqrt2 * Stdev); y *= y;
 
-    *CmpMrgDist = (FLOAT)exp(-y) / (Sqrt2Pi * Stdev);
+    *CmpMrgDist = (FLOAT)exp(-y) / (SqrtPi2 * Stdev);
 
     return Error;
 } // ComponentConditionalDist
@@ -213,7 +215,7 @@ S1:;
     for (i = 0; i < length_pdf_; i++) {
         RigidTheta->Theta_[0][i] = Mode[i].ym;
 
-        Stdev = (FLOAT)1.0 / (Sqrt2Pi * Mode[i].flm); Stdev *= Stdev;
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * Mode[i].flm); Stdev *= Stdev;
 
         o = i * length_pdf_ + i;
 
@@ -230,7 +232,7 @@ S1:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrt2Pi + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] *= (FLOAT)exp(length_pdf_ * (FLOAT)log(epsilon));
@@ -282,7 +284,7 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (Sqrt2Pi * flm); Stdev *= Stdev;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
             o = i * length_pdf_ + i;
 
@@ -500,7 +502,7 @@ S1:;
     for (i = 0; i < length_pdf_; i++) {
         RigidTheta->Theta_[0][i] = Mode[i].ym;
 
-        Stdev = (FLOAT)1.0 / (Sqrt2Pi * Mode[i].flm); Stdev *= Stdev;
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * Mode[i].flm); Stdev *= Stdev;
 
         o = i * length_pdf_ + i;
 
@@ -517,7 +519,7 @@ S1:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrt2Pi + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] *= (FLOAT)exp(length_pdf_ * (FLOAT)log(epsilon));
@@ -569,7 +571,7 @@ S1:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (Sqrt2Pi * flm); Stdev *= Stdev;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
             o = i * length_pdf_ + i;
 
@@ -771,7 +773,7 @@ S0:;
     for (i = 0; i < length_pdf_; i++) {
         RigidTheta->Theta_[0][i] = Mode[i].ym;
 
-        Stdev = (FLOAT)1.0 / (Sqrt2Pi * Mode[i].flm); Stdev *= Stdev;
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * Mode[i].flm); Stdev *= Stdev;
 
         o = i * length_pdf_ + i;
 
@@ -788,7 +790,7 @@ S0:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrt2Pi + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - (FLOAT)log(RigidTheta->Theta_[3][0]) / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] *= (FLOAT)exp(length_pdf_ * (FLOAT)log(epsilon));
@@ -840,7 +842,7 @@ S0:;
         while (!Stop) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (Sqrt2Pi * flm); Stdev *= Stdev;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
             o = i * length_pdf_ + i;
 
@@ -942,7 +944,7 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
             EnhanTheta->Theta_[1][o] = Sum / nl;
 
-            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
                 Error = 1; goto E0;
             }
 
@@ -1016,7 +1018,7 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
 
             EnhanTheta->Theta_[1][o] = Sum / nl;
 
-            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+			if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
                 Error = 1; goto E0;
             }
 
@@ -1091,7 +1093,7 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
 
             EnhanTheta->Theta_[1][o] = Sum / nl;
 
-            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o]) {
+			if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
                 Error = 1; goto E0;
             }
 
@@ -1424,7 +1426,7 @@ int Rebmvnorm::ComponentDist(FLOAT                *Y,        // Pointer to the i
         *Outlier = (FLOAT)2.0 * y > ChiSqr_;
     }
 
-    *CmpDist = (FLOAT)exp(-y) / (FLOAT)sqrt((FLOAT)pow((FLOAT)2.0 * Pi, CmpTheta->length_pdf_) * CmpTheta->Theta_[3][0]);
+    *CmpDist = (FLOAT)exp(-y) / (FLOAT)sqrt((FLOAT)pow(Pi2, CmpTheta->length_pdf_) * CmpTheta->Theta_[3][0]);
 
     return Error;
 } // ComponentDist

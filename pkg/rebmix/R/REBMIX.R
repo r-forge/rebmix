@@ -99,7 +99,7 @@ function(model, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in REBMIX!", call. = FALSE); return(NA)
+      stop("in RREBMIX!", call. = FALSE); return(NA) #
     }
     
     c <- output$summary.c
@@ -577,7 +577,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.9.1")
+  message("REBMIX Version 2.9.2")
  
   flush.console()
   
