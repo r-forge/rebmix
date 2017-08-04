@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.9.3}{ 
+\itemize{
+\item ?.
+}
+}
 \section{Changes in version 2.9.2}{ 
 \itemize{
 \item Continuous circular parametric family \code{"vonMises"} is added.

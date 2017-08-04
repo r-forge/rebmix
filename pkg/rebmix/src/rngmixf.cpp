@@ -205,12 +205,12 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
             Y[i] = y;
 
             break;
-		case pfvonMises:
-			CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
-			
-			Y[i] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
+        case pfvonMises:
+            CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
+            
+            Y[i] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
 
-			break;
+            break;
         case pfBinomial:
             if (CmpDist->Theta_[1][i] < (FLOAT)0.5) {
                 p = CmpDist->Theta_[1][i];
@@ -397,7 +397,7 @@ int Rngmix::RunTemplateFile(char *file)
     }
 
     #if (_REBMIXEXE)
-    printf("RNGMIX Version 2.9.2\n");
+    printf("RNGMIX Version 2.9.3\n");
     #endif
 
 S0: while (fgets(line, 2048, fp) != NULL) {
@@ -542,9 +542,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (!strcmp(pchar, "GAMMA"))
                     IniTheta_->pdf_[i] = pfGamma;
                 else
-				if (!strcmp(pchar, "VONMISES"))
-					IniTheta_->pdf_[i] = pfvonMises;
-				else
+                if (!strcmp(pchar, "VONMISES"))
+                    IniTheta_->pdf_[i] = pfvonMises;
+                else
                 if (!strcmp(pchar, "BINOMIAL"))
                     IniTheta_->pdf_[i] = pfBinomial;
                 else

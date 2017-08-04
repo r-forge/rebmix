@@ -18,7 +18,7 @@ int Rebmvnorm::Initialize()
 
     min_dist_mul_ = (FLOAT)2.5;
 
-	var_mul_ = (FLOAT)0.25;
+    var_mul_ = (FLOAT)0.25;
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
@@ -1018,7 +1018,7 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
 
             EnhanTheta->Theta_[1][o] = Sum / nl;
 
-			if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
                 Error = 1; goto E0;
             }
 
@@ -1093,7 +1093,7 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
 
             EnhanTheta->Theta_[1][o] = Sum / nl;
 
-			if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
+            if (EnhanTheta->Theta_[1][o] < RigidTheta->Theta_[1][o] * var_mul_) {
                 Error = 1; goto E0;
             }
 

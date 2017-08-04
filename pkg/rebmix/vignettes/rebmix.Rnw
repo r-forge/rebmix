@@ -28,7 +28,7 @@
 \date{\today}
 \maketitle
 \begin{abstract}
-The \pkg{rebmix} package provides R functions for random univariate and multivariate finite mixture model generation, estimation, clustering and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson or Dirac parametric families.
+The \pkg{rebmix} package provides R functions for random univariate and multivariate finite mixture model generation, estimation, clustering and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises parametric families.
 \end{abstract}
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
