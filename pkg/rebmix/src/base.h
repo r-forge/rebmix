@@ -65,7 +65,7 @@
 #endif  
 
 #ifndef Eps
-#define Eps (FLOAT)0.000001
+#define Eps (FLOAT)0.00001
 #endif
 
 #ifndef TLA_MAX_LN 

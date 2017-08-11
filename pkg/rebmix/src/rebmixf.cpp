@@ -797,34 +797,37 @@ int RoughvonMisesParameters(FLOAT h,
         fm += (A[0] + ym - Pi2) / (A[0] - ym + Pi2) * fm;
     }
 
-    *Mean = ym;    *Kappa = (FLOAT)3.75;
+    *Mean = ym;
 
-    i = 1; A[0] = (FLOAT)log(Pi2 * fm); Error = 1;
-    while ((i <= ItMax) && Error) {
-        A[1] = BesselI0(*Kappa); A[2] = BesselI1(*Kappa);
+    A[0] = (FLOAT)log(Pi2 * fm);
 
-        dKappa = (*Kappa - A[0] - (FLOAT)log(A[1])) / ((FLOAT)1.0 - A[2] / A[1]);
-
-        *Kappa -= dKappa;
-
-        if (IsNan(dKappa) || IsInf(dKappa)) {
-            Error = 1; goto E0;
-        }
-        else
-        if (*Kappa > (FLOAT)100.0) {
-            *Kappa = (FLOAT)100.0; Error = 0;
-        }
-        else
-        if (*Kappa < -(FLOAT)100.0) {
-            *Kappa = -(FLOAT)100.0; Error = 0;
-        }
-
-        if ((FLOAT)fabs(dKappa) < Eps) Error = 0;
-
-        i++;
+    if (A[0] <= (FLOAT)0.0) {
+        *Kappa = (FLOAT)0.0;
     }
+    else
+    if (A[0] >= (FLOAT)3.675754133) {
+        *Kappa = (FLOAT)248.3;
+    }
+    else {
+        *Kappa = (FLOAT)3.75;
 
-    if (*Kappa <= FLOAT_MIN) *Kappa = FLOAT_MIN;
+        i = 1; Error = 1;
+        while ((i <= ItMax) && Error) {
+            A[1] = BesselI0(*Kappa); A[2] = BesselI1(*Kappa);
+
+            dKappa = (*Kappa - A[0] - (FLOAT)log(A[1])) / ((FLOAT)1.0 - A[2] / A[1]);
+
+            if (IsNan(dKappa) || IsInf(dKappa)) {
+                Error = 1; goto E0;
+            }
+
+            *Kappa -= dKappa;
+
+            if ((FLOAT)fabs(dKappa) < Eps) Error = 0;
+
+            i++;
+        }
+    }
 
 E0: return Error;
 } // RoughvonMisesParameters
@@ -2085,7 +2088,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 Error = 1; goto E0;
             }
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)3.75;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2093,18 +2096,18 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 dP = (A[1] - A[2] * A[0]) / (A[0] - (A[2] + (FLOAT)1.0 / EnhanTheta->Theta_[1][i]) * A[1]);
 
-                EnhanTheta->Theta_[1][i] -= dP;
-
                 if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
+
+                EnhanTheta->Theta_[1][i] -= dP;
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
                 j++;
             }
 
-            if (EnhanTheta->Theta_[1][i] <= FLOAT_MIN) EnhanTheta->Theta_[1][i] = FLOAT_MIN;
+            if (Error) goto E0;
 
             TmpVar = (FLOAT)1.0 - BesselI1(EnhanTheta->Theta_[1][i]) / BesselI0(EnhanTheta->Theta_[1][i]);
             MrgVar = (FLOAT)1.0 - BesselI1(RigidTheta->Theta_[1][i]) / BesselI0(RigidTheta->Theta_[1][i]);
@@ -2409,7 +2412,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
                 Error = 1; goto E0;
             }
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)3.75;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2417,18 +2420,18 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 dP = (A[1] - A[2] * A[0]) / (A[0] - (A[2] + (FLOAT)1.0 / EnhanTheta->Theta_[1][i]) * A[1]);
 
-                EnhanTheta->Theta_[1][i] -= dP;
-
                 if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
+
+                EnhanTheta->Theta_[1][i] -= dP;
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
                 j++;
             }
 
-            if (EnhanTheta->Theta_[1][i] <= FLOAT_MIN) EnhanTheta->Theta_[1][i] = FLOAT_MIN;
+            if (Error) goto E0;
 
             TmpVar = (FLOAT)1.0 - BesselI1(EnhanTheta->Theta_[1][i]) / BesselI0(EnhanTheta->Theta_[1][i]);
             MrgVar = (FLOAT)1.0 - BesselI1(RigidTheta->Theta_[1][i]) / BesselI0(RigidTheta->Theta_[1][i]);
@@ -2733,8 +2736,8 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             else {
                 Error = 1; goto E0;
             }
-
-            EnhanTheta->Theta_[1][i] = (FLOAT)3.75;
+            
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2742,18 +2745,18 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 dP = (A[1] - A[2] * A[0]) / (A[0] - (A[2] + (FLOAT)1.0 / EnhanTheta->Theta_[1][i]) * A[1]);
 
-                EnhanTheta->Theta_[1][i] -= dP;
-
                 if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
+
+                EnhanTheta->Theta_[1][i] -= dP;
 
                 if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
                 j++;
             }
 
-            if (EnhanTheta->Theta_[1][i] <= FLOAT_MIN) EnhanTheta->Theta_[1][i] = FLOAT_MIN;
+            if (Error) goto E0;
 
             TmpVar = (FLOAT)1.0 - BesselI1(EnhanTheta->Theta_[1][i]) / BesselI0(EnhanTheta->Theta_[1][i]);
             MrgVar = (FLOAT)1.0 - BesselI1(RigidTheta->Theta_[1][i]) / BesselI0(RigidTheta->Theta_[1][i]);
@@ -3001,7 +3004,7 @@ void BayesvonMisesParameters(FLOAT FirstM,  // First moment.
         theta1 = *Theta1; goto E0;
     }
 
-    theta2 = (FLOAT)3.75;
+    theta2 = *Theta2;
 
     i = 1; Error = 1;
     while ((i <= ItMax) && Error) {
@@ -3009,19 +3012,19 @@ void BayesvonMisesParameters(FLOAT FirstM,  // First moment.
 
         dP = (A[1] - A[2] * A[0]) / (A[0] - (A[2] + (FLOAT)1.0 / theta2) * A[1]);
 
-        theta2 -= dP;
-
         if (IsNan(dP) || IsInf(dP)) {
             Error = 1; goto E0;
         }
+
+        theta2 -= dP;
 
         if ((FLOAT)fabs(dP) < Eps) Error = 0;
 
         i++;
     }
 
-    if (theta2 <= FLOAT_MIN) theta2 = FLOAT_MIN;
-
+    if (Error) goto E0;
+    
     *Theta1 = theta1; *Theta2 = theta2;
 
 E0: return;
@@ -5695,7 +5698,7 @@ int Rebmix::REBMIXH()
     }
     while (!Golden());
 
-E0:    if (O) free(O);
+E0: if (O) free(O);
 
     if (opt_D) free(opt_D);
 
