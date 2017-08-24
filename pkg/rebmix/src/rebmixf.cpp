@@ -824,7 +824,7 @@ int RoughvonMisesParameters(FLOAT h,
 
             *Kappa -= dKappa;
 
-            if ((FLOAT)fabs(dKappa) < Eps) Error = 0;
+            if ((FLOAT)fabs(dKappa) < Eps * (FLOAT)fabs(*Kappa) + Eps) Error = 0;
 
             i++;
         }
@@ -1212,7 +1212,7 @@ S1:;
                 Stop = 1;
             }
             else {
-                if (Dlm * Dlmin >(FLOAT)0.0) {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
                     flmin = flm; Dlmin = Dlm;
                 }
                 else {
@@ -1451,7 +1451,7 @@ S1:;
                 Stop = 1;
             }
             else {
-                if (Dlm * Dlmin >(FLOAT)0.0) {
+                if (Dlm * Dlmin > (FLOAT)0.0) {
                     flmin = flm; Dlmin = Dlm;
                 }
                 else {
@@ -2095,7 +2095,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2411,7 +2411,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2728,7 +2728,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2995,7 +2995,7 @@ void BayesvonMisesParameters(FLOAT FirstM,  // First moment.
 
         theta2 -= dP;
 
-        if ((FLOAT)fabs(dP) < Eps) Error = 0;
+        if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(theta2) + Eps) Error = 0;
 
         i++;
     }
