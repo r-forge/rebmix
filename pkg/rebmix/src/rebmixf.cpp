@@ -639,30 +639,29 @@ int RoughLognormalParameters(FLOAT ym,
 
     Error = ym <= FLOAT_MIN; if (Error) goto E0;
 
-    Lambda = (FLOAT)1.0 + Eps;
+    A[0] = (FLOAT)2.0 * (FLOAT)log(SqrtPi2 * ym * fm);
 
-    i = 1; A[0] = (FLOAT)2.0 * (FLOAT)log(SqrtPi2 * ym * fm); Error = 1;
-    while ((i <= ItMax) && Error) {
-        A[1] = (FLOAT)1.0 / Lambda; A[2] = Lambda - (FLOAT)1.0;
-
-        dLambda = ((FLOAT)1.0 - A[1] + (FLOAT)log(Lambda * A[2]) + A[0]) / (A[1] * ((FLOAT)1.0 + A[1]) + (FLOAT)1.0 / A[2]);
-
-        Lambda -= dLambda;
-
-        if (IsNan(dLambda) || IsInf(dLambda)) {
-            Error = 1; goto E0;
-        }
-        else
-        if (Lambda < (FLOAT)1.0 + Eps) {
-            Lambda = (FLOAT)1.0 + Eps; Error = 0;
-        }
-
-        if ((FLOAT)fabs(dLambda) < Eps) Error = 0;
-
-        i++;
+    if (Eps / ((FLOAT)1.0 + Eps) + (FLOAT)log(Eps * ((FLOAT)1.0 + Eps)) + A[0] >= (FLOAT)0.0) {
+        Lambda = (FLOAT)1.0 + Eps;
     }
+    else {
+        i = 1; Lambda = (FLOAT)1.0 + Eps; Error = 1;
+        while ((i <= ItMax) && Error) {
+            A[1] = (FLOAT)1.0 / Lambda; A[2] = Lambda - (FLOAT)1.0;
 
-    if (Error) goto E0;
+            dLambda = ((FLOAT)1.0 - A[1] + (FLOAT)log(Lambda * A[2]) + A[0]) / (A[1] * ((FLOAT)1.0 + A[1]) + (FLOAT)1.0 / A[2]);
+
+            Lambda -= dLambda;
+
+            if (IsNan(dLambda) || IsInf(dLambda)) {
+                Error = 1; goto E0;
+            }
+
+            if ((FLOAT)fabs(dLambda) < Eps * (FLOAT)fabs(Lambda) + Eps) Error = 0;
+
+            i++;
+        }
+    }
 
     *Mean = Lambda - (FLOAT)1.0 + (FLOAT)log(ym);
 
@@ -685,31 +684,32 @@ int RoughWeibullParameters(FLOAT ym,
 
     Error = ym <= FLOAT_MIN; if (Error) goto E0;
 
-    Alpha = (FLOAT)1.3349695;
+    A[0] = (FLOAT)exp((FLOAT)1.0) * ym * fm;
 
-    i = 1; A[0] = (FLOAT)exp((FLOAT)1.0) * ym * fm; Error = 1;
-    while ((i <= ItMax) && Error) {
-        A[1] = Alpha - (FLOAT)1.0;
+    if ((FLOAT)0.064024 - A[0] >= (FLOAT)0.0) {
+        Alpha = (FLOAT)1.234332;
+    }
+    else {
+        i = 1; Alpha = (FLOAT)1.3349695; Error = 1;
+        while ((i <= ItMax) && Error) {
+            A[1] = Alpha - (FLOAT)1.0;
 
-        A[2] = (FLOAT)1.0 + (Euler + (FLOAT)log(A[1] / Alpha)) / Alpha;
+            A[2] = (FLOAT)1.0 + (Euler + (FLOAT)log(A[1] / Alpha)) / Alpha;
 
-        A[3] = (FLOAT)exp((FLOAT)1.0 / Alpha);
+            A[3] = (FLOAT)exp((FLOAT)1.0 / Alpha);
 
-        dAlpha = (A[2] * A[1] * A[3] - A[0]) / (A[3] * ((FLOAT)1.0 - (A[1] - A[2]) / Alpha / Alpha));
+            dAlpha = (A[2] * A[1] * A[3] - A[0]) / (A[3] * ((FLOAT)1.0 - (A[1] - A[2]) / Alpha / Alpha));
 
-        Alpha -= dAlpha;
+            Alpha -= dAlpha;
 
-        if (IsNan(dAlpha) || IsInf(dAlpha)) {
-            Error = 1; goto E0;
+            if (IsNan(dAlpha) || IsInf(dAlpha)) {
+                Error = 1; goto E0;
+            }
+
+            if ((FLOAT)fabs(dAlpha) < Eps * (FLOAT)fabs(Alpha) + Eps) Error = 0;
+
+            i++;
         }
-        else
-        if (Alpha < (FLOAT)1.234332) {
-            Alpha = (FLOAT)1.234332; Error = 0;
-        }
-
-        if ((FLOAT)fabs(dAlpha) < Eps) Error = 0;
-
-        i++;
     }
 
     if (Error) goto E0;
@@ -736,33 +736,34 @@ int RoughGammaParameters(FLOAT ym,
 
     Error = ym <= FLOAT_MIN; if (Error) goto E0;
 
-    Alpha = (FLOAT)1.00032;
+    A[0] = (FLOAT)log(ym * fm * SqrtPi2);
 
-    i = 1; A[0] = (FLOAT)log(ym * fm * SqrtPi2); Error = 1;
-    while ((i <= ItMax) && Error) {
-        A[1] = (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
+    if ((FLOAT)2.016083 + A[0] <= (FLOAT)0.0) {
+        Alpha = (FLOAT)1.000299;
+    }
+    else {
+        i = 1; Alpha = (FLOAT)1.000299; Error = 1;
+        while ((i <= ItMax) && Error) {
+            A[1] = (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
 
-        A[2] = A[1] + (FLOAT)1.0 / Alpha;
+            A[2] = A[1] + (FLOAT)1.0 / Alpha;
 
-        A[3] = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * A[1]);
+            A[3] = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * A[1]);
 
-        A[4] = A[3] * ((FLOAT)1.0 + A[3] * (A[1] + (FLOAT)1.0 / (Alpha - (FLOAT)1.0)) / Euler) / ((FLOAT)1.0 + Alpha);
+            A[4] = A[3] * ((FLOAT)1.0 + A[3] * (A[1] + (FLOAT)1.0 / (Alpha - (FLOAT)1.0)) / Euler) / ((FLOAT)1.0 + Alpha);
 
-        dAlpha = (A[3] * A[2] + (FLOAT)0.5 * (FLOAT)log(A[3]) - A[0]) / (A[4] * (A[2] + (FLOAT)0.5 / A[3]) + A[3] / (Alpha - (FLOAT)1.0) / Alpha / Alpha);
+            dAlpha = (A[3] * A[2] + (FLOAT)0.5 * (FLOAT)log(A[3]) - A[0]) / (A[4] * (A[2] + (FLOAT)0.5 / A[3]) + A[3] / (Alpha - (FLOAT)1.0) / Alpha / Alpha);
 
-        Alpha -= dAlpha;
+            Alpha -= dAlpha;
 
-        if (IsNan(dAlpha) || IsInf(dAlpha)) {
-            Error = 1; goto E0;
+            if (IsNan(dAlpha) || IsInf(dAlpha)) {
+                Error = 1; goto E0;
+            }
+
+            if ((FLOAT)fabs(dAlpha) < Eps * (FLOAT)fabs(Alpha) + Eps) Error = 0;
+
+            i++;
         }
-        else
-        if (Alpha < (FLOAT)1.00032) {
-            Alpha = (FLOAT)1.00032; Error = 0;
-        }
-
-        if ((FLOAT)fabs(dAlpha) < Eps) Error = 0;
-
-        i++;
     }
 
     if (Error) goto E0;
@@ -1952,7 +1953,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
         case pfWeibull:
             EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -1976,11 +1977,11 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -1990,10 +1991,6 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2009,7 +2006,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
         case pfGamma:
             EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -2030,11 +2027,11 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2044,10 +2041,6 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[1][i] * RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2276,7 +2269,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
         case pfWeibull:
             EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2300,11 +2293,11 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2314,10 +2307,6 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2333,7 +2322,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
         case pfGamma:
             EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -2354,11 +2343,11 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2368,10 +2357,6 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[1][i] * RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2601,7 +2586,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
         case pfWeibull:
             EnhanTheta->pdf_[i] = pfWeibull;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             j = 1; Error = 1;
             while ((j <= ItMax) && Error) {
@@ -2625,11 +2610,11 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2639,10 +2624,6 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2658,7 +2639,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
         case pfGamma:
             EnhanTheta->pdf_[i] = pfGamma;
 
-            EnhanTheta->Theta_[1][i] = (FLOAT)1.0 + Eps;
+            EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
             memset(&A, 0, 2 * sizeof(FLOAT));
 
@@ -2679,11 +2660,11 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if (IsNan(dP) || IsInf(dP) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
+                if (IsNan(dP) || IsInf(dP)) {
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
 
                 j++;
             }
@@ -2693,10 +2674,6 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
-
-            if ((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN)) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[1][i] * RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
