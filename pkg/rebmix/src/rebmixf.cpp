@@ -657,7 +657,7 @@ int RoughLognormalParameters(FLOAT ym,
                 Error = 1; goto E0;
             }
 
-            if ((FLOAT)fabs(dLambda) < Eps * (FLOAT)fabs(Lambda) + Eps) Error = 0;
+            if ((FLOAT)fabs(dLambda) < Max(Eps * (FLOAT)fabs(Lambda), Eps)) Error = 0;
 
             i++;
         }
@@ -706,7 +706,7 @@ int RoughWeibullParameters(FLOAT ym,
                 Error = 1; goto E0;
             }
 
-            if ((FLOAT)fabs(dAlpha) < Eps * (FLOAT)fabs(Alpha) + Eps) Error = 0;
+            if ((FLOAT)fabs(dAlpha) < Max(Eps * (FLOAT)fabs(Alpha), Eps)) Error = 0;
 
             i++;
         }
@@ -760,7 +760,7 @@ int RoughGammaParameters(FLOAT ym,
                 Error = 1; goto E0;
             }
 
-            if ((FLOAT)fabs(dAlpha) < Eps * (FLOAT)fabs(Alpha) + Eps) Error = 0;
+            if ((FLOAT)fabs(dAlpha) < Max(Eps * (FLOAT)fabs(Alpha), Eps)) Error = 0;
 
             i++;
         }
@@ -806,17 +806,17 @@ int RoughvonMisesParameters(FLOAT h,
         *Kappa = (FLOAT)0.0;
     }
     else
-    if (A[0] >= (FLOAT)3.675754133) {
-        *Kappa = (FLOAT)248.3;
+    if (A[0] >= (FLOAT)3.75) {
+        *Kappa = (FLOAT)288.0;
     }
     else {
-        *Kappa = (FLOAT)3.75;
+        *Kappa = (FLOAT)0.0;
 
         i = 1; Error = 1;
         while ((i <= ItMax) && Error) {
             A[1] = BesselI0(*Kappa); A[2] = BesselI1(*Kappa);
 
-            dKappa = (*Kappa - A[0] - (FLOAT)log(A[1])) / ((FLOAT)1.0 - A[2] / A[1]);
+            dKappa = (*Kappa - (FLOAT)log(A[1]) - A[0]) / ((FLOAT)1.0 - A[2] / A[1]);
 
             if (IsNan(dKappa) || IsInf(dKappa)) {
                 Error = 1; goto E0;
@@ -824,7 +824,7 @@ int RoughvonMisesParameters(FLOAT h,
 
             *Kappa -= dKappa;
 
-            if ((FLOAT)fabs(dKappa) < Eps * (FLOAT)fabs(*Kappa) + Eps) Error = 0;
+            if ((FLOAT)fabs(dKappa) < Max(Eps * (FLOAT)fabs(*Kappa), Eps)) Error = 0;
 
             i++;
         }
@@ -1981,7 +1981,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2031,7 +2031,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2095,7 +2095,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2297,7 +2297,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2347,7 +2347,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2411,7 +2411,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2614,7 +2614,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2664,7 +2664,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
                     Error = 1; goto E0;
                 }
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2728,7 +2728,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
-                if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]) + Eps) Error = 0;
+                if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
 
                 j++;
             }
@@ -2978,7 +2978,7 @@ void BayesvonMisesParameters(FLOAT FirstM,  // First moment.
         theta1 = Pi;
     }
     else {
-        theta1 = *Theta1; goto E0;
+        Error = 1; goto E0;
     }
 
     theta2 = *Theta2;
@@ -2995,7 +2995,7 @@ void BayesvonMisesParameters(FLOAT FirstM,  // First moment.
 
         theta2 -= dP;
 
-        if ((FLOAT)fabs(dP) < Eps * (FLOAT)fabs(theta2) + Eps) Error = 0;
+        if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(theta2), Eps)) Error = 0;
 
         i++;
     }
