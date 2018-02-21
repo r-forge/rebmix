@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.10.0}{ 
+\itemize{
+\item Fixed bug in \code{plot} method.
+\item Additional argument \code{rseed} enters \code{boot} method.
+}
+}
 \section{Changes in version 2.9.3}{ 
 \itemize{
 \item Acceleration rate has been improved. It is now progressively increasing.

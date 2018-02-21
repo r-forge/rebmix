@@ -1,6 +1,7 @@
 setMethod("boot", 
           signature(x = "REBMIX"),
 function(x,
+  rseed,
   pos,
   Bootstrap,
   B, 
@@ -11,7 +12,8 @@ function(x,
   digits <- getOption("digits"); options(digits = 15)
   
   model <- new("REBMIX.boot", 
-    x = x, 
+    x = x,
+    rseed = rseed, 
     pos = pos,
     Bootstrap = Bootstrap,
     B = B,
@@ -20,7 +22,7 @@ function(x,
     prob = prob)
     
   if (model@Bootstrap == .rebmix.boot$Bootstrap[1]) {
-    bsample <- RNGMIX(Dataset.name = paste("bsample_", 1:model@B, sep = ""),
+    bsample <- RNGMIX(Dataset.name = paste("bsample_", 1:model@B, sep = ""), rseed = rseed,
       n = ceiling(model@n * as.numeric(model@x@w[[model@pos]])),
       Theta = model@x@Theta[[model@pos]], ...)
       
@@ -145,6 +147,7 @@ function(x,
 setMethod("boot", 
           signature(x = "REBMVNORM"),
 function(x,
+  rseed,
   pos,
   Bootstrap,
   B, 
@@ -155,7 +158,8 @@ function(x,
   digits <- getOption("digits"); options(digits = 15)
   
   model <- new("REBMVNORM.boot", 
-    x = x, 
+    x = x,
+    rseed = rseed, 
     pos = pos,
     Bootstrap = Bootstrap,
     B = B,
@@ -164,7 +168,7 @@ function(x,
     prob = prob)
     
   if (model@Bootstrap == .rebmix.boot$Bootstrap[1]) {
-    bsample <- RNGMIX(model = "RNGMVNORM", Dataset.name = paste("bsample_", 1:model@B, sep = ""),
+    bsample <- RNGMIX(model = "RNGMVNORM", Dataset.name = paste("bsample_", 1:model@B, sep = ""), rseed = rseed,
       n = ceiling(model@n * as.numeric(model@x@w[[model@pos]])),
       Theta = model@x@Theta[[model@pos]], ...)
       

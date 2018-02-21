@@ -93,6 +93,7 @@ setGeneric("chunk",
 
 setGeneric("boot", 
   function(x = NULL,
+    rseed = -1,  
     pos = 1,
     Bootstrap = "parametric",
     B = 100, 

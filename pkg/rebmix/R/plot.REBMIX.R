@@ -81,8 +81,8 @@ function(x,
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
-
-  N <- d * (d - 1) / 2
+  
+  N <- 0
   
   opar <- list(); ipar <- 1
   
@@ -305,8 +305,10 @@ function(x,
 
   w <- as.numeric(x@w[[pos]])
 
-  if (N > 0) {
-    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {  
+  if (d > 1) {
+    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
+      N <- d * (d - 1) / 2
+
       figno <- 0
     
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
@@ -464,6 +466,8 @@ function(x,
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {  
+      N <- d * (d - 1) / 2
+
       figno <- 0
     
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
@@ -1212,7 +1216,7 @@ function(x,
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
-  N <- d * (d - 1) / 2
+  N <- 0
   
   opar <- list(); ipar <- 1
   
@@ -1430,8 +1434,10 @@ function(x,
 
   w <- as.numeric(x@w[[pos]])
 
-  if (N > 0) {
-    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {  
+  if (d > 1) {
+    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
+      N <- d * (d - 1) / 2
+
       figno <- 0
     
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
@@ -1538,6 +1544,8 @@ function(x,
     }
     
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {  
+      N <- d * (d - 1) / 2
+
       figno <- 0
     
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),

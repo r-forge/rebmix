@@ -20,14 +20,12 @@ function(model, ...)
     
     if (is.character(model@K)) {
       if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
-      
-        K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))
+        K <- max(1, as.integer(sqrt(n) * 0.75)):max(1, as.integer(sqrt(n) * 1.25))
          
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n))))
         
         K <- Sturges:Log10
         
@@ -300,14 +298,12 @@ function(model, ...)
     
     if (is.character(model@K)) {
       if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        RootN <- max(1, as.integer(2.0 * sqrt(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
-      
-        K <- max(1, as.integer(n / RootN)):max(1, as.integer(n / Log10))
+        K <- max(1, as.integer(sqrt(n) * 0.75)):max(1, as.integer(sqrt(n) * 1.25))
          
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n)))
+        Sturges <- max(1, as.integer(1.0 + log2(n^(1 / d)))); Log10 <- max(1, as.integer(10.0 * log10(n^(1 / d))))
         
         K <- Sturges:Log10
         
@@ -577,7 +573,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.9.3")
+  message("REBMIX Version 2.10.0")
  
   flush.console()
   

@@ -12,6 +12,10 @@ Objects can be created by calls of the form \code{new("REBMIX.boot", ...)}.
 \item{\code{x}:}{
 an object of class \code{REBMIX}.
 }
+\item{\code{rseed}:}{
+set the random seed to any negative integer value to initialize the sequence. The first bootstrap dataset corresponds to it.
+For each next bootstrap dataset the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\mathrm{seed}} - 1}. The default value is \code{-1}.
+}
 \item{\code{pos}:}{
 a desired row number in \code{x@summary} to be bootstrapped. The default value is \code{1}.
 }

@@ -18,7 +18,7 @@ lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densi
 component densities with unrestricted variance-covariance matrices is returned.
 } 
 \usage{ 
-\S4method{boot}{REBMIX}(x = NULL, pos = 1, Bootstrap = "parametric", 
+\S4method{boot}{REBMIX}(x = NULL, rseed = -1, pos = 1, Bootstrap = "parametric", 
      B = 100, n = numeric(), replace = TRUE, prob = numeric(), ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX.boot}(object, ...)
@@ -27,6 +27,10 @@ component densities with unrestricted variance-covariance matrices is returned.
 \arguments{
 \item{x}{
 see Methods section below.
+}
+\item{rseed}{
+set the random seed to any negative integer value to initialize the sequence. The first bootstrap dataset corresponds to it.
+For each next bootstrap dataset the random seed is decremented \eqn{r_{\mathrm{seed}} = r_{\mathrm{seed}} - 1}. The default value is \code{-1}.
 }
 \item{pos}{
 a desired row number in \code{x@summary} to be bootstrapped. The default value is \code{1}.

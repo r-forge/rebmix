@@ -567,6 +567,7 @@ function(object)
 
 setClass("REBMIX.boot",
 slots = c(x = "ANY",
+  rseed = "numeric",
   pos = "numeric",
   Bootstrap = "character",
   B = "numeric", 
@@ -584,7 +585,8 @@ slots = c(x = "ANY",
   Theta = "list",
   Theta.se = "list",
   Theta.cv = "list"),
-prototype = list(pos = 1,
+prototype = list(rseed = -1,
+  pos = 1,
   Bootstrap = "parametric",
   B = 100,
   replace = TRUE))
@@ -592,6 +594,7 @@ prototype = list(pos = 1,
 setMethod("initialize", "REBMIX.boot", 
 function(.Object, ...,
   x,
+  rseed,
   pos,
   Bootstrap,
   B,
@@ -610,6 +613,20 @@ function(.Object, ...,
   if (class(x) != model) {
     stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
   }
+  
+  # rseed.
+
+  if (missing(rseed) || (length(rseed) == 0)) rseed <- .Object@rseed
+  
+  if (!is.wholenumber(rseed)) {
+    stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
+  }
+
+  length(rseed) <- 1
+  
+  if (rseed > -1) {
+    stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
+  }  
 
   # pos.
 
@@ -693,6 +710,7 @@ function(.Object, ...,
   
   callNextMethod(.Object, ...,
     x = x,
+    rseed = rseed,
     pos = pos,
     Bootstrap = Bootstrap,
     B = B,
