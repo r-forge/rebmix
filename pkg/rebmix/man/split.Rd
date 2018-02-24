@@ -26,7 +26,7 @@ The default value is \code{data.frame()}.
 a column number in \code{Dataset} containing the class membership information. The default value is \code{numeric()}.
 }
 \item{\dots}{
-further arguments to \code{\link[base]{sample.int}}.
+further arguments to \code{\link[base]{sample}}.
 }
 }
 \value{

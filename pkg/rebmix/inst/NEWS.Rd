@@ -4,6 +4,7 @@
 \itemize{
 \item Fixed bug in \code{plot} method.
 \item Additional argument \code{rseed} enters \code{boot} method.
+\item C++ functions \code{CheckPW()} and \code{CheckH()} are added.
 }
 }
 \section{Changes in version 2.9.3}{ 

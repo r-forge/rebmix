@@ -104,6 +104,7 @@ public:
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
     FLOAT                      min_dist_mul_;  // Minimum distance multiplier.
 	FLOAT                      var_mul_;       // Variance multiplier.
+    FLOAT                      n_mul_;         // Number of observations multiplier.
     FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_.
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.
@@ -135,6 +136,7 @@ public:
     FLOAT                      *opt_logL_;     // Log-likelihoods for optimal v or for optimal k.
     FLOAT                      *opt_D_;        // Totals of positive relative deviations for optimal v or for optimal k.
     int                        all_length_;    // Length of all_K_ and all_IC_.
+    int                        *all_I_;        // Information on processed numbers of bins v or processed numbers of nearest neighbours k. 0 if not processed, 1 if processed, 2 if error.
     int                        *all_K_;        // All processed numbers of bins v or all processed numbers of nearest neighbours k.
     FLOAT                      *all_IC_;       // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
     AdditionalParameterType    additional_;    // Additional parameters.
@@ -147,6 +149,8 @@ public:
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingPW(FLOAT *h, FLOAT **Y);
     int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y);
+    int CheckPW(FLOAT **Y);
+    int CheckH(int *k, FLOAT **Y);
     virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);

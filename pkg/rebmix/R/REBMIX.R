@@ -25,7 +25,8 @@ function(model, ...)
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n))); Log10 <- max(1, as.integer(10.0 * log10(n))))
+        Sturges <- max(1, as.integer(1.0 + log2(n)))
+        Log10 <- max(1, as.integer(10.0 * log10(n)))
         
         K <- Sturges:Log10
         
@@ -303,7 +304,8 @@ function(model, ...)
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n^(1 / d)))); Log10 <- max(1, as.integer(10.0 * log10(n^(1 / d))))
+        Sturges <- max(1, as.integer(1.0 + log2(n)))
+        Log10 <- max(1, as.integer(10.0 * log10(n)))
         
         K <- Sturges:Log10
         
