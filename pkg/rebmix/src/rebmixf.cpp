@@ -101,7 +101,7 @@ Rebmix::Rebmix()
     p_value_ = (FLOAT)0.0;
     min_dist_mul_ = (FLOAT)0.0;
     var_mul_ = (FLOAT)0.0;
-    n_mul_ = (FLOAT)0.0;
+    kmax_ = (FLOAT)0.0;
     ChiSqr_ = (FLOAT)0.0;
     curr_ = NULL;
     o_ = 0;
@@ -284,10 +284,10 @@ int Rebmix::Initialize()
 
     var_mul_ = (FLOAT)0.0625;
 
-    n_mul_ = (FLOAT)0.9;
+    kmax_ = ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_));
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
-
+    
     return (Error);
 } // Initialize
 
@@ -379,10 +379,46 @@ E0: return Error;
 
 // Preprocessing of observations for histogram.
 
-int Rebmix::PreprocessingH(FLOAT *h,   // Sides of the hypersquare.
-                           FLOAT *y0,  // Origins.
-                           int   *k,   // Total number of bins.
-                           FLOAT **Y)  // Pointer to the input array [y0,...,yd-1,kl].
+int Rebmix::PreprocessingH(FLOAT *h,  // Sides of the hypersquare.
+                           FLOAT *y0, // Origins.
+                           int   *k,  // Total number of bins.
+                           FLOAT **Y) // Pointer to the input array [y0,...,yd-1,kl].
+{
+    int i, j, l;
+    int Error = n_ < 1;
+
+    if (Error) goto E0;
+
+    *k = 0;
+
+    for (i = 0; i < n_; i++) {
+        for (j = 0; j < length_pdf_; j++) {
+            l = (int)floor((Y_[i][j] - y0[j]) / h[j] + (FLOAT)0.5);
+
+            Y[*k][j] = y0[j] + l * h[j];
+        }
+
+        for (j = 0; j < *k; j++) {
+            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[j][l] - Y[*k][l]) > (FLOAT)0.5 * h[l]) goto S0;
+
+            Y[j][length_pdf_] += (FLOAT)1.0; goto S1;
+S0:;
+        }
+
+        Y[*k][length_pdf_] = (FLOAT)1.0; (*k)++;
+S1:;
+    }
+       
+E0: return Error;
+} // PreprocessingH
+
+// Preprocessing of observations for histogram.
+
+int Rebmix::PreprocessingH(FLOAT *h,     // Sides of the hypersquare.
+                           FLOAT *y0,    // Origins.
+                           int   *k,     // Total number of bins.
+                           FLOAT **Y,    // Pointer to the input array [y0,...,yd-1,kl].
+                           int   *State) // State variable.
 {
     int i, j, l;
     int Error = n_ < 1;
@@ -406,56 +442,15 @@ S0:;
         }
 
         Y[*k][length_pdf_] = (FLOAT)1.0; (*k)++;
+
+        if ((*State) && (*k > kmax_)) {
+            *State = 2; goto E0;
+        }
 S1:;
     }
-       
+
 E0: return Error;
 } // PreprocessingH
-
-// Check Parzen window.
-
-int Rebmix::CheckPW(FLOAT **Y)  // Pointer to the input array [y0,...,yd-1,kl,k].
-{
-    int i, n;
-    int Error = n_ < 1;
-
-    if (Error) goto E0;
-
-    n = 0;
-
-    for (i = 0; i < n_; i++) {
-        if (Y[i][length_pdf_ + 1] == (FLOAT)1.0) n++;
-    }
-
-    if (n > n_mul_ * n_) {
-        Error = 1;
-    }
-
-E0: return Error;
-} // CheckPW
-
-// Check histogram.
-
-int Rebmix::CheckH(int   *k,   // Total number of bins.
-                   FLOAT **Y)  // Pointer to the input array [y0,...,yd-1,kl].
-{
-    int i, n;
-    int Error = n_ < 1;
-
-    if (Error) goto E0;
-
-    n = 0;
-
-    for (i = 0; i < *k; i++) {
-        if (Y[i][length_pdf_] == (FLOAT)1.0) n++;
-    }
-
-    if (n > n_mul_ * n_) {
-        Error = 1;
-    }
-
-E0: return Error;
-} // CheckH
 
 // Global mode detection for k-nearest neighbour.
 
@@ -5021,10 +5016,6 @@ int Rebmix::REBMIXPW()
 
         all_I_[i] = 1;
 
-        if (CheckPW(Y)) {
-            Error = 0; all_I_[i] = 2; if (i > 0) goto E1;
-        }
-
         Found = 0; Dmin = (FLOAT)1.0; J = 1;
 
         // Outer loop.
@@ -5193,7 +5184,6 @@ int Rebmix::REBMIXPW()
             memmove(opt_logL_, opt_logL, opt_length_ * sizeof(FLOAT));  
             memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));  
         }
-E1:;
     }
     while (!Golden());
 
@@ -5283,7 +5273,7 @@ int Rebmix::REBMIXH()
     int                  c = 0, i, I, j, J, k, l, m, M;
     FLOAT                V, Dmin, r, nl, elp, eln, epsilonlmax, fl, Dl, f, IC, logL, D;
     FLOAT                A = (FLOAT)0.0, ar;
-    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0;
+    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0, State = 0;
 
     // Allocation and initialisation.
 
@@ -5564,14 +5554,18 @@ int Rebmix::REBMIXH()
             }
         }
 
-        Error = PreprocessingH(h, y0, &all_K_[i], Y);
+        State = i > 0;
+
+        Error = PreprocessingH(h, y0, &all_K_[i], Y, &State);
 
         if (Error) goto E0;
 
         all_I_[i] = 1;
 
-        if (CheckH(&all_K_[i], Y)) {
-            all_I_[i] = 2; if (i > 0) goto E1;
+        if (State == 2) {
+            for (j = i; j < all_length_; j++) all_I_[j] = 2;
+            
+            goto E1;
         }
 
         for (j = 0; j < all_K_[i]; j++) K[j] = Y[j][length_pdf_];

@@ -20,15 +20,14 @@ function(model, ...)
     
     if (is.character(model@K)) {
       if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        K <- max(1, as.integer(sqrt(n) * 0.75)):max(1, as.integer(sqrt(n) * 1.25))
+        K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
          
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n)))
-        Log10 <- max(1, as.integer(10.0 * log10(n)))
+        Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
         
-        K <- Sturges:Log10
+        K <- kseq(Sturges, RootN, f = 0.25)
         
         K <- unique(K)
       }
@@ -299,15 +298,14 @@ function(model, ...)
     
     if (is.character(model@K)) {
       if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        K <- max(1, as.integer(sqrt(n) * 0.75)):max(1, as.integer(sqrt(n) * 1.25))
+        K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
          
         K <- unique(K)
       }
       else {
-        Sturges <- max(1, as.integer(1.0 + log2(n)))
-        Log10 <- max(1, as.integer(10.0 * log10(n)))
+        Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
         
-        K <- Sturges:Log10
+        K <- kseq(Sturges, RootN, f = 0.25)
         
         K <- unique(K)
       }

@@ -99,6 +99,10 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 \references{
 H. A. Sturges. The choice of a class interval. Journal of American Statistical Association, 21(153):
 65-66, 1926. \url{http://www.jstor.org/stable/2965501}.\cr\cr
+P. F. Velleman. Interactive computing for exploratory data analysis I: display algorithms. Proceedings of the Statistical Computing Section,
+American Statistical Association, 1976.\cr\cr 
+W. J. Dixon and R. A. Kronmal. The Choice of origin and scale for graphs. Journal of the ACM, 12(2):
+259-261, 1965. \url{http://dx.doi.org/10.1145/321264.321277}.\cr\cr
 M. Nagode and M. Fajdiga. A general multi-modal probability density function suitable for the
 rainflow ranges of stationary random processes. International Journal of Fatigue, 20(3):211-223,
 1998. \url{http://dx.doi.org/10.1016/S0142-1123(97)00106-0}.\cr\cr

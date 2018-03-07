@@ -104,7 +104,7 @@ public:
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
     FLOAT                      min_dist_mul_;  // Minimum distance multiplier.
 	FLOAT                      var_mul_;       // Variance multiplier.
-    FLOAT                      n_mul_;         // Number of observations multiplier.
+    FLOAT                      kmax_;          // Maximum number of nonempty bins.  
     FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_.
     char                       *curr_;         // Path to the currently open data file.
     int                        o_;             // Number of paths.
@@ -149,8 +149,7 @@ public:
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingPW(FLOAT *h, FLOAT **Y);
     int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y);
-    int CheckPW(FLOAT **Y);
-    int CheckH(int *k, FLOAT **Y);
+    int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y, int *State);
     virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);

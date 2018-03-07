@@ -4,7 +4,7 @@
 \itemize{
 \item Fixed bug in \code{plot} method.
 \item Additional argument \code{rseed} enters \code{boot} method.
-\item C++ functions \code{CheckPW()} and \code{CheckH()} are added.
+\item Maximum number of nonempty bins has been introduced in C++ to avoid histograms with excessive number of nonempty bins.
 }
 }
 \section{Changes in version 2.9.3}{ 
