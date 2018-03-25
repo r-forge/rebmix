@@ -4564,7 +4564,7 @@ int Rebmix::REBMIXKNN()
                     
                     Dl = elp / nl;
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationKNN(Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -5072,7 +5072,7 @@ int Rebmix::REBMIXPW()
 
                     Dl = elp / nl;
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationPW(Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -5626,7 +5626,7 @@ int Rebmix::REBMIXH()
 
                     Dl = elp / nl; 
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationH(all_K_[i], Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -6345,7 +6345,7 @@ int Rebmix::RunTemplateFile(char *file)
     int   Error = 0;
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.10.0\n");
+    printf("REBMIX Version 2.10.1\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {

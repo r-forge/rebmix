@@ -603,7 +603,7 @@ int Choldc(int   n,   // Size of square matrix.
 {
     int   i, j, k;
     FLOAT Sum;
-    FLOAT *p;
+    FLOAT *p = NULL;
     int   Error = 0;
 
     memmove(L, A, n * n * sizeof(FLOAT));
@@ -619,8 +619,8 @@ int Choldc(int   n,   // Size of square matrix.
             for (k = 0; k < i; k++) Sum -= L[i * n + k] * L[j * n + k];
 
             if (i == j) {
-                if (Sum <= FLOAT_MIN) {
-                    Error = 1; goto E0;
+                if (Sum < Eps) {
+                    A[i * n + j] = Eps - Sum; Sum = Eps;
                 }
 
                 p[i] = (FLOAT)sqrt(Sum);
@@ -639,6 +639,80 @@ int Choldc(int   n,   // Size of square matrix.
 
 E0: return (Error);
 } // Choldc
+
+// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/ 
+
+int Cholinvdet(int   n,         // Size of square matrix.
+               FLOAT *A,        // Pointer to the symmetric square matrix A.
+               FLOAT *Ainv,     // Pointer to the inverse matrix of A.
+               FLOAT *logAdet)  // Pointer to the logarithm of determinant of A.
+{
+    int   i, j, k;
+    FLOAT *L = NULL, Sum;
+    FLOAT *p = NULL;
+    int   Error = 0;
+
+    L = (FLOAT*)malloc(n * n * sizeof(FLOAT));
+
+    Error = NULL == L; if (Error) goto E0;
+
+    memmove(L, A, n * n * sizeof(FLOAT));
+
+    p = (FLOAT*)malloc(n * sizeof(FLOAT));
+
+    Error = NULL == p; if (Error) goto E0;
+
+    for (i = 0; i < n; i++) {
+        for (j = i; j < n; j++) {
+            Sum = L[i * n + j];
+
+            for (k = 0; k < i; k++) Sum -= L[i * n + k] * L[j * n + k];
+
+            if (i == j) {
+                if (Sum < Eps) {
+                    A[i * n + j] = Eps - Sum; Sum = Eps;
+                }
+
+                p[i] = (FLOAT)sqrt(Sum);
+            }
+            else {
+                L[j * n + i] = Sum / p[i];
+            }
+        }
+    }
+
+    *logAdet = (FLOAT)0.0;
+
+    for (i = 0; i < n; i++) {
+        L[i * n + i] = (FLOAT)1.0 / p[i]; *logAdet += (FLOAT)log(p[i]);
+
+        for (j = i - 1; j >= 0; j--) {
+            Sum = (FLOAT)0.0;
+
+            for (k = j; k < i; k++) Sum -= L[i * n + k] * L[j * n + k];
+
+            L[j * n + i] = Sum / p[i];
+        }
+    }
+
+    *logAdet *= (FLOAT)2.0;
+
+    for (i = 0; i < n; i++) {
+       for (j = i; j < n; j++) {
+           Sum = (FLOAT)0.0;
+
+           for (k = j; k < n; k++) Sum += L[i * n + k] * L[j * n + k];
+
+           Ainv[i * n + j] = Ainv[j * n + i] = Sum;
+       }
+    }
+
+E0: if (p) free(p);
+
+    if (L) free(L);
+
+    return (Error);
+} // Cholinvdet
 
 // Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
 

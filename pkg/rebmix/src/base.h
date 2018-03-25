@@ -218,6 +218,13 @@ int Choldc(int   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
            FLOAT *L); // Lower triangular factors.
 
+// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/ 
+
+int Cholinvdet(int   n,         // Size of square matrix.
+               FLOAT *A,        // Pointer to the symmetric square matrix A.
+               FLOAT *Ainv,     // Pointer to the inverse matrix of A.
+               FLOAT *logAdet); // Pointer to the logarithm of determinant of A.
+
 // Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
 
 FLOAT BesselI0(FLOAT y);
