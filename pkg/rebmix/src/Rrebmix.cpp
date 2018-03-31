@@ -1789,7 +1789,7 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
-    FLOAT  V;
+    FLOAT  logV;
     int    i, j, l, m;
 
     rebmix = new Rebmix;
@@ -1980,13 +1980,13 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
  
     rebmix->cmax_ = *c;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < rebmix->length_pdf_; i++) {
-        V *= h[i];
+        logV += (FLOAT)log(h[i]);
     }
 
-    *Error = rebmix->InformationCriterionPW(V, 
+    *Error = rebmix->InformationCriterionPW(logV, 
                                             Y, 
                                             *c, 
                                             rebmix->W_, 
@@ -2030,7 +2030,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
-    FLOAT  V;
+    FLOAT  logV;
     int    i, j, l, m;
 
     rebmix = new Rebmix;    
@@ -2219,13 +2219,13 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     rebmix->cmax_ = *c;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < rebmix->length_pdf_; i++) {
-        V *= h[i];
+        logV += (FLOAT)log(h[i]);
     }
 
-    *Error = rebmix->InformationCriterionH(V, 
+    *Error = rebmix->InformationCriterionH(logV, 
                                            *k, 
                                            Y, 
                                            *c, 
