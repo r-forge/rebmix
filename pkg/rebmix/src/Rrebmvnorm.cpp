@@ -1216,7 +1216,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL;
-    FLOAT     V;
+    FLOAT     logV;
     int       i, j, l, m;
 
     rebmvnorm = new Rebmvnorm;
@@ -1375,10 +1375,10 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
  
     rebmvnorm->cmax_ = *c;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        V *= h[i];
+        logV += (FLOAT)log(h[i]);
     }
 
     for (i = 0; i < *c; i++) {
@@ -1387,7 +1387,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
         if (*Error) goto E0;
     }
 
-    *Error = rebmvnorm->InformationCriterionPW(V, 
+    *Error = rebmvnorm->InformationCriterionPW(logV, 
                                                Y, 
                                                *c, 
                                                rebmvnorm->W_, 
@@ -1431,7 +1431,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL;
-    FLOAT     V;
+    FLOAT     logV;
     int       i, j, l, m;
 
     rebmvnorm = new Rebmvnorm;    
@@ -1588,10 +1588,10 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     rebmvnorm->cmax_ = *c;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        V *= h[i];
+        logV += (FLOAT)log(h[i]);
     }
 
     for (i = 0; i < *c; i++) {
@@ -1600,7 +1600,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
         if (*Error) goto E0;
     }
 
-    *Error = rebmvnorm->InformationCriterionH(V, 
+    *Error = rebmvnorm->InformationCriterionH(logV, 
                                               *k, 
                                               Y, 
                                               *c, 
