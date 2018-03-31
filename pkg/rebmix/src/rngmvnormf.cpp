@@ -39,7 +39,7 @@ int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
                 C[2] = C[0] * C[0] + C[1] * C[1];
             } while ((C[2] >= (FLOAT)1.0) || (C[2] == (FLOAT)0.0));
 
-            C[3] = (FLOAT)sqrt(-(FLOAT)2.0 * log(C[2]) / C[2]);
+            C[3] = (FLOAT)sqrt(-(FLOAT)2.0 * (FLOAT)log(C[2]) / C[2]);
 
             y[i] = C[3] * C[0];
 

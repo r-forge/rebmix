@@ -18,7 +18,7 @@ int Rebmvnorm::Initialize()
 
     min_dist_mul_ = (FLOAT)2.5;
 
-    var_mul_ = (FLOAT)0.25;
+    var_mul_ = (FLOAT)0.0625;
 
     kmax_ = ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_));
 
@@ -52,7 +52,7 @@ int Rebmvnorm::ComponentConditionalDist(int                  i,           // Ind
 
 // Rough component parameter estimation for k-nearest neighbours.
 
-int Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
+int Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,logV,R].
                                   int                  k,           // k-nearest neighbours.
                                   FLOAT                *h,          // Normalizing vector.
                                   FLOAT                nl,          // Total number of observations in class l.
@@ -62,7 +62,7 @@ int Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
 {
     int                i, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, Dlm, Dlmin, Sum, Stdev, Dc, R, *D = NULL;
+    FLOAT              CmpMrgDist, epsilon, logflm, flm, flmin, flmax, Dlm, Dlmin, Sum, Stdev, Dc, R, *D = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
     int                Error = 0, Stop;
 
@@ -127,7 +127,7 @@ S1:;
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] * k / (Mode[i].klm * D[i]);
     }
 
-    flm = Y[m][length_pdf_] * k / (nl * Y[m][length_pdf_ + 1]);
+    logflm = (FLOAT)log(Y[m][length_pdf_] * k / nl) - Y[m][length_pdf_ + 1];
 
     // Variance-covariance matrix.
 
@@ -224,7 +224,7 @@ S1:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
@@ -349,7 +349,7 @@ int Rebmvnorm::RoughEstimationPW(FLOAT                **Y,         // Pointer to
 {
     int                i, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Sum, Stdev;
+    FLOAT              CmpMrgDist, epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
     int                Error = 0, Stop;
 
@@ -363,10 +363,10 @@ int Rebmvnorm::RoughEstimationPW(FLOAT                **Y,         // Pointer to
 
     Error = NULL == N; if (Error) goto E0;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < length_pdf_; i++) {
-        V *= h[i]; N[i] = 0;
+        logV += (FLOAT)log(h[i]); N[i] = 0;
 
         if (length_pdf_ > 1) {
             Mode[i].klm = (FLOAT)0.0;
@@ -404,7 +404,7 @@ S1:;
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / (Mode[i].klm * h[i]);
     }
 
-    flm = Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / (nl * V);
+    logflm = (FLOAT)log(Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / nl) - logV;
 
     // Variance-covariance matrix.
 
@@ -501,7 +501,7 @@ S1:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
@@ -625,7 +625,7 @@ int Rebmvnorm::RoughEstimationH(int                  k,           // Total numbe
 {
     int                i, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
-    FLOAT              CmpMrgDist, epsilon, flm, flmin, flmax, V, Dlm, Dlmin, Sum, Stdev;
+    FLOAT              CmpMrgDist, epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
     int                Error = 0, Stop;
 
@@ -639,10 +639,10 @@ int Rebmvnorm::RoughEstimationH(int                  k,           // Total numbe
 
     Error = NULL == N; if (Error) goto E0;
 
-    V = (FLOAT)1.0;
+    logV = (FLOAT)0.0;
 
     for (i = 0; i < length_pdf_; i++) {
-        V *= h[i]; N[i] = 0;
+        logV += (FLOAT)log(h[i]); N[i] = 0;
 
         if (length_pdf_ > 1) {
             Mode[i].klm = (FLOAT)0.0;
@@ -665,7 +665,7 @@ S0:;
         Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] / (Mode[i].klm * h[i]);
     }
 
-    flm = Y[m][length_pdf_] / (nl * V);
+    logflm = (FLOAT)log(Y[m][length_pdf_] / nl) - logV;
 
     // Variance-covariance matrix.
 
@@ -762,7 +762,7 @@ S0:;
         }
     }
 
-    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + (FLOAT)log(flm) / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
+    epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
     if (epsilon > (FLOAT)1.0) {
         RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
@@ -876,7 +876,7 @@ E0: if (Cinv) free(Cinv);
 
 // Enhanced component parameter estimation for k-nearest neighbours.
 
-int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,V,R].
+int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,logV,R].
                                      FLOAT                nl,          // Total number of observations in class l.
                                      CompnentDistribution *RigidTheta, // Rigid parameters.
                                      CompnentDistribution *LooseTheta) // Loose parameters.
@@ -1402,6 +1402,36 @@ int Rebmvnorm::ComponentDist(FLOAT                *Y,        // Pointer to the i
 
     return Error;
 } // ComponentDist
+
+// Returns logarithm of component p.d.f..
+
+int Rebmvnorm::LogComponentDist(FLOAT                *Y,        // Pointer to the input point [y0,...,yd-1].
+                                CompnentDistribution *CmpTheta, // Component parameters.
+                                FLOAT                *CmpDist,  // Component distribution.
+                                int                  *Outlier)  // 1 if outlier otherwise 0.
+{
+    FLOAT y, yi, yj;
+    int   i, j;
+    int   Error = 0;
+
+    y = (FLOAT)0.0;
+
+    for (i = 0; i < CmpTheta->length_pdf_; i++) {
+        yi = Y[i] - CmpTheta->Theta_[0][i]; y += (FLOAT)0.5 * CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + i] * yi * yi;
+
+        for (j = i + 1; j < CmpTheta->length_pdf_; j++) {
+            yj = Y[j] - CmpTheta->Theta_[0][j]; y += CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + j] * yi * yj;
+        }
+    }
+
+    if (Outlier) {
+        *Outlier = (FLOAT)2.0 * y > ChiSqr_;
+    }
+
+    *CmpDist = -y - CmpTheta->length_pdf_ * LogSqrtPi2 - (FLOAT)0.5 * CmpTheta->Theta_[3][0];
+
+    return Error;
+} // LogComponentDist
 
 int Rebmvnorm::DegreesOffreedom(int c,                  // Number of components.
                                 CompnentDistribution**, // Mixture parameters.

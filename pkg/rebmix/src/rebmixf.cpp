@@ -337,9 +337,9 @@ int Rebmix::PreprocessingKNN(int   k,    // k-nearest neighbours.
 
         R = (FLOAT)sqrt(Dk[k - 1]);
 
-        if (q >= k) R *= (FLOAT)exp(log((k + (FLOAT)1.0) / (q + (FLOAT)2.0)) / length_pdf_);
+        if (q >= k) R *= (FLOAT)exp((FLOAT)log((k + (FLOAT)1.0) / (q + (FLOAT)2.0)) / length_pdf_);
 
-        logV = logVn + length_pdf_ * log(R);
+        logV = logVn + length_pdf_ * (FLOAT)log(R);
 
         for (j = 0; j < length_pdf_; j++) logV += (FLOAT)log(h[j]);
 
@@ -949,7 +949,7 @@ int ComponentMarginalDist(int                  i,           // Index of variable
         break;
     case pfWeibull:
         if (Y[i] > FLOAT_MIN) {
-            ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * log(Y[i] / CmpTheta->Theta_[0][i]));
+            ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(Y[i] / CmpTheta->Theta_[0][i]));
 
             *CmpMrgDist = CmpTheta->Theta_[1][i] * ypb * (FLOAT)exp(-ypb) / Y[i];
         }
@@ -962,7 +962,7 @@ int ComponentMarginalDist(int                  i,           // Index of variable
         if (Y[i] > FLOAT_MIN) {
             ypb = Y[i] / CmpTheta->Theta_[0][i];
 
-            *CmpMrgDist = (FLOAT)exp(CmpTheta->Theta_[1][i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i])) / Y[i];
+            *CmpMrgDist = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i])) / Y[i];
         }
         else {
             *CmpMrgDist = (FLOAT)0.0;
@@ -1000,7 +1000,7 @@ int ComponentMarginalDist(int                  i,           // Index of variable
     case pfPoisson:
         j = (int)Y[i]; Theta = CmpTheta->Theta_[0][i];
 
-        *CmpMrgDist = (FLOAT)exp(j * log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
+        *CmpMrgDist = (FLOAT)exp(j * (FLOAT)log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
 
         break;
     case pfDirac:
@@ -1341,7 +1341,7 @@ S1:;
         Mode[i].h = h[i]; Mode[i].ym = Y[m][i]; Mode[i].flm = Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / (Mode[i].klm * h[i]); logflm += (FLOAT)log(Mode[i].flm);
     }
 
-    epsilon = (FLOAT)exp((log(Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / nl) - logV - logflm) / length_pdf_);
+    epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / nl) - logV - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
         if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
@@ -1788,7 +1788,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
                     *Outlier |= Y[i] < y;
                 }
 
-                ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * log(Y[i] / CmpTheta->Theta_[0][i]));
+                ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(Y[i] / CmpTheta->Theta_[0][i]));
 
                 *CmpDist *= CmpTheta->Theta_[1][i] * ypb * (FLOAT)exp(-ypb) / Y[i];
             }
@@ -1815,7 +1815,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
 
                 ypb = Y[i] / CmpTheta->Theta_[0][i];
 
-                *CmpDist *= (FLOAT)exp(CmpTheta->Theta_[1][i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i])) / Y[i];
+                *CmpDist *= (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i])) / Y[i];
             }
             else {
                 *CmpDist = (FLOAT)0.0;
@@ -1883,7 +1883,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
 
             j = (int)Y[i]; Theta = CmpTheta->Theta_[0][i];
 
-            *CmpDist *= (FLOAT)exp(j * log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
+            *CmpDist *= (FLOAT)exp(j * (FLOAT)log(Theta) - Theta - Gammaln(j + (FLOAT)1.0));
 
             break;
         case pfDirac:
@@ -1960,9 +1960,9 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                     *Outlier |= Y[i] < y;
                 }
 
-                ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * log(Y[i] / CmpTheta->Theta_[0][i]));
+                ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(Y[i] / CmpTheta->Theta_[0][i]));
 
-                *CmpDist += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - log(Y[i]);
+                *CmpDist += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - (FLOAT)log(Y[i]);
             }
             else {
                 *CmpDist = -FLOAT_MAX;
@@ -1987,7 +1987,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
 
                 ypb = Y[i] / CmpTheta->Theta_[0][i];
 
-                *CmpDist += CmpTheta->Theta_[1][i] * log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i]);
+                *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i]);
             }
             else {
                 *CmpDist = -FLOAT_MAX;
@@ -2055,7 +2055,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
 
             j = (int)Y[i]; Theta = CmpTheta->Theta_[0][i];
 
-            *CmpDist += j * log(Theta) - Theta - Gammaln(j + (FLOAT)1.0);
+            *CmpDist += j * (FLOAT)log(Theta) - Theta - Gammaln(j + (FLOAT)1.0);
 
             break;
         case pfDirac:
@@ -2206,7 +2206,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
             A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
+            EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2522,7 +2522,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 
             A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
+            EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -2839,7 +2839,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
             A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = (FLOAT)exp(log(A[2]) / EnhanTheta->Theta_[1][i]);
+            EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i] * RigidTheta->Theta_[0][i];
@@ -3297,7 +3297,7 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((FLOAT)log(SecondM[i][j]) - (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]));
 
                 break;
             case pfWeibull:
@@ -3407,7 +3407,7 @@ int Rebmix::BayesClassificationPW(FLOAT                **Y,        // Pointer to
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((FLOAT)log(SecondM[i][j]) - (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]));
 
                 break;
             case pfWeibull:
@@ -3518,7 +3518,7 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
 
-                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(log(SecondM[i][j]) - (FLOAT)2.0 * log(FirstM[i][j]));
+                MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((FLOAT)log(SecondM[i][j]) - (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]));
 
                 break;
             case pfWeibull:
@@ -3753,7 +3753,7 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
 
         break;
     case icHQC: // HQC - Hannan-Quinn information criterion Hannan & Quinn (1979).
-        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log(log((FLOAT)n_));
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log((FLOAT)log((FLOAT)n_));
 
         break;
     case icMDL2: // MDL2 - Minimum description length Liang et al.(1992).
@@ -3896,7 +3896,7 @@ int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm
 
         break;
     case icHQC: // HQC - Hannan-Quinn information criterion Hannan & Quinn (1979).
-        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log(log((FLOAT)n_));
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log((FLOAT)log((FLOAT)n_));
 
         break;
     case icMDL2: // MDL2 - Minimum description length Liang et al.(1992).
@@ -4046,7 +4046,7 @@ int Rebmix::InformationCriterionH(FLOAT                logV,       // Logarithm 
 
         break;
     case icHQC: // HQC - Hannan-Quinn information criterion Hannan & Quinn (1979).
-        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log(log((FLOAT)n_));
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log((FLOAT)log((FLOAT)n_));
 
         break;
     case icMDL2: // MDL2 - Minimum description length Liang et al.(1992).
