@@ -2039,7 +2039,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                 *CmpDist = -FLOAT_MAX;
             else
                 *CmpDist += Gammaln(n + (FLOAT)1.0) - Gammaln(j + (FLOAT)1.0) - Gammaln(n - j + (FLOAT)1.0) +
-                j * (FLOAT)log(p) + (n - j) * (FLOAT)log((FLOAT)1.0 - p);
+                            j * (FLOAT)log(p) + (n - j) * (FLOAT)log((FLOAT)1.0 - p);
 
             break;
         case pfPoisson:
