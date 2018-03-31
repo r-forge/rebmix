@@ -154,6 +154,7 @@ public:
     virtual int RoughEstimationPW(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int ComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
+    virtual int LogComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
     virtual int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationPW(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
@@ -163,9 +164,10 @@ public:
     virtual int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     virtual int DegreesOffreedom(int c, CompnentDistribution **MixTheta, int *M);
     int MixtureDist(FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    int MixtureDist(FLOAT logV, FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int InformationCriterionPW(FLOAT V, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int InformationCriterionH(FLOAT V, int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
+    int InformationCriterionPW(FLOAT logV, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
+    int InformationCriterionH(FLOAT logV, int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int CombineComponentsKNN(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
     int CombineComponentsPW(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
     int CombineComponentsH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
