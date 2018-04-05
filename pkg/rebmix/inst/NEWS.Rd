@@ -2,6 +2,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.10.1}{ 
 \itemize{
+\item Fixed numerical problems related to high dimensional datasets.
 \item Fixed bug in \code{REBMIX} method.
 \item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXPW()} and \code{REBMIXH()}.
 \item Improved C++ functions \code{RoughEstimationKNN()}, \code{RoughEstimationPW()} and \code{RoughEstimationH()}.
