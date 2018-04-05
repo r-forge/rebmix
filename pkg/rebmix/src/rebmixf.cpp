@@ -466,7 +466,7 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
     im = om = -1; imax = omax = in = on = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
-        cur = Y[i][length_pdf_] / Y[i][length_pdf_ + 1];
+        cur = Y[i][length_pdf_] / (FLOAT)exp(Y[i][length_pdf_ + 1]);
 
         if (I[i]) {
             in += cur;
@@ -3691,6 +3691,10 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
             *D += E;
         }
 
+        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
+
+        if (Error) goto E0;
+
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
         }
@@ -3833,6 +3837,10 @@ int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm
         if (E > (FLOAT)0.0) {
             *D += E;
         }
+
+        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
+
+        if (Error) goto E0;
 
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
