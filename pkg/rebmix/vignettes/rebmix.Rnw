@@ -36,7 +36,7 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
 
 \section{What's new in version \texttt{2.10.1}}
-Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Version 2.10.1 is further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
+Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention is put in resolving numerical problems related to high dimensional datasets. Version 2.10.1 is further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
 \begin{equation}
 v_{\mathrm{max}} = \frac{1 + d}{d} n^\frac{d}{1 + d}.
 \end{equation}
