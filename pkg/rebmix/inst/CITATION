@@ -44,11 +44,11 @@ citEntry(entry = "Article",
   volume = "3",
   number = "2",
   pages = "14-28",
-  url = "http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625",
+  url = "http://dx.doi.org/10.5963/JAO0302001",
 
   textVersion  =
   paste("Marko Nagode (2015).",
         "Finite Mixture Modeling via REBMIX.",
         "Journal of Algorithms and Optimization, 3(2), 14-28.",
-        "URL http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625.")
+        "URL http://dx.doi.org/10.5963/JAO0302001.")
 )

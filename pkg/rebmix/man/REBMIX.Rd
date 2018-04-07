@@ -117,7 +117,7 @@ Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{ht
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
 Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.\cr\cr
 M. Nagode. Finite mixture modeling via REBMIX.
-Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://www.academicpub.org/jao/paperInfo.aspx?PaperID=16625}.
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://dx.doi.org/10.5963/JAO0302001}.
 }
 \examples{
 # Generate and plot univariate normal dataset.

@@ -1772,7 +1772,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
                 *CmpDist *= (FLOAT)exp(-y) / (SqrtPi2 * CmpTheta->Theta_[1][i]) / Y[i];
             }
             else {
-                *CmpDist = (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
 
             break;
@@ -1793,7 +1793,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
                 *CmpDist *= CmpTheta->Theta_[1][i] * ypb * (FLOAT)exp(-ypb) / Y[i];
             }
             else {
-                *CmpDist = (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
 
             break;
@@ -1818,7 +1818,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
                 *CmpDist *= (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i])) / Y[i];
             }
             else {
-                *CmpDist = (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
 
             break;
@@ -1834,7 +1834,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             }
 
             if ((Y[i] < (FLOAT)0.0) || (Y[i] > Pi2)) {
-                *CmpDist = (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
             else {
                 *CmpDist *= (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)cos(Y[i] - CmpTheta->Theta_[0][i])) / Pi2 / BesselI0(CmpTheta->Theta_[1][i]);
@@ -1854,8 +1854,9 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
 
             j = (int)Y[i]; n = (int)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
 
-            if (j < 0)
-                *CmpDist *= (FLOAT)0.0;
+            if (j < 0) {
+                *CmpDist = (FLOAT)0.0; goto E0;
+            }
             else
             if (j == 0)
                 *CmpDist *= (FLOAT)pow((FLOAT)1.0 - p, n);
@@ -1863,8 +1864,9 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             if (j == n)
                 *CmpDist *= (FLOAT)pow(p, n);
             else
-            if (j > n)
-                *CmpDist *= (FLOAT)0.0;
+            if (j > n) {
+                *CmpDist = (FLOAT)0.0; goto E0;
+            }
             else
                 *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(j + (FLOAT)1.0) - Gammaln(n - j + (FLOAT)1.0)) *
                             (FLOAT)pow(p, j) * (FLOAT)pow((FLOAT)1.0 - p, n - j);
@@ -1888,7 +1890,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             break;
         case pfDirac:
             if ((FLOAT)fabs(Y[i] - CmpTheta->Theta_[0][i]) > FLOAT_MIN) {
-                *CmpDist *= (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
             else {
                 *CmpDist *= (FLOAT)1.0;
@@ -1897,7 +1899,7 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
             break;
         case pfUniform: 
             if ((Y[i] > CmpTheta->Theta_[1][i]) || (Y[i] < CmpTheta->Theta_[0][i])) {
-                *CmpDist *= (FLOAT)0.0;
+                *CmpDist = (FLOAT)0.0; goto E0;
             }
             else {
                 *CmpDist *= (FLOAT)1.0 / (CmpTheta->Theta_[1][i] - CmpTheta->Theta_[0][i]);
@@ -1944,7 +1946,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                 *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
 
             break;
@@ -1965,7 +1967,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                 *CmpDist += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - (FLOAT)log(Y[i]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
 
             break;
@@ -1990,7 +1992,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                 *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
 
             break;
@@ -2006,7 +2008,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
             }
 
             if ((Y[i] < (FLOAT)0.0) || (Y[i] > Pi2)) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
             else {
                 *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)cos(Y[i] - CmpTheta->Theta_[0][i]) - LogPi2 - (FLOAT)log(BesselI0(CmpTheta->Theta_[1][i]));
@@ -2026,8 +2028,9 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
 
             j = (int)Y[i]; n = (int)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
 
-            if (j < 0)
-                *CmpDist = -FLOAT_MAX;
+            if (j < 0) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
             else
             if (j == 0)
                 *CmpDist += n * (FLOAT)log((FLOAT)1.0 - p);
@@ -2035,8 +2038,9 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
             if (j == n)
                 *CmpDist += n * (FLOAT)log(p);
             else
-            if (j > n)
-                *CmpDist = -FLOAT_MAX;
+            if (j > n) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
             else
                 *CmpDist += Gammaln(n + (FLOAT)1.0) - Gammaln(j + (FLOAT)1.0) - Gammaln(n - j + (FLOAT)1.0) +
                             j * (FLOAT)log(p) + (n - j) * (FLOAT)log((FLOAT)1.0 - p);
@@ -2060,7 +2064,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
             break;
         case pfDirac:
             if ((FLOAT)fabs(Y[i] - CmpTheta->Theta_[0][i]) > FLOAT_MIN) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
             else {
                 *CmpDist += (FLOAT)0.0;
@@ -2069,7 +2073,7 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
             break;
         case pfUniform:
             if ((Y[i] > CmpTheta->Theta_[1][i]) || (Y[i] < CmpTheta->Theta_[0][i])) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpDist = -FLOAT_MAX; goto E0;
             }
             else {
                 *CmpDist -= (FLOAT)log(CmpTheta->Theta_[1][i] - CmpTheta->Theta_[0][i]);
