@@ -6555,7 +6555,7 @@ int Rebmix::RunTemplateFile(char *file)
     int   Error = 0;
 
     #if (_REBMIXEXE)
-    printf("REBMIX Version 2.10.1\n");
+    printf("REBMIX Version 2.10.2\n");
     #endif
 
     if ((fp = fopen(file, "r")) == NULL) {

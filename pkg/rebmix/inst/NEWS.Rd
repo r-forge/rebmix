@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.10.2}{ 
+\itemize{
+\item Method \code{split} is improved.
+}
+}
 \section{Changes in version 2.10.1}{ 
 \itemize{
 \item Fixed numerical problems related to high dimensional datasets.
