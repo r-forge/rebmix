@@ -3,6 +3,7 @@
 \section{Changes in version 2.10.2}{ 
 \itemize{
 \item Method \code{split} is improved.
+\item Fixed GCC 8.1 notes and warnings in C++ functions.
 }
 }
 \section{Changes in version 2.10.1}{ 

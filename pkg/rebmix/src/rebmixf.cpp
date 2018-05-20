@@ -4767,7 +4767,9 @@ int Rebmix::REBMIXKNN()
                                 elp += E[j];
                             }
                             else {
-                                if (E[j] < -R[j]) E[j] = -R[j]; eln -= E[j];
+                                if (E[j] < -R[j]) E[j] = -R[j]; 
+                                
+                                eln -= E[j];
                             }
                         }
                     }
@@ -5275,7 +5277,9 @@ int Rebmix::REBMIXPW()
                                 elp += E[j];
                             }
                             else {
-                                if (E[j] < -R[j]) E[j] = -R[j]; eln -= E[j];
+                                if (E[j] < -R[j]) E[j] = -R[j]; 
+                                
+                                eln -= E[j];
                             }
                         }
                     }
@@ -5829,7 +5833,9 @@ int Rebmix::REBMIXH()
                                 elp += E[j];
                             }
                             else {
-                                if (E[j] < -R[j]) E[j] = -R[j]; eln -= E[j];
+                                if (E[j] < -R[j]) E[j] = -R[j]; 
+                                
+                                eln -= E[j];
                             }
                         }
                     }
@@ -6150,9 +6156,9 @@ int Rebmix::WriteDataFile()
         strcpy(ext, "");
     }
         
-    sprintf(path, "%s%s%s", path, "_1", ext);
+    sprintf(line, "%s%s%s", path, "_1", ext);
 
-    if ((fp0 = fopen(path, mode)) == NULL) {
+    if ((fp0 = fopen(line, mode)) == NULL) {
         Error = 1; goto E0;
     }
 
@@ -6167,9 +6173,9 @@ int Rebmix::WriteDataFile()
         strcpy(ext, "");
     }
         
-    sprintf(path, "%s%s%s", path, "_2", ext);
+    sprintf(line, "%s%s%s", path, "_2", ext);
 
-    if ((fp1 = fopen(path, mode)) == NULL) {
+    if ((fp1 = fopen(line, mode)) == NULL) {
         Error = 1; goto E0;
     }
 

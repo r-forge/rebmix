@@ -84,7 +84,9 @@ void Insert(FLOAT y,   // Inserted value.
 
     for (i = 0; i < *n; i++) {
         if (y < Y[i]) {
-            for (j = *n; j > i; j--) Y[j] = Y[j - 1]; Y[i] = y;
+            for (j = *n; j > i; j--) Y[j] = Y[j - 1];
+            
+            Y[i] = y;
 
             break;
         }

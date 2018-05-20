@@ -91,7 +91,9 @@ int Rngmix::WriteDataFile()
 
 E0: if (fp) fclose(fp);
 
-    if (Z_) free(Z_); Z_ = NULL;
+    if (Z_) free(Z_); 
+    
+    Z_ = NULL;
 
     if (Y_) {
         for (i = 0; i < n_; i++) {
@@ -108,6 +110,7 @@ E0: if (fp) fclose(fp);
 
 int Rngmix::WriteParameterFile()
 {
+    char line[65536];
     char path[FILENAME_MAX];
     char ext[FILENAME_MAX];
     char *pchar = NULL;
@@ -125,9 +128,9 @@ int Rngmix::WriteParameterFile()
         strcpy(ext, "");
     }
         
-    sprintf(path, "%s%s%s", path, "_1", ext);
+    sprintf(line, "%s%s%s", path, "_1", ext);
 
-    if ((fp = fopen(path, "w")) == NULL) {
+    if ((fp = fopen(line, "w")) == NULL) {
         Error = 1; goto E0;
     }
 
