@@ -12,6 +12,7 @@
 #include <crtdbg.h>
 #endif
 
+#if (_MAINTAIN_SWITCH) 
 int main(int argc, char* argv[])
 {
     #if (_MEMORY_LEAK_SWITCH)
@@ -80,9 +81,13 @@ E0: if (rngmix) delete rngmix;
     if (_CrtMemDifference(&s3, &s1, &s2)) _CrtMemDumpStatistics(&s3);
     #endif
     
-    #if (_REBMIXEXE)
     printf("\n%s%d\n", "Error: ", Error);
-    #endif
 
     return Error;
 } // main
+#else
+int main()
+{
+    return 0;
+}
+#endif

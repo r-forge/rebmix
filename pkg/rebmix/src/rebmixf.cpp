@@ -6032,6 +6032,7 @@ E0: if (O) free(O);
     return Error;
 } // REBMIXH
 
+#if (_MAINTAIN_SWITCH)
 // Reads data file.
 
 int Rebmix::ReadDataFile()
@@ -6126,7 +6127,9 @@ E0: if (fp) fclose(fp);
 
     return Error;
 } // ReadDataFile
+#endif
 
+#if (_MAINTAIN_SWITCH)
 // Writes data file.
 
 int Rebmix::WriteDataFile()
@@ -6548,7 +6551,9 @@ E0: if (fp0) fclose(fp0);
 
     return Error;
 } // WriteDataFile
+#endif
 
+#if (_MAINTAIN_SWITCH)
 // Runs template file.
 
 int Rebmix::RunTemplateFile(char *file)
@@ -6560,9 +6565,7 @@ int Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     int   Error = 0;
 
-    #if (_REBMIXEXE)
     printf("REBMIX Version 2.10.2\n");
-    #endif
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;
@@ -6628,9 +6631,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
                 if (Error) goto E0;
 
-                #if (_REBMIXEXE)
                 printf("Dataset = %s\n", curr_);
-                #endif
 
                 Error = REBMIX();
 
@@ -7005,6 +7006,7 @@ E0: if (fp) fclose(fp);
 
     return Error;
 } // RunTemplateFile
+#endif
 
 // REBMIX algorithm.
 

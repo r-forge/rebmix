@@ -9,8 +9,10 @@
 
 class Rngmix : public Base {
     // Methods.
+    #if (_MAINTAIN_SWITCH)
     int WriteDataFile();
     int WriteParameterFile();
+    #endif
 public:
     // Members.
     char                 *curr_;         // Path to the currently open data file.
@@ -32,7 +34,9 @@ public:
     // Methods.
     virtual int InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y);
     int RNGMIX();
+    #if (_MAINTAIN_SWITCH)
     int RunTemplateFile(char *file);
+    #endif
 }; // Rngmix
 
 #endif

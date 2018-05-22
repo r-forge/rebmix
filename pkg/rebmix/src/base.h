@@ -12,6 +12,10 @@
 #define _MEMORY_LEAK_SWITCH 0 
 #endif
 
+#ifndef _MAINTAIN_SWITCH
+#define _MAINTAIN_SWITCH 0 
+#endif
+
 #ifndef FLOAT
 #define FLOAT double 
 #endif

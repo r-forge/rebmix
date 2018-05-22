@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
 #include "base.h"
 
 typedef enum {
@@ -97,8 +96,10 @@ class Rebmix : public Base {
     int REBMIXKNN();
     int REBMIXPW();
     int REBMIXH();
+    #if (_MAINTAIN_SWITCH)
     int ReadDataFile();
     int WriteDataFile();
+    #endif
 public:
     // Input members.
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
@@ -172,7 +173,9 @@ public:
     int CombineComponentsPW(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
     int CombineComponentsH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
     int REBMIX();
+    #if (_MAINTAIN_SWITCH)
     int RunTemplateFile(char *file);
+    #endif
 }; // Rebmix
 
 #endif
