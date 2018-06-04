@@ -89,7 +89,7 @@ function(x,
   
   model@w <- matrix(unlist(w), ncol = c, byrow = TRUE)
   
-  colnames(model@w) <- paste("comp", if (c > 1) 1:c else "", sep = "")
+  colnames(model@w) <- paste(1:c, sep = "")
   rownames(model@w) <- paste(which(bsampleest@summary$c == c), sep = "")
   
   model@w.se <- apply(model@w, 2, sd)
@@ -236,7 +236,7 @@ function(x,
   
   model@w <- matrix(unlist(w), ncol = c, byrow = TRUE)
   
-  colnames(model@w) <- paste("comp", if (c > 1) 1:c else "", sep = "")
+  colnames(model@w) <- paste(1:c, sep = "")
   rownames(model@w) <- paste(which(bsampleest@summary$c == c), sep = "")
   
   model@w.se <- apply(model@w, 2, sd)
