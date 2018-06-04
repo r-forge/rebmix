@@ -53,7 +53,7 @@ function(object, ...)
   c <- ncol(w.cv)   
   
   rownames(w.cv) <- "w.cv"
-  colnames(w.cv) <- paste("comp", if (object@c.mode > 1) 1:object@c.mode else "", sep = "") 
+  colnames(w.cv) <- paste(1:object@c.mode, sep = "") 
   
   print(w.cv, quote = FALSE, ...)
 
@@ -97,7 +97,7 @@ function(object, ...)
   c <- ncol(w.cv)   
   
   rownames(w.cv) <- "w.cv"
-  colnames(w.cv) <- paste("comp", if (object@c.mode > 1) 1:object@c.mode else "", sep = "") 
+  colnames(w.cv) <- paste(1:object@c.mode, sep = "") 
   
   print(w.cv, quote = FALSE, ...)
 
