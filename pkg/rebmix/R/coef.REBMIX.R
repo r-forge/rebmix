@@ -21,7 +21,7 @@ function(x, pos, ...)
   c <- ncol(w)  
   
   rownames(w) <- "w"
-  colnames(w) <- paste("comp", if (x@summary[pos, "c"] > 1) 1:x@summary[pos, "c"] else "", sep = "") 
+  colnames(w) <- paste(1:x@summary[pos, "c"], sep = "") 
   
   print(w, quote = FALSE, ...)
   
@@ -73,7 +73,7 @@ function(x, pos, ...)
   c <- ncol(w)  
   
   rownames(w) <- "w"
-  colnames(w) <- paste("comp", if (x@summary[pos, "c"] > 1) 1:x@summary[pos, "c"] else "", sep = "") 
+  colnames(w) <- paste(1:x@summary[pos, "c"], sep = "") 
   
   print(w, quote = FALSE, ...)
   
