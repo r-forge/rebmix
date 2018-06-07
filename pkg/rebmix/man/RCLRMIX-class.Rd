@@ -24,6 +24,22 @@ a factor of predictive cluster membership.
 \item{\code{c}:}{
 number of clusters.
 }
+\item{\code{p}:}{
+a vector of length \eqn{c} containing prior probabilities of latent class memberships \eqn{p_{l}} summing to 1.
+}
+\item{\code{pi}:}{
+a list of length \eqn{d} of matrices of size \eqn{c \times I_{i}} containing class conditional probabilities. Let \eqn{\pi_{il\tilde{i}}} 
+denote the class conditional probability that an observation in class \eqn{l = 1, \ldots, c} produces the \eqn{\tilde{i}}th outcome on the \eqn{i}th variable.
+It is presumed here that all variables are categorical and conditionally independent, that each categorical variable \eqn{i = 1, \ldots, c} contains \eqn{I_{i}} possible outcomes and that \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}}
+stands for an observed \eqn{d} dimensional dataset of size \eqn{n} of discrete vector observations \eqn{\bm{y}_{j} = (y_{1j}, \ldots, y_{ij}, \ldots, y_{dj})^\top}.
+The variables should follow \code{"Dirac"} or \code{"binomial"} parametric families with the finite number of outcomes \eqn{I_{i}}.
+}
+\item{\code{P}:}{
+a data frame containing unique observations for which the true and predictive frequencies are calculated.
+}
+\item{\code{tau}:}{
+a matrix of size \eqn{n \times c} containing conditional probabilities that observations \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}} arise from clusters \eqn{1, \ldots, c}.
+}
 \item{\code{prob}:}{
 a vector of length \eqn{c} containing probabilities of correct clustering for \eqn{s = 1, \ldots, c}.
 }

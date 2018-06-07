@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.10.3}{ 
+\itemize{
+\item \code{"Dirac"} parametric family is from now on approximated by the \code{"normal"} parametric family.
+}
+}
 \section{Changes in version 2.10.2}{ 
 \itemize{
 \item Method \code{split} is improved.

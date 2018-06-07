@@ -169,9 +169,7 @@ public:
     int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionPW(FLOAT logV, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionH(FLOAT logV, int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int CombineComponentsKNN(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
-    int CombineComponentsPW(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
-    int CombineComponentsH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, int *F, int *T, FLOAT *EN, FLOAT *ED);
+    int CombineComponents(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, int *F, int *T, FLOAT *EN, FLOAT *ED);
     int REBMIX();
     #if (_MAINTAIN_SWITCH)
     int RunTemplateFile(char *file);

@@ -22,90 +22,107 @@ function(model, ...)
   
   dataset <- as.matrix(model@x@Dataset[[model@pos]])
   
-  n <- nrow(dataset)  
-
-  h <- as.double(model@x@summary[model@pos, paste("h", if (d > 1) 1:d else "", sep = "")])
+  n <- nrow(dataset)
   
-  C <- model@x@summary[model@pos, "Preprocessing"]
+  if (sum(pdf %in% .rebmix$pdf[c(4, 6)]) == c * d) {
+    model@p <- w
+  
+    model@pi <- list(); nlevels <- array()
+  
+    for (i in 1:d) {
+      for (j in 1:c) {
+        if (pdf[(j - 1) * d + i] == .rebmix$pdf[4]) {
+          if (j == 1) {
+            nlevels[i] <- as.integer(theta1[(j - 1) * d + i]) + 1
+            
+            model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
 
-  if (C == .rebmix$Preprocessing[1]) {
-    y0 <- as.double(model@x@summary[model@pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
+            colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
+            rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+          }
 
-    output <- .C(C_RCombineComponentsHMIX,
-      h = as.double(h),
-      y0 = as.double(y0),
-      k = as.integer(model@x@summary[model@pos, "v/k"]),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
+          for (ii in 1:nlevels[i]) {
+            model@pi[[i]][j, ii] <- dbinom(ii - 1, size = as.integer(theta1[(j - 1) * d + i]), prob = as.numeric(theta2[(j - 1) * d + i]))
+          }
+        }
+        else
+        if (pdf[(j - 1) * d + i] == .rebmix$pdf[6]) {
+          if (j == 1) {
+            nlevels[i] <- 2
 
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
+            model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
+
+            colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
+            rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+          }
+
+          for (ii in 1:nlevels[i]) {
+            model@pi[[i]][j, ii] <- ddirac(ii - 1, location = as.integer(theta1[(j - 1) * d + i]))
+          }
+        }
+      }
     }
-  } 
-  else 
-  if (C == .rebmix$Preprocessing[2]) {
-    output <- .C(C_RCombineComponentsPWMIX,
-      h = as.double(h),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
+    
+    Y <- dataset; y <- as.matrix(unique(Y)); Nt <- array(); Np <- array()
 
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
+    for (j in 1:nrow(y)) {
+      x <- array(); k <- 1
+
+      for (l in 1:nrow(Y)) {
+        if (all(y[j, ] == Y[l, ])) {
+          x[k] <- l; k <- k + 1
+        }
+      }
+
+      Nt[j] <- length(x); Y <- as.matrix(Y[-x, ]); Np[j] <- 0.0
+      
+      for (l in 1:c) {
+        Pl <- 1.0
+        
+        for(i in 1:d) {
+          for (ii in 1:length(model@pi[[i]][l, ])) {
+            if (y[j, i] == ii - 1) {
+              Pl <- Pl * model@pi[[i]][l, ii]
+            }
+          }
+        }
+
+        Np[j] <- Np[j] + w[l] * Pl * n
+      }      
     }
-  } 
-  else
-  if (C == .rebmix$Preprocessing[3]) {
-    k <- as.integer(model@x@summary[model@pos, "v/k"]) 
+    
+    model@P <- as.data.frame(cbind(y, Nt, Np))
+    
+    colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+    rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+  }  
+  
+  output <- .C(C_RCombineComponentsMIX,
+    c = as.integer(c),
+    w = as.double(model@x@w[[model@pos]]),
+    length.pdf = as.integer(d),
+    length.Theta = as.integer(2),
+    length.theta = as.integer(c(d, d)),
+    pdf = as.character(pdf),
+    Theta = as.double(c(theta1, theta2)),
+    n = as.integer(n),
+    x = as.double(dataset),
+    tau = double(n * c),
+    F = integer(c),
+    T = integer(c),
+    EN = double(c),
+    ED = double(c),
+    error = integer(1),
+    PACKAGE = "rebmix")
 
-    output <- .C(C_RCombineComponentsKNNMIX,
-      h = as.double(h),
-      k = as.integer(model@x@summary[model@pos, "v/k"]),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
-
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
-    }
+  if (output$error == 1) {
+    stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
+
+  model@tau <- matrix(data = output$tau, ncol = c, byrow = TRUE)
+
+  colnames(model@tau) <- paste(1:c, sep = "")
+  rownames(model@tau) <- paste(1:n, sep = "")
   
   model@from <- output$F
   model@to <- output$T
@@ -200,88 +217,32 @@ function(model, ...)
   
   n <- nrow(dataset)
   
-  h <- as.double(model@x@summary[model@pos, paste("h", if (d > 1) 1:d else "", sep = "")])
-  
-  C <- model@x@summary[model@pos, "Preprocessing"]
+  output <- .C(C_RCombineComponentsMVNORM,
+    c = as.integer(c),
+    w = as.double(model@x@w[[model@pos]]),
+    length.pdf = as.integer(d),
+    length.Theta = as.integer(4),
+    length.theta = as.integer(c(d, d * d, -d * d, -1)),      
+    pdf = as.character(pdf),
+    Theta = as.double(c(theta1, theta2)),
+    n = as.integer(n),
+    x = as.double(dataset),
+    tau = double(n * c),
+    F = integer(c),
+    T = integer(c),
+    EN = double(c),
+    ED = double(c),
+    error = integer(1),
+    PACKAGE = "rebmix")
 
-  if (C == .rebmix$Preprocessing[1]) {
-    y0 <- as.double(model@x@summary[model@pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
-
-    output <- .C(C_RCombineComponentsHMVNORM,
-      h = as.double(h),
-      y0 = as.double(y0),
-      k = as.integer(model@x@summary[model@pos, "v/k"]),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, -d * d, -1)),      
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
-
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
-    }
-  } 
-  else 
-  if (C == .rebmix$Preprocessing[2]) {
-    output <- .C(C_RCombineComponentsPWMVNORM,
-      h = as.double(h),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, -d * d, -1)),
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
-
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
-    }
-  } 
-  else
-  if (C == .rebmix$Preprocessing[3]) {
-    k <- as.integer(model@x@summary[model@pos, "v/k"]) 
-
-    output <- .C(C_RCombineComponentsKNNMVNORM,
-      h = as.double(h),
-      k = as.integer(model@x@summary[model@pos, "v/k"]),
-      c = as.integer(c),
-      w = as.double(model@x@w[[model@pos]]),
-      length.pdf = as.integer(d),
-      length.Theta = as.integer(4),
-      length.theta = as.integer(c(d, d * d, -d * d, -1)),
-      pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
-      x = as.double(dataset),
-      F = integer(c),
-      T = integer(c),
-      EN = double(c),
-      ED = double(c),
-      error = integer(1),
-      PACKAGE = "rebmix")
-
-    if (output$error == 1) {
-      stop("in RCLRMIX!", call. = FALSE); return(NA)
-    }
+  if (output$error == 1) {
+    stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
+  
+  model@tau <- matrix(data = output$tau, ncol = c, byrow = TRUE)
+
+  colnames(model@tau) <- paste(1:c, sep = "")
+  rownames(model@tau) <- paste(1:n, sep = "")
   
   model@from <- output$F
   model@to <- output$T

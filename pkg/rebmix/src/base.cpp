@@ -886,3 +886,15 @@ FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa)
 
 	return (ym);
 } // vonMisesInv
+
+FLOAT xlogx(FLOAT x)
+{
+    if (x > FLOAT_MIN) {
+        x *= (FLOAT)log(x);
+    }
+    else {
+        x = (FLOAT)0.0;
+    }
+
+    return(x);
+} // xlogx

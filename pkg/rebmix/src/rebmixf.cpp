@@ -3702,6 +3702,9 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
         }
+        else {
+            *logL += (FLOAT)log(FLOAT_MIN);
+        }
 
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icPC: case icICLBIC:
@@ -3717,7 +3720,7 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
                     tau = (FLOAT)0.0;
                 }
 
-                EN -= xlog(tau); PC += tau * tau;
+                EN -= xlogx(tau); PC += tau * tau;
             }
 
             break;
@@ -3844,6 +3847,9 @@ int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
         }
+        else {
+            *logL += (FLOAT)log(FLOAT_MIN);
+        }
 
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icPC: case icICLBIC:
@@ -3859,7 +3865,7 @@ int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm
                     tau = (FLOAT)0.0;
                 }
 
-                EN -= xlog(tau); PC += tau * tau;
+                EN -= xlogx(tau); PC += tau * tau;
             }
 
             break;
@@ -3991,6 +3997,9 @@ int Rebmix::InformationCriterionH(FLOAT                logV,       // Logarithm 
         if (MixDist > FLOAT_MIN) {
             *logL += (FLOAT)log(MixDist);
         }
+        else {
+            *logL += (FLOAT)log(FLOAT_MIN);
+        }
 
         switch (Criterion_) {
         case icAWE: case icCLC: case icICL: case icPC: case icICLBIC:
@@ -4006,7 +4015,7 @@ int Rebmix::InformationCriterionH(FLOAT                logV,       // Logarithm 
                     tau = (FLOAT)0.0;
                 }
 
-                EN -= xlog(tau); PC += tau * tau;
+                EN -= xlogx(tau); PC += tau * tau;
             }
 
             break;
@@ -4091,48 +4100,50 @@ int Rebmix::InformationCriterionH(FLOAT                logV,       // Logarithm 
 E0: return Error;
 } // InformationCriterionH
 
-int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1,kl,k].
-                                 int                  c,          // Number of components.
-                                 FLOAT                *W,         // Component weights.
-                                 CompnentDistribution **MixTheta, // Mixture parameters.
-                                 int                  *F,         // From components.
-                                 int                  *T,         // To components.
-                                 FLOAT                *EN,        // Entropy.
-                                 FLOAT                *ED)        // Entropy decrease.
+// Returns combined components.
+
+int Rebmix::CombineComponents(int                  c,          // Number of components.
+                              FLOAT                *W,         // Component weights.
+                              CompnentDistribution **MixTheta, // Mixture parameters.
+                              FLOAT                *tau,       // Conditional probabilities.
+                              int                  *F,         // From components.
+                              int                  *T,         // To components.
+                              FLOAT                *EN,        // Entropy.
+                              FLOAT                *ED)        // Entropy decrease.
 {
-    int   *C = NULL, i, ii, j, jj, II, J, Tmpi;
-    FLOAT CmpDist, ed, en, MixDist, **Tau = NULL, *Tmpf = NULL;
+    int   *C = NULL, i, ii, j, jj, II, J, k, l;
+    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL;
     int   Error = 0;
 
-    Tau = (FLOAT**)malloc(c * sizeof(FLOAT*));
+    Tmp = (FLOAT*)malloc(n_ * c * sizeof(FLOAT));
 
-    Error = NULL == Tau; if (Error) goto E0;
-
-    for (i = 0; i < c; i++) {
-        Tau[i] = (FLOAT*)malloc(n_ * sizeof(FLOAT));
-
-        Error = NULL == Tau[i]; if (Error) goto E0;
-    }
+    Error = NULL == Tmp; if (Error) goto E0;
 
     en = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
-        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
+        Error = MixtureDist(Y_[i], c, W, MixTheta, &MixDist);
 
         if (Error) goto E0;
 
-        for (j = 0; j < c; j++) {
-            Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, NULL);
+        k = i * c;
 
-            if (Error) goto E0;
+        if (MixDist > FLOAT_MIN) {
+            for (j = 0; j < c; j++) {
+                Error = ComponentDist(Y_[i], MixTheta[j], &CmpDist, NULL);
 
-            if (MixDist > FLOAT_MIN) {
-                Tau[j][i] = W[j] * CmpDist / MixDist;
+                if (Error) goto E0;
 
-                en -= xlog(Tau[j][i]);
+                l = k + j;
+            
+                Tmp[l] = tau[l] = W[j] * CmpDist / MixDist; en -= xlogx(tau[l]);
             }
-            else {
-                Tau[j][i] = (FLOAT)0.0;
+        }
+        else {
+            for (j = 0; j < c; j++) {
+                l = k + j;
+
+                Tmp[l] = tau[l] = (FLOAT)0.0;
             }
         }
     }
@@ -4155,9 +4166,9 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
                 ed = (FLOAT)0.0;
  
                 for (jj = 0; jj < n_; jj++) {
-                    ed -= xlog(Tau[ii][jj]) + xlog(Tau[j][jj]);
+                    k = jj * c + ii; l = jj * c + j;
                 
-                    ed += xlog(Tau[ii][jj] + Tau[j][jj]);
+                    ed += xlogx(Tmp[k] + Tmp[l]) - xlogx(Tmp[k]) - xlogx(Tmp[l]);
                 }
 
                 if (ed > ED[i - 2]) {
@@ -4166,26 +4177,24 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
             }
         }
 
-        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
+        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1; EN[i - 2] = (FLOAT)0.0;
 
         for (j = 0; j < n_; j++) {
-            Tau[II][j] += Tau[J][j];
-        }
+            k = j * c;
 
-        Tmpf = Tau[J]; Tmpi = C[J];
+            Tmp[k + II] += Tmp[k + J];
 
-        for (j = J; j < c - 1; j++) {
-            Tau[j] = Tau[j + 1]; C[j] = C[j + 1];
-        }
-
-        Tau[c - 1] = Tmpf; C[c - 1] = Tmpi;
-
-        EN[i - 2] = (FLOAT)0.0;
-
-        for (ii = 0; ii < i - 1; ii++) {
-            for (jj = 0; jj < n_; jj++) {
-                EN[i - 2] -= xlog(Tau[ii][jj]);
+            for (ii = J; ii < i - 1; ii++) {
+                Tmp[k + ii] = Tmp[k + ii + 1];
             }
+
+            for (ii = 0; ii < i - 1; ii++) {
+                EN[i - 2] -= xlogx(Tmp[k + ii]);
+            }
+        }
+
+        for (ii = J; ii < i - 1; ii++) {
+            C[ii] = C[ii + 1];
         }
 
         i--;
@@ -4193,247 +4202,10 @@ int Rebmix::CombineComponentsKNN(FLOAT                **Y,        // Pointer to 
 
 E0: if (C) free(C);
 
-    if (Tau) {
-        for (i = 0; i < c; i++) {
-            if (Tau[i]) free(Tau[i]);
-        }
-
-        free(Tau);
-    }
+    if (Tmp) free(Tmp);
 
     return Error;
-} // CombineComponentsKNN
-
-// Returns combined components for Parzen window.
-
-int Rebmix::CombineComponentsPW(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1,kl,k].
-                                int                  c,          // Number of components.
-                                FLOAT                *W,         // Component weights.
-                                CompnentDistribution **MixTheta, // Mixture parameters.
-                                int                  *F,         // From components.
-                                int                  *T,         // To components.
-                                FLOAT                *EN,        // Entropy.
-                                FLOAT                *ED)        // Entropy decrease.
-{
-    int   *C = NULL, i, ii, j, jj, II, J, Tmpi;
-    FLOAT CmpDist, ed, en, MixDist, **Tau = NULL, *Tmpf = NULL;
-    int   Error = 0;
-
-    Tau = (FLOAT**)malloc(c * sizeof(FLOAT*));
-
-    Error = NULL == Tau; if (Error) goto E0;
-
-    for (i = 0; i < c; i++) {
-        Tau[i] = (FLOAT*)malloc(n_ * sizeof(FLOAT));
-
-        Error = NULL == Tau[i]; if (Error) goto E0;
-    }
-
-    en = (FLOAT)0.0;
-
-    for (i = 0; i < n_; i++) {
-        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
-
-        if (Error) goto E0;
-
-        for (j = 0; j < c; j++) {
-            Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, NULL);
-
-            if (Error) goto E0;
-
-            if (MixDist > FLOAT_MIN) {
-                Tau[j][i] = W[j] * CmpDist / MixDist;
-
-                en -= xlog(Tau[j][i]);
-            }
-            else {
-                Tau[j][i] = (FLOAT)0.0;
-            }
-        }
-    }
-
-    C = (int*)malloc(c * sizeof(int));
-
-    Error = NULL == C; if (Error) goto E0;
-
-    for (i = 0; i < c; i++) {
-        C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en;       
-    }
-
-    i = c;
-
-    while (i > 1) {
-        II = J = 0; ED[i - 2] = (FLOAT)0.0;
- 
-        for (ii = 0; ii < i - 1; ii++) {
-            for (j = ii + 1; j < i; j++) {
-                ed = (FLOAT)0.0;
- 
-                for (jj = 0; jj < n_; jj++) {
-                    ed -= xlog(Tau[ii][jj]) + xlog(Tau[j][jj]);
-                
-                    ed += xlog(Tau[ii][jj] + Tau[j][jj]);
-                }
-
-                if (ed > ED[i - 2]) {
-                    ED[i - 2] = ed; II = ii; J = j;
-                }
-            }
-        }
-
-        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
-
-        for (j = 0; j < n_; j++) {
-            Tau[II][j] += Tau[J][j];
-        }
-
-        Tmpf = Tau[J]; Tmpi = C[J];
-
-        for (j = J; j < c - 1; j++) {
-            Tau[j] = Tau[j + 1]; C[j] = C[j + 1];
-        }
-
-        Tau[c - 1] = Tmpf; C[c - 1] = Tmpi;
-
-        EN[i - 2] = (FLOAT)0.0;
-
-        for (ii = 0; ii < i - 1; ii++) {
-            for (jj = 0; jj < n_; jj++) {
-                EN[i - 2] -= xlog(Tau[ii][jj]);
-            }
-        }
-
-        i--;
-    }
-
-E0: if (C) free(C);
-
-    if (Tau) {
-        for (i = 0; i < c; i++) {
-            if (Tau[i]) free(Tau[i]);
-        }
-
-        free(Tau);
-    }
-
-    return Error;
-} // CombineComponentsPW
-
-// Returns combined components for histogram.
-
-int Rebmix::CombineComponentsH(int                  k,          // Total number of bins.
-                               FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1,kl].
-                               int                  c,          // Number of components.
-                               FLOAT                *W,         // Component weights.
-                               CompnentDistribution **MixTheta, // Mixture parameters.
-                               int                  *F,         // From components.
-                               int                  *T,         // To components.
-                               FLOAT                *EN,        // Entropy.
-                               FLOAT                *ED)        // Entropy decrease.
-{
-    int   *C = NULL, i, ii, j, jj, II, J, Tmpi;
-    FLOAT CmpDist, ed, en, MixDist, **Tau = NULL, *Tmpf = NULL;
-    int   Error = 0;
-
-    Tau = (FLOAT**)malloc(c * sizeof(FLOAT*));
-
-    Error = NULL == Tau; if (Error) goto E0;
-
-    for (i = 0; i < c; i++) {
-        Tau[i] = (FLOAT*)malloc(k * sizeof(FLOAT));
-
-        Error = NULL == Tau[i]; if (Error) goto E0;
-    }
-
-    en = (FLOAT)0.0;
-
-    for (i = 0; i < k; i++) {
-        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDist);
-
-        if (Error) goto E0;
-
-        for (j = 0; j < c; j++) {
-            Error = ComponentDist(Y[i], MixTheta[j], &CmpDist, NULL);
-
-            if (Error) goto E0;
-
-            if (MixDist > FLOAT_MIN) {
-                Tau[j][i] = W[j] * CmpDist / MixDist;
-
-                en -= Y[i][length_pdf_] * xlog(Tau[j][i]);
-            }
-            else {
-                Tau[j][i] = (FLOAT)0.0;
-            }
-        }
-    }
-
-    C = (int*)malloc(c * sizeof(int));
-
-    Error = NULL == C; if (Error) goto E0;
-
-    for (i = 0; i < c; i++) {
-        C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en;       
-    }
-
-    i = c;
-
-    while (i > 1) {
-        II = J = 0; ED[i - 2] = (FLOAT)0.0;
- 
-        for (ii = 0; ii < i - 1; ii++) {
-            for (j = ii + 1; j < i; j++) {
-                ed = (FLOAT)0.0;
- 
-                for (jj = 0; jj < k; jj++) {
-                    ed -= Y[jj][length_pdf_] * (xlog(Tau[ii][jj]) + xlog(Tau[j][jj]));
-                
-                    ed += Y[jj][length_pdf_] * xlog(Tau[ii][jj] + Tau[j][jj]);
-                }
-
-                if (ed > ED[i - 2]) {
-                    ED[i - 2] = ed; II = ii; J = j;
-                }
-            }
-        }
-
-        F[i - 2] = C[J] + 1, T[i - 2] = C[II] + 1;
-
-        for (j = 0; j < k; j++) {
-            Tau[II][j] += Tau[J][j];
-        }
-
-        Tmpf = Tau[J]; Tmpi = C[J];
-
-        for (j = J; j < c - 1; j++) {
-            Tau[j] = Tau[j + 1]; C[j] = C[j + 1];
-        }
-
-        Tau[c - 1] = Tmpf; C[c - 1] = Tmpi;
-
-        EN[i - 2] = (FLOAT)0.0;
-
-        for (ii = 0; ii < i - 1; ii++) {
-            for (jj = 0; jj < k; jj++) {
-                EN[i - 2] -= Y[jj][length_pdf_] * xlog(Tau[ii][jj]);
-            }
-        }
-
-        i--;
-    }
-
-E0: if (C) free(C);
-
-    if (Tau) {
-        for (i = 0; i < c; i++) {
-            if (Tau[i]) free(Tau[i]);
-        }
-
-        free(Tau);
-    }
-
-    return Error;
-} // CombineComponentsH 
+} // CombineComponents 
 
 // REBMIX algorithm for k-nearest neighbours.
 

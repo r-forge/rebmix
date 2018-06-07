@@ -13,7 +13,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 0 
+#define _MAINTAIN_SWITCH 1 
 #endif
 
 #ifndef FLOAT
@@ -244,5 +244,9 @@ FLOAT BesselI1(FLOAT y);
 // Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
 
 FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa);
+
+// Returns x * log(x).
+
+FLOAT xlogx(FLOAT x);
 
 #endif
