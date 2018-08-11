@@ -404,7 +404,7 @@ int Rngmix::RunTemplateFile(char *file)
         Error = 1; goto E0;
     }
 
-    printf("RNGMIX Version 2.10.2\n");
+    printf("RNGMIX Version 2.10.3\n");
 
 S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(line, "\n"); 

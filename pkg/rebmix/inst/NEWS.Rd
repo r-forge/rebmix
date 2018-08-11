@@ -2,7 +2,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.10.3}{ 
 \itemize{
-\item \code{"Dirac"} parametric family is from now on approximated by the \code{"normal"} parametric family.
+\item Rough parameter estimation for binomial parametric family is improved.
 }
 }
 \section{Changes in version 2.10.2}{ 

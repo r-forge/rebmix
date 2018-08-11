@@ -695,11 +695,11 @@ int RoughLognormalParameters(FLOAT ym,
 
             dLambda = ((FLOAT)1.0 - A[1] + (FLOAT)log(Lambda * A[2]) + A[0]) / (A[1] * ((FLOAT)1.0 + A[1]) + (FLOAT)1.0 / A[2]);
 
-            Lambda -= dLambda;
-
             if (IsNan(dLambda) || IsInf(dLambda)) {
-                Error = 1; goto E0;
+                goto E0;
             }
+
+            Lambda -= dLambda;
 
             if ((FLOAT)fabs(dLambda) < Max(Eps * (FLOAT)fabs(Lambda), Eps)) Error = 0;
 
@@ -744,11 +744,11 @@ int RoughWeibullParameters(FLOAT ym,
 
             dAlpha = (A[2] * A[1] * A[3] - A[0]) / (A[3] * ((FLOAT)1.0 - (A[1] - A[2]) / Alpha / Alpha));
 
-            Alpha -= dAlpha;
-
             if (IsNan(dAlpha) || IsInf(dAlpha)) {
-                Error = 1; goto E0;
+                goto E0;
             }
+
+            Alpha -= dAlpha;
 
             if ((FLOAT)fabs(dAlpha) < Max(Eps * (FLOAT)fabs(Alpha), Eps)) Error = 0;
 
@@ -798,11 +798,11 @@ int RoughGammaParameters(FLOAT ym,
 
             dAlpha = (A[3] * A[2] + (FLOAT)0.5 * (FLOAT)log(A[3]) - A[0]) / (A[4] * (A[2] + (FLOAT)0.5 / A[3]) + A[3] / (Alpha - (FLOAT)1.0) / Alpha / Alpha);
 
-            Alpha -= dAlpha;
-
             if (IsNan(dAlpha) || IsInf(dAlpha)) {
-                Error = 1; goto E0;
+                goto E0;
             }
+
+            Alpha -= dAlpha;
 
             if ((FLOAT)fabs(dAlpha) < Max(Eps * (FLOAT)fabs(Alpha), Eps)) Error = 0;
 
@@ -863,7 +863,7 @@ int RoughvonMisesParameters(FLOAT h,
             dKappa = (*Kappa - (FLOAT)log(A[1]) - A[0]) / ((FLOAT)1.0 - A[2] / A[1]);
 
             if (IsNan(dKappa) || IsInf(dKappa)) {
-                Error = 1; goto E0;
+                goto E0;
             }
 
             *Kappa -= dKappa;
@@ -884,7 +884,10 @@ int RoughBinomialParameters(FLOAT ym,
                             FLOAT n,
                             FLOAT *p)
 {
-    int Error = 0;
+    FLOAT dp, pmin, pmax;
+    FLOAT A;
+    int   i;
+    int   Error = 0;
 
     if ((int)ym == 0) {
         *p = (fm < (FLOAT)1.0) ? (FLOAT)1.0 - (FLOAT)pow(fm, (FLOAT)1.0 / n) : (FLOAT)0.0;
@@ -895,8 +898,63 @@ int RoughBinomialParameters(FLOAT ym,
     }
     else {
         *p = ym / n;
-    }
 
+        A = Gammaln(n + 1.0) - Gammaln(ym + 1.0) - Gammaln(n - ym + 1.0) - (FLOAT)log(fm);
+
+        if (A + ym * (FLOAT)log(*p) + (n - ym) * (FLOAT)log((FLOAT)1.0 - *p) > (FLOAT)0.0) {
+            pmax = (FLOAT)1.0 - Eps;
+
+            if (A + ym * (FLOAT)log(pmax) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmax) < (FLOAT)0.0) {
+                i = 1; Error = 1;
+                while ((i <= ItMax) && Error) {
+                    dp = pmax * ((FLOAT)1.0 - pmax) * (A + ym * (FLOAT)log(pmax) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmax)) / (ym - pmax * n);
+
+                    if (IsNan(dp) || IsInf(dp)) {
+                        break;
+                    }
+
+                    pmax -= dp;
+
+                    if ((FLOAT)fabs(dp) < Max(Eps * (FLOAT)fabs(pmax), Eps)) Error = 0;
+
+                    i++;
+                }
+            }
+            else {
+                pmax = (FLOAT)1.0;
+            }
+
+            pmin = Eps;
+
+            if (A + ym * (FLOAT)log(pmin) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmin) < (FLOAT)0.0) {
+                i = 1; Error = 1;
+                while ((i <= ItMax) && Error) {
+                    dp = pmin * ((FLOAT)1.0 - pmin) * (A + ym * (FLOAT)log(pmin) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmin)) / (ym - pmin * n);
+
+                    if (IsNan(dp) || IsInf(dp)) {
+                        break;
+                    }
+
+                    pmin -= dp;
+
+                    if ((FLOAT)fabs(dp) < Max(Eps * (FLOAT)fabs(pmin), Eps)) Error = 0;
+
+                    i++;
+                }
+            }
+            else {
+                pmin = (FLOAT)0.0;
+            }
+
+            if ((FLOAT)fabs(pmax - (FLOAT)0.5) < (FLOAT)fabs(pmin - (FLOAT)0.5)) {
+                *p = pmax;
+            }
+            else {
+                *p = pmin;
+            }
+        }
+    }
+   
     return Error;
 } // RoughBinomialParameters
 
@@ -906,13 +964,46 @@ int RoughPoissonParameters(FLOAT ym,
                            FLOAT fm,
                            FLOAT *Theta)
 {
-    int Error = 0;
+    FLOAT dTheta;
+    FLOAT A;
+    int   i;
+    int   Error = 0;
 
     if ((int)ym == 0) {
         *Theta = (fm < (FLOAT)1.0) ? -(FLOAT)log(fm) : (FLOAT)0.0;
     }
     else {
         *Theta = ym;
+
+        A = Gammaln(ym + 1.0) + (FLOAT)log(fm);
+
+        if (ym * (FLOAT)log(*Theta) - *Theta - A > (FLOAT)0.0) {
+            *Theta = (FLOAT)2.0 * ym;
+
+            i = 1;
+            while (i <= ItMax) {
+                if (ym * (FLOAT)log(*Theta) - *Theta - A < (FLOAT)0.0) break;
+
+                *Theta += ym;
+
+                i++;
+            }
+
+            i = 1; Error = 1;
+            while ((i <= ItMax) && Error) {
+                dTheta = *Theta * (ym * (FLOAT)log(*Theta) - *Theta - A) / (ym - *Theta);
+
+                if (IsNan(dTheta) || IsInf(dTheta)) {
+                    break;
+                }
+
+                *Theta -= dTheta;
+
+                if ((FLOAT)fabs(dTheta) < Max(Eps * (FLOAT)fabs(*Theta), Eps)) Error = 0;
+
+                i++;
+            }
+        }
     }
 
     return Error;
@@ -1168,7 +1259,8 @@ S1:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
+        if ((LooseTheta->pdf_[i] == pfDirac) ||
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -1407,7 +1499,8 @@ S1:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
+        if ((LooseTheta->pdf_[i] == pfDirac) ||
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -1630,7 +1723,8 @@ S0:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        if (LooseTheta->pdf_[i] == pfDirac) goto E1;
+        if ((LooseTheta->pdf_[i] == pfDirac) ||
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -6316,7 +6410,7 @@ int Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     int   Error = 0;
 
-    printf("REBMIX Version 2.10.2\n");
+    printf("REBMIX Version 2.10.3\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

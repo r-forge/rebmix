@@ -573,7 +573,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.10.2")
+  message("REBMIX Version 2.10.3")
  
   flush.console()
   
