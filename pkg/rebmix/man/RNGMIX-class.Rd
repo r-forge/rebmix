@@ -25,7 +25,7 @@ Component parameters \code{theta1.l} follow the parametric family types. One of 
 Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions, \eqn{p_{il}} for binomial distribution, \eqn{\kappa_{il}} for von Mises distribution and \code{"NA"} otherwise.
 }
 \item{\code{Dataset}:}{
-a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns represents one random variable. Number of observations \eqn{n} equals the number of rows
+a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns represents one random variable. Numbers of observations \eqn{n} equal the number of rows
 in the datasets.
 }
 \item{\code{Zt}:}{

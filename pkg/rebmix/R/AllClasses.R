@@ -234,8 +234,8 @@ prototype = list(cmax = 15,
   Criterion = "AIC",
   ar = 0.1,
   Restraints = "loose",
-  pos = 1)) 
-
+  pos = 1))
+  
 setMethod("initialize", "REBMIX", 
 function(.Object, ...,
   Dataset,
@@ -278,6 +278,10 @@ function(.Object, ...,
 
   if (!all(unlist(lapply(Dataset, ncol)) > 0)) {
     stop(sQuote("Dataset"), " numbers of columns in data frames must be greater than 0!", call. = FALSE)
+  }
+  
+  for (j in 1:length(Dataset)) {
+    Dataset[[j]] <- as.data.frame(Dataset[[j]][complete.cases(Dataset[[j]]), ])
   }
 
   if (!all(unlist(lapply(Dataset, nrow)) > 1)) {
@@ -460,6 +464,22 @@ function(.Object, ...,
   for (i in 1:length(.rebmix$pdf)) {
     .Object@Variables[which(pdf == .rebmix$pdf[i])] <- .rebmix$pdf.Variables[i]
   }
+
+  # Dataset. 
+
+  for (i in 1:d) {
+    if (.Object@Variables[i] == .rebmix$Variables[2]) {
+      for (j in 1:length(Dataset)) {
+         if (all(sapply(Dataset[[j]][, i], is.wholenumber)) == FALSE) {
+           stop(sQuote("Dataset"), " all values in column ", i, " must be integers!", call. = FALSE)
+         }
+         
+         if (any(sapply(Dataset[[j]][, i], function(x) x < 0)) == TRUE) {
+           stop(sQuote("Dataset"), " all values in column ", i, " must be greater or equal than 0!", call. = FALSE)
+         }         
+      }
+    }
+  }  
   
   callNextMethod(.Object, ...,
     Dataset = Dataset,
@@ -476,7 +496,7 @@ function(.Object, ...,
     ar = ar,
     Restraints = Restraints)
 }) ## initialize
-                    
+
 setMethod("show",
           signature(object = "REBMIX"),
 function(object)

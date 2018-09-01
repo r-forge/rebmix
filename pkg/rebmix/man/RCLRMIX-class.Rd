@@ -25,17 +25,19 @@ a factor of predictive cluster membership.
 number of clusters.
 }
 \item{\code{p}:}{
-a vector of length \eqn{c} containing prior probabilities of latent class memberships \eqn{p_{l}} summing to 1.
+a vector of length \eqn{c} containing prior probabilities of cluster memberships \eqn{p_{l}} summing to 1. The value is returned only if all variables in slot \code{x} follow either binomial or Dirac parametric families. The default value is \code{numeric()}.
 }
 \item{\code{pi}:}{
-a list of length \eqn{d} of matrices of size \eqn{c \times I_{i}} containing class conditional probabilities. Let \eqn{\pi_{il\tilde{i}}} 
-denote the class conditional probability that an observation in class \eqn{l = 1, \ldots, c} produces the \eqn{\tilde{i}}th outcome on the \eqn{i}th variable.
-It is presumed here that all variables are categorical and conditionally independent, that each categorical variable \eqn{i = 1, \ldots, c} contains \eqn{I_{i}} possible outcomes and that \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}}
-stands for an observed \eqn{d} dimensional dataset of size \eqn{n} of discrete vector observations \eqn{\bm{y}_{j} = (y_{1j}, \ldots, y_{ij}, \ldots, y_{dj})^\top}.
-The variables should follow \code{"Dirac"} or \code{"binomial"} parametric families with the finite number of outcomes \eqn{I_{i}}.
+a list of length \eqn{d} of matrices of size \eqn{c \times K_{i}} containing cluster conditional probabilities \eqn{\pi_{ilk}}. Let \eqn{\pi_{ilk}} 
+denote the cluster conditional probability that an observation in cluster \eqn{l = 1, \ldots, c} produces the \eqn{k}th outcome on the \eqn{i}th variable. 
+Suppose we observe \eqn{i = 1, \ldots, d} polytomous categorical variables (the manifest variables), each of which contains \eqn{K_{i}} possible outcomes for observations \eqn{j = 1, \ldots, n}.
+A manifest variable is a variable that can be measured or observed directly. It must be coded as whole number starting at zero for the first outcome and increasing to the possible number of outcomes minus one.
+It is presumed here that all variables are statistically independentand within clusters and that \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}}
+stands for an observed \eqn{d} dimensional dataset of size \eqn{n} of vector observations \eqn{\bm{y}_{j} = (y_{1j}, \ldots, y_{ij}, \ldots, y_{dj})^\top}.
+The value is returned only if all variables in slot \code{x} follow either binomial or Dirac parametric families. The default value is \code{list()}.
 }
 \item{\code{P}:}{
-a data frame containing unique observations for which the true and predictive frequencies are calculated.
+a data frame containing true \eqn{N_{\mathrm{t}}(\bm{y}_{\tilde{\jmath}})} and predictive \eqn{N_{\mathrm{p}}(\bm{y}_{\tilde{\jmath}})} frequencies calculated for unique \eqn{\bm{y}_{\tilde{\jmath}} \in \{ \bm{y}_{1}, \ldots, \bm{y}_{n} \}}, where \eqn{\tilde{\jmath} = 1, \ldots, \tilde{n}$ and $\tilde{n} \leq n}.
 }
 \item{\code{tau}:}{
 a matrix of size \eqn{n \times c} containing conditional probabilities that observations \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}} arise from clusters \eqn{1, \ldots, c}.
