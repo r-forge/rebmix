@@ -322,7 +322,7 @@ function(x,
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
-            edens <- .densParzenWindow.xy(ey[, i], ey[, j], h[i], h[j], n)
+            edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
           }
           else
           if (C == .rebmix$Preprocessing[3]) {
@@ -619,7 +619,7 @@ function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, 1], h[1], n)
+        edens <- .densKDE.x(ey[, 1], h[1], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {
@@ -773,7 +773,7 @@ function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, i], h[i], n)
+        edens <- .densKDE.x(ey[, i], h[i], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {
@@ -1451,7 +1451,7 @@ function(x,
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
-            edens <- .densParzenWindow.xy(ey[, i], ey[, j], h[i], h[j], n)
+            edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
           }
           else
           if (C == .rebmix$Preprocessing[3]) {
@@ -1648,7 +1648,7 @@ function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, 1], h[1], n)
+        edens <- .densKDE.x(ey[, 1], h[1], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {
@@ -1802,7 +1802,7 @@ function(x,
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densParzenWindow.x(ey[, i], h[i], n)
+        edens <- .densKDE.x(ey[, i], h[i], n)
       }
       else
       if (C == .rebmix$Preprocessing[3]) {

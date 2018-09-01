@@ -93,7 +93,7 @@ K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))
 
 wineest <- REBMIX(model = "REBMVNORM",
   Dataset = Wine@train,
-  Preprocessing = "Parzen window",
+  Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "ICL-BIC",
   pdf = rep("normal", 13),

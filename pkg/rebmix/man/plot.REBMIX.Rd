@@ -162,7 +162,7 @@ K <- c(floor(Sturges^(1/13)), ceiling(RootN^(1/13)))
 
 wineest <- REBMIX(model = "REBMVNORM",
   Dataset = list(wine = wine), 
-  Preprocessing = "Parzen window", 
+  Preprocessing = "kernel density estimation", 
   Criterion = "ICL-BIC", 
   pdf = rep("normal", d), 
   K = K[1]:K[2])

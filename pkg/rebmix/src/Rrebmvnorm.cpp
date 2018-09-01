@@ -168,8 +168,8 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         rebmvnorm->Preprocessing_ = poHistogram;
     }
     else
-    if (!strcmp(Preprocessing[0], "Parzen window")) {
-        rebmvnorm->Preprocessing_ = poParzenWindow;
+    if (!strcmp(Preprocessing[0], "kernel density estimation")) {
+        rebmvnorm->Preprocessing_ = poKDE;
     }
     else
     if (!strcmp(Preprocessing[0], "k-nearest neighbour")) {
@@ -840,12 +840,12 @@ E0: if (Y) {
     if (rebmvnorm) delete rebmvnorm;
 } // RPreprocessingKNNMVNORM 
 
-void RPreprocessingPWMVNORM(double *h,     // Sides of the hypersquare.
-                            int    *n,     // Total number of independent observations.
-                            int    *d,     // Number of independent random variables.
-                            double *x,     // Pointer to the input array x.
-                            double *y,     // Pointer to the output array y.
-                            int    *Error) // Error code.
+void RPreprocessingKDEMVNORM(double *h,     // Sides of the hypersquare.
+                             int    *n,     // Total number of independent observations.
+                             int    *d,     // Number of independent random variables.
+                             double *x,     // Pointer to the input array x.
+                             double *y,     // Pointer to the output array y.
+                             int    *Error) // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL; 
@@ -876,7 +876,7 @@ void RPreprocessingPWMVNORM(double *h,     // Sides of the hypersquare.
         }
     }
 
-    *Error = rebmvnorm->PreprocessingPW(h, Y); 
+    *Error = rebmvnorm->PreprocessingKDE(h, Y);
 
     if (*Error) goto E0;
     
@@ -897,7 +897,7 @@ E0: if (Y) {
     }
 
     if (rebmvnorm) delete rebmvnorm;
-} // RPreprocessingPWMVNORM
+} // RPreprocessingKDEMVNORM
 
 void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
                            double *y0,         // Origins.
@@ -1197,22 +1197,22 @@ E0: if (Y) {
     if (rebmvnorm) delete rebmvnorm;
 } // RInformationCriterionKNNMVNORM 
 
-void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersquare.
-                                   char   **Criterion,   // Information criterion type.
-                                   int    *c,            // Number of components.
-                                   double *W,            // Component weights.
-                                   int    *length_pdf,   // Length of pdf.
-                                   int    *length_Theta, // Length of Theta.
-                                   int    *length_theta, // Length of Theta[i].
-                                   char   **pdf,         // Parametric family types.
-                                   double *Theta,        // Component parameters.
-                                   int    *n,            // Number of observations.
-                                   double *x,            // Dataset.
-                                   double *IC,           // Information criterion.
-                                   double *logL,         // log-likelihood.
-                                   int    *M,            // Degrees of freedom.
-                                   double *D,            // Total of positive relative deviations.
-                                   int    *Error)        // Error code.
+void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypersquare.
+                                    char   **Criterion,   // Information criterion type.
+                                    int    *c,            // Number of components.
+                                    double *W,            // Component weights.
+                                    int    *length_pdf,   // Length of pdf.
+                                    int    *length_Theta, // Length of Theta.
+                                    int    *length_theta, // Length of Theta[i].
+                                    char   **pdf,         // Parametric family types.
+                                    double *Theta,        // Component parameters.
+                                    int    *n,            // Number of observations.
+                                    double *x,            // Dataset.
+                                    double *IC,           // Information criterion.
+                                    double *logL,         // log-likelihood.
+                                    int    *M,            // Degrees of freedom.
+                                    double *D,            // Total of positive relative deviations.
+                                    int    *Error)        // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL;
@@ -1369,7 +1369,7 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
         for (j = 0; j < rebmvnorm->length_pdf_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
     }
 
-    *Error = rebmvnorm->PreprocessingPW(h, Y); 
+    *Error = rebmvnorm->PreprocessingKDE(h, Y);
 
     if (*Error) goto E0;
  
@@ -1387,15 +1387,15 @@ void RInformationCriterionPWMVNORM(double *h,            // Sides of the hypersq
         if (*Error) goto E0;
     }
 
-    *Error = rebmvnorm->InformationCriterionPW(logV, 
-                                               Y, 
-                                               *c, 
-                                               rebmvnorm->W_, 
-                                               rebmvnorm->MixTheta_, 
-                                               IC,
-                                               logL,
-                                               M,
-                                               D);
+    *Error = rebmvnorm->InformationCriterionKDE(logV,
+                                                Y, 
+                                                *c, 
+                                                rebmvnorm->W_, 
+                                                rebmvnorm->MixTheta_, 
+                                                IC,
+                                                logL,
+                                                M,
+                                                D);
 
     if (*Error) goto E0;
 
@@ -1408,7 +1408,7 @@ E0: if (Y) {
     }
 
     if (rebmvnorm) delete rebmvnorm;
-} // RInformationCriterionPWMVNORM 
+} // RInformationCriterionKDEMVNORM 
 
 void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersquare.
                                   double *y0,           // Origins.

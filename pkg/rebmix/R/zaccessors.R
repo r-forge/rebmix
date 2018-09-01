@@ -7,17 +7,14 @@ setMethod("g.Dataset",
           signature(x = "RNGMIX"), 
 function(x, pos)
 {
-  if (pos < 1) {
-    pos <- 1
+  if ((pos < 1) || (pos > length(x@Dataset))) {
+    output <- x@Dataset
   }
-    
-  n <- length(x@Dataset)
-    
-  if (pos > n) {
-    pos <- n
-  }    
-    
-  x@Dataset[[pos]]
+  else {
+    output <- x@Dataset[[pos]]
+  }
+  
+  output
 }) ## Dataset
           
 setMethod("g.Zt", signature(x = "RNGMIX"), function(x) x@Zt)
@@ -26,7 +23,20 @@ setMethod("g.Variables", signature(x = "RNGMIX"), function(x) x@Variables)
 setMethod("g.ymin", signature(x = "RNGMIX"), function(x) x@ymin)
 setMethod("g.ymax", signature(x = "RNGMIX"), function(x) x@ymax)
 
-setMethod("g.Dataset", signature(x = "REBMIX"), function(x) x@Dataset)
+setMethod("g.Dataset", 
+          signature(x = "REBMIX"), 
+function(x, pos)
+{
+  if ((pos < 1) || (pos > length(x@Dataset))) {
+    output <- x@Dataset
+  }
+  else {
+    output <- x@Dataset[[pos]]
+  }
+  
+  output
+}) ## Dataset
+
 setMethod("g.Preprocessing", signature(x = "REBMIX"), function(x) x@Preprocessing)
 setMethod("g.cmax", signature(x = "REBMIX"), function(x) x@cmax)
 setMethod("g.Criterion", signature(x = "REBMIX"), function(x) x@Criterion)
@@ -42,6 +52,7 @@ setMethod("g.ar", signature(x = "REBMIX"), function(x) x@ar)
 setMethod("g.Restraints", signature(x = "REBMIX"), function(x) x@Restraints)
 setMethod("g.w", signature(x = "REBMIX"), function(x) x@w)
 setMethod("g.Theta", signature(x = "REBMIX"), function(x) x@Theta)
+setMethod("g.summary", signature(x = "REBMIX"), function(x) x@summary)
 setMethod("g.pos", signature(x = "REBMIX"), function(x) x@pos)
 setMethod("g.opt.c", signature(x = "REBMIX"), function(x) x@opt.c)
 setMethod("g.opt.IC", signature(x = "REBMIX"), function(x) x@opt.IC)

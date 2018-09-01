@@ -31,7 +31,7 @@ pdf <- c("normal", "lognormal", "Weibull", "gamma")
 
 for (i in 1:4) {
   galaxyest[[i]] <- REBMIX(Dataset = list(galaxy = galaxy),
-    Preprocessing = c("histogram", "Parzen window"),
+    Preprocessing = c("histogram", "kernel density estimation"),
     cmax = 10,
     Criterion = c("AIC", "BIC"),
     pdf = pdf[i],

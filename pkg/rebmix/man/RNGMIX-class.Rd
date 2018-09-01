@@ -5,7 +5,8 @@
 \title{Class \code{"RNGMIX"}}
 \description{Object of class \code{RNGMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RNGMIX", ...)}. 
+Objects can be created by calls of the form \code{new("RNGMIX", ...)}. Accessor functions for the slots are \code{g.Dataset.name(x = NULL)}, ...,
+\code{g.Dataset(x = NULL, pos = 0)}, \code{g.Zt(x = NULL)}, ..., where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively.
 }
 \section{Slots}{
 \describe{

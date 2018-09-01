@@ -206,8 +206,8 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
         rebmix->Preprocessing_ = poHistogram;
     }
     else
-    if (!strcmp(Preprocessing[0], "Parzen window")) {
-        rebmix->Preprocessing_ = poParzenWindow;
+    if (!strcmp(Preprocessing[0], "kernel density estimation")) {
+        rebmix->Preprocessing_ = poKDE;
     }
     else
     if (!strcmp(Preprocessing[0], "k-nearest neighbour")) {
@@ -576,15 +576,15 @@ void RdensKNearestNeighbourXY(int    *n,     // Total number of independent obse
 E0: if (Dk) free(Dk);
 } // RdensKNearestNeighbourXY 
 
-// Returns Parzen window empirical densities in R.
+// Returns kernel density estimation empirical densities in R.
 
-void RdensParzenWindowXY(int    *n,     // Total number of independent observations.
-                         double *x,     // Pointer to the input array x.
-                         double *y,     // Pointer to the input array y.
-                         double *p,     // Pointer to the output array p.
-                         double *hx,    // Side of the hypersquare.
-                         double *hy,    // Side of the hypersquare.
-                         int    *Error) // Error code.
+void RdensKDEXY(int    *n,     // Total number of independent observations.
+                double *x,     // Pointer to the input array x.
+                double *y,     // Pointer to the input array y.
+                double *p,     // Pointer to the output array p.
+                double *hx,    // Side of the hypersquare.
+                double *hy,    // Side of the hypersquare.
+                int    *Error) // Error code.
 {
     int   i, j;
     FLOAT C, rx, ry;
@@ -604,7 +604,7 @@ void RdensParzenWindowXY(int    *n,     // Total number of independent observati
             }
         }
     }
-} // RdensParzenWindowXY 
+} // RdensKDEXY 
 
 // Returns histogram empirical densities in R.
 
@@ -794,13 +794,13 @@ void RdensKNearestNeighbourX(int    *n,     // Total number of independent obser
 E0: if (Dk) free(Dk);
 } // RdensKNearestNeighbourX 
 
-// Returns Parzen window empirical densities in R.
+// Returns kernel density estimation empirical densities in R.
 
-void RdensParzenWindowX(int    *n,     // Total number of independent observations.
-                        double *x,     // Pointer to the input array x.
-                        double *p,     // Pointer to the output array p.
-                        double *hx,    // Side of the hypersquare.
-                        int    *Error) // Error code.
+void RdensKDEX(int    *n,     // Total number of independent observations.
+               double *x,     // Pointer to the input array x.
+               double *p,     // Pointer to the output array p.
+               double *hx,    // Side of the hypersquare.
+               int    *Error) // Error code.
 {
     int   i, j;
     FLOAT C, rx;
@@ -820,7 +820,7 @@ void RdensParzenWindowX(int    *n,     // Total number of independent observatio
             }
         }
     }
-} // RdensParzenWindowX 
+} // RdensKDEX 
 
 // Returns histogram empirical densities in R.
 
@@ -1357,12 +1357,12 @@ E0: if (Y) {
     if (rebmix) delete rebmix;
 } // RPreprocessingKNNMIX 
 
-void RPreprocessingPWMIX(double *h,     // Sides of the hypersquare.
-                         int    *n,     // Total number of independent observations.
-                         int    *d,     // Number of independent random variables.
-                         double *x,     // Pointer to the input array x.
-                         double *y,     // Pointer to the output array y.
-                         int    *Error) // Error code.
+void RPreprocessingKDEMIX(double *h,     // Sides of the hypersquare.
+                          int    *n,     // Total number of independent observations.
+                          int    *d,     // Number of independent random variables.
+                          double *x,     // Pointer to the input array x.
+                          double *y,     // Pointer to the output array y.
+                          int    *Error) // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL; 
@@ -1393,7 +1393,7 @@ void RPreprocessingPWMIX(double *h,     // Sides of the hypersquare.
         }
     }
 
-    *Error = rebmix->PreprocessingPW(h, Y); 
+    *Error = rebmix->PreprocessingKDE(h, Y);
 
     if (*Error) goto E0;
     
@@ -1414,7 +1414,7 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RPreprocessingPWMIX 
+} // RPreprocessingKDEMIX 
 
 void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
                         double *y0,         // Origins.
@@ -1772,22 +1772,22 @@ E0: if (Y) {
     if (rebmix) delete rebmix;
 } // RInformationCriterionKNNMIX 
 
-void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquare.
-                                char   **Criterion,   // Information criterion type.
-                                int    *c,            // Number of components.
-                                double *W,            // Component weights.
-                                int    *length_pdf,   // Length of pdf.
-                                int    *length_Theta, // Length of Theta.
-                                int    *length_theta, // Length of Theta[i].
-                                char   **pdf,         // Parametric family types.
-                                double *Theta,        // Component parameters.
-                                int    *n,            // Number of observations.
-                                double *x,            // Dataset.
-                                double *IC,           // Information criterion.
-                                double *logL,         // log-likelihood.
-                                int    *M,            // Degrees of freedom.
-                                double *D,            // Total of positive relative deviations.
-                                int    *Error)        // Error code.
+void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersquare.
+                                 char   **Criterion,   // Information criterion type.
+                                 int    *c,            // Number of components.
+                                 double *W,            // Component weights.
+                                 int    *length_pdf,   // Length of pdf.
+                                 int    *length_Theta, // Length of Theta.
+                                 int    *length_theta, // Length of Theta[i].
+                                 char   **pdf,         // Parametric family types.
+                                 double *Theta,        // Component parameters.
+                                 int    *n,            // Number of observations.
+                                 double *x,            // Dataset.
+                                 double *IC,           // Information criterion.
+                                 double *logL,         // log-likelihood.
+                                 int    *M,            // Degrees of freedom.
+                                 double *D,            // Total of positive relative deviations.
+                                 int    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1976,7 +1976,7 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
         for (j = 0; j < rebmix->length_pdf_; j++) Y[i][j] = rebmix->Y_[i][j];
     }
 
-    *Error = rebmix->PreprocessingPW(h, Y); 
+    *Error = rebmix->PreprocessingKDE(h, Y);
 
     if (*Error) goto E0;
  
@@ -1988,15 +1988,15 @@ void RInformationCriterionPWMIX(double *h,            // Sides of the hypersquar
         logV += (FLOAT)log(h[i]);
     }
 
-    *Error = rebmix->InformationCriterionPW(logV, 
-                                            Y, 
-                                            *c, 
-                                            rebmix->W_, 
-                                            rebmix->MixTheta_, 
-                                            IC,
-                                            logL,
-                                            M,
-                                            D);
+    *Error = rebmix->InformationCriterionKDE(logV,
+                                             Y, 
+                                             *c, 
+                                             rebmix->W_, 
+                                             rebmix->MixTheta_, 
+                                             IC,
+                                             logL,
+                                             M,
+                                             D);
 
     if (*Error) goto E0;
 
@@ -2009,7 +2009,7 @@ E0: if (Y) {
     }
 
     if (rebmix) delete rebmix;
-} // RInformationCriterionPWMIX 
+} // RInformationCriterionKDEMIX 
 
 void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare.
                                double *y0,           // Origins.

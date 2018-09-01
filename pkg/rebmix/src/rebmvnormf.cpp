@@ -338,14 +338,14 @@ E0: if (Cinv) free(Cinv);
     return Error;
 } // RoughEstimationKNN
 
-// Rough component parameter estimation for Parzen window.
+// Rough component parameter estimation for kernel density estimation.
 
-int Rebmvnorm::RoughEstimationPW(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                                 FLOAT                *h,          // Sides of the hypersquare.
-                                 FLOAT                nl,          // Total number of observations in class l.
-                                 int                  m,           // Mode index.
-                                 CompnentDistribution *RigidTheta, // Rigid parameters.
-                                 CompnentDistribution *LooseTheta) // Loose parameters.
+int Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                                  FLOAT                *h,          // Sides of the hypersquare.
+                                  FLOAT                nl,          // Total number of observations in class l.
+                                  int                  m,           // Mode index.
+                                  CompnentDistribution *RigidTheta, // Rigid parameters.
+                                  CompnentDistribution *LooseTheta) // Loose parameters.
 {
     int                i, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
@@ -611,7 +611,7 @@ E0: if (Cinv) free(Cinv);
     if (Mode) free(Mode);
 
     return Error;
-} // RoughEstimationPW
+} // RoughEstimationKDE
 
 // Rough component parameter estimation for histogram.
 
@@ -948,12 +948,12 @@ E0: if (EnhanTheta) delete EnhanTheta;
     return Error;
 } // EnhancedEstimationKNN
 
-// Enhanced component parameter estimation for Parzen window.
+// Enhanced component parameter estimation for kernel density estimation.
 
-int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                                    FLOAT                nl,          // Total number of observations in class l.
-                                    CompnentDistribution *RigidTheta, // Rigid parameters.
-                                    CompnentDistribution *LooseTheta) // Loose parameters.
+int Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                                     FLOAT                nl,          // Total number of observations in class l.
+                                     CompnentDistribution *RigidTheta, // Rigid parameters.
+                                     CompnentDistribution *LooseTheta) // Loose parameters.
 {
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
@@ -1020,7 +1020,7 @@ int Rebmvnorm::EnhancedEstimationPW(FLOAT                **Y,         // Pointer
 E0: if (EnhanTheta) delete EnhanTheta;
 
     return Error;
-} // EnhancedEstimationPW
+} // EnhancedEstimationKDE
 
 // Enhanced component parameter estimation for histogram.
 
@@ -1206,14 +1206,14 @@ int Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
 E0: return Error;
 } // BayesClassificationKNN
 
-// Bayes classification of the remaining observations for Parzen window.
+// Bayes classification of the remaining observations for kernel density estimation.
 
-int Rebmvnorm::BayesClassificationPW(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1].
-                                     int                  c,          // Number of components.
-                                     FLOAT                *W,         // Component weights.
-                                     CompnentDistribution **MixTheta, // Mixture parameters.
-                                     FLOAT                **FirstM,   // First moments.
-                                     FLOAT                **SecondM)  // Second moments.
+int Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1].
+                                      int                  c,          // Number of components.
+                                      FLOAT                *W,         // Component weights.
+                                      CompnentDistribution **MixTheta, // Mixture parameters.
+                                      FLOAT                **FirstM,   // First moments.
+                                      FLOAT                **SecondM)  // Second moments.
 {
     int   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
@@ -1287,7 +1287,7 @@ int Rebmvnorm::BayesClassificationPW(FLOAT                **Y,        // Pointer
     }
 
 E0: return Error;
-} // BayesClassificationPW
+} // BayesClassificationKDE
 
 // Bayes classification of the remaining observations for histogram.
 

@@ -351,10 +351,10 @@ E0: if (Dk) free(Dk);
     return Error;
 } // PreprocessingKNN
 
-// Preprocessing of observations for Parzen window.
+// Preprocessing of observations for kernel density estimation.
 
-int Rebmix::PreprocessingPW(FLOAT *h,   // Sides of the hypersquare.
-                            FLOAT **Y)  // Pointer to the input array [y0,...,yd-1,kl,k].
+int Rebmix::PreprocessingKDE(FLOAT *h,   // Sides of the hypersquare.
+                             FLOAT **Y)  // Pointer to the input array [y0,...,yd-1,kl,k].
 {
     int i, j, l;
     int Error = n_ < 1;
@@ -375,7 +375,7 @@ S0:;
     }
 
 E0: return Error;
-} // PreprocessingPW 
+} // PreprocessingKDE 
 
 // Preprocessing of observations for histogram.
 
@@ -522,12 +522,12 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
     return Error;
 } // GlobalModeKNN 
 
-// Global mode detection for Parzen window.
+// Global mode detection for kernel density estimation.
 
-int Rebmix::GlobalModePW(int   *m,  // Global mode.
-                         FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
-                         FLOAT *h,  // Sides of the hypersquare.
-                         int   *I)  // Pointer to the inlier observations.   
+int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
+                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
+                          FLOAT *h,  // Sides of the hypersquare.
+                          int   *I)  // Pointer to the inlier observations.   
 {
     FLOAT cur, imax, omax, in, on;
     int   i, im, om, j, l;
@@ -586,7 +586,7 @@ int Rebmix::GlobalModePW(int   *m,  // Global mode.
     }
 
     return Error;
-} // GlobalModePW
+} // GlobalModeKDE
 
 // Global mode detection for histogram.
 
@@ -1368,14 +1368,14 @@ E0: if (D) free(D);
     return Error;
 } // RoughEstimationKNN 
 
-// Rough component parameter estimation for Parzen window.
+// Rough component parameter estimation for kernel density estimation.
 
-int Rebmix::RoughEstimationPW(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                              FLOAT                *h,          // Sides of the hypersquare.
-                              FLOAT                nl,          // Total number of observations in class l.
-                              int                  m,           // Mode index.
-                              CompnentDistribution *RigidTheta, // Rigid parameters.
-                              CompnentDistribution *LooseTheta) // Loose parameters.
+int Rebmix::RoughEstimationKDE(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                               FLOAT                *h,          // Sides of the hypersquare.
+                               FLOAT                nl,          // Total number of observations in class l.
+                               int                  m,           // Mode index.
+                               CompnentDistribution *RigidTheta, // Rigid parameters.
+                               CompnentDistribution *LooseTheta) // Loose parameters.
 {
     int                i, ii, j, l, *N = NULL;
     RoughParameterType *Mode = NULL;
@@ -1604,7 +1604,7 @@ E0: if (N) free(N);
     if (Mode) free(Mode);
 
     return Error;
-} // RoughEstimationPW 
+} // RoughEstimationKDE
 
 // Rough component parameter estimation for histogram.
 
@@ -2494,12 +2494,12 @@ E0: if (EnhanTheta) delete EnhanTheta;
     return Error;
 } // EnhancedEstimationKNN
 
-// Enhanced component parameter estimation for Parzen window.
+// Enhanced component parameter estimation for kernel density estimation.
 
-int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
-                                 FLOAT                nl,          // Total number of observations in class l.
-                                 CompnentDistribution *RigidTheta, // Rigid parameters.
-                                 CompnentDistribution *LooseTheta) // Loose parameters.
+int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
+                                  FLOAT                nl,          // Total number of observations in class l.
+                                  CompnentDistribution *RigidTheta, // Rigid parameters.
+                                  CompnentDistribution *LooseTheta) // Loose parameters.
 {
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                A[4], T[2];
@@ -2808,7 +2808,7 @@ int Rebmix::EnhancedEstimationPW(FLOAT                **Y,         // Pointer to
 E0: if (EnhanTheta) delete EnhanTheta;
 
     return Error;
-} // EnhancedEstimationPW
+} // EnhancedEstimationKDE
 
 // Enhanced component parameter estimation for histogram.
 
@@ -3431,14 +3431,14 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
 E0: return Error;
 } // BayesClassificationKNN 
 
-// Bayes classification of the remaining observations for Parzen window.
+// Bayes classification of the remaining observations for kernel density estimation.
 
-int Rebmix::BayesClassificationPW(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1].
-                                  int                  c,          // Number of components.
-                                  FLOAT                *W,         // Component weights.
-                                  CompnentDistribution **MixTheta, // Mixture parameters.
-                                  FLOAT                **FirstM,   // First moments.
-                                  FLOAT                **SecondM)  // Second moments.
+int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1].
+                                   int                  c,          // Number of components.
+                                   FLOAT                *W,         // Component weights.
+                                   CompnentDistribution **MixTheta, // Mixture parameters.
+                                   FLOAT                **FirstM,   // First moments.
+                                   FLOAT                **SecondM)  // Second moments.
 {
     int   i, j, l, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
@@ -3539,7 +3539,7 @@ int Rebmix::BayesClassificationPW(FLOAT                **Y,        // Pointer to
     }
 
 E0: return Error;
-} // BayesClassificationPW 
+} // BayesClassificationKDE 
 
 // Bayes classification of the remaining observations for histogram.
 
@@ -3901,17 +3901,17 @@ int Rebmix::InformationCriterionKNN(int                  k,          // k-neares
 E0: return Error;
 } // InformationCriterionKNN 
 
-// Returns information criterion for Parzen window.
+// Returns information criterion for kernel density estimation.
 
-int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm of volume of the hypersquare.
-                                   FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1,kl,k].
-                                   int                  c,          // Number of components.
-                                   FLOAT                *W,         // Component weights.
-                                   CompnentDistribution **MixTheta, // Mixture parameters.
-                                   FLOAT                *IC,        // Information criterion.
-                                   FLOAT                *logL,      // log-likelihood.
-                                   int                  *M,         // Degrees of freedom.
-                                   FLOAT                *D)         // Total of positive relative deviations.
+int Rebmix::InformationCriterionKDE(FLOAT                logV,       // Logarithm of volume of the hypersquare.
+                                    FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1,kl,k].
+                                    int                  c,          // Number of components.
+                                    FLOAT                *W,         // Component weights.
+                                    CompnentDistribution **MixTheta, // Mixture parameters.
+                                    FLOAT                *IC,        // Information criterion.
+                                    FLOAT                *logL,      // log-likelihood.
+                                    int                  *M,         // Degrees of freedom.
+                                    FLOAT                *D)         // Total of positive relative deviations.
 {
     int   i, j;
     FLOAT E, SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
@@ -4044,7 +4044,7 @@ int Rebmix::InformationCriterionPW(FLOAT                logV,       // Logarithm
     }
 
 E0: return Error;
-} // InformationCriterionPW 
+} // InformationCriterionKDE 
 
 // Returns information criterion for histogram.
 
@@ -4803,9 +4803,9 @@ E0: if (O) free(O);
     return Error;
 } // REBMIXKNN
 
-// REBMIX algorithm for Parzen window.
+// REBMIX algorithm for kernel density estimation.
 
-int Rebmix::REBMIXPW()
+int Rebmix::REBMIXKDE()
 {
     FLOAT                **Y = NULL;
     FLOAT                *ymin = NULL, *ymax = NULL, *h = NULL;
@@ -5067,7 +5067,7 @@ int Rebmix::REBMIXPW()
             }
         }
 
-        Error = PreprocessingPW(h, Y);
+        Error = PreprocessingKDE(h, Y);
 
         if (Error) goto E0;
 
@@ -5087,7 +5087,7 @@ int Rebmix::REBMIXPW()
             while (nl / n_ > Dmin * l) {
                 // Global mode detection.
 
-                Error = GlobalModePW(&m, Y, h, O);
+                Error = GlobalModeKDE(&m, Y, h, O);
 
                 if (Error) goto E0;
 
@@ -5098,7 +5098,7 @@ int Rebmix::REBMIXPW()
                 while (I <= ItMax) {
                     // Rough component parameter estimation.
 
-                    Error = RoughEstimationPW(Y, h, nl, m, RigidTheta[l], LooseTheta[l]);
+                    Error = RoughEstimationKDE(Y, h, nl, m, RigidTheta[l], LooseTheta[l]);
 
                     if (Error) goto E0;
 
@@ -5134,7 +5134,7 @@ int Rebmix::REBMIXPW()
                     if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
                         // Enhanced component parameter estimation.
 
-                        EnhancedEstimationPW(Y, nl, RigidTheta[l], LooseTheta[l]);
+                        EnhancedEstimationKDE(Y, nl, RigidTheta[l], LooseTheta[l]);
 
                         break;
                     }
@@ -5192,13 +5192,13 @@ int Rebmix::REBMIXPW()
 
             // Bayes classification of the remaining observations.
 
-            Error = BayesClassificationPW(Y, c, W, LooseTheta, FirstM, SecondM);
+            Error = BayesClassificationKDE(Y, c, W, LooseTheta, FirstM, SecondM);
 
             if (Error) goto E0;
 
             for (j = 0; j < n_; j++) Y[j][length_pdf_] = (FLOAT)1.0;
 
-            Error = InformationCriterionPW(logV, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
+            Error = InformationCriterionKDE(logV, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
             
             if (Error) goto E0;
 
@@ -5311,7 +5311,7 @@ E0: if (O) free(O);
     }
 
     return Error;
-} // REBMIXPW
+} // REBMIXKDE
 
 // REBMIX algorithm for histogram.
 
@@ -6059,7 +6059,7 @@ int Rebmix::WriteDataFile()
             }
 
             break;
-        case poParzenWindow:
+        case poKDE:
             fprintf(fp0, "\t%s", "k");
 
             for (i = 0; i < length_pdf_; i++) {
@@ -6148,8 +6148,8 @@ int Rebmix::WriteDataFile()
         strcpy(line, "histogram");
 
         break;
-    case poParzenWindow: 
-        strcpy(line, "Parzen window");
+    case poKDE: 
+        strcpy(line, "kernel density estimation");
 
         break;
     case poKNearestNeighbour:
@@ -6255,7 +6255,7 @@ int Rebmix::WriteDataFile()
         }
 
         break;
-    case poParzenWindow:
+    case poKDE:
         fprintf(fp0, "\t%d", summary_.k);
 
         for (i = 0; i < length_pdf_; i++) {
@@ -6504,8 +6504,8 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             if (!strcmp(pchar, "HISTOGRAM"))
                 Preprocessing_ = poHistogram;
             else
-            if (!strcmp(pchar, "PARZENWINDOW"))
-                Preprocessing_ = poParzenWindow;
+            if (!strcmp(pchar, "KDE"))
+                Preprocessing_ = poKDE;
             else
             if (!strcmp(pchar, "K-NEARESTNEIGHBOUR"))
                 Preprocessing_ = poKNearestNeighbour;
@@ -6866,8 +6866,8 @@ int Rebmix::REBMIX()
         if (Error) goto E0;
 
         break;
-    case poParzenWindow:
-        Error = REBMIXPW();
+    case poKDE:
+        Error = REBMIXKDE();
 
         if (Error) goto E0;
 

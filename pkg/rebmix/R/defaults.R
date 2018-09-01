@@ -1,5 +1,5 @@
 .rebmix <- structure(list(
-Preprocessing = c("histogram", "Parzen window", "k-nearest neighbour"),
+Preprocessing = c("histogram", "kernel density estimation", "k-nearest neighbour"),
 Criterion = c("AIC", "AIC3", "AIC4", "AICc", "BIC", "CAIC", "HQC", "MDL2", "MDL5", "AWE", "CLC", "ICL", "ICL-BIC", "PC", "D", "SSE"),
 Variables = c("continuous", "discrete"),
 pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma", "uniform", "vonMises"),

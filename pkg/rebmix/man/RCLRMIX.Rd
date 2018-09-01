@@ -9,12 +9,10 @@
 \alias{summary,RCLRMIX-method}
 \alias{summary,RCLRMVNORM-method}
 \alias{g.Zp}
-\alias{g.c}
 \alias{g.p}
 \alias{g.pi}
 \alias{g.P}
 \alias{g.tau}
-\alias{g.prob}
 \alias{g.from}
 \alias{g.to}
 \alias{g.EN}

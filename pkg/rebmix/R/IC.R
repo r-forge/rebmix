@@ -81,7 +81,7 @@ function(x, Criterion, pos, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C(C_RInformationCriterionPWMIX,
+    output <- .C(C_RInformationCriterionKDEMIX,
       h = as.double(h),
       Criterion = as.character(Criterion),
       c = as.integer(c),
@@ -221,7 +221,7 @@ function(x, Criterion, pos, ...)
   } 
   else 
   if (C == .rebmix$Preprocessing[2]) {
-    output <- .C(C_RInformationCriterionPWMVNORM,
+    output <- .C(C_RInformationCriterionKDEMVNORM,
       h = as.double(h),
       Criterion = as.character(Criterion),
       c = as.integer(c),

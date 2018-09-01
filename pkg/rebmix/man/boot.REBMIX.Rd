@@ -11,6 +11,8 @@
 \alias{g.Bootstrap}
 \alias{g.B}
 \alias{g.replace}
+\alias{g.prob}
+\alias{g.c}
 \alias{g.c.se}
 \alias{g.c.cv}
 \alias{g.c.mode}
@@ -132,7 +134,7 @@ K <- c(as.integer(1 + log2(n)), # Minimum v follows Sturges rule.
 # Estimate number of components, component weights and component parameters. 
 
 weibullest <- REBMIX(Dataset = list(weibull),
-  Preprocessing = "Parzen window", 
+  Preprocessing = "kernel density estimation", 
   cmax = 4,
   Criterion = "BIC", 
   pdf = "Weibull", 

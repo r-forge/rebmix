@@ -1,6 +1,6 @@
-.densParzenWindow.xy <- function(x, y, hx, hy, npts)
+.densKDE.xy <- function(x, y, hx, hy, npts)
 {
-  output <- .C(C_RdensParzenWindowXY,
+  output <- .C(C_RdensKDEXY,
     n = as.integer(length(x)),
     x = as.double(x),
     y = as.double(y),
@@ -11,7 +11,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densParzenWindow.xy!", call. = FALSE); return(NA)
+    stop("in densKDE.xy!", call. = FALSE); return(NA)
   }
 
   i <- !duplicated(data.frame(output$x, output$y))
@@ -33,4 +33,4 @@
   rm(list = ls()[!(ls() %in% c("output"))])
 
   return(output)
-} ## .densParzenWindow.xy
+} ## .densKDE.xy

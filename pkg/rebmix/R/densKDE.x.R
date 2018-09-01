@@ -1,6 +1,6 @@
-.densParzenWindow.x <- function(x, hx, npts)
+.densKDE.x <- function(x, hx, npts)
 {
-  output <- .C(C_RdensParzenWindowX,
+  output <- .C(C_RdensKDEX,
     n = as.integer(length(x)),
     x = as.double(x),
     y = double(length(x)),
@@ -9,7 +9,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densParzenWindow.x!", call. = FALSE); return(NA)
+    stop("in densKDE.x!", call. = FALSE); return(NA)
   }
   
   i <- !duplicated(output$x) 
@@ -29,4 +29,4 @@
   rm(list = ls()[!(ls() %in% c("output"))])
 
   return(output)
-} ## .densParzenWindow.x
+} ## .densKDE.x

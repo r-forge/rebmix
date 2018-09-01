@@ -88,7 +88,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[2]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]   
       
-    output <- .C(C_RPreprocessingPWMIX,
+    output <- .C(C_RPreprocessingKDEMIX,
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),
@@ -232,7 +232,7 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[2]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]   
       
-    output <- .C(C_RPreprocessingPWMVNORM,
+    output <- .C(C_RPreprocessingKDEMVNORM,
       h = as.double(h),
       n = as.integer(n),
       d = as.integer(d),

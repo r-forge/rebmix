@@ -5,7 +5,7 @@
 \title{Class \code{"RCLRMIX"}}
 \description{Object of class \code{RCLRMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLRMIX", ...)}.
+Objects can be created by calls of the form \code{new("RCLRMIX", ...)}. Accessor functions for the slots are \code{g.pos(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLRMIX}. 
 }
 \section{Slots}{
 \describe{

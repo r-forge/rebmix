@@ -4,7 +4,7 @@
 Sequence of Bins or Nearest Neighbours Generation
 }
 \description{
-Returns (invisibly) a vector containing numbers of bins \eqn{v} for the histogram and the Parzen window or numbers of nearest
+Returns (invisibly) a vector containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \usage{

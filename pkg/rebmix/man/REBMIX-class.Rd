@@ -5,7 +5,7 @@
 \title{Class \code{"REBMIX"}}
 \description{Object of class \code{REBMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("REBMIX", ...)}.
+Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor functions for the slots are \code{g.Dataset(x = NULL, pos = 0)}, \code{g.Preprocessing(x = NULL)}..., where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
 }
 \section{Slots}{
 \describe{
@@ -14,7 +14,7 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{\code{Preprocessing}:}{
-a character vector giving the preprocessing types. One of \code{"histogram"}, \code{"Parzen window"} or \code{"k-nearest neighbour"}.
+a character vector giving the preprocessing types. One of \code{"histogram"}, \code{"kernel density estimation"} or \code{"k-nearest neighbour"}.
 }
 \item{\code{cmax}:}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
@@ -39,7 +39,7 @@ a vector of length \eqn{d} containing initial component parameters. One of \eqn{
 a vector of length \eqn{d} containing initial component parameters. Currently not used.
 }
 \item{\code{K}:}{
-a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the Parzen window or numbers of nearest
+a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour. There is no genuine rule to identify \eqn{v} or \eqn{k}. Consequently,
 the REBMIX algorithm identifies them from the set \code{K} of input values by
 minimizing the information criterion. The Sturges rule \eqn{v = 1 + \mathrm{log_{2}}(n)}, \eqn{\mathrm{Log}_{10}} rule \eqn{v = 10 \mathrm{log_{10}}(n)} or RootN 
@@ -79,27 +79,27 @@ information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} a
 position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.
 }
 \item{\code{opt.c}:}{
-a list of vectors containing numbers of components for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+a list of vectors containing numbers of components for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{opt.IC}:}{
-a list of vectors containing information criteria for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+a list of vectors containing information criteria for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{opt.logL}:}{
-a list of vectors containing log likelihoods for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+a list of vectors containing log likelihoods for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{opt.D}:}{
-a list of vectors containing totals of positive relative deviations for optimal \eqn{v} for the histogram and the Parzen window or for optimal number of nearest
+a list of vectors containing totals of positive relative deviations for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{all.K}:}{
-a list of vectors containing all processed numbers of bins \eqn{v} for the histogram and the Parzen window or all processed numbers of nearest
+a list of vectors containing all processed numbers of bins \eqn{v} for the histogram and the kernel density estimation or all processed numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{all.IC}:}{
-a list of vectors containing information criteria for all processed numbers of bins \eqn{v} for the histogram and the Parzen window or for all processed numbers of nearest
+a list of vectors containing information criteria for all processed numbers of bins \eqn{v} for the histogram and the kernel density estimation or for all processed numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 }

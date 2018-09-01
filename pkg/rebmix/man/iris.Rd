@@ -65,7 +65,7 @@ K <- c(floor(K[1]^(1/4)), ceiling(K[2]^(1/4)))
 
 irisest <- REBMIX(model = "REBMVNORM",
   Dataset = Iris@train,
-  Preprocessing = "Parzen window",
+  Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "ICL-BIC",
   pdf = rep("normal", 4),
