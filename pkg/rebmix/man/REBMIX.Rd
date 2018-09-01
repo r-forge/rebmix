@@ -201,19 +201,15 @@ normal <- RNGMIX(Dataset.name = "complex1",
   
 normal 
 
-normal@Dataset[[1]][1:20,]  
+g.Dataset(normal, 1)[1:20,]  
 
 # Estimate number of components, component weights and component parameters. 
 
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
-  as.integer(2 * sum(n)^0.5)) # Maximum v follows RootN rule.
-
-normalest <- REBMIX(Dataset = normal@Dataset, 
+normalest <- REBMIX(Dataset = g.Dataset(normal), 
   Preprocessing = "h", 
   cmax = 8, 
   Criterion = "BIC", 
-  pdf = "n", 
-  K = K[1]:K[2])
+  pdf = "n")
                  
 normalest
 

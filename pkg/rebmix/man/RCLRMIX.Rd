@@ -112,7 +112,7 @@ poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = Theta)
 
 # Estimate number of components, component weights and component parameters.
 
-poissonest <- REBMIX(Dataset = poisson@Dataset,
+poissonest <- REBMIX(Dataset = g.Dataset(poisson),
   Preprocessing = "histogram",
   cmax = 6,
   Criterion = "BIC",
@@ -127,7 +127,7 @@ plot(poissonest)
 
 # Cluster dataset.
 
-poissonclu <- RCLRMIX(x = poissonest, Zt = poisson@Zt)
+poissonclu <- RCLRMIX(x = poissonest, Zt = g.Zt(poisson))
 
 summary(poissonclu)
 

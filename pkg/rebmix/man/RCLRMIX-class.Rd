@@ -83,20 +83,14 @@ Theta <- list(pdf1 = rep("normal", 2),
 
 normal <- RNGMIX(model = "RNGMVNORM", Dataset.name = "normal_1", n = n, Theta = Theta)
 
-# Number of classes or nearest neighbours to be processed.
-
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
-
 # Estimate number of components, component weights and component parameters.
 
 normalest <- REBMIX(model = "REBMVNORM",
-  Dataset = normal@Dataset,
+  Dataset = g.Dataset(normal),
   Preprocessing = "histogram",
   cmax = 6,
   Criterion = "BIC",
-  pdf = rep("normal", 2),
-  K = K[1]:K[2])
+  pdf = rep("normal", 2))
 
 summary(normalest)
 
@@ -106,7 +100,7 @@ plot(normalest)
 
 # Cluster dataset.
 
-normalclu <- RCLRMIX(model = "RCLRMVNORM", x = normalest, Zt = normal@Zt)
+normalclu <- RCLRMIX(model = "RCLRMVNORM", x = normalest, Zt = g.Zt(normal))
 
 # Plot clusters.
 

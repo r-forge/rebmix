@@ -956,6 +956,35 @@ slots = c(s = "numeric",
   ntest = "numeric",
   test = "data.frame",
   Zt = "factor"))
+  
+setMethod("show",
+          signature(object = "RCLS.chunk"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class RCLS.chunk is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  
+  cat("Slot \"s\":", "\n", sep = "")
+
+  print(object@s, quote = FALSE)
+
+  cat("Slot \"levels\":", "\n", sep = "")
+
+  print(object@levels, quote = FALSE)
+
+  cat("Slot \"ntrain\":", "\n", sep = "")
+
+  print(object@ntrain, quote = FALSE)
+  
+  cat("Slot \"ntest\":", "\n", sep = "")
+
+  print(object@ntest, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
 
 ## Class RCLSMIX
 

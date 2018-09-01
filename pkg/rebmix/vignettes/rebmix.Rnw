@@ -137,7 +137,7 @@ gamma3 <- RNGMIX(Dataset.name = "gamma3", rseed = -4, n = n, Theta = Theta)
 ## Estimate number of components, component weights and component parameters.
 
 gamma1est <- REBMIX(Dataset = gamma1@Dataset,
-  Preprocessing = "Parzen window",
+  Preprocessing = "kernel density estimation",
   cmax = 8,
   Criterion = c("AIC", "BIC"),
   pdf = "gamma")
@@ -315,7 +315,7 @@ data("Baudry_etal_2010_JCGS_examples", package = "mclust")
 
 ex4.1est <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
-  Preprocessing = "Parzen window",
+  Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "AIC")
 @
@@ -366,7 +366,7 @@ Iris <- split(p = 0.75, Dataset = iris, class = 5)
 
 irisest <- REBMIX(model = "REBMVNORM",
   Dataset = Iris@train,
-  Preprocessing = "Parzen window",
+  Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "ICL-BIC")
 @

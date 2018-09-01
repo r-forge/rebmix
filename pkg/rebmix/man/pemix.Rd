@@ -67,8 +67,8 @@ K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
 
 # Estimate number of components, component weights and component parameters. 
 
-simulatedest <- REBMIX(Dataset = simulated@Dataset,
-  Preprocessing = "P", 
+simulatedest <- REBMIX(Dataset = g.Dataset(simulated),
+  Preprocessing = "kernel density estimation", 
   cmax = 4,
   Criterion = "BIC", 
   pdf = c("n", "n", "n"), 

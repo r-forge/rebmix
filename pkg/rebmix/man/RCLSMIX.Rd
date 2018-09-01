@@ -134,7 +134,7 @@ Adult <- split(p = list(type = 1, train = 2, test = 1),
 adultest <- list()
 
 for (i in 1:14) {
-  adultest[[i]] <- REBMIX(Dataset = chunk(Adult, i)@train,
+  adultest[[i]] <- REBMIX(Dataset = g.train(chunk(Adult, i)),
     Preprocessing = "histogram",
     cmax = min(120, cmax[i]),
     Criterion = "BIC",
@@ -145,8 +145,8 @@ for (i in 1:14) {
 # Class membership prediction based upon the best first search algorithm.
 
 adultcla <- BFSMIX(x = adultest, 
-  Dataset = Adult@test, 
-  Zt = Adult@Zt)
+  Dataset = g.test(Adult), 
+  Zt = g.Zt(Adult))
 
 adultcla
 

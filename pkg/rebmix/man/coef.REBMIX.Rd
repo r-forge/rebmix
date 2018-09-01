@@ -48,12 +48,11 @@ simulated
 
 # Estimate number of components, component weights and component parameters.
 
-simulatedest <- REBMIX(Dataset = simulated@Dataset, 
+simulatedest <- REBMIX(Dataset = g.Dataset(simulated), 
   Preprocessing = "histogram", 
   cmax = 6, 
   Criterion = "AIC", 
-  pdf = "Weibull", 
-  K = 8:25)
+  pdf = "Weibull")
   
 # Print coefficients and plot finite mixture.  
 
