@@ -1,3 +1,101 @@
+# Class THETA
+
+setClass(Class = "THETA",
+slots = c(c = "numeric",
+  d = "numeric",
+  pdf = "character",
+  Theta = "list"),
+prototype = list(c = 1))
+
+setMethod("initialize", "THETA", 
+function(.Object, ...,
+  c,
+  pdf)
+{
+  # c.
+
+  if (missing(c) || (length(c) == 0)) c <- .Object@c
+  
+  if (!is.wholenumber(c)) {
+    stop(sQuote("c"), " integer is requested!", call. = FALSE)
+  }
+
+  length(c) <- 1
+  
+  if (c < 1) {
+    stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
+  }
+
+  # pdf.
+  
+  if (missing(pdf) || (length(pdf) == 0)) {
+    stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.character(pdf)) {
+    stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
+  } 
+
+  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
+
+  d <- length(pdf)
+
+  # Theta.
+
+  Theta <- list()
+
+  length(Theta) <- 3 * c
+    
+  names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
+  names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
+  names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+
+  M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
+    
+  for (i in 1:c) {
+    Theta[[1 + (i - 1) * 3]] <- pdf
+    Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+    Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+
+    Theta[[3 + (i - 1) * 3]][M] <- NA
+  }
+  
+  callNextMethod(.Object, ...,
+    c = c,
+    d = d,
+    pdf = pdf,
+    Theta = Theta)
+}) ## initialize
+
+setMethod("show",
+          signature(object = "THETA"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+  }
+  
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  
+  cat("Slot \"c\":", "\n", sep = "")
+
+  print(object@c, quote = FALSE)
+  
+  cat("Slot \"d\":", "\n", sep = "")
+
+  print(object@d, quote = FALSE)
+  
+  cat("Slot \"pdf\":", "\n", sep = "")
+
+  print(object@pdf, quote = FALSE)  
+
+  cat("Slot \"Theta\":", "\n", sep = "")
+
+  print(object@Theta, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
+
 # Class RNGMIX
 
 setClass(Class = "RNGMIX",

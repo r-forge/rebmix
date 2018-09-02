@@ -1,3 +1,22 @@
+setMethod("g.c", signature(x = "THETA"), function(x) x@c)
+setMethod("g.d", signature(x = "THETA"), function(x) x@d)
+setMethod("g.pdf", signature(x = "THETA"), function(x) x@pdf)
+setMethod("g.Theta", signature(x = "THETA"), function(x) x@Theta)
+
+setMethod("g.Theta1<-", 
+  signature(x = "THETA"),
+function(x, i, value)
+{
+  x@Theta[[2 + (i - 1) * 3]] <- value
+})
+
+setMethod("g.Theta2<-", 
+  signature(x = "THETA"),
+function(x, i, value)
+{
+  x@Theta[[3 + (i - 1) * 3]] <- value
+})
+
 setMethod("g.Dataset.name", signature(x = "RNGMIX"), function(x) x@Dataset.name)
 setMethod("g.rseed", signature(x = "RNGMIX"), function(x) x@rseed)
 setMethod("g.n", signature(x = "RNGMIX"), function(x) x@n)
@@ -50,8 +69,35 @@ setMethod("g.ymin", signature(x = "REBMIX"), function(x) x@ymin)
 setMethod("g.ymax", signature(x = "REBMIX"), function(x) x@ymax)
 setMethod("g.ar", signature(x = "REBMIX"), function(x) x@ar)
 setMethod("g.Restraints", signature(x = "REBMIX"), function(x) x@Restraints)
-setMethod("g.w", signature(x = "REBMIX"), function(x) x@w)
-setMethod("g.Theta", signature(x = "REBMIX"), function(x) x@Theta)
+
+setMethod("g.w", 
+          signature(x = "REBMIX"), 
+function(x, pos)
+{
+  if ((pos < 1) || (pos > length(x@w))) {
+    output <- x@w
+  }
+  else {
+    output <- x@w[[pos]]
+  }
+  
+  output
+}) ## w
+
+setMethod("g.Theta", 
+          signature(x = "REBMIX"), 
+function(x, pos)
+{
+  if ((pos < 1) || (pos > length(x@Theta))) {
+    output <- x@Theta
+  }
+  else {
+    output <- x@Theta[[pos]]
+  }
+  
+  output
+}) ## Theta
+
 setMethod("g.summary", signature(x = "REBMIX"), function(x) x@summary)
 setMethod("g.pos", signature(x = "REBMIX"), function(x) x@pos)
 setMethod("g.opt.c", signature(x = "REBMIX"), function(x) x@opt.c)

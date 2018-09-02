@@ -4,7 +4,8 @@ import("methods", "stats", "utils", "graphics", "grDevices", "mvtnorm")
 
 export("kseq")
 
-exportClasses("RNGMIX",
+exportClasses("THETA",
+              "RNGMIX",
               "RNGMVNORM",
               "REBMIX",
               "REBMVNORM",
@@ -50,6 +51,9 @@ exportMethods("RNGMIX",
               "chunk",
               "BFSMIX",
               "Zp",
+              "g.d",
+              "g.Theta1<-",
+              "g.Theta2<-",              
               "g.Dataset.name",
               "g.rseed",
               "g.n",

@@ -5,7 +5,8 @@
 \title{Class \code{"REBMIX"}}
 \description{Object of class \code{REBMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor functions for the slots are \code{g.Dataset(x = NULL, pos = 0)}, \code{g.Preprocessing(x = NULL)}..., where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
+Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor functions for the slots are \code{g.Dataset(x = NULL, pos = 0)}, 
+\code{g.Preprocessing(x = NULL)}, ..., \code{g.w(x = NULL, pos = 0)}, \code{g.Theta(x = NULL, pos = 0)}, \code{g.summary(x = NULL)}, ..., where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
 }
 \section{Slots}{
 \describe{
@@ -14,7 +15,8 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{\code{Preprocessing}:}{
-a character vector giving the preprocessing types. One of \code{"histogram"}, \code{"kernel density estimation"} or \code{"k-nearest neighbour"}.
+a character vector giving the preprocessing types. One of \code{"histogram"}, \cr
+\code{"kernel density estimation"} or \code{"k-nearest neighbour"}.
 }
 \item{\code{cmax}:}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
