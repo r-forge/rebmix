@@ -5,7 +5,7 @@
 \title{Class \code{"REBMIX"}}
 \description{Object of class \code{REBMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor functions for the slots are \code{a.Dataset(x = NULL, pos = 0)}, 
+Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)}, 
 \code{a.Preprocessing(x = NULL)}, ..., \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL)}, ..., where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
 }
 \section{Slots}{

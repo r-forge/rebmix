@@ -52,11 +52,15 @@ function(.Object, ...,
   names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
   names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
   names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+  
+  M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
 
   for (i in 1:c) {
     Theta[[1 + (i - 1) * 3]] <- pdf
     Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
     Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+    
+    Theta[[3 + (i - 1) * 3]][M] <- NA
   }
   
   .Object@c <- c

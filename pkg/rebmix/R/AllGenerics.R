@@ -124,8 +124,8 @@ setGeneric("BFSMIX",
   standardGeneric("BFSMIX"))
   
 setGeneric("a.d", function(x = NULL) standardGeneric("a.d"))
-setGeneric("a.theta1<-", function(x, l, value) standardGeneric("a.theta1<-"))
-setGeneric("a.theta2<-", function(x, l, value) standardGeneric("a.theta2<-"))
+setGeneric("a.theta1<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta1<-"))
+setGeneric("a.theta2<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta2<-"))
   
 setGeneric("a.Dataset.name", function(x = NULL) standardGeneric("a.Dataset.name"))
 setGeneric("a.rseed", function(x = NULL) standardGeneric("a.rseed"))

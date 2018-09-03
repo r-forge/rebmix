@@ -4,26 +4,12 @@
 \alias{RNGMVNORM.Theta-class}
 \alias{show,RNGMIX.Theta-method}
 \alias{show,RNGMVNORM.Theta-method}
-\alias{a.d}
-\alias{a.theta1<-}
-\alias{a.theta2<-}
-\alias{a.c,RNGMIX.Theta-method}
-\alias{a.d,RNGMIX.Theta-method}
-\alias{a.pdf,RNGMIX.Theta-method}
-\alias{a.Theta,RNGMIX.Theta-method}
-\alias{a.theta1<-,RNGMIX.Theta-method}
-\alias{a.theta2<-,RNGMIX.Theta-method}
-\alias{a.c,RNGMVNORM.Theta-method}
-\alias{a.d,RNGMVNORM.Theta-method}
-\alias{a.pdf,RNGMVNORM.Theta-method}
-\alias{a.Theta,RNGMVNORM.Theta-method}
-\alias{a.theta1<-,RNGMVNORM.Theta-method}
-\alias{a.theta2<-,RNGMVNORM.Theta-method}
 \title{Class \code{"RNGMIX.Theta"}}
 \description{Object of class \code{RNGMIX.Theta}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RNGMIX.Theta", ...)}. Accessor functions for the slots are \code{a.c.name(x = NULL)}, ...,
-\code{a.Theta(x = NULL, pos = 0)}, where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively.
+Objects can be created by calls of the form \code{new("RNGMIX.Theta", ...)}. Accessor methods for the slots are \code{a.c.name(x = NULL)}, ...,
+\code{a.Theta(x = NULL, pos = 0)}, where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively. Setter methods
+\code{a.theta1(x = NULL, l = numeric())} and \code{a.theta2(x = NULL, l = numeric())} are provided to write to \code{Theta} slot, where \eqn{l = 1, \ldots, c}.
 }
 \section{Slots}{
 \describe{

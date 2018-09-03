@@ -35,14 +35,15 @@ currently not used..
 \examples{
 # Generate and print simulated dataset.
 
-Theta <- list(pdf1 = "Weibull",
-  theta1.1 = c(2, 10, 30),
-  theta2.1 = c(2, 4, 7))
+Theta <- new("RNGMIX.Theta", c = 3, pdf = "Weibull")
+
+a.theta1(Theta) <- c(2, 10, 30)
+a.theta2(Theta) <- c(2, 4, 7)
 
 simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:5, sep = ""),
   rseed = -1,
   n = c(40, 60, 50),
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 simulated
 

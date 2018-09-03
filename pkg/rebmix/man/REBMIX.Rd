@@ -8,72 +8,6 @@
 \alias{show,REBMVNORM-method}
 \alias{summary,REBMIX-method}
 \alias{summary,REBMVNORM-method}
-\alias{a.Preprocessing}
-\alias{a.cmax}
-\alias{a.Criterion}
-\alias{a.pdf}
-\alias{a.theta1}
-\alias{a.theta2}
-\alias{a.K}
-\alias{a.y0}
-\alias{a.ar}
-\alias{a.Restraints}
-\alias{a.summary}
-\alias{a.pos}
-\alias{a.opt.c}
-\alias{a.opt.IC}
-\alias{a.opt.logL}
-\alias{a.opt.D}
-\alias{a.all.K}
-\alias{a.all.IC}
-\alias{a.Dataset,REBMIX-method}
-\alias{a.Preprocessing,REBMIX-method}
-\alias{a.cmax,REBMIX-method}
-\alias{a.Criterion,REBMIX-method}
-\alias{a.Variables,REBMIX-method}
-\alias{a.pdf,REBMIX-method}
-\alias{a.theta1,REBMIX-method}
-\alias{a.theta2,REBMIX-method}
-\alias{a.K,REBMIX-method}
-\alias{a.y0,REBMIX-method}
-\alias{a.ymin,REBMIX-method}
-\alias{a.ymax,REBMIX-method}
-\alias{a.ar,REBMIX-method}
-\alias{a.Restraints,REBMIX-method}
-\alias{a.w,REBMIX-method}
-\alias{a.Theta,REBMIX-method}
-\alias{a.summary,REBMIX-method}
-\alias{a.pos,REBMIX-method}
-\alias{a.opt.c,REBMIX-method}
-\alias{a.opt.IC,REBMIX-method}
-\alias{a.opt.logL,REBMIX-method}
-\alias{a.opt.D,REBMIX-method}
-\alias{a.all.K,REBMIX-method}
-\alias{a.all.IC,REBMIX-method}
-\alias{a.Dataset,REBMVNORM-method}
-\alias{a.Preprocessing,REBMVNORM-method}
-\alias{a.cmax,REBMVNORM-method}
-\alias{a.Criterion,REBMVNORM-method}
-\alias{a.Variables,REBMVNORM-method}
-\alias{a.pdf,REBMVNORM-method}
-\alias{a.theta1,REBMVNORM-method}
-\alias{a.theta2,REBMVNORM-method}
-\alias{a.K,REBMVNORM-method}
-\alias{a.y0,REBMVNORM-method}
-\alias{a.ymin,REBMVNORM-method}
-\alias{a.ymax,REBMVNORM-method}
-\alias{a.ar,REBMVNORM-method}
-\alias{a.Restraints,REBMVNORM-method}
-\alias{a.w,REBMVNORM-method}
-\alias{a.Theta,REBMVNORM-method}
-\alias{a.summary,REBMVNORM-method}
-\alias{a.pos,REBMVNORM-method}
-\alias{a.opt.c,REBMVNORM-method}
-\alias{a.opt.IC,REBMVNORM-method}
-\alias{a.opt.logL,REBMVNORM-method}
-\alias{a.opt.D,REBMVNORM-method}
-\alias{a.all.K,REBMVNORM-method}
-\alias{a.all.IC,REBMVNORM-method}
 \title{
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
@@ -191,14 +125,15 @@ Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://dx.doi.org
 
 n <- c(998, 263, 1086, 487)
 
-Theta <- list(pdf1 = "n",
-  theta1.1 = c(688, 265, 30, 934),
-  theta2.1 = c(72, 54, 34, 28))
+Theta <- new("RNGMIX.Theta", c = 4, pdf = "normal")
+
+a.theta1(Theta) <- c(688, 265, 30, 934)
+a.theta2(Theta) <- c(72, 54, 34, 28)
 
 normal <- RNGMIX(Dataset.name = "complex1",
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 normal 
 

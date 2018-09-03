@@ -109,27 +109,30 @@ The third is a mixture of a rather diffuse component with mean $6$ and two lower
 
 n <- c(100, 100, 100, 100)
 
-Theta <- list(pdf1 = "gamma",
-  theta1.1 = c(1/100, 1/100, 1/100, 1/100),
-  theta2.1 = c(200, 400, 600, 800))
+Theta <- new("RNGMIX.Theta", c = 4, pdf = "gamma")
 
-gamma1 <- RNGMIX(Dataset.name = "gamma1", n = n, Theta = Theta)
+a.theta1(Theta) <- rep(1/100, 4)
+a.theta2(Theta) <- c(200, 400, 600, 800)
+
+gamma1 <- RNGMIX(Dataset.name = "gamma1", n = n, Theta = a.Theta(Theta))
 
 n <- c(40, 360)
 
-Theta <- list(pdf1 = "gamma",
-  theta1.1 = c(1/27, 1/270),
-  theta2.1 = c(9, 90))
+Theta <- new("RNGMIX.Theta", c = 2, pdf = "gamma")
 
-gamma2 <- RNGMIX(Dataset.name = "gamma2", n = n, Theta = Theta)
+a.theta1(Theta) <- c(1/27, 1 / 270)
+a.theta2(Theta) <- c(9, 90)
+
+gamma2 <- RNGMIX(Dataset.name = "gamma2", n = n, Theta = a.Theta(Theta))
 
 n <- c(80, 240, 80)
 
-Theta <- list(pdf1 = "gamma",
-  theta1.1 = c(1/20, 1, 1/20),
-  theta2.1 = c(40, 6, 200))
+Theta <- new("RNGMIX.Theta", c = 3, pdf = "gamma")
 
-gamma3 <- RNGMIX(Dataset.name = "gamma3", rseed = -4, n = n, Theta = Theta)
+a.theta1(Theta) <- c(1/20, 1, 1/20)
+a.theta2(Theta) <- c(40, 6, 200)
+
+gamma3 <- RNGMIX(Dataset.name = "gamma3", rseed = -4, n = n, Theta = a.Theta(Theta))
 @
 
 \subsubsection{Finite mixture estimation}
@@ -204,17 +207,13 @@ generated the dataset. As the dataset of \citet{Jinwen_2009} can not exactly be 
 
 n <- c(200, 200, 200)
 
-Theta <- list(pdf1 = rep("Poisson", 2),
-  theta1.1 = c(3, 2),
-  theta2.1 = c(NA, NA),
-  pdf2 = rep("Poisson", 2),
-  theta1.2 = c(9, 10),
-  theta2.2 = c(NA, NA),
-  pdf3 = rep("Poisson", 2),
-  theta1.3 = c(15, 16),
-  theta2.3 = c(NA, NA))
+Theta <- new("RNGMIX.Theta", c = 3, pdf = rep("Poisson", 2))
 
-poisson <- RNGMIX(Dataset.name = paste("Poisson_", 1:10, sep = ""), n = n, Theta = Theta)
+a.theta1(Theta, 1) <- c(3, 2)
+a.theta1(Theta, 2) <- c(9, 10)
+a.theta1(Theta, 3) <- c(15, 16)
+
+poisson <- RNGMIX(Dataset.name = paste("Poisson_", 1:10, sep = ""), n = n, Theta = a.Theta(Theta))
 @
 
 \subsubsection{Finite mixture estimation}

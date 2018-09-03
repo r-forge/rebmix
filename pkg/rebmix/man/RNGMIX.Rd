@@ -6,36 +6,6 @@
 \alias{RNGMIX,RNGMVNORM-method}
 \alias{show,RNGMIX-method}
 \alias{show,RNGMVNORM-method}
-\alias{a.Dataset.name} 
-\alias{a.rseed} 
-\alias{a.n} 
-\alias{a.Theta} 
-\alias{a.Dataset} 
-\alias{a.Zt} 
-\alias{a.w} 
-\alias{a.Variables} 
-\alias{a.ymin} 
-\alias{a.ymax}
-\alias{a.Dataset.name,RNGMIX-method} 
-\alias{a.rseed,RNGMIX-method} 
-\alias{a.n,RNGMIX-method} 
-\alias{a.Theta,RNGMIX-method} 
-\alias{a.Dataset,RNGMIX-method} 
-\alias{a.Zt,RNGMIX-method} 
-\alias{a.w,RNGMIX-method} 
-\alias{a.Variables,RNGMIX-method} 
-\alias{a.ymin,RNGMIX-method} 
-\alias{a.ymax,RNGMIX-method}
-\alias{a.Dataset.name,RNGMVNORM-method} 
-\alias{a.rseed,RNGMVNORM-method} 
-\alias{a.n,RNGMVNORM-method} 
-\alias{a.Theta,RNGMVNORM-method} 
-\alias{a.Dataset,RNGMVNORM-method} 
-\alias{a.Zt,RNGMVNORM-method} 
-\alias{a.w,RNGMVNORM-method} 
-\alias{a.Variables,RNGMVNORM-method} 
-\alias{a.ymin,RNGMVNORM-method} 
-\alias{a.ymax,RNGMVNORM-method}
 \title{
 Random Univariate or Multivariate Finite Mixture Generation
 }
@@ -97,26 +67,23 @@ devAskNewPage(ask = TRUE)
 
 n <- c(75, 100, 125, 150, 175)
 
-Theta <- list(pdf1 = rep("normal", 4),
-  theta1.1 = c(10, 12, 10, 12),
-  theta2.1 = c(1, 1, 1, 1),
-  pdf2 = rep("normal", 4),
-  theta1.2 = c(8.5, 10.5, 8.5, 10.5),
-  theta2.2 = c(1, 1, 1, 1),
-  pdf3 = rep("normal", 4),
-  theta1.3 = c(12, 14, 12, 14),
-  theta2.3 = c(1, 1, 1, 1),
-  pdf4 = rep("normal", 4),
-  theta1.4 = c(13, 15, 7, 9),
-  theta2.4 = c(2, 2, 2, 2),
-  pdf5 = rep("normal", 4),
-  theta1.5 = c(7, 9, 13, 15),
-  theta2.5 = c(3, 3, 3, 3))
+Theta <- new("RNGMIX.Theta", c = 5, pdf = rep("normal", 4))
+
+a.theta1(Theta, 1) <- c(10, 12, 10, 12)
+a.theta1(Theta, 2) <- c(8.5, 10.5, 8.5, 10.5)
+a.theta1(Theta, 3) <- c(12, 14, 12, 14)
+a.theta1(Theta, 4) <- c(13, 15, 7, 9)
+a.theta1(Theta, 5) <- c(7, 9, 13, 15)
+a.theta2(Theta, 1) <- c(1, 1, 1, 1)
+a.theta2(Theta, 2) <- c(1, 1, 1, 1)
+a.theta2(Theta, 3) <- c(1, 1, 1, 1)
+a.theta2(Theta, 4) <- c(2, 2, 2, 2)
+a.theta2(Theta, 5) <- c(3, 3, 3, 3)
 
 simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:25, sep = ""),
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 simulated
 
@@ -127,21 +94,20 @@ plot(simulated, pos = 22, nrow = 2, ncol = 3)
 
 n <- c(200, 50, 50)
 
-Theta <- list(pdf1 = rep("normal", 3),
-  theta1.1 = c(0, 0, 0),
-  theta2.1 = c(9, 0, 0, 0, 4, 0, 0, 0, 1),
-  pdf2 = rep("normal", 3),
-  theta1.2 = c(-6, 3, 6),
-  theta2.2 = c(4, -3.2, -0.2, -3.2, 4, 0, -0.2, 0, 1),
-  pdf3 = rep("normal", 3),
-  theta1.3 = c(6, 6, 4),
-  theta2.3 = c(4, 3.2, 2.8, 3.2, 4, 2.4, 2.8, 2.4, 2))
+Theta <- new("RNGMVNORM.Theta", c = 3, d = 3)
+
+a.theta1(Theta, 1) <- c(0, 0, 0)
+a.theta1(Theta, 2) <- c(-6, 3, 6)
+a.theta1(Theta, 3) <- c(6, 6, 4)
+a.theta2(Theta, 1) <- c(9, 0, 0, 0, 4, 0, 0, 0, 1)
+a.theta2(Theta, 2) <- c(4, -3.2, -0.2, -3.2, 4, 0, -0.2, 0, 1)
+a.theta2(Theta, 3) <- c(4, 3.2, 2.8, 3.2, 4, 2.4, 2.8, 2.4, 2)
 
 simulated <- RNGMIX(model = "RNGMVNORM",
   Dataset.name = paste("simulated_", 1:2, sep = ""),
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 simulated
 
@@ -151,20 +117,19 @@ plot(simulated, pos = 2, nrow = 3, ncol = 1)
 
 n <- c(400, 100, 500)
 
-Theta <- list(pdf1 = c("lognormal", "Poisson", "binomial", "Weibull"),
-  theta1.1 = c(1, 2, 10, 2), 
-  theta2.1 = c(0.3, NA, 0.9, 3),
-  pdf2 = c("lognormal", "Poisson", "binomial", "Weibull"),
-  theta1.2 = c(3.5, 10, 10, 10),
-  theta2.2 = c(0.2, NA, 0.1, 7),
-  pdf3 = c("lognormal", "Poisson", "binomial", "Weibull"),
-  theta1.3 = c(2.5, 15, 10, 25), 
-  theta2.3 = c(0.4, NA, 0.7, 20))
+Theta <- new("RNGMIX.Theta", c = 3, pdf = c("lognormal", "Poisson", "binomial", "Weibull"))
+
+a.theta1(Theta, 1) <- c(1, 2, 10, 2)
+a.theta1(Theta, 2) <- c(3.5, 10, 10, 10)
+a.theta1(Theta, 3) <- c(2.5, 15, 10, 25)
+a.theta2(Theta, 1) <- c(0.3, NA, 0.9, 3)
+a.theta2(Theta, 2) <- c(0.2, NA, 0.1, 7)
+a.theta2(Theta, 3) <- c(0.4, NA, 0.7, 20)
   
 simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:5, sep = ""),
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 simulated
 
@@ -174,26 +139,15 @@ plot(simulated, pos = 4, nrow = 2, ncol = 3)
 
 n <- c(75, 100, 125, 150, 175)
 
-Theta <- list(pdf1 = "Weibull",
-  theta1.1 = 12,
-  theta2.1 = 2,
-  pdf2 = "Weibull",
-  theta1.2 = 10,
-  theta2.2 = 4.1,  
-  pdf3 = "Weibull",
-  theta1.3 = 14,
-  theta2.3 = 3.2,  
-  pdf4 = "Weibull",
-  theta1.4 = 15,
-  theta2.4 = 7.1,  
-  pdf5 = "Weibull",
-  theta1.5 = 9,
-  theta2.5 = 5.3)  
+Theta <- new("RNGMIX.Theta", c = 5, pdf = "Weibull")
+
+a.theta1(Theta) <- c(12, 10, 14, 15, 9)
+a.theta2(Theta) <- c(2, 4.1, 3.2, 7.1, 5.3)
 
 simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
   
 simulated
 

@@ -44,17 +44,17 @@ currently not used.
 
 n <- c(15, 15)
 
-Theta <- list(pdf1 = rep("normal", 3),
-  theta1.1 = c(10, 20, 30),
-  theta2.1 = c(3, 2, 1),
-  pdf2 = rep("normal", 3),
-  theta1.2 = c(3, 4, 5),
-  theta2.2 = c(15, 10, 5))
+Theta <- new("RNGMIX.Theta", c = 2, pdf = rep("normal", 3))
+
+a.theta1(Theta, 1) <- c(10, 20, 30)
+a.theta1(Theta, 2) <- c(3, 4, 5)
+a.theta2(Theta, 1) <- c(3, 2, 1)
+a.theta2(Theta, 2) <- c(15, 10, 5)
 
 simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
   rseed = -1,
   n = n,
-  Theta = Theta)
+  Theta = a.Theta(Theta))
 
 # Number of classes or nearest neighbours to be processed.
 

@@ -4,6 +4,65 @@ setMethod("a.pdf", signature(x = "RNGMIX.Theta"), function(x) x@pdf)
 setMethod("a.Theta", signature(x = "RNGMIX.Theta"), function(x) x@Theta)
 
 setMethod("a.theta1<-", 
+  signature(x = "RNGMIX.Theta", l = "missing"),
+function(x, value)
+{
+  x@d <- 1; length(x@pdf) <- 1
+
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  } 
+
+  if (length(value) != x@c) {
+    stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
+  }
+  
+  for (l in 1:x@c) {
+    if (x@pdf == .rebmix$pdf[3]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[4]) {
+      if (!is.wholenumber(value[l])) {
+        stop(sQuote("value"), " integer is requested for ", dQuote(.rebmix$pdf[4]), "!", call. = FALSE)
+      }
+
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0!", call. = FALSE)
+      }
+    }
+    else
+    if (x@pdf == .rebmix$pdf[5]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[5]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[7]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+  }
+  
+  for (l in 1:x@c) {
+    length(x@Theta[[1 + (l - 1) * 3]]) <- 1
+    x@Theta[[2 + (l - 1) * 3]] <- value[l]
+    length(x@Theta[[3 + (l - 1) * 3]]) <- 1
+  }
+  
+  x
+}) ## a.theta1<-
+
+setMethod("a.theta1<-", 
   signature(x = "RNGMIX.Theta"),
 function(x, l, value)
 {
@@ -71,6 +130,81 @@ function(x, l, value)
   
   x
 }) ## a.theta1<-
+
+setMethod("a.theta2<-", 
+  signature(x = "RNGMIX.Theta", l = "missing"),
+function(x, value)
+{
+  x@d <- 1; length(x@pdf) <- 1
+
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.numeric(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  } 
+
+  if (length(value) != x@c) {
+    stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
+  }
+  
+  for (l in 1:x@c) {
+    if (x@pdf == .rebmix$pdf[1]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[1]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[2]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[2]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[3]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[4]) {
+      if ((value[l] < 0.0) || (value[l] > 1.0)) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
+      }    
+    }
+    else
+    if (x@pdf == .rebmix$pdf[5]) {
+      value[l] <- NA
+    }
+    else
+    if (x@pdf == .rebmix$pdf[6]) {
+      value[l] <- NA
+    }
+    else    
+    if (x@pdf == .rebmix$pdf[7]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }
+    else    
+    if (x@pdf == .rebmix$pdf[9]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[9]), " must be greater than 0.0!", call. = FALSE)
+      }    
+    }    
+  }
+  
+  for (l in 1:x@c) {
+    length(x@Theta[[1 + (l - 1) * 3]]) <- 1
+    length(x@Theta[[2 + (l - 1) * 3]]) <- 1
+    x@Theta[[3 + (l - 1) * 3]] <- value[l]
+  }  
+  
+  x
+}) ## a.theta2<-
 
 setMethod("a.theta2<-", 
   signature(x = "RNGMIX.Theta"),

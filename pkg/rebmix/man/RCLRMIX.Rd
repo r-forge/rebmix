@@ -8,41 +8,6 @@
 \alias{show,RCLRMVNORM-method}
 \alias{summary,RCLRMIX-method}
 \alias{summary,RCLRMVNORM-method}
-\alias{a.Zp}
-\alias{a.p}
-\alias{a.pi}
-\alias{a.P}
-\alias{a.tau}
-\alias{a.from}
-\alias{a.to}
-\alias{a.EN}
-\alias{a.ED}
-\alias{a.pos,RCLRMIX-method}
-\alias{a.Zt,RCLRMIX-method}
-\alias{a.Zp,RCLRMIX-method}
-\alias{a.c,RCLRMIX-method}
-\alias{a.p,RCLRMIX-method}
-\alias{a.pi,RCLRMIX-method}
-\alias{a.P,RCLRMIX-method}
-\alias{a.tau,RCLRMIX-method}
-\alias{a.prob,RCLRMIX-method}
-\alias{a.from,RCLRMIX-method}
-\alias{a.to,RCLRMIX-method}
-\alias{a.EN,RCLRMIX-method}
-\alias{a.ED,RCLRMIX-method}
-\alias{a.pos,RCLRMVNORM-method}
-\alias{a.Zt,RCLRMVNORM-method}
-\alias{a.Zp,RCLRMVNORM-method}
-\alias{a.c,RCLRMVNORM-method}
-\alias{a.p,RCLRMVNORM-method}
-\alias{a.pi,RCLRMVNORM-method}
-\alias{a.P,RCLRMVNORM-method}
-\alias{a.tau,RCLRMVNORM-method}
-\alias{a.prob,RCLRMVNORM-method}
-\alias{a.from,RCLRMVNORM-method}
-\alias{a.to,RCLRMVNORM-method}
-\alias{a.EN,RCLRMVNORM-method}
-\alias{a.ED,RCLRMVNORM-method}
 \title{
 Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 }
@@ -98,17 +63,11 @@ devAskNewPage(ask = TRUE)
 
 n <- c(500, 200, 400)
 
-Theta <- list(pdf1 = "Poisson",
-  theta1.1 = 3,
-  theta2.1 = NA,
-  pdf2 = "Poisson",
-  theta1.2 = 12,
-  theta2.2 = NA,
-  pdf3 = "Poisson",
-  theta1.3 = 36,
-  theta2.3 = NA)
+Theta <- new("RNGMIX.Theta", c = 3, pdf = "Poisson")
 
-poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = Theta)
+a.theta1(Theta) <- c(3, 12, 36)
+
+poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = a.Theta(Theta))
 
 # Estimate number of components, component weights and component parameters.
 
