@@ -84,7 +84,7 @@ Wine <- split(p = 0.75, Dataset = wine, class = 14)
 # Estimate number of components, component weights and component 
 # parameters for train subsets.
 
-n <- range(g.ntrain(Wine))
+n <- range(a.ntrain(Wine))
 
 K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n[2]))) # Maximum v follows log10 rule.
@@ -92,7 +92,7 @@ K <- c(as.integer(1 + log2(n[1])), # Minimum v follows Sturges rule.
 K <- c(floor(K[1]^(1/13)), ceiling(K[2]^(1/13)))
 
 wineest <- REBMIX(model = "REBMVNORM",
-  Dataset = g.train(Wine),
+  Dataset = a.train(Wine),
   Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "ICL-BIC",
@@ -108,8 +108,8 @@ plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
 
 winecla <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(wineest),
-  Dataset = g.test(Wine),
-  Zt = g.Zt(Wine))
+  Dataset = a.test(Wine),
+  Zt = a.Zt(Wine))
 
 winecla
 

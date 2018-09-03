@@ -3,16 +3,16 @@
 \alias{chunk-methods}
 \alias{chunk,RCLS.chunk-method}
 \alias{show,RCLS.chunk-method}
-\alias{g.levels}
-\alias{g.train}
-\alias{g.test}
-\alias{g.s,RCLS.chunk-method}
-\alias{g.levels,RCLS.chunk-method}
-\alias{g.ntrain,RCLS.chunk-method}
-\alias{g.train,RCLS.chunk-method}
-\alias{g.ntest,RCLS.chunk-method}
-\alias{g.test,RCLS.chunk-method}
-\alias{g.Zt,RCLS.chunk-method}
+\alias{a.levels}
+\alias{a.train}
+\alias{a.test}
+\alias{a.s,RCLS.chunk-method}
+\alias{a.levels,RCLS.chunk-method}
+\alias{a.ntrain,RCLS.chunk-method}
+\alias{a.train,RCLS.chunk-method}
+\alias{a.ntest,RCLS.chunk-method}
+\alias{a.test,RCLS.chunk-method}
+\alias{a.Zt,RCLS.chunk-method}
 \title{
 Extracts Chunk from Train and Test Datasets
 }

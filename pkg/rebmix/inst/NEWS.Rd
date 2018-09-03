@@ -218,7 +218,7 @@
 \item Method \code{predict.list} for class membership prediction is added.
 \item The package does not write to stdout and read from stdout any more.
 \item The package is protected against wrong input arguments.
-\item Additional arguments \code{Variables}, \code{Theta1}, \code{Theta2}, \code{ymin}, \code{ymax} and \code{b} 
+\item Additional arguments \code{Variables}, \code{theta1}, \code{theta2}, \code{ymin}, \code{ymax} and \code{b} 
     enter function \code{REBMIX}.
 \item Minimum radius \code{RMIN} is eliminated.
 \item Simplified treatment of global modes with equal probabilities in C functions \code{GlobalModeKNN()}, 

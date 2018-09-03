@@ -4,7 +4,7 @@
 \title{Class \code{"RCLS.chunk"}}
 \description{Object of class \code{RCLS.chunk}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLS.chunk", ...)}. Accessor functions for the slots are \code{g.s(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLS.chunk}. 
+Objects can be created by calls of the form \code{new("RCLS.chunk", ...)}. Accessor functions for the slots are \code{a.s(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLS.chunk}. 
 }
 \section{Slots}{
 \describe{

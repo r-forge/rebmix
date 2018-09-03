@@ -5,7 +5,7 @@
 \title{Class \code{"REBMIX.boot"}}
 \description{Object of class \code{REBMIX.boot}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("REBMIX.boot", ...)}. Accessor functions for the slots are \code{g.rseed(x = NULL)}, ..., where \code{x} stands for an object of class \code{REBMIX.boot}. 
+Objects can be created by calls of the form \code{new("REBMIX.boot", ...)}. Accessor functions for the slots are \code{a.rseed(x = NULL)}, ..., where \code{x} stands for an object of class \code{REBMIX.boot}. 
 }
 \section{Slots}{
 \describe{

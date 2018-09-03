@@ -48,7 +48,7 @@ simulated
 
 # Estimate number of components, component weights and component parameters.
 
-simulatedest <- REBMIX(Dataset = g.Dataset(simulated), 
+simulatedest <- REBMIX(Dataset = a.Dataset(simulated), 
   Preprocessing = "histogram", 
   cmax = 6, 
   Criterion = "AIC", 

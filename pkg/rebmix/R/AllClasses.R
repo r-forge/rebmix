@@ -1,20 +1,21 @@
-# Class THETA
+# Class RNGMIX.Theta
 
-setClass(Class = "THETA",
+setClass(Class = "RNGMIX.Theta",
 slots = c(c = "numeric",
   d = "numeric",
   pdf = "character",
-  Theta = "list"),
-prototype = list(c = 1))
+  Theta = "list"))
 
-setMethod("initialize", "THETA", 
+setMethod("initialize", "RNGMIX.Theta", 
 function(.Object, ...,
   c,
   pdf)
 {
   # c.
 
-  if (missing(c) || (length(c) == 0)) c <- .Object@c
+  if (missing(c) || (length(c) == 0)) {
+    stop(sQuote("c"), " must not be empty!", call. = FALSE)
+  }
   
   if (!is.wholenumber(c)) {
     stop(sQuote("c"), " integer is requested!", call. = FALSE)
@@ -25,7 +26,7 @@ function(.Object, ...,
   if (c < 1) {
     stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
   }
-
+  
   # pdf.
   
   if (missing(pdf) || (length(pdf) == 0)) {
@@ -37,9 +38,11 @@ function(.Object, ...,
   } 
 
   pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
-
+  
+  # d.
+    
   d <- length(pdf)
-
+  
   # Theta.
 
   Theta <- list()
@@ -50,25 +53,24 @@ function(.Object, ...,
   names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
   names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
 
-  M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
-    
   for (i in 1:c) {
     Theta[[1 + (i - 1) * 3]] <- pdf
     Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
     Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
-
-    Theta[[3 + (i - 1) * 3]][M] <- NA
   }
   
-  callNextMethod(.Object, ...,
-    c = c,
-    d = d,
-    pdf = pdf,
-    Theta = Theta)
+  .Object@c <- c
+  .Object@d <- d
+  .Object@pdf <- pdf
+  .Object@Theta <- Theta
+  
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object
 }) ## initialize
 
 setMethod("show",
-          signature(object = "THETA"),
+          signature(object = "RNGMIX.Theta"),
 function(object)
 {
   if (missing(object)) {
@@ -95,6 +97,77 @@ function(object)
 
   rm(list = ls())
 }) ## show
+
+## Class RNGMVNORM.Theta
+
+setClass("RNGMVNORM.Theta", contains = "RNGMIX.Theta")
+
+setMethod("initialize", "RNGMVNORM.Theta", 
+function(.Object, ...,
+  c,
+  d)
+{
+  # c.
+
+  if (missing(c) || (length(c) == 0)) {
+    stop(sQuote("c"), " must not be empty!", call. = FALSE)
+  }
+  
+  if (!is.wholenumber(c)) {
+    stop(sQuote("c"), " integer is requested!", call. = FALSE)
+  }
+
+  length(c) <- 1
+  
+  if (c < 1) {
+    stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
+  }
+
+  # d.
+
+  if (missing(d) || (length(d) == 0)) {
+    stop(sQuote("d"), " must not be empty!", call. = FALSE)
+  }
+  
+  if (!is.wholenumber(d)) {
+    stop(sQuote("d"), " integer is requested!", call. = FALSE)
+  }
+
+  length(d) <- 1
+  
+  if (d < 1) {
+    stop(sQuote("d"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  # pdf.
+  
+  pdf <- rep(.rebmix$pdf[1], d)
+  
+  # Theta.
+
+  Theta <- list()
+
+  length(Theta) <- 3 * c
+    
+  names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
+  names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
+  names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+
+  for (i in 1:c) {
+    Theta[[1 + (i - 1) * 3]] <- pdf
+    Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+    Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d * d)
+  }
+
+  .Object@c <- c
+  .Object@d <- d
+  .Object@pdf <- pdf
+  .Object@Theta <- Theta
+  
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object
+}) ## initialize
 
 # Class RNGMIX
 
@@ -165,7 +238,7 @@ function(.Object, ...,
   }
   
   if (!is.list(Theta)) {
-    stop(sQuote("Theta"), " list is requested!!", call. = FALSE)
+    stop(sQuote("Theta"), " list is requested!", call. = FALSE)
   }  
   
   Names <- names(Theta)
@@ -208,14 +281,14 @@ function(.Object, ...,
     theta1 <- as.numeric(Theta[[i]])
    
     if (length(theta1) != length.theta1) {
-      stop("lengths of ", sQuote("theta1.i"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
+      stop("lengths of ", sQuote("theta1.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }    
 
     j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("theta1.i"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    stop(sQuote("theta1.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
   
   j <- 0; length.theta2 <- length(Theta[[grep("theta2", Names)[1]]])
@@ -224,14 +297,14 @@ function(.Object, ...,
     theta2 <- as.numeric(Theta[[i]])
    
     if (length(theta2) != length.theta2) {
-      stop("lengths of ", sQuote("theta2.i"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
+      stop("lengths of ", sQuote("theta2.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }
 
     j <- j + 1    
   }
 
   if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("theta2.i"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    stop(sQuote("theta2.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   } 
  
   # Variables.
@@ -240,11 +313,14 @@ function(.Object, ...,
     .Object@Variables[which(pdf == .rebmix$pdf[i])] <- .rebmix$pdf.Variables[i]
   }
   
-  callNextMethod(.Object, ...,
-    Dataset.name = Dataset.name,
-    rseed = rseed,
-    n = n,
-    Theta = Theta)
+  .Object@Dataset.name <- Dataset.name
+  .Object@rseed <- rseed
+  .Object@n <- n
+  .Object@Theta <- Theta
+
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object  
 }) ## initialize
 
 setMethod("show",
@@ -579,20 +655,23 @@ function(.Object, ...,
     }
   }  
   
-  callNextMethod(.Object, ...,
-    Dataset = Dataset,
-    Preprocessing = Preprocessing,
-    cmax = cmax,
-    Criterion = Criterion,
-    pdf = pdf,
-    theta1 = theta1,
-    theta2 = theta2,
-    K = K,
-    y0 = y0,
-    ymin = ymin,
-    ymax = ymax,
-    ar = ar,
-    Restraints = Restraints)
+  .Object@Dataset <- Dataset
+  .Object@Preprocessing <- Preprocessing
+  .Object@cmax <- cmax
+  .Object@Criterion <- Criterion
+  .Object@pdf <- pdf
+  .Object@theta1 <- theta1
+  .Object@theta2 <- theta2
+  .Object@K <- K
+  .Object@y0 <- y0
+  .Object@ymin <- ymin
+  .Object@ymax <- ymax
+  .Object@ar <- ar
+  .Object@Restraints <- Restraints
+  
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object
 }) ## initialize
 
 setMethod("show",
@@ -826,15 +905,18 @@ function(.Object, ...,
     }
   }  
   
-  callNextMethod(.Object, ...,
-    x = x,
-    rseed = rseed,
-    pos = pos,
-    Bootstrap = Bootstrap,
-    B = B,
-    n = n,
-    replace = replace,
-    prob = prob)
+  .Object@x <- x
+  .Object@rseed <- rseed
+  .Object@pos <- pos
+  .Object@Bootstrap <- Bootstrap
+  .Object@B <- B
+  .Object@n <- n
+  .Object@replace <- replace
+  .Object@prob <- prob
+  
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object  
 }) ## initialize
 
 setMethod("show",
@@ -968,10 +1050,13 @@ function(.Object, ...,
   
   levels(Zt) <- 1:length(levels(Zt))  
   
-  callNextMethod(.Object, ...,
-    x = x,
-    pos = pos,
-    Zt = Zt)
+  .Object@x <- x
+  .Object@pos <- pos
+  .Object@Zt <- Zt
+    
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object      
 }) ## initialize
 
 setMethod("show",
@@ -1181,10 +1266,13 @@ function(.Object, ...,
   
   levels(Zt) <- 1:length(levels(Zt))
   
-  callNextMethod(.Object, ...,
-    x = x,
-    Dataset = Dataset,
-    Zt = Zt)
+  .Object@x <- x
+  .Object@Dataset <- Dataset
+  .Object@Zt <- Zt
+    
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+  
+  .Object       
 }) ## initialize
 
 setMethod("show",

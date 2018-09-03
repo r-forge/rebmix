@@ -8,72 +8,72 @@
 \alias{show,REBMVNORM-method}
 \alias{summary,REBMIX-method}
 \alias{summary,REBMVNORM-method}
-\alias{g.Preprocessing}
-\alias{g.cmax}
-\alias{g.Criterion}
-\alias{g.pdf}
-\alias{g.theta1}
-\alias{g.theta2}
-\alias{g.K}
-\alias{g.y0}
-\alias{g.ar}
-\alias{g.Restraints}
-\alias{g.summary}
-\alias{g.pos}
-\alias{g.opt.c}
-\alias{g.opt.IC}
-\alias{g.opt.logL}
-\alias{g.opt.D}
-\alias{g.all.K}
-\alias{g.all.IC}
-\alias{g.Dataset,REBMIX-method}
-\alias{g.Preprocessing,REBMIX-method}
-\alias{g.cmax,REBMIX-method}
-\alias{g.Criterion,REBMIX-method}
-\alias{g.Variables,REBMIX-method}
-\alias{g.pdf,REBMIX-method}
-\alias{g.theta1,REBMIX-method}
-\alias{g.theta2,REBMIX-method}
-\alias{g.K,REBMIX-method}
-\alias{g.y0,REBMIX-method}
-\alias{g.ymin,REBMIX-method}
-\alias{g.ymax,REBMIX-method}
-\alias{g.ar,REBMIX-method}
-\alias{g.Restraints,REBMIX-method}
-\alias{g.w,REBMIX-method}
-\alias{g.Theta,REBMIX-method}
-\alias{g.summary,REBMIX-method}
-\alias{g.pos,REBMIX-method}
-\alias{g.opt.c,REBMIX-method}
-\alias{g.opt.IC,REBMIX-method}
-\alias{g.opt.logL,REBMIX-method}
-\alias{g.opt.D,REBMIX-method}
-\alias{g.all.K,REBMIX-method}
-\alias{g.all.IC,REBMIX-method}
-\alias{g.Dataset,REBMVNORM-method}
-\alias{g.Preprocessing,REBMVNORM-method}
-\alias{g.cmax,REBMVNORM-method}
-\alias{g.Criterion,REBMVNORM-method}
-\alias{g.Variables,REBMVNORM-method}
-\alias{g.pdf,REBMVNORM-method}
-\alias{g.theta1,REBMVNORM-method}
-\alias{g.theta2,REBMVNORM-method}
-\alias{g.K,REBMVNORM-method}
-\alias{g.y0,REBMVNORM-method}
-\alias{g.ymin,REBMVNORM-method}
-\alias{g.ymax,REBMVNORM-method}
-\alias{g.ar,REBMVNORM-method}
-\alias{g.Restraints,REBMVNORM-method}
-\alias{g.w,REBMVNORM-method}
-\alias{g.Theta,REBMVNORM-method}
-\alias{g.summary,REBMVNORM-method}
-\alias{g.pos,REBMVNORM-method}
-\alias{g.opt.c,REBMVNORM-method}
-\alias{g.opt.IC,REBMVNORM-method}
-\alias{g.opt.logL,REBMVNORM-method}
-\alias{g.opt.D,REBMVNORM-method}
-\alias{g.all.K,REBMVNORM-method}
-\alias{g.all.IC,REBMVNORM-method}
+\alias{a.Preprocessing}
+\alias{a.cmax}
+\alias{a.Criterion}
+\alias{a.pdf}
+\alias{a.theta1}
+\alias{a.theta2}
+\alias{a.K}
+\alias{a.y0}
+\alias{a.ar}
+\alias{a.Restraints}
+\alias{a.summary}
+\alias{a.pos}
+\alias{a.opt.c}
+\alias{a.opt.IC}
+\alias{a.opt.logL}
+\alias{a.opt.D}
+\alias{a.all.K}
+\alias{a.all.IC}
+\alias{a.Dataset,REBMIX-method}
+\alias{a.Preprocessing,REBMIX-method}
+\alias{a.cmax,REBMIX-method}
+\alias{a.Criterion,REBMIX-method}
+\alias{a.Variables,REBMIX-method}
+\alias{a.pdf,REBMIX-method}
+\alias{a.theta1,REBMIX-method}
+\alias{a.theta2,REBMIX-method}
+\alias{a.K,REBMIX-method}
+\alias{a.y0,REBMIX-method}
+\alias{a.ymin,REBMIX-method}
+\alias{a.ymax,REBMIX-method}
+\alias{a.ar,REBMIX-method}
+\alias{a.Restraints,REBMIX-method}
+\alias{a.w,REBMIX-method}
+\alias{a.Theta,REBMIX-method}
+\alias{a.summary,REBMIX-method}
+\alias{a.pos,REBMIX-method}
+\alias{a.opt.c,REBMIX-method}
+\alias{a.opt.IC,REBMIX-method}
+\alias{a.opt.logL,REBMIX-method}
+\alias{a.opt.D,REBMIX-method}
+\alias{a.all.K,REBMIX-method}
+\alias{a.all.IC,REBMIX-method}
+\alias{a.Dataset,REBMVNORM-method}
+\alias{a.Preprocessing,REBMVNORM-method}
+\alias{a.cmax,REBMVNORM-method}
+\alias{a.Criterion,REBMVNORM-method}
+\alias{a.Variables,REBMVNORM-method}
+\alias{a.pdf,REBMVNORM-method}
+\alias{a.theta1,REBMVNORM-method}
+\alias{a.theta2,REBMVNORM-method}
+\alias{a.K,REBMVNORM-method}
+\alias{a.y0,REBMVNORM-method}
+\alias{a.ymin,REBMVNORM-method}
+\alias{a.ymax,REBMVNORM-method}
+\alias{a.ar,REBMVNORM-method}
+\alias{a.Restraints,REBMVNORM-method}
+\alias{a.w,REBMVNORM-method}
+\alias{a.Theta,REBMVNORM-method}
+\alias{a.summary,REBMVNORM-method}
+\alias{a.pos,REBMVNORM-method}
+\alias{a.opt.c,REBMVNORM-method}
+\alias{a.opt.IC,REBMVNORM-method}
+\alias{a.opt.logL,REBMVNORM-method}
+\alias{a.opt.D,REBMVNORM-method}
+\alias{a.all.K,REBMVNORM-method}
+\alias{a.all.IC,REBMVNORM-method}
 \title{
 REBMIX Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
@@ -202,11 +202,11 @@ normal <- RNGMIX(Dataset.name = "complex1",
   
 normal 
 
-g.Dataset(normal, 1)[1:20,]  
+a.Dataset(normal, 1)[1:20,]  
 
 # Estimate number of components, component weights and component parameters. 
 
-normalest <- REBMIX(Dataset = g.Dataset(normal), 
+normalest <- REBMIX(Dataset = a.Dataset(normal), 
   Preprocessing = "h", 
   cmax = 8, 
   Criterion = "BIC", 

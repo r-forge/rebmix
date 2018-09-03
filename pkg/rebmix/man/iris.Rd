@@ -56,10 +56,10 @@ Iris <- split(p = 0.75, Dataset = iris, class = 5)
 # Estimate number of components, component weights and component 
 # parameters for train subsets.
 
-n <- range(g.ntrain(Iris))
+n <- range(a.ntrain(Iris))
 
 irisest <- REBMIX(model = "REBMVNORM",
-  Dataset = g.train(Iris),
+  Dataset = a.train(Iris),
   Preprocessing = "kernel density estimation",
   cmax = 10,
   Criterion = "ICL-BIC",
@@ -73,8 +73,8 @@ plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("den"))
 
 iriscla <- RCLSMIX(model = "RCLSMVNORM", 
   x = list(irisest),
-  Dataset = g.test(Iris),
-  Zt = g.Zt(Iris))
+  Dataset = a.test(Iris),
+  Zt = a.Zt(Iris))
 
 iriscla
 

@@ -70,7 +70,7 @@ K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
 
 # Estimate number of components, component weights and component parameters. 
 
-simulatedest <- REBMIX(Dataset = g.Dataset(simulated),
+simulatedest <- REBMIX(Dataset = a.Dataset(simulated),
   Preprocessing = "h", 
   cmax = 4,
   Criterion = "BIC", 

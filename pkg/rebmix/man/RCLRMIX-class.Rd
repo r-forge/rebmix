@@ -5,7 +5,7 @@
 \title{Class \code{"RCLRMIX"}}
 \description{Object of class \code{RCLRMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLRMIX", ...)}. Accessor functions for the slots are \code{g.pos(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLRMIX}. 
+Objects can be created by calls of the form \code{new("RCLRMIX", ...)}. Accessor functions for the slots are \code{a.pos(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLRMIX}. 
 }
 \section{Slots}{
 \describe{
@@ -86,7 +86,7 @@ normal <- RNGMIX(model = "RNGMVNORM", Dataset.name = "normal_1", n = n, Theta = 
 # Estimate number of components, component weights and component parameters.
 
 normalest <- REBMIX(model = "REBMVNORM",
-  Dataset = g.Dataset(normal),
+  Dataset = a.Dataset(normal),
   Preprocessing = "histogram",
   cmax = 6,
   Criterion = "BIC",
@@ -100,7 +100,7 @@ plot(normalest)
 
 # Cluster dataset.
 
-normalclu <- RCLRMIX(model = "RCLRMVNORM", x = normalest, Zt = g.Zt(normal))
+normalclu <- RCLRMIX(model = "RCLRMVNORM", x = normalest, Zt = a.Zt(normal))
 
 # Plot clusters.
 

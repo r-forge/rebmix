@@ -8,47 +8,47 @@
 \alias{show,RCLSMVNORM-method}
 \alias{summary,RCLSMIX-method}
 \alias{summary,RCLSMVNORM-method}
-\alias{g.o}
-\alias{g.s}
-\alias{g.ntrain}
-\alias{g.ntest}
-\alias{g.CM}
-\alias{g.Accuracy}
-\alias{g.Error}
-\alias{g.Precision}
-\alias{g.Sensitivity}
-\alias{g.Specificity}
-\alias{g.Chunks}
-\alias{g.o,RCLSMIX-method}
-\alias{g.Dataset,RCLSMIX-method}
-\alias{g.s,RCLSMIX-method}
-\alias{g.ntrain,RCLSMIX-method}
-\alias{g.P,RCLSMIX-method}
-\alias{g.ntest,RCLSMIX-method}
-\alias{g.Zt,RCLSMIX-method}
-\alias{g.Zp,RCLSMIX-method}
-\alias{g.CM,RCLSMIX-method}
-\alias{g.Accuracy,RCLSMIX-method}
-\alias{g.Error,RCLSMIX-method}
-\alias{g.Precision,RCLSMIX-method}
-\alias{g.Sensitivity,RCLSMIX-method}
-\alias{g.Specificity,RCLSMIX-method}
-\alias{g.Chunks,RCLSMIX-method}
-\alias{g.o,RCLSMVNORM-method}
-\alias{g.Dataset,RCLSMVNORM-method}
-\alias{g.s,RCLSMVNORM-method}
-\alias{g.ntrain,RCLSMVNORM-method}
-\alias{g.P,RCLSMVNORM-method}
-\alias{g.ntest,RCLSMVNORM-method}
-\alias{g.Zt,RCLSMVNORM-method}
-\alias{g.Zp,RCLSMVNORM-method}
-\alias{g.CM,RCLSMVNORM-method}
-\alias{g.Accuracy,RCLSMVNORM-method}
-\alias{g.Error,RCLSMVNORM-method}
-\alias{g.Precision,RCLSMVNORM-method}
-\alias{g.Sensitivity,RCLSMVNORM-method}
-\alias{g.Specificity,RCLSMVNORM-method}
-\alias{g.Chunks,RCLSMVNORM-method}
+\alias{a.o}
+\alias{a.s}
+\alias{a.ntrain}
+\alias{a.ntest}
+\alias{a.CM}
+\alias{a.Accuracy}
+\alias{a.Error}
+\alias{a.Precision}
+\alias{a.Sensitivity}
+\alias{a.Specificity}
+\alias{a.Chunks}
+\alias{a.o,RCLSMIX-method}
+\alias{a.Dataset,RCLSMIX-method}
+\alias{a.s,RCLSMIX-method}
+\alias{a.ntrain,RCLSMIX-method}
+\alias{a.P,RCLSMIX-method}
+\alias{a.ntest,RCLSMIX-method}
+\alias{a.Zt,RCLSMIX-method}
+\alias{a.Zp,RCLSMIX-method}
+\alias{a.CM,RCLSMIX-method}
+\alias{a.Accuracy,RCLSMIX-method}
+\alias{a.Error,RCLSMIX-method}
+\alias{a.Precision,RCLSMIX-method}
+\alias{a.Sensitivity,RCLSMIX-method}
+\alias{a.Specificity,RCLSMIX-method}
+\alias{a.Chunks,RCLSMIX-method}
+\alias{a.o,RCLSMVNORM-method}
+\alias{a.Dataset,RCLSMVNORM-method}
+\alias{a.s,RCLSMVNORM-method}
+\alias{a.ntrain,RCLSMVNORM-method}
+\alias{a.P,RCLSMVNORM-method}
+\alias{a.ntest,RCLSMVNORM-method}
+\alias{a.Zt,RCLSMVNORM-method}
+\alias{a.Zp,RCLSMVNORM-method}
+\alias{a.CM,RCLSMVNORM-method}
+\alias{a.Accuracy,RCLSMVNORM-method}
+\alias{a.Error,RCLSMVNORM-method}
+\alias{a.Precision,RCLSMVNORM-method}
+\alias{a.Sensitivity,RCLSMVNORM-method}
+\alias{a.Specificity,RCLSMVNORM-method}
+\alias{a.Chunks,RCLSMVNORM-method}
 \title{
 Predicts Class Membership Based Upon a Model Trained by REBMIX
 }
@@ -134,7 +134,7 @@ Adult <- split(p = list(type = 1, train = 2, test = 1),
 adultest <- list()
 
 for (i in 1:14) {
-  adultest[[i]] <- REBMIX(Dataset = g.train(chunk(Adult, i)),
+  adultest[[i]] <- REBMIX(Dataset = a.train(chunk(Adult, i)),
     Preprocessing = "histogram",
     cmax = min(120, cmax[i]),
     Criterion = "BIC",
@@ -145,8 +145,8 @@ for (i in 1:14) {
 # Class membership prediction based upon the best first search algorithm.
 
 adultcla <- BFSMIX(x = adultest, 
-  Dataset = g.test(Adult), 
-  Zt = g.Zt(Adult))
+  Dataset = a.test(Adult), 
+  Zt = a.Zt(Adult))
 
 adultcla
 

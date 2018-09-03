@@ -8,41 +8,41 @@
 \alias{show,RCLRMVNORM-method}
 \alias{summary,RCLRMIX-method}
 \alias{summary,RCLRMVNORM-method}
-\alias{g.Zp}
-\alias{g.p}
-\alias{g.pi}
-\alias{g.P}
-\alias{g.tau}
-\alias{g.from}
-\alias{g.to}
-\alias{g.EN}
-\alias{g.ED}
-\alias{g.pos,RCLRMIX-method}
-\alias{g.Zt,RCLRMIX-method}
-\alias{g.Zp,RCLRMIX-method}
-\alias{g.c,RCLRMIX-method}
-\alias{g.p,RCLRMIX-method}
-\alias{g.pi,RCLRMIX-method}
-\alias{g.P,RCLRMIX-method}
-\alias{g.tau,RCLRMIX-method}
-\alias{g.prob,RCLRMIX-method}
-\alias{g.from,RCLRMIX-method}
-\alias{g.to,RCLRMIX-method}
-\alias{g.EN,RCLRMIX-method}
-\alias{g.ED,RCLRMIX-method}
-\alias{g.pos,RCLRMVNORM-method}
-\alias{g.Zt,RCLRMVNORM-method}
-\alias{g.Zp,RCLRMVNORM-method}
-\alias{g.c,RCLRMVNORM-method}
-\alias{g.p,RCLRMVNORM-method}
-\alias{g.pi,RCLRMVNORM-method}
-\alias{g.P,RCLRMVNORM-method}
-\alias{g.tau,RCLRMVNORM-method}
-\alias{g.prob,RCLRMVNORM-method}
-\alias{g.from,RCLRMVNORM-method}
-\alias{g.to,RCLRMVNORM-method}
-\alias{g.EN,RCLRMVNORM-method}
-\alias{g.ED,RCLRMVNORM-method}
+\alias{a.Zp}
+\alias{a.p}
+\alias{a.pi}
+\alias{a.P}
+\alias{a.tau}
+\alias{a.from}
+\alias{a.to}
+\alias{a.EN}
+\alias{a.ED}
+\alias{a.pos,RCLRMIX-method}
+\alias{a.Zt,RCLRMIX-method}
+\alias{a.Zp,RCLRMIX-method}
+\alias{a.c,RCLRMIX-method}
+\alias{a.p,RCLRMIX-method}
+\alias{a.pi,RCLRMIX-method}
+\alias{a.P,RCLRMIX-method}
+\alias{a.tau,RCLRMIX-method}
+\alias{a.prob,RCLRMIX-method}
+\alias{a.from,RCLRMIX-method}
+\alias{a.to,RCLRMIX-method}
+\alias{a.EN,RCLRMIX-method}
+\alias{a.ED,RCLRMIX-method}
+\alias{a.pos,RCLRMVNORM-method}
+\alias{a.Zt,RCLRMVNORM-method}
+\alias{a.Zp,RCLRMVNORM-method}
+\alias{a.c,RCLRMVNORM-method}
+\alias{a.p,RCLRMVNORM-method}
+\alias{a.pi,RCLRMVNORM-method}
+\alias{a.P,RCLRMVNORM-method}
+\alias{a.tau,RCLRMVNORM-method}
+\alias{a.prob,RCLRMVNORM-method}
+\alias{a.from,RCLRMVNORM-method}
+\alias{a.to,RCLRMVNORM-method}
+\alias{a.EN,RCLRMVNORM-method}
+\alias{a.ED,RCLRMVNORM-method}
 \title{
 Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 }
@@ -112,7 +112,7 @@ poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = Theta)
 
 # Estimate number of components, component weights and component parameters.
 
-poissonest <- REBMIX(Dataset = g.Dataset(poisson),
+poissonest <- REBMIX(Dataset = a.Dataset(poisson),
   Preprocessing = "histogram",
   cmax = 6,
   Criterion = "BIC",
@@ -127,7 +127,7 @@ plot(poissonest)
 
 # Cluster dataset.
 
-poissonclu <- RCLRMIX(x = poissonest, Zt = g.Zt(poisson))
+poissonclu <- RCLRMIX(x = poissonest, Zt = a.Zt(poisson))
 
 summary(poissonclu)
 
