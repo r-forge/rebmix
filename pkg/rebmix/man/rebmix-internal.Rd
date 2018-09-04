@@ -77,6 +77,8 @@
 \alias{a.pdf}
 \alias{a.theta1}
 \alias{a.theta2}
+\alias{a.theta1.all}
+\alias{a.theta2.all}
 \alias{a.K}
 \alias{a.y0}
 \alias{a.ar}
@@ -97,6 +99,9 @@
 \alias{a.pdf,REBMIX-method}
 \alias{a.theta1,REBMIX-method}
 \alias{a.theta2,REBMIX-method}
+\alias{a.theta1.all,REBMIX-method}
+\alias{a.theta2.all,REBMIX-method}
+\alias{a.theta2.all,REBMVNORM-method}
 \alias{a.K,REBMIX-method}
 \alias{a.y0,REBMIX-method}
 \alias{a.ymin,REBMIX-method}

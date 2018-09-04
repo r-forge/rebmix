@@ -378,6 +378,12 @@ setMethod("a.Dataset",
           signature(x = "RNGMIX"), 
 function(x, pos)
 {
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
   if ((pos < 1) || (pos > length(x@Dataset))) {
     output <- x@Dataset
   }
@@ -398,6 +404,12 @@ setMethod("a.Dataset",
           signature(x = "REBMIX"), 
 function(x, pos)
 {
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+
   if ((pos < 1) || (pos > length(x@Dataset))) {
     output <- x@Dataset
   }
@@ -415,6 +427,91 @@ setMethod("a.Variables", signature(x = "REBMIX"), function(x) x@Variables)
 setMethod("a.pdf", signature(x = "REBMIX"), function(x) x@pdf)
 setMethod("a.theta1", signature(x = "REBMIX"), function(x) x@theta1)
 setMethod("a.theta2", signature(x = "REBMIX"), function(x) x@theta2)
+
+setMethod("a.theta1.all", 
+  signature(x = "REBMIX"), 
+function(x, pos) 
+{
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+  
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+  
+  c <- length(x@w[[pos]]); d <- length(x@pdf)  
+
+  output <- matrix(data = 0.0, nrow = c, ncol = d, byrow = TRUE)
+  
+  for (l in 1:c) {
+    output[l, ] <- x@Theta[[pos]][[2 + (l - 1) * 3]]
+  }
+  
+  colnames(output) <- paste(1:d, sep = "")
+  rownames(output) <- paste(1:c, sep = "") 
+
+  output
+}) ## a.theta1.all
+
+setMethod("a.theta2.all", 
+  signature(x = "REBMIX"), 
+function(x, pos) 
+{
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+  
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+  
+  c <- length(x@w[[pos]]); d <- length(x@pdf)  
+
+  output <- matrix(data = 0.0, nrow = c, ncol = d, byrow = TRUE)
+  
+  for (l in 1:c) {
+    output[l, ] <- x@Theta[[pos]][[3 + (l - 1) * 3]]
+  }
+  
+  colnames(output) <- paste(1:d, sep = "")
+  rownames(output) <- paste(1:c, sep = "")  
+
+  output
+}) ## a.theta2.all
+
+setMethod("a.theta2.all", 
+  signature(x = "REBMVNORM"), 
+function(x, pos) 
+{
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+  
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+  
+  c <- length(x@w[[pos]]); d <- length(x@pdf)  
+
+  output <- matrix(data = 0.0, nrow = c, ncol = d * d, byrow = TRUE)
+  
+  for (l in 1:c) {
+    output[l, ] <- x@Theta[[pos]][[3 + (l - 1) * 3]]
+  }
+  
+  colnames(output) <- paste(1:(d * d), sep = "")
+  rownames(output) <- paste(1:c, sep = "")  
+
+  output
+}) ## a.theta2.all
+
 setMethod("a.K", signature(x = "REBMIX"), function(x) x@K)
 setMethod("a.y0", signature(x = "REBMIX"), function(x) x@y0)
 setMethod("a.ymin", signature(x = "REBMIX"), function(x) x@ymin)
@@ -426,6 +523,12 @@ setMethod("a.w",
           signature(x = "REBMIX"), 
 function(x, pos)
 {
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+  
   if ((pos < 1) || (pos > length(x@w))) {
     output <- x@w
   }
@@ -440,6 +543,12 @@ setMethod("a.Theta",
           signature(x = "REBMIX"), 
 function(x, pos)
 {
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(pos) <- 1
+  
   if ((pos < 1) || (pos > length(x@Theta))) {
     output <- x@Theta
   }

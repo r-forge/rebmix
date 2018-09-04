@@ -48,4 +48,6 @@ summary(galaxyest$gamma)
 plot(galaxyest$lognormal, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
 #dev.off() # Uncomment to use tikzDevice package.
 
-coef(galaxyest$lognormal, pos = 1)
+a.theta1.all(galaxyest$lognormal, pos = 1)
+
+a.theta2.all(galaxyest$lognormal, pos = 1)
