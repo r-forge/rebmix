@@ -73,6 +73,7 @@
 
 \alias{a.Preprocessing}
 \alias{a.cmax}
+\alias{a.cmin}
 \alias{a.Criterion}
 \alias{a.pdf}
 \alias{a.theta1}
@@ -94,6 +95,7 @@
 \alias{a.Dataset,REBMIX-method}
 \alias{a.Preprocessing,REBMIX-method}
 \alias{a.cmax,REBMIX-method}
+\alias{a.cmin,REBMIX-method}
 \alias{a.Criterion,REBMIX-method}
 \alias{a.Variables,REBMIX-method}
 \alias{a.pdf,REBMIX-method}
@@ -121,6 +123,7 @@
 \alias{a.Dataset,REBMVNORM-method}
 \alias{a.Preprocessing,REBMVNORM-method}
 \alias{a.cmax,REBMVNORM-method}
+\alias{a.cmin,REBMVNORM-method}
 \alias{a.Criterion,REBMVNORM-method}
 \alias{a.Variables,REBMVNORM-method}
 \alias{a.pdf,REBMVNORM-method}

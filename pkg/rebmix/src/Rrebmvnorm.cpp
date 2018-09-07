@@ -115,6 +115,7 @@ E0: if (rngmvnorm) delete rngmvnorm;
 
 void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 int    *cmax,           // Maximum number of components.
+                int    *cmin,           // Minimum number of components.
                 char   **Criterion,     // Information criterion type.
                 int    *d,              // Number of independent random variables.
                 char   **Variables,     // Types of variables.
@@ -180,6 +181,8 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     }
 
     rebmvnorm->cmax_ = *cmax;
+
+    rebmvnorm->cmin_ = *cmin;
 
     if (!strcmp(Criterion[0], "AIC"))
         rebmvnorm->Criterion_ = icAIC; 

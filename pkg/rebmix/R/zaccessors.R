@@ -59,6 +59,8 @@ function(x, value)
     length(x@Theta[[3 + (l - 1) * 3]]) <- 1
   }
   
+  rm(list = ls()[!(ls() %in% c("x"))])
+  
   x
 }) ## a.theta1<-
 
@@ -127,6 +129,8 @@ function(x, l, value)
   }
 
   x@Theta[[2 + (l - 1) * 3]] <- value
+  
+  rm(list = ls()[!(ls() %in% c("x"))])
   
   x
 }) ## a.theta1<-
@@ -201,7 +205,9 @@ function(x, value)
     length(x@Theta[[1 + (l - 1) * 3]]) <- 1
     length(x@Theta[[2 + (l - 1) * 3]]) <- 1
     x@Theta[[3 + (l - 1) * 3]] <- value[l]
-  }  
+  }
+  
+  rm(list = ls()[!(ls() %in% c("x"))])  
   
   x
 }) ## a.theta2<-
@@ -288,6 +294,8 @@ function(x, l, value)
 
   x@Theta[[3 + (l - 1) * 3]] <- value
   
+  rm(list = ls()[!(ls() %in% c("x"))])  
+  
   x
 }) ## a.theta2<-
 
@@ -326,6 +334,8 @@ function(x, l, value)
   }    
 
   x@Theta[[2 + (l - 1) * 3]] <- value
+  
+  rm(list = ls()[!(ls() %in% c("x"))])  
   
   x
 }) ## a.theta1<-
@@ -366,6 +376,8 @@ function(x, l, value)
 
   x@Theta[[3 + (l - 1) * 3]] <- value
   
+  rm(list = ls()[!(ls() %in% c("x"))])  
+  
   x
 }) ## a.theta2<-
 
@@ -390,6 +402,8 @@ function(x, pos)
   else {
     output <- x@Dataset[[pos]]
   }
+  
+  rm(list = ls()[!(ls() %in% c("output"))])  
   
   output
 }) ## Dataset
@@ -417,11 +431,14 @@ function(x, pos)
     output <- x@Dataset[[pos]]
   }
   
+  rm(list = ls()[!(ls() %in% c("output"))])  
+  
   output
 }) ## Dataset
 
 setMethod("a.Preprocessing", signature(x = "REBMIX"), function(x) x@Preprocessing)
 setMethod("a.cmax", signature(x = "REBMIX"), function(x) x@cmax)
+setMethod("a.cmin", signature(x = "REBMIX"), function(x) x@cmin)
 setMethod("a.Criterion", signature(x = "REBMIX"), function(x) x@Criterion)
 setMethod("a.Variables", signature(x = "REBMIX"), function(x) x@Variables)
 setMethod("a.pdf", signature(x = "REBMIX"), function(x) x@pdf)
@@ -450,8 +467,10 @@ function(x, pos)
     output[l, ] <- x@Theta[[pos]][[2 + (l - 1) * 3]]
   }
   
-  colnames(output) <- paste(1:d, sep = "")
-  rownames(output) <- paste(1:c, sep = "") 
+  colnames(output) <- NULL
+  rownames(output) <- paste("theta2.", 1:c, sep = "")
+  
+  rm(list = ls()[!(ls() %in% c("output"))])
 
   output
 }) ## a.theta1.all
@@ -478,8 +497,10 @@ function(x, pos)
     output[l, ] <- x@Theta[[pos]][[3 + (l - 1) * 3]]
   }
   
-  colnames(output) <- paste(1:d, sep = "")
-  rownames(output) <- paste(1:c, sep = "")  
+  colnames(output) <- NULL
+  rownames(output) <- paste("theta2.", 1:c, sep = "")
+  
+  rm(list = ls()[!(ls() %in% c("output"))])  
 
   output
 }) ## a.theta2.all
@@ -506,8 +527,10 @@ function(x, pos)
     output[l, ] <- x@Theta[[pos]][[3 + (l - 1) * 3]]
   }
   
-  colnames(output) <- paste(1:(d * d), sep = "")
-  rownames(output) <- paste(1:c, sep = "")  
+  colnames(output) <- NULL
+  rownames(output) <- paste("theta2.", 1:c, sep = "")
+  
+  rm(list = ls()[!(ls() %in% c("output"))])  
 
   output
 }) ## a.theta2.all
@@ -536,6 +559,8 @@ function(x, pos)
     output <- x@w[[pos]]
   }
   
+  rm(list = ls()[!(ls() %in% c("output"))])
+  
   output
 }) ## w
 
@@ -555,6 +580,8 @@ function(x, pos)
   else {
     output <- x@Theta[[pos]]
   }
+  
+  rm(list = ls()[!(ls() %in% c("output"))])
   
   output
 }) ## Theta

@@ -21,6 +21,9 @@ a character vector giving the preprocessing types. One of \code{"histogram"}, \c
 \item{\code{cmax}:}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
+\item{\code{cmin}:}{
+minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{2}.
+}
 \item{\code{Criterion}:}{
 a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"}, 
 Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"}, minimum description length \code{"MDL2"} or \code{"MDL5"}, 
@@ -73,7 +76,7 @@ Component parameters \code{theta1.l} follow the parametric family types. One of 
 Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions, \eqn{p_{il}} for binomial distribution and \eqn{\kappa_{il}} for von Mises distribution.
 }
 \item{\code{summary}:}{
-a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, information criterion type, 
+a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, \eqn{c_{\mathrm{min}}}, information criterion type, 
 \eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, \eqn{y_{i\mathrm{min}}}, \eqn{y_{i\mathrm{max}}}, optimal \eqn{h_{i}},
 information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
 }

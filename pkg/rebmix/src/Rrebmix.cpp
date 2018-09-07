@@ -153,6 +153,7 @@ E0: if (rngmix) delete rngmix;
 
 void RREBMIX(char   **Preprocessing, // Preprocessing type.
              int    *cmax,           // Maximum number of components.
+             int    *cmin,           // Minimum number of components.
              char   **Criterion,     // Information criterion type.
              int    *d,              // Number of independent random variables.
              char   **Variables,     // Types of variables.
@@ -218,6 +219,8 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
     }
 
     rebmix->cmax_ = *cmax;
+
+    rebmix->cmin_ = *cmin;
 
     if (!strcmp(Criterion[0], "AIC"))
         rebmix->Criterion_ = icAIC; 

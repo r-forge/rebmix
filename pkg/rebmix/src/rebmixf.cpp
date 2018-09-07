@@ -109,6 +109,7 @@ Rebmix::Rebmix()
     save_ = NULL;
     Preprocessing_ = poHistogram;
     cmax_ = 15;
+    cmin_ = 2;
     Criterion_ = icAIC;
     Variables_ = NULL;
     IniTheta_ = NULL;
@@ -4621,7 +4622,7 @@ int Rebmix::REBMIXKNN()
                     
                     Dl = elp / nl;
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= length_pdf_)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationKNN(Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -4694,7 +4695,8 @@ int Rebmix::REBMIXKNN()
 
             if (IC < all_IC_[i]) all_IC_[i] = IC;
 
-            if (IC < summary_.IC) {
+
+            if ((IC < summary_.IC) && (c >= cmin_)) {
                 Found = 1;
 
                 summary_.k = all_K_[i];
@@ -5131,7 +5133,7 @@ int Rebmix::REBMIXKDE()
 
                     Dl = elp / nl;
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= length_pdf_)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationKDE(Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -5204,7 +5206,7 @@ int Rebmix::REBMIXKDE()
 
             if (IC < all_IC_[i]) all_IC_[i] = IC;
 
-            if (IC < summary_.IC) {
+            if ((IC < summary_.IC) && (c >= cmin_)) {
                 Found = 1;
 
                 summary_.k = all_K_[i];
@@ -5687,7 +5689,7 @@ int Rebmix::REBMIXH()
 
                     Dl = elp / nl; 
 
-                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= (FLOAT)1.0)) {
+                    if ((Dl <= Dmin / W[l]) || (I == ItMax) || (nl <= length_pdf_)) {
                         // Enhanced component parameter estimation.
 
                         EnhancedEstimationH(all_K_[i], Y, nl, RigidTheta[l], LooseTheta[l]);
@@ -5760,7 +5762,7 @@ int Rebmix::REBMIXH()
 
             if (IC < all_IC_[i]) all_IC_[i] = IC;
 
-            if (IC < summary_.IC) {
+            if ((IC < summary_.IC) && (c >= cmin_)) {
                 Found = 1; 
 
                 summary_.k = k;
@@ -6028,13 +6030,14 @@ int Rebmix::WriteDataFile()
     }
 
     if (!strcmp(mode, "w")) {
-        fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s", "Dataset",
-                                                   "Preprocessing",
-                                                   "cmax",
-                                                   "Criterion",
-                                                   "ar",
-                                                   "Restraints", 
-                                                   "c");
+        fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", "Dataset",
+                                                       "Preprocessing",
+                                                       "cmax",
+                                                       "cmin",
+                                                       "Criterion",
+                                                       "ar",
+                                                       "Restraints", 
+                                                       "c");
 
         switch (Preprocessing_) {
         case poHistogram:
@@ -6159,6 +6162,8 @@ int Rebmix::WriteDataFile()
     fprintf(fp0, "\t%s", line);
 
     fprintf(fp0, "\t%d", cmax_);
+
+    fprintf(fp0, "\t%d", cmin_);
 
     switch (Criterion_) {
     case icAIC:
@@ -6516,6 +6521,12 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         else
         if (!strcmp(ident, "CMAX")) {
             cmax_ = isI = (int)atol(pchar);
+
+            Error = isI <= 0; if (Error) goto E0;
+        } 
+        else
+        if (!strcmp(ident, "CMIN")) {
+            cmin_ = isI = (int)atol(pchar);
 
             Error = isI <= 0; if (Error) goto E0;
         } 

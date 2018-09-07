@@ -38,6 +38,9 @@ a character vector giving the preprocessing types. One of \code{"histogram"}, \c
 \item{cmax}{
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
+\item{cmin}{
+minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{2}.
+}
 \item{Criterion}{
 a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"}, 
 Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"}, minimum description length \code{"MDL2"} or \code{"MDL5"}, 

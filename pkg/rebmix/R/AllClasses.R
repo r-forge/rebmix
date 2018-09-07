@@ -387,6 +387,7 @@ setClass(Class = "REBMIX",
 slots = c(Dataset = "list",
   Preprocessing = "character",
   cmax = "numeric",
+  cmin = "numeric",
   Criterion = "character",
   Variables = "character",
   pdf = "character",
@@ -409,6 +410,7 @@ slots = c(Dataset = "list",
   all.K = "list",
   all.IC = "list"),
 prototype = list(cmax = 15,
+  cmin = 2,
   Criterion = "AIC",
   ar = 0.1,
   Restraints = "loose",
@@ -419,6 +421,7 @@ function(.Object, ...,
   Dataset,
   Preprocessing,
   cmax,
+  cmin,
   Criterion,
   pdf,
   theta1,
@@ -488,7 +491,23 @@ function(.Object, ...,
 
   if (cmax < 1) {
     stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
-  }  
+  }
+  
+  # cmin.
+  
+  if (missing(cmin) || (length(cmin) == 0)) cmin <- .Object@cmin
+  
+  if (!is.wholenumber(cmin)) {
+    stop(sQuote("cmin"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmin < 1) {
+    stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  if (cmin > cmax) {
+    stop(sQuote("cmin"), " must be less or equal than ", cmax, "!", call. = FALSE)
+  }     
 
   # Criterion.
 
@@ -662,6 +681,7 @@ function(.Object, ...,
   .Object@Dataset <- Dataset
   .Object@Preprocessing <- Preprocessing
   .Object@cmax <- cmax
+  .Object@cmin <- cmin
   .Object@Criterion <- Criterion
   .Object@pdf <- pdf
   .Object@theta1 <- theta1

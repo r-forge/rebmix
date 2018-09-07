@@ -11,6 +11,7 @@ setGeneric("REBMIX",
     Dataset = list(),
     Preprocessing = character(),
     cmax = 15,
+    cmin = 2,
     Criterion = "AIC",
     pdf = character(),
     theta1 = numeric(),
@@ -135,6 +136,7 @@ setGeneric("a.ymax", function(x = NULL) standardGeneric("a.ymax"))
 
 setGeneric("a.Preprocessing", function(x = NULL) standardGeneric("a.Preprocessing"))
 setGeneric("a.cmax", function(x = NULL) standardGeneric("a.cmax"))
+setGeneric("a.cmin", function(x = NULL) standardGeneric("a.cmin"))
 setGeneric("a.Criterion", function(x = NULL) standardGeneric("a.Criterion"))
 setGeneric("a.pdf", function(x = NULL) standardGeneric("a.pdf"))
 setGeneric("a.theta1", function(x = NULL) standardGeneric("a.theta1"))
