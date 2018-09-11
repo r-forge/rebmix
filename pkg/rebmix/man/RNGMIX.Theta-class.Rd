@@ -7,16 +7,16 @@
 \title{Class \code{"RNGMIX.Theta"}}
 \description{Object of class \code{RNGMIX.Theta}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RNGMIX.Theta", ...)}. Accessor methods for the slots are \code{a.c.name(x = NULL)}, ...,
-\code{a.Theta(x = NULL, pos = 0)}, where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively. Setter methods
+Objects can be created by calls of the form \code{new("RNGMIX.Theta", ...)}. Accessor methods for the slots are \code{a.c(x = NULL)}, \code{a.d(x = NULL)},
+\code{a.pdf(x = NULL)} and \code{a.Theta(x = NULL)}, where \code{x} stands for an object of class \code{RNGMIX.Theta}. Setter methods
 \code{a.theta1(x = NULL, l = numeric())} and \code{a.theta2(x = NULL, l = numeric())} are provided to write to \code{Theta} slot, where \eqn{l = 1, \ldots, c}.
 }
 \section{Slots}{
 \describe{
-\item{c}{
+\item{\code{c}:}{
 number of components \eqn{c > 0}. The default value is \code{1}.
 }
-\item{d}{
+\item{\code{d}:}{
 number of dimensions.
 }
 \item{\code{pdf}:}{

@@ -5,8 +5,10 @@
 \title{Class \code{"RNGMIX"}}
 \description{Object of class \code{RNGMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RNGMIX", ...)}. Accessor methods for the slots are \code{a.Dataset.name(x = NULL)}, ...,
-\code{a.Dataset(x = NULL, pos = 0)}, \code{a.Zt(x = NULL)}, ..., where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively.
+Objects can be created by calls of the form \code{new("RNGMIX", ...)}. Accessor methods for the slots are \code{a.Dataset.name(x = NULL)},
+\code{a.rseed(x = NULL)}, \code{a.n(x = NULL)}, \code{a.Theta(x = NULL)}, \code{a.Dataset(x = NULL, pos = 0)},
+\code{a.Zt(x = NULL)}, \code{a.w(x = NULL)}, \code{a.Variables(x = NULL)}, \code{a.ymin(x = NULL)} and \code{a.ymax(x = NULL)},
+where \code{x} and \code{pos} stand for an object of class \code{RNGMIX} and a desired slot item, respectively.
 }
 \section{Slots}{
 \describe{

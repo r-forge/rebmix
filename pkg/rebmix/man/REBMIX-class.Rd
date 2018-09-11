@@ -5,8 +5,13 @@
 \title{Class \code{"REBMIX"}}
 \description{Object of class \code{REBMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)}, 
-\code{a.Preprocessing(x = NULL)}, ..., \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL)}, ..., where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
+Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)},
+\code{a.Preprocessing(x = NULL)}, \code{a.cmax(x = NULL)}, \code{a.cmin(x = NULL)}, \code{a.Criterion(x = NULL)}, \code{a.Variables(x = NULL)},
+\code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)},
+\code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)}, \code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)},
+\code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL)}, \code{a.pos(x = NULL)},
+\code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
+\code{a.theta1.all(x = NULL, pos = 1)} and \code{a.theta2.all(x = NULL, pos = 1)}, where \code{x} and \code{pos} stand for an object of class \code{REBMIX} and a desired slot item, respectively.
 }
 \section{Slots}{
 \describe{

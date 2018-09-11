@@ -16,7 +16,7 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
 }
 \usage{
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(), 
-       cmax = 15, Criterion = "AIC", pdf = character(), theta1 = numeric(), 
+       cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), theta1 = numeric(), 
        theta2 = numeric(), K = "auto", y0 = numeric(), ymin = numeric(), 
        ymax = numeric(), ar = 0.1, Restraints = "loose", ...)
 ## ... and for other signatures

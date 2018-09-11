@@ -11,7 +11,7 @@ setGeneric("REBMIX",
     Dataset = list(),
     Preprocessing = character(),
     cmax = 15,
-    cmin = 2,
+    cmin = 1,
     Criterion = "AIC",
     pdf = character(),
     theta1 = numeric(),
@@ -43,8 +43,6 @@ setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))
 setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
 setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
-
-setGeneric("Zp", function(x = NULL, s = expression(c)) standardGeneric("Zp"))
 
 setGeneric("demix", 
   function(x = NULL, 
@@ -170,11 +168,11 @@ setGeneric("a.w.cv", function(x = NULL) standardGeneric("a.w.cv"))
 setGeneric("a.Theta.se", function(x = NULL) standardGeneric("a.Theta.se"))
 setGeneric("a.Theta.cv", function(x = NULL) standardGeneric("a.Theta.cv"))
 
-setGeneric("a.Zp", function(x = NULL) standardGeneric("a.Zp"))
-setGeneric("a.p", function(x = NULL) standardGeneric("a.p"))
-setGeneric("a.pi", function(x = NULL) standardGeneric("a.pi"))
+setGeneric("a.Zp", function(x = NULL, s = expression(c)) standardGeneric("a.Zp"))
+setGeneric("a.p", function(x = NULL, s = expression(c)) standardGeneric("a.p"))
+setGeneric("a.pi", function(x = NULL, s = expression(c)) standardGeneric("a.pi"))
 setGeneric("a.P", function(x = NULL) standardGeneric("a.P"))
-setGeneric("a.tau", function(x = NULL) standardGeneric("a.tau"))
+setGeneric("a.tau", function(x = NULL, s = expression(c)) standardGeneric("a.tau"))
 setGeneric("a.from", function(x = NULL) standardGeneric("a.from"))
 setGeneric("a.to", function(x = NULL) standardGeneric("a.to"))
 setGeneric("a.EN", function(x = NULL) standardGeneric("a.EN"))

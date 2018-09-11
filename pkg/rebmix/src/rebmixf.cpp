@@ -1197,7 +1197,8 @@ S1:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] * k / nl) - Y[m][length_pdf_ + 1] - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+//      if (epsilon < (FLOAT)1.0) 
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:
@@ -1437,7 +1438,8 @@ S1:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / nl) - logV - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+//      if (epsilon < (FLOAT)1.0) 
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:
@@ -1661,7 +1663,8 @@ S0:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] / nl) - logV - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-        if (epsilon < (FLOAT)1.0) Mode[i].flm *= epsilon;
+//      if (epsilon < (FLOAT)1.0)
+        Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:

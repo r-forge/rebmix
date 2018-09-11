@@ -4,7 +4,7 @@ setMethod("a.pdf", signature(x = "RNGMIX.Theta"), function(x) x@pdf)
 setMethod("a.Theta", signature(x = "RNGMIX.Theta"), function(x) x@Theta)
 
 setMethod("a.theta1<-", 
-  signature(x = "RNGMIX.Theta", l = "missing"),
+          signature(x = "RNGMIX.Theta", l = "missing"),
 function(x, value)
 {
   x@d <- 1; length(x@pdf) <- 1
@@ -65,7 +65,7 @@ function(x, value)
 }) ## a.theta1<-
 
 setMethod("a.theta1<-", 
-  signature(x = "RNGMIX.Theta"),
+          signature(x = "RNGMIX.Theta"),
 function(x, l, value)
 {
   # l.
@@ -136,7 +136,7 @@ function(x, l, value)
 }) ## a.theta1<-
 
 setMethod("a.theta2<-", 
-  signature(x = "RNGMIX.Theta", l = "missing"),
+          signature(x = "RNGMIX.Theta", l = "missing"),
 function(x, value)
 {
   x@d <- 1; length(x@pdf) <- 1
@@ -213,7 +213,7 @@ function(x, value)
 }) ## a.theta2<-
 
 setMethod("a.theta2<-", 
-  signature(x = "RNGMIX.Theta"),
+          signature(x = "RNGMIX.Theta"),
 function(x, l, value)
 {
   # l.
@@ -300,7 +300,7 @@ function(x, l, value)
 }) ## a.theta2<-
 
 setMethod("a.theta1<-", 
-  signature(x = "RNGMVNORM.Theta"),
+          signature(x = "RNGMVNORM.Theta"),
 function(x, l, value)
 {
   # l.
@@ -341,7 +341,7 @@ function(x, l, value)
 }) ## a.theta1<-
 
 setMethod("a.theta2<-", 
-  signature(x = "RNGMVNORM.Theta"),
+          signature(x = "RNGMVNORM.Theta"),
 function(x, l, value)
 {
   # l.
@@ -446,7 +446,7 @@ setMethod("a.theta1", signature(x = "REBMIX"), function(x) x@theta1)
 setMethod("a.theta2", signature(x = "REBMIX"), function(x) x@theta2)
 
 setMethod("a.theta1.all", 
-  signature(x = "REBMIX"), 
+          signature(x = "REBMIX"), 
 function(x, pos) 
 {
   if (!is.wholenumber(pos)) {
@@ -476,7 +476,7 @@ function(x, pos)
 }) ## a.theta1.all
 
 setMethod("a.theta2.all", 
-  signature(x = "REBMIX"), 
+          signature(x = "REBMIX"), 
 function(x, pos) 
 {
   if (!is.wholenumber(pos)) {
@@ -506,7 +506,7 @@ function(x, pos)
 }) ## a.theta2.all
 
 setMethod("a.theta2.all", 
-  signature(x = "REBMVNORM"), 
+          signature(x = "REBMVNORM"), 
 function(x, pos) 
 {
   if (!is.wholenumber(pos)) {
@@ -616,12 +616,154 @@ setMethod("a.Theta.cv", signature(x = "REBMIX.boot"), function(x) x@Theta.cv)
 
 setMethod("a.pos", signature(x = "RCLRMIX"), function(x) x@pos)
 setMethod("a.Zt", signature(x = "RCLRMIX"), function(x) x@Zt)
-setMethod("a.Zp", signature(x = "RCLRMIX"), function(x) x@Zp)
+
+setMethod("a.Zp",
+          signature(x = "RCLRMIX"),
+function(x, s)
+{
+  Zp <- as.numeric(levels(x@Zp))[x@Zp]
+  
+  c <- x@c; s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+ 
+  l <- c - 1
+  
+  while (s < length(unique(Zp))) {
+    Zp[Zp == x@from[l]] <- x@to[l]
+   
+    l <- l - 1
+  }  
+
+  rm(list = ls()[!(ls() %in% c("Zp"))])
+  
+  as.factor(Zp)
+}) ## a.Zp
+
 setMethod("a.c", signature(x = "RCLRMIX"), function(x) x@c)
-setMethod("a.p", signature(x = "RCLRMIX"), function(x) x@p)
-setMethod("a.pi", signature(x = "RCLRMIX"), function(x) x@pi)
+
+setMethod("a.p",
+          signature(x = "RCLRMIX"),
+function(x, s)
+{
+  p <- x@p
+  
+  c <- x@c; s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+ 
+  l <- c - 1
+  
+  while (s < length(p)) {
+    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
+    
+    p <- p[-x@from[l]]
+   
+    l <- l - 1
+  }  
+
+  rm(list = ls()[!(ls() %in% c("p"))])
+  
+  p
+}) ## a.p
+
+setMethod("a.pi",
+          signature(x = "RCLRMIX"),
+function(x, s)
+{
+
+  p <- x@p; pi <- x@pi
+  
+  c <- x@c; d <- length(x@pi); s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+ 
+  l <- c - 1
+  
+  while (s < length(p)) {
+    for (i in 1:d) {
+      pi[[i]][x@to[l], ] <- (p[x@from[l]] * pi[[i]][x@from[l], ] + p[x@to[l]] * pi[[i]][x@to[l], ]) / (p[x@from[l]] + p[x@to[l]])
+      
+      pi[[i]] <- pi[[i]][-x@from[l], ]
+    }
+    
+    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
+    
+    p <- p[-x@from[l]]
+   
+    l <- l - 1
+  }  
+
+  rm(list = ls()[!(ls() %in% c("pi"))])
+  
+  pi
+}) ## a.pi
+
 setMethod("a.P", signature(x = "RCLRMIX"), function(x) x@P)
-setMethod("a.tau", signature(x = "RCLRMIX"), function(x) x@tau)
+
+setMethod("a.tau",
+          signature(x = "RCLRMIX"),
+function(x, s)
+{
+  tau <- x@tau
+  
+  names <- colnames(tau)
+  
+  c <- x@c; s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+ 
+  l <- c - 1
+  
+  while (s < ncol(tau)) {
+    tau[, x@to[l]] <- tau[, x@from[l]] + tau[, x@to[l]]
+    
+    tau <- as.matrix(tau[, -x@from[l]])
+    
+    names <- names[-x@from[l]]
+   
+    l <- l - 1
+  }
+  
+  colnames(tau) <- names
+
+  rm(list = ls()[!(ls() %in% c("tau"))])
+  
+  tau
+}) ## a.tau
+
 setMethod("a.prob", signature(x = "RCLRMIX"), function(x) x@prob)
 setMethod("a.from", signature(x = "RCLRMIX"), function(x) x@from)
 setMethod("a.to", signature(x = "RCLRMIX"), function(x) x@to)

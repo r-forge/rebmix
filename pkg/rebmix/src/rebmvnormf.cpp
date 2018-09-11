@@ -226,23 +226,23 @@ S1:;
 
     epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
-    if (epsilon > (FLOAT)1.0) {
-        RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
+//  if (epsilon > (FLOAT)1.0) {
+    RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
 
-        for (i = 0; i < length_pdf_; i++) {
-            o = i * length_pdf_ + i;
+    for (i = 0; i < length_pdf_; i++) {
+        o = i * length_pdf_ + i;
 
-            RigidTheta->Theta_[1][o] *= epsilon;
-            RigidTheta->Theta_[2][o] /= epsilon;
+        RigidTheta->Theta_[1][o] *= epsilon;
+        RigidTheta->Theta_[2][o] /= epsilon;
 
-            for (ii = 0; ii < i; ii++) {
-                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+        for (ii = 0; ii < i; ii++) {
+            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
 
-                RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
-                RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
-            }
+            RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
+            RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
         }
     }
+//  }
 
     Error = LooseTheta->Memmove(RigidTheta);
 
@@ -503,23 +503,23 @@ S1:;
 
     epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
-    if (epsilon > (FLOAT)1.0) {
-        RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
+//  if (epsilon > (FLOAT)1.0) {
+    RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
 
-        for (i = 0; i < length_pdf_; i++) {
-            o = i * length_pdf_ + i;
+    for (i = 0; i < length_pdf_; i++) {
+        o = i * length_pdf_ + i;
 
-            RigidTheta->Theta_[1][o] *= epsilon;
-            RigidTheta->Theta_[2][o] /= epsilon;
+        RigidTheta->Theta_[1][o] *= epsilon;
+        RigidTheta->Theta_[2][o] /= epsilon;
 
-            for (ii = 0; ii < i; ii++) {
-                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+        for (ii = 0; ii < i; ii++) {
+            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
 
-                RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
-                RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
-            }
+            RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
+            RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
         }
     }
+//  }
 
     Error = LooseTheta->Memmove(RigidTheta);
 
@@ -764,23 +764,23 @@ S0:;
 
     epsilon = (FLOAT)exp(-(FLOAT)2.0 * (LogSqrtPi2 + logflm / length_pdf_) - RigidTheta->Theta_[3][0] / length_pdf_);
 
-    if (epsilon > (FLOAT)1.0) {
-        RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
+//  if (epsilon > (FLOAT)1.0) {
+    RigidTheta->Theta_[3][0] += length_pdf_ * (FLOAT)log(epsilon);
 
-        for (i = 0; i < length_pdf_; i++) {
-            o = i * length_pdf_ + i;
+    for (i = 0; i < length_pdf_; i++) {
+        o = i * length_pdf_ + i;
 
-            RigidTheta->Theta_[1][o] *= epsilon;
-            RigidTheta->Theta_[2][o] /= epsilon;
+        RigidTheta->Theta_[1][o] *= epsilon;
+        RigidTheta->Theta_[2][o] /= epsilon;
 
-            for (ii = 0; ii < i; ii++) {
-                p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
+        for (ii = 0; ii < i; ii++) {
+            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i;
 
-                RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
-                RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
-            }
+            RigidTheta->Theta_[1][p] = RigidTheta->Theta_[1][q] *= epsilon;
+            RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
         }
     }
+//  }
 
     Error = LooseTheta->Memmove(RigidTheta);
 

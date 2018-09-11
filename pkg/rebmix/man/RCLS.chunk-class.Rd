@@ -4,7 +4,9 @@
 \title{Class \code{"RCLS.chunk"}}
 \description{Object of class \code{RCLS.chunk}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLS.chunk", ...)}. Accessor methods for the slots are \code{a.s(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLS.chunk}. 
+Objects can be created by calls of the form \code{new("RCLS.chunk", ...)}. Accessor methods for the slots are \code{a.s(x = NULL)},
+\code{a.levels(x = NULL)}, \code{a.ntrain(x = NULL)}, \code{a.train(x = NULL)}, \code{a.ntest(x = NULL)}, \code{a.test(x = NULL)} and \code{a.Zt(x = NULL)},
+where \code{x} stands for an object of class \code{RCLS.chunk}. 
 }
 \section{Slots}{
 \describe{

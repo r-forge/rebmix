@@ -5,7 +5,10 @@
 \title{Class \code{"RCLSMIX"}}
 \description{Object of class \code{RCLSMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLSMIX", ...)}. Accessor methods for the slots are \code{a.o(x = NULL)}, ..., where \code{x} stands for an object of class \code{RCLSMIX}. 
+Objects can be created by calls of the form \code{new("RCLSMIX", ...)}. Accessor methods for the slots are \code{a.o(x = NULL)},
+\code{a.Dataset(x = NULL)}, \code{a.s(x = NULL)}, \code{a.ntrain(x = NULL)}, \code{a.P(x = NULL)}, \code{a.ntest(x = NULL)}, \code{a.Zt(x = NULL)},
+\code{a.Zp(x = NULL)}, \code{a.CM(x = NULL)}, \code{a.Accuracy(x = NULL)}, \code{a.Error(x = NULL)}, \code{a.Precision(x = NULL)}, \code{a.Sensitivity(x = NULL)},
+\code{a.Specificity(x = NULL)} and \code{a.Chunks(x = NULL)}, where \code{x} stands for an object of class \code{RCLSMIX}. 
 }
 \section{Slots}{
 \describe{

@@ -152,6 +152,47 @@ simulated <- RNGMIX(Dataset.name = "simulated",
 simulated
 
 plot(simulated, pos = 1)
+
+# Generate and print multivariate normal datasets with unrestricted 
+# variance-covariance matrices.
+
+# Set dimension, dataset size, number of components and seed.
+
+d <- 2; n <- 1000; c <- 10; set.seed(123)
+
+# Component weights are generated.
+
+w <- runif(c, 0.1, 0.9); w <- w / sum(w)
+
+# Set range of means and rang of eigenvalues.
+
+mu <- c(-100, 100); lambda <- c(1, 100)
+
+# Component means and variance-covariance matrices are calculated.
+
+Mu <- list(); Sigma <- list()
+for (l in 1:c) {
+  Mu[[l]] <- runif(d, mu[1], mu[2])
+  Lambda <- diag(runif(d, lambda[1], lambda[2]), nrow = d, ncol = d)
+  P <- svd(matrix(runif(d * d, -1, 1), nc = d))$u
+  Sigma[[l]] <- P %*% Lambda %*% t(P)
+}
+
+# Numbers of observations are calculated and component means and variance-covariance matrices are stored.
+
+n <- round(w * n); Theta <- list()
+for (l in 1:c) {
+  Theta[[paste0("pdf", l)]] <- rep("normal", d)
+  Theta[[paste0("theta1.", l)]] <- Mu[[l]]
+  Theta[[paste0("theta2.", l)]] <- as.vector(Sigma[[l]])
+}
+
+# Dataset is generated.
+
+simulated <- RNGMIX(model = "RNGMVNORM", Dataset.name = "mvnorm_1",
+  rseed = -1, n = n, Theta = Theta)
+
+plot(simulated)
 }
 \keyword{random number generation}
 
