@@ -20,6 +20,8 @@ function(x, pos, variables, ...)
   
   Dataset <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
   
+  colnames <- colnames(Dataset)
+  
   d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   
   n <- nrow(Dataset)
@@ -82,7 +84,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y, stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   } 
   else 
   if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -107,7 +114,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y[, -(d + 1)], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   } 
   else
   if (Preprocessing == .rebmix$Preprocessing[3]) {
@@ -133,7 +145,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y[, c(-(d + 1), -(d + 3))], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   }
   
   options(digits = digits)
@@ -164,6 +181,8 @@ function(x, pos, variables, ...)
   }
   
   Dataset <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
+  
+  colnames <- colnames(Dataset)
   
   d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
@@ -226,7 +245,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y, stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   } 
   else 
   if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -251,7 +275,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y[, -(d + 1)], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   } 
   else
   if (Preprocessing == .rebmix$Preprocessing[3]) {
@@ -277,7 +306,12 @@ function(x, pos, variables, ...)
 
     output <- as.data.frame(output$y[, c(-(d + 1), -(d + 3))], stringsAsFactors = FALSE)
 
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    if (is.null(colnames)) {
+      colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "f")
+    }
+    else {
+      colnames(output) <- c(colnames[variables], "f")   
+    }    
   }
   
   options(digits = digits)

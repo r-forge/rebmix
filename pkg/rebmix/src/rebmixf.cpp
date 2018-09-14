@@ -1262,7 +1262,7 @@ S1:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
 
         // Bracketing.
 
@@ -1503,7 +1503,7 @@ S1:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
 
         // Bracketing.
 
@@ -1728,7 +1728,7 @@ S0:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
 
         // Bracketing.
 

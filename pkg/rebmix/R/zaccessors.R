@@ -406,7 +406,7 @@ function(x, pos)
   rm(list = ls()[!(ls() %in% c("output"))])  
   
   output
-}) ## Dataset
+}) ## a.Dataset
           
 setMethod("a.Zt", signature(x = "RNGMIX"), function(x) x@Zt)
 setMethod("a.w", signature(x = "RNGMIX"), function(x) x@w)
@@ -434,7 +434,7 @@ function(x, pos)
   rm(list = ls()[!(ls() %in% c("output"))])  
   
   output
-}) ## Dataset
+}) ## a.Dataset
 
 setMethod("a.Preprocessing", signature(x = "REBMIX"), function(x) x@Preprocessing)
 setMethod("a.cmax", signature(x = "REBMIX"), function(x) x@cmax)
@@ -562,7 +562,7 @@ function(x, pos)
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-}) ## w
+}) ## a.w
 
 setMethod("a.Theta", 
           signature(x = "REBMIX"), 
@@ -584,9 +584,34 @@ function(x, pos)
   rm(list = ls()[!(ls() %in% c("output"))])
   
   output
-}) ## Theta
+}) ## a.Theta
 
-setMethod("a.summary", signature(x = "REBMIX"), function(x) x@summary)
+setMethod("a.summary", 
+          signature(x = "REBMIX"),
+function(x, col.name)
+{
+  if (missing(col.name) || (length(col.name) == 0)) {
+    output <- x@summary
+  }
+  else {
+    if (!is.character(col.name)) {
+      stop(sQuote("col.name"), " character is requested!", call. = FALSE)
+    }
+
+    col.name <- match.arg(col.name, colnames(x@summary), several.ok = FALSE)
+
+    output <- x@summary[, col.name]
+    
+    if (is.number(output) == TRUE) {
+      output <- as.numeric(output)
+    }
+  }
+
+  rm(list = ls()[!(ls() %in% c("output"))])
+  
+  output
+}) ## a.summary
+
 setMethod("a.pos", signature(x = "REBMIX"), function(x) x@pos)
 setMethod("a.opt.c", signature(x = "REBMIX"), function(x) x@opt.c)
 setMethod("a.opt.IC", signature(x = "REBMIX"), function(x) x@opt.IC)
@@ -687,7 +712,6 @@ setMethod("a.pi",
           signature(x = "RCLRMIX"),
 function(x, s)
 {
-
   p <- x@p; pi <- x@pi
   
   c <- x@c; d <- length(x@pi); s <- eval(s)
@@ -723,7 +747,71 @@ function(x, s)
   pi
 }) ## a.pi
 
-setMethod("a.P", signature(x = "RCLRMIX"), function(x) x@P)
+setMethod("a.P", 
+          signature(x = "RCLRMIX"),
+function(x)
+{
+
+  p <- x@p; pi <- x@pi; P <- x@P
+  
+  c <- x@c; d <- length(x@pi); s <- eval(s)
+  
+  if (!is.wholenumber(s)) {
+    stop(sQuote("s"), " integer is requested!", call. = FALSE)
+  }
+  
+  length(s) <- 1
+
+  if ((s < 1) || (s > c)) {
+    stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
+  }
+ 
+  l <- c - 1
+  
+  while (s < length(p)) {
+    for (i in 1:d) {
+      pi[[i]][x@to[l], ] <- (p[x@from[l]] * pi[[i]][x@from[l], ] + p[x@to[l]] * pi[[i]][x@to[l], ]) / (p[x@from[l]] + p[x@to[l]])
+      
+      pi[[i]] <- pi[[i]][-x@from[l], ]
+    }
+    
+    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
+    
+    p <- p[-x@from[l]]
+   
+    l <- l - 1
+  }
+  
+  dataset <- as.matrix(x@Dataset[[x@pos]])
+  
+  n <- nrow(dataset)  
+  
+  Y <- dataset; y <- as.matrix(x@P[, 1:d]); Np <- array()
+
+  for (j in 1:nrow(y)) {
+    for (l in 1:s) {
+      Pl <- 1.0
+        
+      for(i in 1:d) {
+        for (ii in 1:length(pi[[i]][l, ])) {
+          if (y[j, i] == ii - 1) {
+            Pl <- Pl * pi[[i]][l, ii]
+          }
+        }
+      }
+
+      Np[j] <- Np[j] + p[l] * Pl * n
+    }      
+  }
+    
+  P[, d + 2] <- Np
+  
+  colnames(P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+
+  rm(list = ls()[!(ls() %in% c("P"))])
+  
+  P
+}) ## a.P
 
 setMethod("a.tau",
           signature(x = "RCLRMIX"),

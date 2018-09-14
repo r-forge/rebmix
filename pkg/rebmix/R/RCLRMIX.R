@@ -87,7 +87,7 @@ function(model, ...)
           }
         }
 
-        Np[j] <- Np[j] + w[l] * Pl * n
+        Np[j] <- Np[j] + model@p[l] * Pl * n
       }      
     }
     

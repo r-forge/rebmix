@@ -7,7 +7,8 @@
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("RCLRMIX", ...)}. 
 Accessor methods for the slots are \code{a.pos(x = NULL)}, \code{a.Zt(x = NULL)}, \code{a.Zp(x = NULL, s = expression(c))}, \code{a.c(x = NULL)},
-\code{a.p(x = NULL, s = expression(c))}, \code{a.pi(x = NULL, s = expression(c))}, \code{a.P(x = NULL)}, \code{a.tau(x = NULL, s = expression(c))},
+\code{a.p(x = NULL, s = expression(c))}, \code{a.pi(x = NULL, s = expression(c))}, \cr
+\code{a.P(x = NULL, s = expression(c))}, \code{a.tau(x = NULL, s = expression(c))},
 \code{a.prob(x = NULL)}, \code{a.from(x = NULL)}, \code{a.to(x = NULL)}, \code{a.EN(x = NULL)} and \code{a.ED(x = NULL)}, where \code{x} stands for an object of class \code{RCLRMIX} and \code{s}
 a desired number of clusters for which the slot is calculated. 
 }

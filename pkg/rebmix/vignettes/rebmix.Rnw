@@ -29,14 +29,14 @@
 \maketitle
 
 \begin{abstract}
-The \pkg{rebmix} package provides R functions for random univariate and multivariate finite mixture model generation, estimation, clustering and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises parametric families.
+The \pkg{rebmix} package provides R functions for random univariate and multivariate finite mixture model generation, estimation, clustering, latent class analysis and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises parametric families.
 \end{abstract}
 
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.10.2}}
-Method \texttt{split} is improved and examples for its proper use are added. GCC 8.1 notes and warnings in C++ functions are eliminated in version 2.10.2, too. Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention is put in resolving numerical problems related to high dimensional datasets. Version 2.10.1 is further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
+\section{What's new in version \texttt{2.10.3}}
+Methods \texttt{Zp} and \texttt{coef} are replaced by \texttt{a.Zp}, \texttt{a.theta1.all} and \texttt{a.theta2.all} getters. All slots can now be accessed via accessors. Their names are generally composed of \texttt{a.} followed by the slot name and are used to read the slots. Class \texttt{"RNGMIX.Theta"} is added to simplify random finite mixture model generation. Method \texttt{show} is added for \texttt{"RCLS.chunk"} class. Minimum number of component \texttt{cmin} is added to \texttt{REBMIX} arguments and to the \texttt{"REBMIX"} class.  The \texttt{"Parzen window"} preprocessing is renamed to more well known \texttt{"kernel density estimation"}. Rough parameter estimation for binomial and Poisson parametric families is improved. The package is broadened to latent class analysis in version 2.10.3, too. Method \texttt{split} is improved and examples for its proper use are added. GCC 8.1 notes and warnings in C++ functions are eliminated in version 2.10.2, too. Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention is put in resolving numerical problems related to high dimensional datasets. Version 2.10.1 is further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
 \begin{equation}
 v_{\mathrm{max}} = \frac{1 + d}{d} n^\frac{d}{1 + d}.
 \end{equation}

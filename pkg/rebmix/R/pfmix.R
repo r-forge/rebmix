@@ -132,7 +132,12 @@ function(x,
   
   output <- as.data.frame(cbind(Dataset[, variables], f), stringsAsFactors = FALSE)
 
-  colnames(output) <- c(paste("x", if (d > 1) variables else "", sep = ""), "F")      
+  if (is.null(colnames(Dataset))) {
+    colnames(output) <- c(paste("x", if (d > 1) variables else "", sep = ""), "F")
+  }
+  else {
+    colnames(output) <- c(colnames(Dataset)[variables], "F")   
+  }  
   
   options(digits = digits)
 
@@ -245,7 +250,12 @@ function(x,
   
   output <- as.data.frame(cbind(Dataset[, variables], f), stringsAsFactors = FALSE)
 
-  colnames(output) <- c(paste("x", if (d > 1) variables else "", sep = ""), "F")      
+  if (is.null(colnames(Dataset))) {
+    colnames(output) <- c(paste("x", if (d > 1) variables else "", sep = ""), "F")
+  }
+  else {
+    colnames(output) <- c(colnames(Dataset)[variables], "F")   
+  }    
   
   options(digits = digits)
 
