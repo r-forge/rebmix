@@ -693,15 +693,17 @@ function(x, s)
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
  
-  l <- c - 1
+  l <- c - 1; C <- numeric()
   
-  while (s < length(p)) {
-    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
+  while (l + 1 > s) {
+    p[x@to[l]] <- p[x@to[l]] + p[x@from[l]]
     
-    p <- p[-x@from[l]]
-   
-    l <- l - 1
-  }  
+    C <- c(C, x@from[l]); l <- l - 1
+  }
+  
+  if (length(C) > 0) {
+    p <- p[-C]
+  }
 
   rm(list = ls()[!(ls() %in% c("p"))])
   
@@ -726,21 +728,21 @@ function(x, s)
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
  
-  l <- c - 1
+  l <- c - 1; C <- numeric()
   
-  while (s < length(p)) {
+  while (l + 1 > s) {
     for (i in 1:d) {
-      pi[[i]][x@to[l], ] <- (p[x@from[l]] * pi[[i]][x@from[l], ] + p[x@to[l]] * pi[[i]][x@to[l], ]) / (p[x@from[l]] + p[x@to[l]])
-      
-      pi[[i]] <- pi[[i]][-x@from[l], ]
-    }
+      pi[[i]][x@to[l], ] <- (p[x@to[l]] * pi[[i]][x@to[l], ] + p[x@from[l]] * pi[[i]][x@from[l], ]) / (p[x@to[l]] + p[x@from[l]])
+    }  
+  
+    p[x@to[l]] <- p[x@to[l]] + p[x@from[l]]
     
-    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
-    
-    p <- p[-x@from[l]]
-   
-    l <- l - 1
-  }  
+    C <- c(C, x@from[l]); l <- l - 1
+  }
+  
+  if (length(C) > 0) {
+    p <- p[-C]; for (i in 1:d) pi[[i]] <- pi[[i]][-C, ]
+  }
 
   rm(list = ls()[!(ls() %in% c("pi"))])
   
@@ -749,9 +751,8 @@ function(x, s)
 
 setMethod("a.P", 
           signature(x = "RCLRMIX"),
-function(x)
+function(x, s)
 {
-
   p <- x@p; pi <- x@pi; P <- x@P
   
   c <- x@c; d <- length(x@pi); s <- eval(s)
@@ -766,29 +767,31 @@ function(x)
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
  
-  l <- c - 1
+  l <- c - 1; C <- numeric()
   
-  while (s < length(p)) {
+  while (l + 1 > s) {
     for (i in 1:d) {
-      pi[[i]][x@to[l], ] <- (p[x@from[l]] * pi[[i]][x@from[l], ] + p[x@to[l]] * pi[[i]][x@to[l], ]) / (p[x@from[l]] + p[x@to[l]])
-      
-      pi[[i]] <- pi[[i]][-x@from[l], ]
-    }
+      pi[[i]][x@to[l], ] <- (p[x@to[l]] * pi[[i]][x@to[l], ] + p[x@from[l]] * pi[[i]][x@from[l], ]) / (p[x@to[l]] + p[x@from[l]])
+    }  
+  
+    p[x@to[l]] <- p[x@to[l]] + p[x@from[l]]
     
-    p[x@to[l]] <- p[x@from[l]] + p[x@to[l]]
-    
-    p <- p[-x@from[l]]
-   
-    l <- l - 1
+    C <- c(C, x@from[l]); l <- l - 1
   }
   
-  dataset <- as.matrix(x@Dataset[[x@pos]])
+  if (length(C) > 0) {
+    p <- p[-C]; for (i in 1:d) pi[[i]] <- as.matrix(pi[[i]][-C, ])
+  }
+
+  dataset <- as.matrix(x@x@Dataset[[x@pos]])
   
   n <- nrow(dataset)  
   
   Y <- dataset; y <- as.matrix(x@P[, 1:d]); Np <- array()
-
+  
   for (j in 1:nrow(y)) {
+    Np[j] <- 0.0
+      
     for (l in 1:s) {
       Pl <- 1.0
         
@@ -803,14 +806,19 @@ function(x)
       Np[j] <- Np[j] + p[l] * Pl * n
     }      
   }
-    
+  
   P[, d + 2] <- Np
   
-  colnames(P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+  if (is.null(colnames(dataset))) {
+    colnames(P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+  }
+  else {
+    colnames(P) <- c(colnames(dataset), "Nt", "Np")   
+  }  
 
   rm(list = ls()[!(ls() %in% c("P"))])
   
-  P
+  P  
 }) ## a.P
 
 setMethod("a.tau",
@@ -818,8 +826,6 @@ setMethod("a.tau",
 function(x, s)
 {
   tau <- x@tau
-  
-  names <- colnames(tau)
   
   c <- x@c; s <- eval(s)
   
@@ -833,19 +839,19 @@ function(x, s)
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
  
-  l <- c - 1
+  l <- c - 1; C <- numeric()
   
-  while (s < ncol(tau)) {
-    tau[, x@to[l]] <- tau[, x@from[l]] + tau[, x@to[l]]
+  while (l + 1 > s) {
+    tau[, x@to[l]] <- tau[, x@to[l]] + tau[, x@from[l]]
     
-    tau <- as.matrix(tau[, -x@from[l]])
-    
-    names <- names[-x@from[l]]
-   
-    l <- l - 1
+    C <- c(C, x@from[l]); l <- l - 1
   }
   
-  colnames(tau) <- names
+  if (length(C) > 0) {
+    print(C)
+  
+    tau <- as.matrix(tau[, -C])
+  }
 
   rm(list = ls()[!(ls() %in% c("tau"))])
   

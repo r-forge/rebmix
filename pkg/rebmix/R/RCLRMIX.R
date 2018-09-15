@@ -93,7 +93,13 @@ function(model, ...)
     
     model@P <- as.data.frame(cbind(y, Nt, Np))
     
-    colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+    if (is.null(colnames(dataset))) {
+      colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+    }
+    else {
+      colnames(model@P) <- c(colnames(dataset), "Nt", "Np")   
+    }     
+    
     rownames(model@pi[[i]]) <- paste(1:c, sep = "")
   }  
   

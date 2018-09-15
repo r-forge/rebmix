@@ -45,7 +45,7 @@ The value is returned only if all variables in slot \code{x} follow either binom
 a data frame containing true \eqn{N_{\mathrm{t}}(\bm{y}_{\tilde{\jmath}})} and predictive \eqn{N_{\mathrm{p}}(\bm{y}_{\tilde{\jmath}})} frequencies calculated for unique \eqn{\bm{y}_{\tilde{\jmath}} \in \{ \bm{y}_{1}, \ldots, \bm{y}_{n} \}}, where \eqn{\tilde{\jmath} = 1, \ldots, \tilde{n}$ and $\tilde{n} \leq n}.
 }
 \item{\code{tau}:}{
-a matrix of size \eqn{n \times c} containing conditional probabilities that observations \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}} arise from clusters \eqn{1, \ldots, c}.
+a matrix of size \eqn{n \times c} containing conditional probabilities \eqn{\tau_{jl}} that observations \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}} arise from clusters \eqn{1, \ldots, c}.
 }
 \item{\code{prob}:}{
 a vector of length \eqn{c} containing probabilities of correct clustering for \eqn{s = 1, \ldots, c}.
