@@ -8,7 +8,7 @@
 Objects can be created by calls of the form \code{new("REBMIX.boot", ...)}. Accessor methods for the slots are \code{a.rseed(x = NULL)},
 \code{a.pos(x = NULL)}, \code{a.Bootstrap(x = NULL)}, \code{a.B(x = NULL)}, \code{a.n(x = NULL)}, \code{a.replace(x = NULL)}, \code{a.prob(x = NULL)},
 \code{a.c(x = NULL)}, \code{a.c.se(x = NULL)}, \code{a.c.cv(x = NULL)}, \code{a.c.mode(x = NULL)}, \code{a.c.prob(x = NULL)}, \code{a.w(x = NULL)},
-\code{a.w.se(x = NULL)}, \code{a.w.cv(x = NULL)}, \code{a.Theta(x = NULL)}, \code{a.Theta.se(x = NULL)} and \code{a.Theta.cv(x = NULL)}, where \code{x} stands for an object of class \code{REBMIX.boot}. 
+\code{a.w.se(x = NULL)}, \code{a.w.cv(x = NULL)}, \code{a.Theta(x = NULL)}, \code{a.Theta.se(x = NULL)} and \code{a.Theta.cv(x = NULL)}, where \code{x} stands for an object of class \code{REBMIX.boot}.
 }
 \section{Slots}{
 \describe{

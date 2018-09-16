@@ -85,7 +85,7 @@ void Insert(FLOAT y,   // Inserted value.
     for (i = 0; i < *n; i++) {
         if (y < Y[i]) {
             for (j = *n; j > i; j--) Y[j] = Y[j - 1];
-            
+
             Y[i] = y;
 
             break;
@@ -438,7 +438,7 @@ int ErrorF(FLOAT y,     // Variable y.
 E0: return (Error);
 } // ErrorF
 
-// Returns the LU decomposition of matrix A. See http://www.nr.com/ 
+// Returns the LU decomposition of matrix A. See http://www.nr.com/
 
 int LUdcmp(int   n,     // Size of square matrix.
            FLOAT *A,    // Pointer to the square matrix A.
@@ -509,9 +509,9 @@ int LUdcmp(int   n,     // Size of square matrix.
 E0: if (V) free(V);
 
     return (Error);
-} // LUdcmp 
+} // LUdcmp
 
-// Solves the set of n linear equations A x = b. See See http://www.nr.com/ 
+// Solves the set of n linear equations A x = b. See See http://www.nr.com/
 
 int LUbksb(int   n,     // Size of square matrix.
            FLOAT *A,    // Pointer to the square matrix A.
@@ -545,9 +545,9 @@ int LUbksb(int   n,     // Size of square matrix.
     }
 
     return (Error);
-} // LUbksb 
+} // LUbksb
 
-// Returns the determinant and the inverse matrix of A. See http://www.nr.com/ 
+// Returns the determinant and the inverse matrix of A. See http://www.nr.com/
 
 int LUinvdet(int   n,     // Size of square matrix.
              FLOAT *A,    // Pointer to the square matrix A.
@@ -588,8 +588,8 @@ int LUinvdet(int   n,     // Size of square matrix.
         for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
     }
 
-E0: if (B) free(B);	
- 
+E0: if (B) free(B);
+
     if (b) free(b);
 
     if (indx) free(indx);
@@ -597,7 +597,7 @@ E0: if (B) free(B);
     return (Error);
 } // LUinvdet
 
-// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/ 
+// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/
 
 int Choldc(int   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
@@ -642,7 +642,7 @@ int Choldc(int   n,   // Size of square matrix.
 E0: return (Error);
 } // Choldc
 
-// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/ 
+// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/
 
 int Cholinvdet(int   n,         // Size of square matrix.
                FLOAT *A,        // Pointer to the symmetric square matrix A.
@@ -716,7 +716,7 @@ E0: if (p) free(p);
     return (Error);
 } // Cholinvdet
 
-// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
 
 FLOAT BesselI0(FLOAT y)
 {
@@ -754,7 +754,7 @@ FLOAT BesselI0(FLOAT y)
     return (I0);
 } // BesselI0
 
-// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
 
 FLOAT BesselI1(FLOAT y)
 {
@@ -781,7 +781,7 @@ FLOAT BesselI1(FLOAT y)
 			 (FLOAT)0.02658733 * (FLOAT)pow(t, 8) +
 			 (FLOAT)0.00301532 * (FLOAT)pow(t, 10) +
 			 (FLOAT)0.00032411 * (FLOAT)pow(t, 12);
-		
+
 		I1 *= sgn * y;
 	}
 	else {

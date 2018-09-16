@@ -2,7 +2,7 @@
 ## R sources for reproducing the results in ##
 ##   Mitja Franko, Marko Nagode:            ##
 ##   Probability Density Function of the    ##
-##   Equivalent Stress Amplitude using      ## 
+##   Equivalent Stress Amplitude using      ##
 ##   Statistical Transformation             ##
 ##############################################
 
@@ -23,7 +23,7 @@ set.seed(8)
 
 # Weibull-normal mixture model.
 
-WNmodel <- function (formula = .~.) {    
+WNmodel <- function (formula = .~.) {
   retval <- new("FLXMC", weighted = TRUE,
     formula = formula, dist = "Weibull-normal",
     name = "Weibull-normal parameters")
@@ -33,7 +33,7 @@ WNmodel <- function (formula = .~.) {
       logLik <- array()
 
       for (i in 1:nrow(y)) {
-        logLik[i] <- dweibull(y[i, 1], shape = beta, scale = theta, log = TRUE) + 
+        logLik[i] <- dweibull(y[i, 1], shape = beta, scale = theta, log = TRUE) +
                      dnorm(y[i, 2], mean = mean, sd = sd, log = TRUE)
       }
 
@@ -50,7 +50,7 @@ WNmodel <- function (formula = .~.) {
     mean <- sum(w * y[, 2]) / sum(w)
 
     sd <- sqrt(sum(w * (y[, 2] - mean)^2) / sum(w))
-      
+
     beta <- 0.9
 
     i <- 1; Error <- 1
@@ -66,11 +66,11 @@ WNmodel <- function (formula = .~.) {
 
       f <- (1.0 / beta) + A0 / A4 - A1 / A2
       df <- ((A1 / A2) * (A1 / A2)) - (A3 / A2) - (1.0 / beta / beta)
-        
+
       dbeta <- f / df
 
       beta <- beta - dbeta
-        
+
       if (is.nan(dbeta) || is.infinite(dbeta) || (beta <= 1e-6)) {
         stop("Not converged!")
       }
@@ -87,10 +87,10 @@ WNmodel <- function (formula = .~.) {
     df <- 2 * ncol(y)
 
     para <- list(sd = sd, mean = mean, beta = beta, theta = theta, n.obs = n)
- 
+
     with(para, eval(retval@defineComponent))
   }
- 
+
   retval
 } ## WNmodel
 
@@ -114,7 +114,7 @@ n = nrow(weibullnormal)
 Sturges <- as.integer(1 + log2(n)) # Minimum v follows the Sturges rule.
 Log10 <- as.integer(10 * log10(n)) # Maximum v follows the Log10 rule.
 
-timerebmix <- system.time(weibullnormalestrebmix <- REBMIX(Dataset = 
+timerebmix <- system.time(weibullnormalestrebmix <- REBMIX(Dataset =
   list(weibullnormal = weibullnormal),
   Preprocessing = "histogram", cmax = 5, Criterion = "AIC",
   pdf = c("Weibull", "normal"),
@@ -122,11 +122,11 @@ timerebmix <- system.time(weibullnormalestrebmix <- REBMIX(Dataset =
 
 weibullnormalestrebmix
 AIC(weibullnormalestrebmix)
-timerebmix 
+timerebmix
 
-plot(weibullnormalestrebmix, nrow = 2, ncol = 3, 
+plot(weibullnormalestrebmix, nrow = 2, ncol = 3,
   what = c("density", "marginal", "IC", "logL"), npts = 1000)
-  
+
 summary(weibullnormalestrebmix)
 
 detach("package:rebmix")

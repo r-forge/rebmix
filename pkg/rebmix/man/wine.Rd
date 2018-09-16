@@ -39,7 +39,7 @@ data("wine")
 \code{Nonflavanoid.Phenols} continuous.
 }
 \item{
-\code{Proanthocyanins} continuous. 
+\code{Proanthocyanins} continuous.
 }
 \item{
 \code{Color.Intensity} continuous.
@@ -81,7 +81,7 @@ set.seed(3)
 
 Wine <- split(p = 0.75, Dataset = wine, class = 14)
 
-# Estimate number of components, component weights and component 
+# Estimate number of components, component weights and component
 # parameters for train subsets.
 
 n <- range(a.ntrain(Wine))
@@ -106,7 +106,7 @@ plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
 
 # Selected chunks.
 
-winecla <- RCLSMIX(model = "RCLSMVNORM", 
+winecla <- RCLSMIX(model = "RCLSMVNORM",
   x = list(wineest),
   Dataset = a.test(Wine),
   Zt = a.Zt(Wine))

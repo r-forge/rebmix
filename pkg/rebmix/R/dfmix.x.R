@@ -1,7 +1,7 @@
 .dfmix.x <- function(x, w, xTheta, ...)
 {
   n <- length(x)
-  
+
   f <- array(data = 0.0, dim = n, dimnames = NULL)
 
   for (i in 1:length(w)) {
@@ -41,9 +41,9 @@
         Kappa = as.double(xTheta[[i]]$theta2),
         f = double(n),
         PACKAGE = "rebmix")
-          
+
       fix <- output$f
-    }     
+    }
 
     f <- f + w[i] * fix
   }

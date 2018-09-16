@@ -5,6 +5,6 @@ ddirac <- function(x, location)
   f[x == location] <- 1.0
 
   rm(list = ls()[!(ls() %in% c("f"))])
- 
+
   return(f)
 } ## ddirac

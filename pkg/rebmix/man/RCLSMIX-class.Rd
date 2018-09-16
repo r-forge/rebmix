@@ -8,7 +8,7 @@
 Objects can be created by calls of the form \code{new("RCLSMIX", ...)}. Accessor methods for the slots are \code{a.o(x = NULL)},
 \code{a.Dataset(x = NULL)}, \code{a.s(x = NULL)}, \code{a.ntrain(x = NULL)}, \code{a.P(x = NULL)}, \code{a.ntest(x = NULL)}, \code{a.Zt(x = NULL)},
 \code{a.Zp(x = NULL)}, \code{a.CM(x = NULL)}, \code{a.Accuracy(x = NULL)}, \code{a.Error(x = NULL)}, \code{a.Precision(x = NULL)}, \code{a.Sensitivity(x = NULL)},
-\code{a.Specificity(x = NULL)} and \code{a.Chunks(x = NULL)}, where \code{x} stands for an object of class \code{RCLSMIX}. 
+\code{a.Specificity(x = NULL)} and \code{a.Chunks(x = NULL)}, where \code{x} stands for an object of class \code{RCLSMIX}.
 }
 \section{Slots}{
 \describe{
@@ -45,7 +45,7 @@ a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
 a factor of predictive class membership \eqn{\bm{\Omega}_{g}} for the test dataset.
 }
 \item{\code{CM}:}{
-a table containing confusion matrix for multiclass classifier. It contains 
+a table containing confusion matrix for multiclass classifier. It contains
 number \eqn{x_{qg}} of test observations with the true class \eqn{q} that are classified into the class \eqn{g}, where \eqn{q, g = 1, \ldots, s}.
 }
 \item{\code{Accuracy}:}{

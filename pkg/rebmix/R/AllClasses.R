@@ -6,7 +6,7 @@ slots = c(c = "numeric",
   pdf = "character",
   Theta = "list"))
 
-setMethod("initialize", "RNGMIX.Theta", 
+setMethod("initialize", "RNGMIX.Theta",
 function(.Object, ...,
   c,
   pdf)
@@ -16,60 +16,60 @@ function(.Object, ...,
   if (missing(c) || (length(c) == 0)) {
     stop(sQuote("c"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(c)) {
     stop(sQuote("c"), " integer is requested!", call. = FALSE)
   }
 
   length(c) <- 1
-  
+
   if (c < 1) {
     stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   # pdf.
-  
+
   if (missing(pdf) || (length(pdf) == 0)) {
     stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
   }
 
   if (!is.character(pdf)) {
     stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
-  } 
+  }
 
   pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
-  
+
   # d.
-    
+
   d <- length(pdf)
-  
+
   # Theta.
 
   Theta <- list()
 
   length(Theta) <- 3 * c
-    
+
   names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
   names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
   names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
-  
+
   M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
 
   for (i in 1:c) {
     Theta[[1 + (i - 1) * 3]] <- pdf
     Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
     Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
-    
+
     Theta[[3 + (i - 1) * 3]][M] <- NA
   }
-  
+
   .Object@c <- c
   .Object@d <- d
   .Object@pdf <- pdf
   .Object@Theta <- Theta
-  
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
+
   .Object
 }) ## initialize
 
@@ -80,20 +80,20 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
   }
-  
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"c\":", "\n", sep = "")
 
   print(object@c, quote = FALSE)
-  
+
   cat("Slot \"d\":", "\n", sep = "")
 
   print(object@d, quote = FALSE)
-  
+
   cat("Slot \"pdf\":", "\n", sep = "")
 
-  print(object@pdf, quote = FALSE)  
+  print(object@pdf, quote = FALSE)
 
   cat("Slot \"Theta\":", "\n", sep = "")
 
@@ -106,7 +106,7 @@ function(object)
 
 setClass("RNGMVNORM.Theta", contains = "RNGMIX.Theta")
 
-setMethod("initialize", "RNGMVNORM.Theta", 
+setMethod("initialize", "RNGMVNORM.Theta",
 function(.Object, ...,
   c,
   d)
@@ -116,13 +116,13 @@ function(.Object, ...,
   if (missing(c) || (length(c) == 0)) {
     stop(sQuote("c"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(c)) {
     stop(sQuote("c"), " integer is requested!", call. = FALSE)
   }
 
   length(c) <- 1
-  
+
   if (c < 1) {
     stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
   }
@@ -132,27 +132,27 @@ function(.Object, ...,
   if (missing(d) || (length(d) == 0)) {
     stop(sQuote("d"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(d)) {
     stop(sQuote("d"), " integer is requested!", call. = FALSE)
   }
 
   length(d) <- 1
-  
+
   if (d < 1) {
     stop(sQuote("d"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   # pdf.
-  
+
   pdf <- rep(.rebmix$pdf[1], d)
-  
+
   # Theta.
 
   Theta <- list()
 
   length(Theta) <- 3 * c
-    
+
   names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
   names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
   names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
@@ -167,9 +167,9 @@ function(.Object, ...,
   .Object@d <- d
   .Object@pdf <- pdf
   .Object@Theta <- Theta
-  
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
+
   .Object
 }) ## initialize
 
@@ -188,7 +188,7 @@ slots = c(Dataset.name = "character",
   ymax = "numeric"),
 prototype = list(rseed = -1))
 
-setMethod("initialize", "RNGMIX", 
+setMethod("initialize", "RNGMIX",
 function(.Object, ...,
   Dataset.name,
   rseed,
@@ -196,7 +196,7 @@ function(.Object, ...,
   Theta)
 {
   # Dataset.name.
-  
+
   if (missing(Dataset.name) || (length(Dataset.name) == 0)) {
     stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
   }
@@ -208,19 +208,19 @@ function(.Object, ...,
   # rseed.
 
   if (missing(rseed) || (length(rseed) == 0)) rseed <- .Object@rseed
-  
+
   if (!is.wholenumber(rseed)) {
     stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
   }
 
   length(rseed) <- 1
-  
+
   if (rseed > -1) {
     stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
   }
 
   # n.
-  
+
   if (missing(n) || (length(n) == 0)) {
     stop(sQuote("n"), " must not be empty!", call. = FALSE)
   }
@@ -228,103 +228,103 @@ function(.Object, ...,
   if (!is.wholenumber(n)) {
     stop(sQuote("n"), " integer vector is requested!", call. = FALSE)
   }
-  
+
   if (!all(n > 0)) {
     stop("all ", sQuote("n"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   c <- length(n)
-  
-  # Theta.  
-  
+
+  # Theta.
+
   if (missing(Theta) || (length(Theta) == 0)) {
     stop(sQuote("Theta"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.list(Theta)) {
     stop(sQuote("Theta"), " list is requested!", call. = FALSE)
-  }  
-  
+  }
+
   Names <- names(Theta)
-  
+
   if (length(grep("pdf", Names)) == 0) {
     stop(sQuote("pdf1"), " in " , sQuote("Theta"), " character vector is requested!", call. = FALSE)
   }
-  
+
   if (length(grep("theta1", Names)) == 0) {
     stop(sQuote("theta1.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
   }
-  
+
   if (length(grep("theta2", Names)) == 0) {
     stop(sQuote("theta2.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
-  }     
-  
-  length(grep("pdf", Names))  
-  
+  }
+
+  length(grep("pdf", Names))
+
   j <- 0; length.pdf <- length(Theta[[grep("pdf", Names)[1]]])
-  
-  for (i in grep("pdf", Names)) {  
+
+  for (i in grep("pdf", Names)) {
     pdf <- as.character(Theta[[i]])
-  
+
     pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
-    
+
     if (length(pdf) != length.pdf) {
       stop("lengths of ", sQuote("pdfi"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
-    }    
-  
+    }
+
     Theta[[i]] <- pdf; j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("pdfi"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
-  } 
-  
+  }
+
   j <- 0; length.theta1 <- length(Theta[[grep("theta1", Names)[1]]])
-  
-  for (i in grep("theta1", Names)) {  
+
+  for (i in grep("theta1", Names)) {
     theta1 <- as.numeric(Theta[[i]])
-   
+
     if (length(theta1) != length.theta1) {
       stop("lengths of ", sQuote("theta1.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
-    }    
+    }
 
     j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("theta1.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
-  } 
-  
+  }
+
   j <- 0; length.theta2 <- length(Theta[[grep("theta2", Names)[1]]])
-  
-  for (i in grep("theta2", Names)) {  
+
+  for (i in grep("theta2", Names)) {
     theta2 <- as.numeric(Theta[[i]])
-   
+
     if (length(theta2) != length.theta2) {
       stop("lengths of ", sQuote("theta2.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
     }
 
-    j <- j + 1    
+    j <- j + 1
   }
 
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("theta2.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
-  } 
- 
+  }
+
   # Variables.
 
   for (i in 1:length(.rebmix$pdf)) {
     .Object@Variables[which(pdf == .rebmix$pdf[i])] <- .rebmix$pdf.Variables[i]
   }
-  
+
   .Object@Dataset.name <- Dataset.name
   .Object@rseed <- rseed
   .Object@n <- n
   .Object@Theta <- Theta
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
-  .Object  
+
+  .Object
 }) ## initialize
 
 setMethod("show",
@@ -334,9 +334,9 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RNGMIX is requested!", call. = FALSE)
   }
-  
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"w\":", "\n", sep = "")
 
   print(object@w, quote = FALSE)
@@ -353,7 +353,7 @@ function(object)
 }) ## show
 
 # Class RNGMVNORM
-                          
+
 setClass("RNGMVNORM", contains = "RNGMIX")
 
 setMethod("show",
@@ -363,9 +363,9 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RNGMVNORM is requested!", call. = FALSE)
   }
-  
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"w\":", "\n", sep = "")
 
   print(object@w, quote = FALSE)
@@ -396,8 +396,8 @@ slots = c(Dataset = "list",
   K = "ANY",
   y0 = "numeric",
   ymin = "numeric",
-  ymax = "numeric",                                      
-  ar = "numeric",   
+  ymax = "numeric",
+  ar = "numeric",
   Restraints = "character",
   w = "list",
   Theta = "list",
@@ -415,8 +415,8 @@ prototype = list(cmax = 15,
   ar = 0.1,
   Restraints = "loose",
   pos = 1))
-  
-setMethod("initialize", "REBMIX", 
+
+setMethod("initialize", "REBMIX",
 function(.Object, ...,
   Dataset,
   Preprocessing,
@@ -434,15 +434,15 @@ function(.Object, ...,
   Restraints)
 {
   # Dataset.
-  
+
   if (missing(Dataset) || (length(Dataset) == 0)) {
     stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.list(Dataset)) {
     stop(sQuote("Dataset"), " list is requested!", call. = FALSE)
-  }   
-  
+  }
+
   if (is.null(names(Dataset))) {
     names(Dataset) <- paste("dataset", 1:length(Dataset), sep = "")
   }
@@ -460,7 +460,7 @@ function(.Object, ...,
   if (!all(unlist(lapply(Dataset, ncol)) > 0)) {
     stop(sQuote("Dataset"), " numbers of columns in data frames must be greater than 0!", call. = FALSE)
   }
-  
+
   for (j in 1:length(Dataset)) {
     Dataset[[j]] <- as.data.frame(Dataset[[j]][complete.cases(Dataset[[j]]), ])
   }
@@ -470,21 +470,21 @@ function(.Object, ...,
   }
 
   # Preprocessing.
-  
+
   if (missing(Preprocessing) || (length(Preprocessing) == 0)) {
     stop(sQuote("Preprocessing"), " must not be empty!", call. = FALSE)
   }
 
   if (!is.character(Preprocessing)) {
     stop(sQuote("Preprocessing"), " character vector is requested!", call. = FALSE)
-  }   
+  }
 
   Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = TRUE)
-  
+
   # cmax.
-  
+
   if (missing(cmax) || (length(cmax) == 0)) cmax <- .Object@cmax
-  
+
   if (!is.wholenumber(cmax)) {
     stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
   }
@@ -492,11 +492,11 @@ function(.Object, ...,
   if (cmax < 1) {
     stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   # cmin.
-  
+
   if (missing(cmin) || (length(cmin) == 0)) cmin <- .Object@cmin
-  
+
   if (!is.wholenumber(cmin)) {
     stop(sQuote("cmin"), " integer is requested!", call. = FALSE)
   }
@@ -504,10 +504,10 @@ function(.Object, ...,
   if (cmin < 1) {
     stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   if (cmin > cmax) {
     stop(sQuote("cmin"), " must be less or equal than ", cmax, "!", call. = FALSE)
-  }     
+  }
 
   # Criterion.
 
@@ -515,12 +515,12 @@ function(.Object, ...,
 
   if (!is.character(Criterion)) {
     stop(sQuote("Criterion"), " character vector is requested!", call. = FALSE)
-  } 
+  }
 
   Criterion <- match.arg(Criterion, .rebmix$Criterion, several.ok = TRUE)
-  
+
   # pdf.
-  
+
   if (.Object@class[1] == "REBMVNORM") {
     pdf <- rep(.rebmix$pdf[1], d)
   }
@@ -531,7 +531,7 @@ function(.Object, ...,
 
     if (!is.character(pdf)) {
       stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
-    } 
+    }
 
     pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
 
@@ -539,9 +539,9 @@ function(.Object, ...,
       stop("lengths of ", sQuote("pdf"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
   }
-  
+
   # theta1.
-  
+
   if (missing(theta1) || (length(theta1) == 0)) {
     theta1 <- .Object@theta1
   }
@@ -549,12 +549,12 @@ function(.Object, ...,
     if (length(theta1) != d) {
       stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
-    
+
     class(theta1) <- "numeric"
   }
-  
+
   # theta2.
-  
+
   if (missing(theta2) || (length(theta2) == 0)) {
     theta2 <- .Object@theta2
   }
@@ -562,11 +562,11 @@ function(.Object, ...,
     if (length(theta2) != d) {
       stop("lengths of ", sQuote("theta2"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
-    
+
     class(theta2) <- "numeric"
-  }   
-  
-  # K. 
+  }
+
+  # K.
 
   if (missing(K) || (length(K) == 0)) {
     stop(sQuote("K"), " must not be empty!", call. = FALSE)
@@ -585,7 +585,7 @@ function(.Object, ...,
       stop("lengths of ", sQuote("Preprocessing"), " and ", sQuote("K"), " must match!", call. = FALSE)
     }
   }
-  else 
+  else
   if (is.numeric(K)) {
     if (!is.wholenumber(K)) {
       stop(sQuote("K"), " integer vector is requested!", call. = FALSE)
@@ -598,71 +598,71 @@ function(.Object, ...,
   else {
     K <- "auto"
   }
-  
+
   # y0.
-  
+
   if (missing(y0) || (length(y0) == 0)) {
-    y0 <- .Object@y0  
+    y0 <- .Object@y0
   }
   else {
     if (length(y0) != d) {
       stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
+    }
   }
-  
+
   # ymin.
-  
+
   if (missing(ymin) || (length(ymin) == 0)) {
-    ymin <- .Object@ymin  
+    ymin <- .Object@ymin
   }
   else {
     if (length(ymin) != d) {
       stop("lengths of ", sQuote("ymin"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
+    }
   }
-  
+
   # ymax.
-  
+
   if (missing(ymax) || (length(ymax) == 0)) {
-    ymax <- .Object@ymax  
+    ymax <- .Object@ymax
   }
   else {
     if (length(ymax) != d) {
       stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }      
+    }
   }
-  
+
   # ar.
-  
+
   if (missing(ar) || (length(ar) == 0)) ar <- .Object@ar
-  
+
   if (!is.numeric(ar)) {
     stop(sQuote("ar"), " numeric is requested!", call. = FALSE)
   }
-  
+
   length(ar) <- 1
 
   if ((ar <= 0.0) || (ar > 1.0)) {
     stop(sQuote("ar"), " must be greater than 0.0 and less or equal than 1.0!", call. = FALSE)
-  }     
+  }
 
   # Restraints.
 
   if (missing(Restraints) || (length(Restraints) == 0)) Restraints <- .Object@Restraints
-  
+
   if (!is.character(Restraints)) {
     stop(sQuote("Restraints"), " character is requested!", call. = FALSE)
   }
-  
+
   Restraints <- match.arg(Restraints, .rebmix$Restraints, several.ok = FALSE)
-  
+
   # Variables.
 
   for (i in 1:length(.rebmix$pdf)) {
     .Object@Variables[which(pdf == .rebmix$pdf[i])] <- .rebmix$pdf.Variables[i]
   }
 
-  # Dataset. 
+  # Dataset.
 
   for (i in 1:d) {
     if (.Object@Variables[i] == .rebmix$Variables[2]) {
@@ -670,14 +670,14 @@ function(.Object, ...,
          if (all(sapply(Dataset[[j]][, i], is.wholenumber)) == FALSE) {
            stop(sQuote("Dataset"), " all values in column ", i, " must be integers!", call. = FALSE)
          }
-         
+
          if (any(sapply(Dataset[[j]][, i], function(x) x < 0)) == TRUE) {
            stop(sQuote("Dataset"), " all values in column ", i, " must be greater or equal than 0!", call. = FALSE)
-         }         
+         }
       }
     }
-  }  
-  
+  }
+
   .Object@Dataset <- Dataset
   .Object@Preprocessing <- Preprocessing
   .Object@cmax <- cmax
@@ -692,9 +692,9 @@ function(.Object, ...,
   .Object@ymax <- ymax
   .Object@ar <- ar
   .Object@Restraints <- Restraints
-  
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
+
   .Object
 }) ## initialize
 
@@ -705,19 +705,19 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class REBMIX is requested!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(object@pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(object@pos) <- 1
 
   if ((object@pos < 1) || (object@pos > nrow(object@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
-  }  
-  
+  }
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"w\":", "\n", sep = "")
 
   print(object@w[[object@pos]], quote = FALSE)
@@ -727,14 +727,14 @@ function(object)
   print(object@Theta[[object@pos]], quote = FALSE)
 
   cat("Slot \"summary\":", "\n", sep = "")
-  
+
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
-  
+
   DF <- object@summary[object@pos, p]
 
   is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
 
-  print(DF, quote = FALSE) 
+  print(DF, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -750,19 +750,19 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class REBMVNORM is requested!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(object@pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(object@pos) <- 1
 
   if ((object@pos < 1) || (object@pos > nrow(object@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
-  }  
-  
+  }
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"w\":", "\n", sep = "")
 
   print(object@w[[object@pos]], quote = FALSE)
@@ -772,9 +772,9 @@ function(object)
   print(object@Theta[[object@pos]], quote = FALSE)
 
   cat("Slot \"summary\":", "\n", sep = "")
-  
+
   p <- match(c("Dataset", "Preprocessing", "Criterion", "c", "v/k", "IC", "logL", "M"), names(object@summary), nomatch = 0)
-  
+
   DF <- object@summary[object@pos, p]
 
   is.num <- sapply(DF, is.number); DF[is.num] <- lapply(DF[is.num], as.number)
@@ -791,9 +791,9 @@ slots = c(x = "ANY",
   rseed = "numeric",
   pos = "numeric",
   Bootstrap = "character",
-  B = "numeric", 
+  B = "numeric",
   n = "numeric",
-  replace = "logical", 
+  replace = "logical",
   prob = "numeric",
   c = "numeric",
   c.se = "numeric",
@@ -812,7 +812,7 @@ prototype = list(rseed = -1,
   B = 100,
   replace = TRUE))
 
-setMethod("initialize", "REBMIX.boot", 
+setMethod("initialize", "REBMIX.boot",
 function(.Object, ...,
   x,
   rseed,
@@ -824,7 +824,7 @@ function(.Object, ...,
   prob)
 {
   model <- gsub("\\.boot", "", .Object@class[1])
-  
+
   # x.
 
   if (missing(x) || (length(x) == 0)) {
@@ -834,65 +834,65 @@ function(.Object, ...,
   if (class(x) != model) {
     stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
   }
-  
+
   # rseed.
 
   if (missing(rseed) || (length(rseed) == 0)) rseed <- .Object@rseed
-  
+
   if (!is.wholenumber(rseed)) {
     stop(sQuote("rseed"), " integer is requested!", call. = FALSE)
   }
 
   length(rseed) <- 1
-  
+
   if (rseed > -1) {
     stop(sQuote("rseed"), " must be less than 0!", call. = FALSE)
-  }  
+  }
 
   # pos.
 
   if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
-  
+
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(pos) <- 1
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
   }
-  
+
   # Bootstrap.
 
   if (missing(Bootstrap) || (length(Bootstrap) == 0)) Bootstrap <- .Object@Bootstrap
 
   if (!is.character(Bootstrap)) {
     stop(sQuote("Bootstrap"), " character is requested!", call. = FALSE)
-  } 
-  
-  Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE) 
+  }
+
+  Bootstrap <- match.arg(Bootstrap, .rebmix.boot$Bootstrap, several.ok = FALSE)
 
   # B.
 
   if (missing(B) || (length(B) == 0)) B <- .Object@B
-  
+
   if (!is.wholenumber(B)) {
     stop(sQuote("B"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(B) <- 1
 
   if (B < 1) {
     stop(sQuote("B"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   # n.
 
   if (missing(n) || (length(n) == 0)) n <- .Object@n
 
   nmax <- nrow(as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]))
-  
+
   if (length(n) == 0) {
     n <- nmax
   }
@@ -900,7 +900,7 @@ function(.Object, ...,
     if (!is.wholenumber(n)) {
       stop(sQuote("n"), " integer is requested!", call. = FALSE)
     }
-  
+
     if ((n < 1) || (n > nmax)) {
       stop(sQuote("n"), " must be greater than 0 and less or equal than ", nmax, "!", call. = FALSE)
     }
@@ -909,7 +909,7 @@ function(.Object, ...,
   # replace.
 
   if (missing(replace) || (length(replace) == 0)) replace <- .Object@replace
-  
+
   if (!is.logical(replace)) {
     stop(sQuote("replace"), " logical is requested!", call. = FALSE)
   }
@@ -927,8 +927,8 @@ function(.Object, ...,
     if (length(prob) != length(n)) {
       stop("lengths of ", sQuote("prob"), " and ", sQuote("n"), " must match!", call. = FALSE)
     }
-  }  
-  
+  }
+
   .Object@x <- x
   .Object@rseed <- rseed
   .Object@pos <- pos
@@ -937,10 +937,10 @@ function(.Object, ...,
   .Object@n <- n
   .Object@replace <- replace
   .Object@prob <- prob
-  
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
-  .Object  
+
+  .Object
 }) ## initialize
 
 setMethod("show",
@@ -950,28 +950,28 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class REBMIX.boot is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
   cat("Slot \"c\":", "\n", sep = "")
 
   print(object@c, quote = FALSE)
-  
+
   cat("Slot \"c.se\":", "\n", sep = "")
 
-  print(object@c.se, quote = FALSE)  
+  print(object@c.se, quote = FALSE)
 
   cat("Slot \"c.cv\":", "\n", sep = "")
 
   print(object@c.cv, quote = FALSE)
-  
+
   cat("Slot \"c.mode\":", "\n", sep = "")
 
-  print(object@c.mode, quote = FALSE) 
-  
+  print(object@c.mode, quote = FALSE)
+
   cat("Slot \"c.prob\":", "\n", sep = "")
 
-  print(object@c.prob, quote = FALSE)        
+  print(object@c.prob, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -987,28 +987,28 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class REBMVNORM.boot is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
   cat("Slot \"c\":", "\n", sep = "")
 
   print(object@c, quote = FALSE)
-  
+
   cat("Slot \"c.se\":", "\n", sep = "")
 
-  print(object@c.se, quote = FALSE)  
+  print(object@c.se, quote = FALSE)
 
   cat("Slot \"c.cv\":", "\n", sep = "")
 
   print(object@c.cv, quote = FALSE)
-  
+
   cat("Slot \"c.mode\":", "\n", sep = "")
 
-  print(object@c.mode, quote = FALSE) 
-  
+  print(object@c.mode, quote = FALSE)
+
   cat("Slot \"c.prob\":", "\n", sep = "")
 
-  print(object@c.prob, quote = FALSE)        
+  print(object@c.prob, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -1027,12 +1027,12 @@ slots = c(x = "ANY",
   tau = "matrix",
   prob = "numeric",
   from = "numeric",
-  to = "numeric", 
+  to = "numeric",
   EN = "numeric",
   ED = "numeric"),
 prototype = list(pos = 1))
 
-setMethod("initialize", "RCLRMIX", 
+setMethod("initialize", "RCLRMIX",
 function(.Object, ...,
   x,
   pos,
@@ -1048,39 +1048,39 @@ function(.Object, ...,
 
   if (class(x) != model) {
     stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
-  }  
+  }
 
   # pos.
 
   if (missing(pos) || (length(pos) == 0)) pos <- .Object@pos
-  
+
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(pos) <- 1
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
   }
-  
+
   # Zt.
-  
+
   if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
-  
+
   if (!is.factor(Zt)) {
     stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
   }
-  
-  levels(Zt) <- 1:length(levels(Zt))  
-  
+
+  levels(Zt) <- 1:length(levels(Zt))
+
   .Object@x <- x
   .Object@pos <- pos
   .Object@Zt <- Zt
-    
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
-  .Object      
+
+  .Object
 }) ## initialize
 
 setMethod("show",
@@ -1090,28 +1090,32 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
+  cat("Slot \"prob\":", "\n", sep = "")
+
+  print(object@prob, quote = FALSE)
+
   cat("Slot \"Zp\":", "\n", sep = "")
 
   print(object@Zp, quote = FALSE)
-  
+
   cat("Slot \"from\":", "\n", sep = "")
 
   print(object@from, quote = FALSE)
-  
+
   cat("Slot \"to\":", "\n", sep = "")
 
   print(object@to, quote = FALSE)
-  
+
   cat("Slot \"EN\":", "\n", sep = "")
 
   print(object@EN, quote = FALSE)
-  
+
   cat("Slot \"ED\":", "\n", sep = "")
 
-  print(object@ED, quote = FALSE)  
+  print(object@ED, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -1127,29 +1131,33 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
+  cat("Slot \"prob\":", "\n", sep = "")
+
+  print(object@prob, quote = FALSE)
+
   cat("Slot \"Zp\":", "\n", sep = "")
 
   print(object@Zp, quote = FALSE)
-  
+
   cat("Slot \"from\":", "\n", sep = "")
 
   print(object@from, quote = FALSE)
-  
+
   cat("Slot \"to\":", "\n", sep = "")
 
   print(object@to, quote = FALSE)
-  
+
   cat("Slot \"EN\":", "\n", sep = "")
 
   print(object@EN, quote = FALSE)
-  
+
   cat("Slot \"ED\":", "\n", sep = "")
 
   print(object@ED, quote = FALSE)
-  
+
   rm(list = ls())
 }) ## show
 
@@ -1163,7 +1171,7 @@ slots = c(s = "numeric",
   ntest = "numeric",
   test = "data.frame",
   Zt = "factor"))
-  
+
 setMethod("show",
           signature(object = "RCLS.chunk"),
 function(object)
@@ -1171,9 +1179,9 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RCLS.chunk is requested!", call. = FALSE)
   }
-  
+
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
-  
+
   cat("Slot \"s\":", "\n", sep = "")
 
   print(object@s, quote = FALSE)
@@ -1185,7 +1193,7 @@ function(object)
   cat("Slot \"ntrain\":", "\n", sep = "")
 
   print(object@ntrain, quote = FALSE)
-  
+
   cat("Slot \"ntest\":", "\n", sep = "")
 
   print(object@ntest, quote = FALSE)
@@ -1214,7 +1222,7 @@ slots = c(x = "list",
   Chunks = "numeric"),
 prototype = list(CM = table(0)))
 
-setMethod("initialize", "RCLSMIX", 
+setMethod("initialize", "RCLSMIX",
 function(.Object, ...,
   x,
   Dataset,
@@ -1226,77 +1234,77 @@ function(.Object, ...,
 
   if (missing(x) || (length(x) == 0)) {
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
-  } 
-  
+  }
+
   if (!all(unlist(lapply(x, class)) == model)) {
     stop(sQuote("x"), " list of ", model, " objects is requested!", call. = FALSE)
   }
-  
+
   # o.
-  
+
   .Object@o <- length(x)
-  
+
   # s.
-  
+
   s <- unique(unlist(lapply(x, function(x) length(x@Dataset))))
-  
+
   if (length(s) != 1) {
     stop("lengths of ", sQuote("Dataset"), " in ", sQuote("x"), " must be equal!", call. = FALSE)
   }
-  
+
   if (s == 1) {
     stop(sQuote("s"), " must be greater than 1!", call. = FALSE)
-  }  
-  
+  }
+
   .Object@s <- s
-  
+
   # ntrain.
-  
+
   ntrain <- matrix(unlist(lapply(x, function(x) lapply(x@Dataset, nrow))), ncol = s, byrow = TRUE)
-  
-  ntrain <- ntrain[!duplicated(ntrain),] 
-  
+
+  ntrain <- ntrain[!duplicated(ntrain),]
+
   if (length(ntrain) != s) {
     stop(sQuote("Dataset"), " in ", sQuote("x"), " numbers of rows in data frames must be equal!", call. = FALSE)
   }
-  
+
   .Object@ntrain <- ntrain
-  
+
   # P.
-  
+
   .Object@P <- ntrain / sum(ntrain)
-  
+
   # Dataset.
-  
+
   if (missing(Dataset) || (length(Dataset) == 0)) {
     stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
   }
-  
+
   if (!is.data.frame(Dataset)) {
-    stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)  
+    stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
   }
-  
+
   # ntest.
-  
+
   .Object@ntest <- nrow(Dataset)
-  
+
   # Zt.
-  
+
   if (missing(Zt) || (length(Zt) == 0)) Zt <- .Object@Zt
-  
+
   if (!is.factor(Zt)) {
     stop(sQuote("Zt"), " factor is requested!", call. = FALSE)
   }
-  
+
   levels(Zt) <- 1:length(levels(Zt))
-  
+
   .Object@x <- x
   .Object@Dataset <- Dataset
   .Object@Zt <- Zt
-    
+
   rm(list = ls()[!(ls() %in% c(".Object"))])
-  
-  .Object       
+
+  .Object
 }) ## initialize
 
 setMethod("show",
@@ -1306,40 +1314,40 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RCLSMIX is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
   cat("Slot \"CM\":", "\n", sep = "")
 
   print(object@CM, quote = FALSE)
-  
+
   cat("Slot \"Error\":", "\n", sep = "")
 
   print(object@Error, quote = FALSE)
-  
+
   cat("Slot \"Precision\":", "\n", sep = "")
-  
+
   names(object@Precision) <- NULL
 
-  print(object@Precision, quote = FALSE) 
-  
+  print(object@Precision, quote = FALSE)
+
   cat("Slot \"Sensitivity\":", "\n", sep = "")
-  
+
   names(object@Sensitivity) <- NULL
 
-  print(object@Sensitivity, quote = FALSE)   
-  
+  print(object@Sensitivity, quote = FALSE)
+
   cat("Slot \"Specificity\":", "\n", sep = "")
-  
+
   names(object@Specificity) <- NULL
 
   print(object@Specificity, quote = FALSE)
-  
-  cat("Slot \"Chunks\":", "\n", sep = "")  
-  
+
+  cat("Slot \"Chunks\":", "\n", sep = "")
+
   names(object@Chunks) <- NULL
 
-  print(object@Chunks, quote = FALSE)          
+  print(object@Chunks, quote = FALSE)
 
   rm(list = ls())
 }) ## show
@@ -1355,40 +1363,40 @@ function(object)
   if (missing(object)) {
     stop(sQuote("object"), " object of class RCLSMVNORM is requested!", call. = FALSE)
   }
-  
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")  
-  
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
   cat("Slot \"CM\":", "\n", sep = "")
 
   print(object@CM, quote = FALSE)
-  
+
   cat("Slot \"Error\":", "\n", sep = "")
 
   print(object@Error, quote = FALSE)
-  
+
   cat("Slot \"Precision\":", "\n", sep = "")
-  
+
   names(object@Precision) <- NULL
 
-  print(object@Precision, quote = FALSE) 
-  
+  print(object@Precision, quote = FALSE)
+
   cat("Slot \"Sensitivity\":", "\n", sep = "")
-  
+
   names(object@Sensitivity) <- NULL
 
-  print(object@Sensitivity, quote = FALSE)   
-  
+  print(object@Sensitivity, quote = FALSE)
+
   cat("Slot \"Specificity\":", "\n", sep = "")
-  
+
   names(object@Specificity) <- NULL
 
   print(object@Specificity, quote = FALSE)
-  
-  cat("Slot \"Chunks\":", "\n", sep = "")  
-  
+
+  cat("Slot \"Chunks\":", "\n", sep = "")
+
   names(object@Chunks) <- NULL
 
-  print(object@Chunks, quote = FALSE)              
+  print(object@Chunks, quote = FALSE)
 
   rm(list = ls())
 }) ## show

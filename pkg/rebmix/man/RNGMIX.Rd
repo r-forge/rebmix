@@ -14,7 +14,7 @@ Returns as default the RNGMIX univariate or multivariate random datasets for mix
 If \code{model} equals \code{"RNGMVNORM"} multivariate random datasets for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices are returned.
 }
 \usage{
-\S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(), 
+\S4method{RNGMIX}{RNGMIX}(model = "RNGMIX", Dataset.name = character(),
        rseed = -1, n = numeric(), Theta = list(), ...)
 ## ... and for other signatures
 }
@@ -42,7 +42,7 @@ currently not used.
 }
 }
 \details{
-RNGMIX is based on the "Minimal" random number generator \code{ran1} of Park and Miller with the Bays-Durham shuffle and added safeguards that returns a uniform random deviate between 0.0 and 1.0 
+RNGMIX is based on the "Minimal" random number generator \code{ran1} of Park and Miller with the Bays-Durham shuffle and added safeguards that returns a uniform random deviate between 0.0 and 1.0
 (exclusive of the endpoint values).
 }
 \value{
@@ -62,7 +62,7 @@ of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 \examples{
 devAskNewPage(ask = TRUE)
 
-# Generate and print multivariate normal datasets with diagonal 
+# Generate and print multivariate normal datasets with diagonal
 # variance-covariance matrices.
 
 n <- c(75, 100, 125, 150, 175)
@@ -84,12 +84,12 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:25, sep = ""),
   rseed = -1,
   n = n,
   Theta = a.Theta(Theta))
-  
+
 simulated
 
 plot(simulated, pos = 22, nrow = 2, ncol = 3)
 
-# Generate and print multivariate normal datasets with unrestricted 
+# Generate and print multivariate normal datasets with unrestricted
 # variance-covariance matrices.
 
 n <- c(200, 50, 50)
@@ -108,7 +108,7 @@ simulated <- RNGMIX(model = "RNGMVNORM",
   rseed = -1,
   n = n,
   Theta = a.Theta(Theta))
-  
+
 simulated
 
 plot(simulated, pos = 2, nrow = 3, ncol = 1)
@@ -125,15 +125,15 @@ a.theta1(Theta, 3) <- c(2.5, 15, 10, 25)
 a.theta2(Theta, 1) <- c(0.3, NA, 0.9, 3)
 a.theta2(Theta, 2) <- c(0.2, NA, 0.1, 7)
 a.theta2(Theta, 3) <- c(0.4, NA, 0.7, 20)
-  
+
 simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:5, sep = ""),
   rseed = -1,
   n = n,
   Theta = a.Theta(Theta))
-  
+
 simulated
 
-plot(simulated, pos = 4, nrow = 2, ncol = 3) 
+plot(simulated, pos = 4, nrow = 2, ncol = 3)
 
 # Generate and print univariate mixed Weibull dataset.
 
@@ -148,12 +148,12 @@ simulated <- RNGMIX(Dataset.name = "simulated",
   rseed = -1,
   n = n,
   Theta = a.Theta(Theta))
-  
+
 simulated
 
 plot(simulated, pos = 1)
 
-# Generate and print multivariate normal datasets with unrestricted 
+# Generate and print multivariate normal datasets with unrestricted
 # variance-covariance matrices.
 
 # Set dimension, dataset size, number of components and seed.

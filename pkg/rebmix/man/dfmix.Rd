@@ -7,8 +7,8 @@
 Predictive Marginal Density Calculation
 }
 \description{
-Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and 
-predictive marginal densities \eqn{f(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vectors \eqn{\bm{x}} are subvectors of 
+Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and
+predictive marginal densities \eqn{f(\bm{x} | c, \bm{w}, \bm{\Theta})}. Vectors \eqn{\bm{x}} are subvectors of
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
@@ -61,13 +61,13 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
 K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
   as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
 
-# Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(model = "REBMVNORM",
   Dataset = a.Dataset(simulated),
-  Preprocessing = "h", 
+  Preprocessing = "h",
   cmax = 4,
-  Criterion = "BIC", 
+  Criterion = "BIC",
   pdf = c("n", "n", "n"))
 
 # Preprocess simulated dataset.

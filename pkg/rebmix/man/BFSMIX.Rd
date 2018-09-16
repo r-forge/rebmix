@@ -13,7 +13,7 @@ Returns as default the optimized RCLSMIX algorithm output for mixtures of condit
 \usage{
 \S4method{BFSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(), Dataset = data.frame(),
        Zt = factor(), ...)
-## ... and for other signatures     
+## ... and for other signatures
 }
 \arguments{
 \item{model}{

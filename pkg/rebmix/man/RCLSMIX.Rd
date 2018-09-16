@@ -19,7 +19,7 @@ Returns as default the RCLSMIX algorithm output for mixtures of conditionally in
         Zt = factor(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLSMIX}(object, ...)
-## ... and for other signatures     
+## ... and for other signatures
 }
 \arguments{
 \item{model}{
@@ -103,8 +103,8 @@ for (i in 1:14) {
 
 # Class membership prediction based upon the best first search algorithm.
 
-adultcla <- BFSMIX(x = adultest, 
-  Dataset = a.test(Adult), 
+adultcla <- BFSMIX(x = adultest,
+  Dataset = a.test(Adult),
   Zt = a.Zt(Adult))
 
 adultcla

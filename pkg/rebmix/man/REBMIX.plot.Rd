@@ -13,28 +13,28 @@
 Plots RNGMIX, REBMIX, RCLRMIX and RCLSMIX Output
 }
 \description{
-Plots true clusters if \code{x} equals \code{"RNGMIX"}. Plots the REBMIX output 
-depending on \code{what} argument if \code{x} equals \code{"REBMIX"}. 
-Plots predictive clusters if \code{x} equals \code{"RCLRMIX"}. 
+Plots true clusters if \code{x} equals \code{"RNGMIX"}. Plots the REBMIX output
+depending on \code{what} argument if \code{x} equals \code{"REBMIX"}.
+Plots predictive clusters if \code{x} equals \code{"RCLRMIX"}.
 Wrongly clustered observations are plotted only if \code{x@Zt} is available.
 Plots predictive classes and wrongly classified observations if \code{x} equals \code{"RCLSMIX"}.
 }
 \usage{
 \S4method{plot}{RNGMIX,missing}(x, y, pos = 1, nrow = 1, ncol = 1, cex = 0.8,
-     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
-     plot.cex = 0.8, plot.pch = 19, ...) 
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
+     plot.cex = 0.8, plot.pch = 19, ...)
 \S4method{plot}{REBMIX,missing}(x, y, pos = 1, what = c("density"),
      nrow = 1, ncol = 1, npts = 200, n = 200, cex = 0.8, fg = "black",
-     lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
-     plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE, 
-     contour.labcex = 0.8, contour.method = "flattest", 
+     lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
+     plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE,
+     contour.labcex = 0.8, contour.method = "flattest",
      contour.nlevels = 12, ...)
 \S4method{plot}{RCLRMIX,missing}(x, y, s = expression(c), nrow = 1, ncol = 1, cex = 0.8,
-     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
-     plot.cex = 0.8, plot.pch = 19, ...)        
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
+     plot.cex = 0.8, plot.pch = 19, ...)
 \S4method{plot}{RCLSMIX,missing}(x, y, nrow = 1, ncol = 1, cex = 0.8,
-     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5, 
-     plot.cex = 0.8, plot.pch = 19, ...)     
+     fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
+     plot.cex = 0.8, plot.pch = 19, ...)
 ## ... and for other signatures
 }
 \arguments{
@@ -71,7 +71,7 @@ a numerical value giving the amount by which the plotting text and symbols shoul
 relative to the default, see also \code{\link[graphics]{par}}. The default value is \code{0.8}.
 }
 \item{fg}{
-a colour used for things like axes and boxes around plots, see also \code{\link[graphics]{par}}. 
+a colour used for things like axes and boxes around plots, see also \code{\link[graphics]{par}}.
 The default value is \code{"black"}.
 }
 \item{lty}{
@@ -85,7 +85,7 @@ a character specifying the type of the plot region to be used. One of \code{"s"}
 region or \code{"m"} generating the maximal plotting region. The default value is \code{"m"}.
 }
 \item{tcl}{
-a length of tick marks as a fraction of the height of a line of the text, see also \code{\link[graphics]{par}}. 
+a length of tick marks as a fraction of the height of a line of the text, see also \code{\link[graphics]{par}}.
 The default value is \code{0.5}.
 }
 \item{plot.cex}{
@@ -150,7 +150,7 @@ wine <- wine[, winecolnames]
 
 # Determine number of dimensions d and wine dataset size n.
 
-d <- ncol(wine) 
+d <- ncol(wine)
 n <- nrow(wine)
 
 # Estimate number of components, component weights and component parameters.
@@ -161,10 +161,10 @@ RootN <- as.integer(2 * n^0.5) # Maximum v follows RootN rule.
 K <- c(floor(Sturges^(1/13)), ceiling(RootN^(1/13)))
 
 wineest <- REBMIX(model = "REBMVNORM",
-  Dataset = list(wine = wine), 
-  Preprocessing = "kernel density estimation", 
-  Criterion = "ICL-BIC", 
-  pdf = rep("normal", d), 
+  Dataset = list(wine = wine),
+  Preprocessing = "kernel density estimation",
+  Criterion = "ICL-BIC",
+  pdf = rep("normal", d),
   K = K[1]:K[2])
 
 # Plot finite mixture.

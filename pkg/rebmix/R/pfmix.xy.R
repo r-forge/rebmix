@@ -1,7 +1,7 @@
 .pfmix.xy <- function(x, y, w, xTheta, yTheta, ...)
 {
   n <- length(x)
-  
+
   f <- array(data = 0.0, dim = n, dimnames = NULL)
 
   for (i in 1:length(w)) {
@@ -41,9 +41,9 @@
         Kappa = as.double(xTheta[[i]]$theta2),
         F = double(n),
         PACKAGE = "rebmix")
-          
-      fix <- output$F        
-    }     
+
+      fix <- output$F
+    }
 
     if (yTheta[[i]]$pdf == .rebmix$pdf[1]) {
       fiy <- pnorm(as.numeric(y), mean = as.numeric(yTheta[[i]]$theta1), sd = as.numeric(yTheta[[i]]$theta2), ...)
@@ -81,9 +81,9 @@
         Kappa = as.double(yTheta[[i]]$theta2),
         F = double(n),
         PACKAGE = "rebmix")
-          
+
       fiy <- output$F
-    }         
+    }
 
     f <- f + w[i] * fix * fiy
   }

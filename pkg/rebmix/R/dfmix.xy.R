@@ -41,9 +41,9 @@
         Kappa = as.double(xTheta[[i]]$theta2),
         f = double(n),
         PACKAGE = "rebmix")
-          
-      fix <- output$f    
-    }     
+
+      fix <- output$f
+    }
 
     if (yTheta[[i]]$pdf == .rebmix$pdf[1]) {
       fiy <- dnorm(as.numeric(y), mean = as.numeric(yTheta[[i]]$theta1), sd = as.numeric(yTheta[[i]]$theta2), ...)
@@ -81,9 +81,9 @@
         Kappa = as.double(yTheta[[i]]$theta2),
         f = double(n),
         PACKAGE = "rebmix")
-          
-      fiy <- output$f  
-    }     
+
+      fiy <- output$f
+    }
 
     f <- f + w[i] * fix * fiy
   }

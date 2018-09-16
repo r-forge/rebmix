@@ -1,4 +1,4 @@
-setMethod("plot", 
+setMethod("plot",
           signature(x = "REBMIX", y = "missing"),
 function(x,
   y,
@@ -24,22 +24,22 @@ function(x,
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(pos) <- 1
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
   }
-  
+
   if (!is.character(what)) {
     stop(sQuote("what"), " character vector is requested!", call. = FALSE)
   }
 
-  what <- match.arg(what, .rebmix.plot$what, several.ok = TRUE)  
+  what <- match.arg(what, .rebmix.plot$what, several.ok = TRUE)
 
   if (!is.wholenumber(nrow)) {
     stop(sQuote("nrow"), " integer is requested!", call. = FALSE)
@@ -64,14 +64,14 @@ function(x,
   if (npts < 1) {
     stop(sQuote("npts"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(n)) {
     stop(sQuote("n"), " integer is requested!", call. = FALSE)
   }
 
   if (n < 1) {
     stop(sQuote("n"), " must be greater than 0!", call. = FALSE)
-  }  
+  }
 
   ni <- ncol(x@summary)
 
@@ -81,11 +81,11 @@ function(x,
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
-  
+
   N <- 0
-  
+
   opar <- list(); ipar <- 1
-  
+
   par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
@@ -262,9 +262,9 @@ function(x,
   py <- list(d)
 
   Variables <- match.arg(x@Variables, .rebmix$Variables, several.ok = TRUE)
-  
+
   pdf <- match.arg(x@pdf, .rebmix$pdf, several.ok = TRUE)
-  
+
   for (i in 1:d) {
     if (C == .rebmix$Preprocessing[1]) {
       k <- as.numeric(x@summary[pos, "v/k"])
@@ -290,10 +290,10 @@ function(x,
     else {
       lim[, i] <- c(0.0, 1.0)
     }
-    
+
     if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
       lim[2, i] <- lim[1, i] + 1.0
-    }    
+    }
 
     if (Variables[i] == .rebmix$Variables[2]) {
       py[[i]] <- sort(unique(ey[, i]))
@@ -310,7 +310,7 @@ function(x,
       N <- d * (d - 1) / 2
 
       figno <- 0
-    
+
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
         space = "rgb",
         interpolate = "linear")
@@ -330,7 +330,7 @@ function(x,
           }
 
           pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i,], Theta[j,])
-         
+
           zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)
 
           zlim <- zlim / zmax
@@ -350,7 +350,7 @@ function(x,
 
           if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[2])) {
             z <- as.vector(pdens); z <- z != 0.0
-          
+
             points(x = rep(py[[i]], length(py[[j]]))[z],
               y = rep(py[[j]], each = length(py[[i]]))[z],
               type = "p",
@@ -459,17 +459,17 @@ function(x,
 
             figno <- 0
           }
-          
+
           opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
-    
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {  
+
+    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
       N <- d * (d - 1) / 2
 
       figno <- 0
-    
+
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
         space = "rgb",
         interpolate = "linear")
@@ -479,7 +479,7 @@ function(x,
           edist <- .dist.xy(ey[, i], ey[, j], n)
 
           pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i,], Theta[j,])
-          
+
           zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
 
           zlim <- zlim / zmax
@@ -606,7 +606,7 @@ function(x,
 
             figno <- 0
           }
-          
+
           opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
@@ -679,7 +679,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-        
+
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
           side = 1,
@@ -689,10 +689,10 @@ function(x,
           padj = 0.2,
           cex = cex)
       }
-      
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
-    
+
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
       edist <- .dist.x(ey[, 1], n)
 
@@ -749,7 +749,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-        
+
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
           side = 1,
@@ -758,14 +758,14 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
+      }
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
-  
-  m <- nrow * ncol * ceiling(N / nrow / ncol) - N  
-  
+
+  m <- nrow * ncol * ceiling(N / nrow / ncol) - N
+
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
@@ -833,7 +833,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-      
+
       if (m <= 0) {
         for (l in 1:length(legend)) {
           mtext(text = legend[[l]],
@@ -843,21 +843,21 @@ function(x,
             adj = 0.5,
             padj = 0.2,
             cex = cex)
-        } 
-      
-        m <- nrow * ncol - 1       
+        }
+
+        m <- nrow * ncol - 1
       }
       else {
         m <- m - 1
       }
-      
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
-  
+
   if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.IC[[pos]],
       type = "o",
@@ -902,7 +902,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -912,20 +912,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
-    } 
-    
+    }
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.logL[[pos]],
       type = "o",
@@ -970,7 +970,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -980,20 +980,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
-    } 
-    
+    }
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-  }  
-  
+  }
+
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.D[[pos]],
       type = "o",
@@ -1038,7 +1038,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -1048,20 +1048,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
-  
+
     plot(x = x@all.K[[pos]],
       y = x@all.IC[[pos]],
       type = "o",
@@ -1106,7 +1106,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -1116,23 +1116,23 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
 }) ## plot
 
-setMethod("plot", 
+setMethod("plot",
           signature(x = "REBMVNORM", y = "missing"),
 function(x,
   y,
@@ -1162,18 +1162,18 @@ function(x,
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(pos) <- 1
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
   }
-  
+
   if (!is.character(what)) {
     stop(sQuote("what"), " character vector is requested!", call. = FALSE)
   }
 
-  what <- match.arg(what, .rebmix.plot$what, several.ok = TRUE)  
+  what <- match.arg(what, .rebmix.plot$what, several.ok = TRUE)
 
   if (!is.wholenumber(nrow)) {
     stop(sQuote("nrow"), " integer is requested!", call. = FALSE)
@@ -1198,14 +1198,14 @@ function(x,
   if (npts < 1) {
     stop(sQuote("npts"), " must be greater than 0!", call. = FALSE)
   }
-  
+
   if (!is.wholenumber(n)) {
     stop(sQuote("n"), " integer is requested!", call. = FALSE)
   }
 
   if (n < 1) {
     stop(sQuote("n"), " must be greater than 0!", call. = FALSE)
-  }  
+  }
 
   ni <- ncol(x@summary)
 
@@ -1217,9 +1217,9 @@ function(x,
   ncol <- max(1, ncol)
 
   N <- 0
-  
+
   opar <- list(); ipar <- 1
-  
+
   par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
@@ -1396,9 +1396,9 @@ function(x,
   py <- list(d)
 
   Variables <- match.arg(x@Variables, .rebmix$Variables, several.ok = TRUE)
-  
+
   pdf <- match.arg(x@pdf, .rebmix$pdf, several.ok = TRUE)
-  
+
   for (i in 1:d) {
     if (C == .rebmix$Preprocessing[1]) {
       k <- as.numeric(x@summary[pos, "v/k"])
@@ -1424,7 +1424,7 @@ function(x,
     else {
       lim[, i] <- c(0.0, 1.0)
     }
-    
+
     if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
       lim[2, i] <- lim[1, i] + 1.0
     }
@@ -1439,7 +1439,7 @@ function(x,
       N <- d * (d - 1) / 2
 
       figno <- 0
-    
+
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
         space = "rgb",
         interpolate = "linear")
@@ -1459,7 +1459,7 @@ function(x,
           }
 
           pdens <- outer(py[[i]], py[[j]], ".dfmvnorm.xy", w, Theta, i, j)
-          
+
           zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)
 
           zlim <- zlim / zmax
@@ -1537,17 +1537,17 @@ function(x,
 
             figno <- 0
           }
-          
+
           opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
     }
-    
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {  
+
+    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
       N <- d * (d - 1) / 2
 
       figno <- 0
-    
+
       ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
         space = "rgb",
         interpolate = "linear")
@@ -1556,8 +1556,8 @@ function(x,
         for (j in (i + 1):d) {
           edist <- .dist.xy(ey[, i], ey[, j], n)
 
-          pdist <- outer(py[[i]], py[[j]], ".pfmvnorm.xy", w, Theta, i, j)          
- 
+          pdist <- outer(py[[i]], py[[j]], ".pfmvnorm.xy", w, Theta, i, j)
+
           zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
 
           zlim <- zlim / zmax
@@ -1635,7 +1635,7 @@ function(x,
 
             figno <- 0
           }
-          
+
           opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
         }
       }
@@ -1655,7 +1655,7 @@ function(x,
         edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
       }
 
-      pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)      
+      pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)
 
       ylim <- c(0.0, max(edens$y, pdens))
 
@@ -1708,7 +1708,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-        
+
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
           side = 1,
@@ -1718,10 +1718,10 @@ function(x,
           padj = 0.2,
           cex = cex)
       }
-      
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
-    
+
     if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
       edist <- .dist.x(ey[, 1], n)
 
@@ -1778,7 +1778,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-        
+
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
           side = 1,
@@ -1788,13 +1788,13 @@ function(x,
           padj = 0.2,
           cex = cex)
       }
-      
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
-  
-  m <- nrow * ncol * ceiling(N / nrow / ncol) - N  
-  
+
+  m <- nrow * ncol * ceiling(N / nrow / ncol) - N
+
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
@@ -1862,7 +1862,7 @@ function(x,
         adj = 0.5,
         padj = 0.2,
         cex = cex)
-      
+
       if (m <= 0) {
         for (l in 1:length(legend)) {
           mtext(text = legend[[l]],
@@ -1872,21 +1872,21 @@ function(x,
             adj = 0.5,
             padj = 0.2,
             cex = cex)
-        } 
-      
-        m <- nrow * ncol - 1       
+        }
+
+        m <- nrow * ncol - 1
       }
       else {
         m <- m - 1
       }
-      
+
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
-  
+
   if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.IC[[pos]],
       type = "o",
@@ -1931,7 +1931,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -1941,20 +1941,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.logL[[pos]],
       type = "o",
@@ -1999,7 +1999,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -2009,20 +2009,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-  }  
-  
+  }
+
   if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
-  
+
     plot(x = x@opt.c[[pos]],
       y = x@opt.D[[pos]],
       type = "o",
@@ -2067,7 +2067,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -2077,20 +2077,20 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
-  
+
     plot(x = x@all.K[[pos]],
       y = x@all.IC[[pos]],
       type = "o",
@@ -2135,7 +2135,7 @@ function(x,
       adj = 0.5,
       padj = 0.2,
       cex = cex)
-      
+
     if (m <= 0) {
       for (l in 1:length(legend)) {
         mtext(text = legend[[l]],
@@ -2145,18 +2145,18 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-      } 
-      
-      m <- nrow * ncol - 1       
+      }
+
+      m <- nrow * ncol - 1
     }
     else {
       m <- m - 1
     }
-    
+
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-}) # plot         
+}) # plot

@@ -12,13 +12,13 @@
 Parametric or Nonparametric Bootstrap for Standard Error and Coefficient of Variation Estimation
 }
 \description{
-Returns as default the boot output for mixtures of conditionally independent normal, 
-lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities. If 
-\code{x} is of class \code{RNGMVNORM} the boot output for mixtures of multivariate normal 
+Returns as default the boot output for mixtures of conditionally independent normal,
+lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises component densities. If
+\code{x} is of class \code{RNGMVNORM} the boot output for mixtures of multivariate normal
 component densities with unrestricted variance-covariance matrices is returned.
-} 
-\usage{ 
-\S4method{boot}{REBMIX}(x = NULL, rseed = -1, pos = 1, Bootstrap = "parametric", 
+}
+\usage{
+\S4method{boot}{REBMIX}(x = NULL, rseed = -1, pos = 1, Bootstrap = "parametric",
      B = 100, n = numeric(), replace = TRUE, prob = numeric(), ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX.boot}(object, ...)
@@ -82,22 +82,22 @@ n <- nrow(weibull)
 K <- c(as.integer(1 + log2(n)), # Minimum v follows Sturges rule.
   as.integer(10 * log10(n))) # Maximum v follows log10 rule.
 
-# Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters.
 
 weibullest <- REBMIX(Dataset = list(weibull),
-  Preprocessing = "kernel density estimation", 
+  Preprocessing = "kernel density estimation",
   cmax = 4,
-  Criterion = "BIC", 
-  pdf = "Weibull", 
-  K = K[1]:K[2], 
+  Criterion = "BIC",
+  pdf = "Weibull",
+  K = K[1]:K[2],
   Restraints = "loose")
-  
+
 # Plot finite mixture.
 
-plot(weibullest, what = c("density", "distribution", "IC", "logL", "D"), 
+plot(weibullest, what = c("density", "distribution", "IC", "logL", "D"),
   nrow = 3, ncol = 2, npts = 1000)
-  
-# Bootstrap finite mixture.  
+
+# Bootstrap finite mixture.
 
 weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric", B = 10)
 

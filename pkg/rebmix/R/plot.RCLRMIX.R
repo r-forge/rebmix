@@ -1,4 +1,4 @@
-setMethod("plot", 
+setMethod("plot",
           signature(x = "RCLRMIX", y = "missing"),
 function(x,
   y,
@@ -35,41 +35,41 @@ function(x,
   }
 
   d <- ncol(x@x@Dataset[[x@pos]])
-  
+
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
-  
+
   zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-  
+
   c <- x@c; s <- eval(s)
-  
+
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(s) <- 1
 
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
- 
+
   i <- c - 1
-  
+
   while (s < length(unique(Zp))) {
     Zp[Zp == x@from[i]] <- x@to[i]
-   
+
     i <- i - 1
   }
-  
+
   unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
-  
+
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
   N <- d * (d - 1) / 2
-  
-  opar <- list(); ipar <- 1  
-  
+
+  opar <- list(); ipar <- 1
+
   par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
@@ -84,30 +84,30 @@ function(x,
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
   ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- Zp - 1
-  
+
   error <- is.error(Zt, Zp)
-  
+
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
-    
+
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
-  
+
   if (i > 0) {
     plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
   }
   else {
-    plot.mul <- rep(1.0, length(Zp)) 
+    plot.mul <- rep(1.0, length(Zp))
   }
-  
+
   legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
-  
+
   legend.text <- as.character(sort.unique.Zp)
-  
+
   legend.pch <- rep(plot.pch, s)
-  
+
   which.error <- which(error == 1); which.not.error <- which(error != 1)
-  
+
   if (N > 0) {
     figno <- 0
 
@@ -127,7 +127,7 @@ function(x,
           lwd = 1,
           cex = plot.cex * plot.mul[which.not.error],
           pch = plot.pch)
-          
+
         points(x = ey[which.error, i],
           y = ey[which.error, j],
           type = "p",
@@ -138,7 +138,7 @@ function(x,
           col = "black",
           lwd = 1,
           cex = plot.cex * plot.mul[which.error],
-          pch = 1)          
+          pch = 1)
 
         box(col = fg, lty = "solid", lwd = 1)
 
@@ -170,19 +170,19 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-          
+
         figno <- figno + 1
 
         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-          par(fig = c(0, 1, 0, 1), 
-            oma = c(0, 0, 0, 0), 
-            mar = c(0, 0, 0, 0), 
+          par(fig = c(0, 1, 0, 1),
+            oma = c(0, 0, 0, 0),
+            mar = c(0, 0, 0, 0),
             new = TRUE)
-          
+
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
+
           .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
-  
+
           par(mfrow = c(nrow, ncol),
             cex = cex,
             cex.axis = 1.0,
@@ -193,13 +193,13 @@ function(x,
             oma = c(1.2, 0.2, 0.2, 0.2),
             pty = pty,
             tcl = tcl, ...)
-    
+
           par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
           figno <- 0
         }
-        
-        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1            
+
+        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
       }
     }
   }
@@ -212,13 +212,13 @@ function(x,
       xlab = "",
       ylab = "",
       xlim = range(ey[, 1]),
-      ylim = range(Zp),      
+      ylim = range(Zp),
       col = plot.col[which.not.error],
       axes = FALSE,
       lwd = 1,
       cex = plot.cex * plot.mul[which.not.error],
       pch = plot.pch)
-          
+
     points(x = ey[which.error, 1],
       y = Zp[which.error],
       type = "p",
@@ -229,7 +229,7 @@ function(x,
       col = "black",
       lwd = 1,
       cex = plot.cex * plot.mul[which.error],
-      pch = 1)       
+      pch = 1)
 
     box(col = fg, lty = "solid", lwd = 1)
 
@@ -262,15 +262,15 @@ function(x,
       padj = 0.2,
       cex = cex)
 
-    par(fig = c(0, 1, 0, 1), 
-      oma = c(0, 0, 0, 0), 
-      mar = c(0, 0, 0, 0), 
+    par(fig = c(0, 1, 0, 1),
+      oma = c(0, 0, 0, 0),
+      mar = c(0, 0, 0, 0),
       new = TRUE)
-          
+
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
+
    .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
-      
+
     par(mfrow = c(nrow, ncol),
       cex = cex,
       cex.axis = 1.0,
@@ -281,18 +281,18 @@ function(x,
       oma = c(1.2, 0.2, 0.2, 0.2),
       pty = pty,
       tcl = tcl, ...)
-      
+
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
-    
-    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1        
+
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)
-}) # plot         
+}) # plot
 
-setMethod("plot", 
+setMethod("plot",
           signature(x = "RCLRMVNORM", y = "missing"),
 function(x,
   y,
@@ -329,41 +329,41 @@ function(x,
   }
 
   d <- ncol(x@x@Dataset[[x@pos]])
-  
+
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
-  
+
   zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-  
+
   c <- x@c; s <- eval(s)
-  
+
   if (!is.wholenumber(s)) {
     stop(sQuote("s"), " integer is requested!", call. = FALSE)
   }
-  
+
   length(s) <- 1
 
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
- 
+
   i <- c - 1
-  
+
   while (s < length(unique(Zp))) {
     Zp[Zp == x@from[i]] <- x@to[i]
-   
+
     i <- i - 1
   }
-  
+
   unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
-  
+
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
 
   N <- d * (d - 1) / 2
-  
-  opar <- list(); ipar <- 1  
-  
+
+  opar <- list(); ipar <- 1
+
   par(mfrow = c(nrow, ncol),
     cex = cex,
     cex.axis = 1.0,
@@ -378,30 +378,30 @@ function(x,
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
   ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- Zp - 1
-  
+
   error <- is.error(Zt, Zp)
-  
+
   ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
     space = "rgb",
     interpolate = "linear")
-    
+
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
-  
+
   if (i > 0) {
     plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
   }
   else {
-    plot.mul <- rep(1.0, length(Zp)) 
+    plot.mul <- rep(1.0, length(Zp))
   }
-  
+
   legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
-  
+
   legend.text <- as.character(sort.unique.Zp)
-  
+
   legend.pch <- rep(plot.pch, s)
-  
+
   which.error <- which(error == 1); which.not.error <- which(error != 1)
-  
+
   if (N > 0) {
     figno <- 0
 
@@ -421,7 +421,7 @@ function(x,
           lwd = 1,
           cex = plot.cex * plot.mul[which.not.error],
           pch = plot.pch)
-          
+
         points(x = ey[which.error, i],
           y = ey[which.error, j],
           type = "p",
@@ -432,7 +432,7 @@ function(x,
           col = "black",
           lwd = 1,
           cex = plot.cex * plot.mul[which.error],
-          pch = 1)          
+          pch = 1)
 
         box(col = fg, lty = "solid", lwd = 1)
 
@@ -464,19 +464,19 @@ function(x,
           adj = 0.5,
           padj = 0.2,
           cex = cex)
-          
+
         figno <- figno + 1
 
         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-          par(fig = c(0, 1, 0, 1), 
-            oma = c(0, 0, 0, 0), 
-            mar = c(0, 0, 0, 0), 
+          par(fig = c(0, 1, 0, 1),
+            oma = c(0, 0, 0, 0),
+            mar = c(0, 0, 0, 0),
             new = TRUE)
-          
+
           plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
+
           .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
-  
+
           par(mfrow = c(nrow, ncol),
             cex = cex,
             cex.axis = 1.0,
@@ -487,13 +487,13 @@ function(x,
             oma = c(1.2, 0.2, 0.2, 0.2),
             pty = pty,
             tcl = tcl, ...)
-    
+
           par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
           figno <- 0
         }
-        
-        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1            
+
+        opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
       }
     }
   }
@@ -506,13 +506,13 @@ function(x,
       xlab = "",
       ylab = "",
       xlim = range(ey[, 1]),
-      ylim = range(Zp),      
+      ylim = range(Zp),
       col = plot.col[which.not.error],
       axes = FALSE,
       lwd = 1,
       cex = plot.cex * plot.mul[which.not.error],
       pch = plot.pch)
-          
+
     points(x = ey[which.error, 1],
       y = Zp[which.error],
       type = "p",
@@ -523,7 +523,7 @@ function(x,
       col = "black",
       lwd = 1,
       cex = plot.cex * plot.mul[which.error],
-      pch = 1)       
+      pch = 1)
 
     box(col = fg, lty = "solid", lwd = 1)
 
@@ -556,15 +556,15 @@ function(x,
       padj = 0.2,
       cex = cex)
 
-    par(fig = c(0, 1, 0, 1), 
-      oma = c(0, 0, 0, 0), 
-      mar = c(0, 0, 0, 0), 
+    par(fig = c(0, 1, 0, 1),
+      oma = c(0, 0, 0, 0),
+      mar = c(0, 0, 0, 0),
       new = TRUE)
-          
+
     plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-          
+
    .legendA(s = s, text = legend.text, col = legend.col, pch = legend.pch, error = sum(error) != 0)
-      
+
     par(mfrow = c(nrow, ncol),
       cex = cex,
       cex.axis = 1.0,
@@ -575,12 +575,12 @@ function(x,
       oma = c(1.2, 0.2, 0.2, 0.2),
       pty = pty,
       tcl = tcl, ...)
-      
+
     par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
-    
-    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1        
+
+    opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
-  
+
   rm(list = ls()[!(ls() %in% c("opar"))])
 
   invisible(opar)

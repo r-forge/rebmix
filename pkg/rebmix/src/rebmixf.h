@@ -75,7 +75,7 @@ typedef struct additinalparametertype {
 class CompnentDistribution : public Base {
 public:
     // Members.
-    Base                   *owner_;  // Owner object. 
+    Base                   *owner_;  // Owner object.
     ParametricFamilyType_e *pdf_;    // Parametric family types.
     FLOAT                  **Theta_; // Component parameters.
     // Constructor.

@@ -5,12 +5,12 @@
 \title{Class \code{"RCLRMIX"}}
 \description{Object of class \code{RCLRMIX}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("RCLRMIX", ...)}. 
+Objects can be created by calls of the form \code{new("RCLRMIX", ...)}.
 Accessor methods for the slots are \code{a.pos(x = NULL)}, \code{a.Zt(x = NULL)}, \code{a.Zp(x = NULL, s = expression(c))}, \code{a.c(x = NULL)},
 \code{a.p(x = NULL, s = expression(c))}, \code{a.pi(x = NULL, s = expression(c))}, \cr
 \code{a.P(x = NULL, s = expression(c))}, \code{a.tau(x = NULL, s = expression(c))},
 \code{a.prob(x = NULL)}, \code{a.from(x = NULL)}, \code{a.to(x = NULL)}, \code{a.EN(x = NULL)} and \code{a.ED(x = NULL)}, where \code{x} stands for an object of class \code{RCLRMIX} and \code{s}
-a desired number of clusters for which the slot is calculated. 
+a desired number of clusters for which the slot is calculated.
 }
 \section{Slots}{
 \describe{
@@ -33,8 +33,8 @@ number of clusters.
 a vector of length \eqn{c} containing prior probabilities of cluster memberships \eqn{p_{l}} summing to 1. The value is returned only if all variables in slot \code{x} follow either binomial or Dirac parametric families. The default value is \code{numeric()}.
 }
 \item{\code{pi}:}{
-a list of length \eqn{d} of matrices of size \eqn{c \times K_{i}} containing cluster conditional probabilities \eqn{\pi_{ilk}}. Let \eqn{\pi_{ilk}} 
-denote the cluster conditional probability that an observation in cluster \eqn{l = 1, \ldots, c} produces the \eqn{k}th outcome on the \eqn{i}th variable. 
+a list of length \eqn{d} of matrices of size \eqn{c \times K_{i}} containing cluster conditional probabilities \eqn{\pi_{ilk}}. Let \eqn{\pi_{ilk}}
+denote the cluster conditional probability that an observation in cluster \eqn{l = 1, \ldots, c} produces the \eqn{k}th outcome on the \eqn{i}th variable.
 Suppose we observe \eqn{i = 1, \ldots, d} polytomous categorical variables (the manifest variables), each of which contains \eqn{K_{i}} possible outcomes for observations \eqn{j = 1, \ldots, n}.
 A manifest variable is a variable that can be measured or observed directly. It must be coded as whole number starting at zero for the first outcome and increasing to the possible number of outcomes minus one.
 It is presumed here that all variables are statistically independentand within clusters and that \eqn{\bm{y}_{1}, \ldots, \bm{y}_{n}}

@@ -55,7 +55,7 @@ Iris
 
 N <- 1000
 
-class <- c(rep("A", 0.4 * N), rep("B", 0.2 * N), 
+class <- c(rep("A", 0.4 * N), rep("B", 0.2 * N),
   rep("C", 0.1 * N), rep("D", 0.05 * N), rep("E", 0.25 * N))
 
 type <- c(rep("train", 0.75 * N), rep("test", 0.25 * N))

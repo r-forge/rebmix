@@ -18,7 +18,7 @@ Returns as default the RCLRMIX algorithm output for mixtures of conditionally in
 \S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, pos = 1, Zt = factor(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLRMIX}(object, ...)
-## ... and for other signatures     
+## ... and for other signatures
 }
 \arguments{
 \item{model}{

@@ -11,7 +11,7 @@
     hx = as.double(hx),
     hy = as.double(hy),
     px = as.character(px),
-    py = as.character(py),        
+    py = as.character(py),
     error = integer(1),
     PACKAGE = "rebmix")
 

@@ -6,9 +6,9 @@ is.error <- function(Zt, # A vector of true cluster membership.
   }
   else {
     error <- array(data = 1, dim = length(Zp))
-  
+
     zt <- as.numeric(names(table(Zt))); zp <- unique(Zp)
-    
+
     iset <- 1:length(zt)
 
     while (1) {
@@ -17,16 +17,16 @@ is.error <- function(Zt, # A vector of true cluster membership.
       for (i in iset) {
         Zti <- Zt[which(Zt == zt[i])]
         Zpi <- Zp[which(Zt == zt[i])]
-        
+
         j <- as.numeric(names(sort(table(Zpi), decreasing = TRUE)))
-        
+
         k <- match(j, zp); k <- k[!is.na(k)]
-        
+
         if (length(k) > 0) {
           j <- zp[k[1]]; which.not.error <- which(Zt == zt[i] & Zp == j)
-          
+
           P.n <- length(which.not.error); P.d <- length(Zti)
-          
+
           if (P.n == P.d) {
             P <- P.d
           }
@@ -35,7 +35,7 @@ is.error <- function(Zt, # A vector of true cluster membership.
           }
 
           if (P > Pmax) {
-            imax <- i; jmax <- j; which.not.errormax <- which.not.error; Pmax <- P 
+            imax <- i; jmax <- j; which.not.errormax <- which.not.error; Pmax <- P
           }
         }
       }
@@ -43,13 +43,13 @@ is.error <- function(Zt, # A vector of true cluster membership.
       if (imax == 0) {
         break
       }
-      else { 
+      else {
         error[which.not.errormax] <- 0
 
         zp <- zp[which(zp != jmax)]; iset <- iset[which(iset != imax)]
       }
     }
   }
-  
+
   error
 } ## is.error

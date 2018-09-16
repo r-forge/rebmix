@@ -1,30 +1,30 @@
-.legendA <- function(s, text, col, pch, error) 
+.legendA <- function(s, text, col, pch, error)
 {
   for (i in s:1) {
     if (.Device == "tikz output") {
       legend <- paste("$", text[1:i], "$", sep = ""); j <- i
-      
+
       if (i < s) {
         legend <- c(legend, "$\\mathrm{...}$"); j <- i + 1
       }
-  
+
       if (error) {
         legend <- c(legend, "$\\mathrm{Error}$")
       }
     }
     else {
       legend <- paste(bquote(.(text[1:i])), sep = ""); j <- i
-      
+
       if (i < s) {
         legend <- c(legend, "..."); j <- i + 1
-      }      
-    
+      }
+
       if (error) {
         legend <- c(legend, "Error")
-      }  
-    }  
-    
-    w <- legend("bottom", 
+      }
+    }
+
+    w <- legend("bottom",
       legend = legend,
       col = if (error) c(col[1:j], "black") else col[1:j],
       lty = 0,
@@ -36,15 +36,15 @@
       horiz = TRUE,
       inset = c(0, 0),
       xpd = TRUE)$rect$w
-      
+
     usr <- par("usr")
-      
+
     if (w <= usr[2] - usr[1]) {
       break
     }
   }
-  
-  legend("bottom", 
+
+  legend("bottom",
     legend = legend,
     col = if (error) c(col[1:j], "black") else col[1:j],
     lty = 0,

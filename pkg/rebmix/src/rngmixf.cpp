@@ -83,17 +83,17 @@ int Rngmix::WriteDataFile()
     }
 
     for (i = 0; i < n_; i++) {
-        fprintf(fp, "%E", Y_[i][0]); 
-        
-        for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[i][j]); 
-        
+        fprintf(fp, "%E", Y_[i][0]);
+
+        for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[i][j]);
+
         fprintf(fp, "\t%d\n", Z_[i]);
     }
 
 E0: if (fp) fclose(fp);
 
-    if (Z_) free(Z_); 
-    
+    if (Z_) free(Z_);
+
     Z_ = NULL;
 
     if (Y_) {
@@ -120,17 +120,17 @@ int Rngmix::WriteParameterFile()
     FILE *fp = NULL;
     int  Error = 0;
 
-    strcpy(path, save_); 
-        
-    pchar = strrchr(path, '.'); 
-        
+    strcpy(path, save_);
+
+    pchar = strrchr(path, '.');
+
     if (pchar) {
         strcpy(ext, pchar); pchar[0] = '\0';
     }
     else {
         strcpy(ext, "");
     }
-        
+
     sprintf(line, "%s%s%s", path, "_1", ext);
 
     if ((fp = fopen(line, "w")) == NULL) {
@@ -214,7 +214,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
             break;
         case pfvonMises:
             CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
-            
+
             Y[i] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
 
             break;
@@ -337,7 +337,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
             Y[i] = CmpDist->Theta_[0][i];
 
             break;
-        case pfUniform: 
+        case pfUniform:
            Y[i] = CmpDist->Theta_[0][i] + Ran1(&IDum_) * (CmpDist->Theta_[1][i] - CmpDist->Theta_[0][i]);
         default:;
         }
@@ -348,13 +348,13 @@ E0: return Error;
 
 // Returns random sample of independent observations.
 
-int Rngmix::RNGMIX()      
+int Rngmix::RNGMIX()
 {
     int i, j, k;
     int Error = 0;
 
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
-    
+
     Y_ = (FLOAT**)malloc(n_ * sizeof(FLOAT*));
 
     Error = NULL == Y_; if (Error) goto E0;
@@ -407,8 +407,8 @@ int Rngmix::RunTemplateFile(char *file)
     printf("RNGMIX Version 2.10.3\n");
 
 S0: while (fgets(line, 2048, fp) != NULL) {
-        pchar = strtok(line, "\n"); 
-        
+        pchar = strtok(line, "\n");
+
         pchar = strtok(pchar, "=");
 
         if (!pchar) goto S0;
@@ -464,7 +464,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             if (Error) goto E0;
 
             for (k = 0; k < o_; k++) {
-                curr_ = open_[k]; 
+                curr_ = open_[k];
 
                 printf("Dataset = %s\n", curr_);
 
@@ -502,7 +502,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             length_pdf_ = isI = (int)atol(pchar);
 
             Error = isI < 1; if (Error) goto E0;
-        } 
+        }
         else
         if (!strcmp(ident, "LENGTHTHETA")) {
             i = 0;
@@ -528,7 +528,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             Error = IniTheta_->Realloc(length_pdf_, length_Theta_, length_theta_);
 
             if (Error) goto E0;
-        } 
+        }
         else
         if (!strcmp(ident, "PDF")) {
             i = 0;
@@ -614,7 +614,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             }
 
             c_++;
-        } 
+        }
         else
         if (!strcmp(ident, "SAVE")) {
             save_ = (char*)realloc(save_, (strlen(pchar) + 1) * sizeof(char));

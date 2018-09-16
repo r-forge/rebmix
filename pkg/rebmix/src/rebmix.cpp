@@ -12,7 +12,7 @@
 #include <crtdbg.h>
 #endif
 
-#if (_MAINTAIN_SWITCH) 
+#if (_MAINTAIN_SWITCH)
 int main(int argc, char* argv[])
 {
     #if (_MEMORY_LEAK_SWITCH)
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         rebmix = new Rebmix;
 
         Error = NULL == rebmix; if (Error) goto E0;
- 
+
         Error = rebmix->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
         rebmvnorm = new Rebmvnorm;
 
         Error = NULL == rebmvnorm; if (Error) goto E0;
- 
+
         Error = rebmvnorm->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
@@ -80,7 +80,7 @@ E0: if (rngmix) delete rngmix;
 
     if (_CrtMemDifference(&s3, &s1, &s2)) _CrtMemDumpStatistics(&s3);
     #endif
-    
+
     printf("\n%s%d\n", "Error: ", Error);
 
     return Error;

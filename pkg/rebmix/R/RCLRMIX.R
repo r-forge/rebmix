@@ -3,38 +3,38 @@ setMethod("RCLRMIX",
 function(model, ...)
 {
   Names <- names(model@x@Theta[[model@pos]])
-  
+
   pdf <- unlist(model@x@Theta[[model@pos]][grep("pdf", Names)])
-    
+
   theta1 <- unlist(model@x@Theta[[model@pos]][grep("theta1", Names)])
-      
+
   theta1[is.na(theta1)] <- 0
 
   theta2 <- unlist(model@x@Theta[[model@pos]][grep("theta2", Names)])
-      
+
   theta2[is.na(theta2)] <- 0
-  
+
   c <- length(model@x@w[[model@pos]])
 
   w <- model@x@w[[model@pos]]
-      
+
   d <- length(pdf) / c
-  
+
   dataset <- as.matrix(model@x@Dataset[[model@pos]])
-  
+
   n <- nrow(dataset)
-  
+
   if (sum(pdf %in% .rebmix$pdf[c(4, 6)]) == c * d) {
     model@p <- w
-  
+
     model@pi <- list(); nlevels <- array()
-  
+
     for (i in 1:d) {
       for (j in 1:c) {
         if (pdf[(j - 1) * d + i] == .rebmix$pdf[4]) {
           if (j == 1) {
             nlevels[i] <- as.integer(theta1[(j - 1) * d + i]) + 1
-            
+
             model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
 
             colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
@@ -62,7 +62,7 @@ function(model, ...)
         }
       }
     }
-    
+
     Y <- dataset; y <- as.matrix(unique(Y)); Nt <- array(); Np <- array()
 
     for (j in 1:nrow(y)) {
@@ -75,10 +75,10 @@ function(model, ...)
       }
 
       Nt[j] <- length(x); Y <- as.matrix(Y[-x, ]); Np[j] <- 0.0
-      
+
       for (l in 1:c) {
         Pl <- 1.0
-        
+
         for(i in 1:d) {
           for (ii in 1:length(model@pi[[i]][l, ])) {
             if (y[j, i] == ii - 1) {
@@ -88,21 +88,21 @@ function(model, ...)
         }
 
         Np[j] <- Np[j] + model@p[l] * Pl * n
-      }      
+      }
     }
-    
+
     model@P <- as.data.frame(cbind(y, Nt, Np))
-    
+
     if (is.null(colnames(dataset))) {
       colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
     }
     else {
-      colnames(model@P) <- c(colnames(dataset), "Nt", "Np")   
-    }     
-    
+      colnames(model@P) <- c(colnames(dataset), "Nt", "Np")
+    }
+
     rownames(model@pi[[i]]) <- paste(1:c, sep = "")
-  }  
-  
+  }
+
   output <- .C(C_RCombineComponentsMIX,
     c = as.integer(c),
     w = as.double(model@x@w[[model@pos]]),
@@ -129,11 +129,13 @@ function(model, ...)
 
   colnames(model@tau) <- paste(1:c, sep = "")
   rownames(model@tau) <- paste(1:n, sep = "")
-  
-  model@from <- output$F
-  model@to <- output$T
-  model@EN <- output$EN
-  model@ED <- output$ED
+
+  if (output$c > 1) {
+    model@from <- output$F
+    model@to <- output$T
+    model@EN <- output$EN
+    model@ED <- output$ED
+  }
 
   output <- .C(C_RCLRMIX,
     n = n,
@@ -151,17 +153,17 @@ function(model, ...)
   if (output$error == 1) {
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
-  
+
   unique.Z <- unique(output$Z)
-  
+
   model@c <- length(unique.Z)
-  
+
   i <- length(model@from)
 
   while (i > 1) {
     from.in.unique.Z <- model@from[i] %in% unique.Z
     to.in.unique.Z <- model@to[i] %in% unique.Z
- 
+
     if (from.in.unique.Z && to.in.unique.Z) {
     }
     else
@@ -187,10 +189,10 @@ function(model, ...)
       model@ED <- model@ED[-i]
     }
 
-    i <- i - 1 
+    i <- i - 1
   }
-  
-  model@Zp <- as.factor(output$Z) 
+
+  model@Zp <- as.factor(output$Z)
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -202,33 +204,33 @@ setMethod("RCLRMIX",
 function(model, ...)
 {
   Names <- names(model@x@Theta[[model@pos]])
-    
+
   pdf <- unlist(model@x@Theta[[model@pos]][grep("pdf", Names)])
-    
+
   theta1 <- unlist(model@x@Theta[[model@pos]][grep("theta1", Names)])
-      
+
   theta1[is.na(theta1)] <- 0
 
   theta2 <- unlist(model@x@Theta[[model@pos]][grep("theta2", Names)])
-      
+
   theta2[is.na(theta2)] <- 0
 
   c <- length(model@x@w[[model@pos]])
 
   w <- model@x@w[[model@pos]]
-      
+
   d <- length(pdf) / c
-  
+
   dataset <- as.matrix(model@x@Dataset[[model@pos]])
-  
+
   n <- nrow(dataset)
-  
+
   output <- .C(C_RCombineComponentsMVNORM,
     c = as.integer(c),
     w = as.double(model@x@w[[model@pos]]),
     length.pdf = as.integer(d),
     length.Theta = as.integer(4),
-    length.theta = as.integer(c(d, d * d, -d * d, -1)),      
+    length.theta = as.integer(c(d, d * d, -d * d, -1)),
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2)),
     n = as.integer(n),
@@ -244,16 +246,18 @@ function(model, ...)
   if (output$error == 1) {
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
-  
+
   model@tau <- matrix(data = output$tau, ncol = c, byrow = TRUE)
 
   colnames(model@tau) <- paste(1:c, sep = "")
   rownames(model@tau) <- paste(1:n, sep = "")
-  
-  model@from <- output$F
-  model@to <- output$T
-  model@EN <- output$EN
-  model@ED <- output$ED
+
+  if (output$c > 1) {
+    model@from <- output$F
+    model@to <- output$T
+    model@EN <- output$EN
+    model@ED <- output$ED
+  }
 
   output <- .C(C_RCLRMVNORM,
     n = n,
@@ -271,17 +275,17 @@ function(model, ...)
   if (output$error == 1) {
     stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
-  
+
   unique.Z <- unique(output$Z)
-  
+
   model@c <- length(unique.Z)
-  
+
   i <- length(model@from)
 
   while (i > 1) {
     from.in.unique.Z <- model@from[i] %in% unique.Z
     to.in.unique.Z <- model@to[i] %in% unique.Z
- 
+
     if (from.in.unique.Z && to.in.unique.Z) {
     }
     else
@@ -307,9 +311,9 @@ function(model, ...)
       model@ED <- model@ED[-i]
     }
 
-    i <- i - 1 
+    i <- i - 1
   }
-  
+
   model@Zp <- as.factor(output$Z)
 
   rm(list = ls()[!(ls() %in% c("model"))])
@@ -321,42 +325,42 @@ setMethod("RCLRMIX",
           signature(model = "ANY"),
 function(model,
   x,
-  pos, 
+  pos,
   Zt, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
-  
+
   message("RCLRMIX Version 2.10.3")
- 
+
   flush.console()
-  
+
   model <- new(model,
     x = x,
     pos = pos,
     Zt = Zt)
-     
+
   model <- RCLRMIX(model = model, ...)
-  
+
   Zp <- as.numeric(levels(model@Zp))[model@Zp]
   Zt <- as.numeric(levels(model@Zt))[model@Zt]
-  
+
   if (length(Zt) > 0) {
     prob <- array(data = 0.0, dim = model@c)
-  
+
     for (i in model@c:1) {
       if (i < model@c) {
         Zp[Zp == model@from[i]] <- model@to[i]
       }
-  
+
       error <- is.error(Zt, Zp)
-    
+
       prob[i] <- length(error[error == 0]) / length(error)
     }
-    
+
     model@prob <- as.numeric(prob)
   }
-  
-  options(digits = digits)  
+
+  options(digits = digits)
 
   rm(list = ls()[!(ls() %in% c("model"))])
 

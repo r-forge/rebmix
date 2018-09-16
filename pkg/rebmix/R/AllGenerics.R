@@ -1,4 +1,4 @@
-setGeneric("RNGMIX", 
+setGeneric("RNGMIX",
   function(model = "RNGMIX",
     Dataset.name = character(),
     rseed = -1,
@@ -6,7 +6,7 @@ setGeneric("RNGMIX",
     Theta = list(), ...)
   standardGeneric("RNGMIX"))
 
-setGeneric("REBMIX", 
+setGeneric("REBMIX",
   function(model = "REBMIX",
     Dataset = list(),
     Preprocessing = character(),
@@ -23,104 +23,104 @@ setGeneric("REBMIX",
     ar = 0.1,
     Restraints = "loose", ...)
   standardGeneric("REBMIX"))
-  
-setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC")) 
-  
-setGeneric("logL", function(x = NULL, pos = 1, ...) standardGeneric("logL")) 
-setGeneric("AIC", function(x = NULL, pos = 1, ...) standardGeneric("AIC"))     
-setGeneric("AIC3", function(x = NULL, pos = 1, ...) standardGeneric("AIC3"))    
-setGeneric("AIC4", function(x = NULL, pos = 1, ...) standardGeneric("AIC4"))    
-setGeneric("AICc", function(x = NULL, pos = 1, ...) standardGeneric("AICc"))    
-setGeneric("BIC", function(x = NULL, pos = 1, ...) standardGeneric("BIC"))    
-setGeneric("CAIC", function(x = NULL, pos = 1, ...) standardGeneric("CAIC"))    
-setGeneric("HQC", function(x = NULL, pos = 1, ...) standardGeneric("HQC"))    
-setGeneric("MDL2", function(x = NULL, pos = 1, ...) standardGeneric("MDL2"))    
-setGeneric("MDL5", function(x = NULL, pos = 1, ...) standardGeneric("MDL5"))    
-setGeneric("AWE", function(x = NULL, pos = 1, ...) standardGeneric("AWE"))    
-setGeneric("CLC", function(x = NULL, pos = 1, ...) standardGeneric("CLC"))   
-setGeneric("ICL", function(x = NULL, pos = 1, ...) standardGeneric("ICL"))   
-setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))   
-setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))   
-setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))   
+
+setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC"))
+
+setGeneric("logL", function(x = NULL, pos = 1, ...) standardGeneric("logL"))
+setGeneric("AIC", function(x = NULL, pos = 1, ...) standardGeneric("AIC"))
+setGeneric("AIC3", function(x = NULL, pos = 1, ...) standardGeneric("AIC3"))
+setGeneric("AIC4", function(x = NULL, pos = 1, ...) standardGeneric("AIC4"))
+setGeneric("AICc", function(x = NULL, pos = 1, ...) standardGeneric("AICc"))
+setGeneric("BIC", function(x = NULL, pos = 1, ...) standardGeneric("BIC"))
+setGeneric("CAIC", function(x = NULL, pos = 1, ...) standardGeneric("CAIC"))
+setGeneric("HQC", function(x = NULL, pos = 1, ...) standardGeneric("HQC"))
+setGeneric("MDL2", function(x = NULL, pos = 1, ...) standardGeneric("MDL2"))
+setGeneric("MDL5", function(x = NULL, pos = 1, ...) standardGeneric("MDL5"))
+setGeneric("AWE", function(x = NULL, pos = 1, ...) standardGeneric("AWE"))
+setGeneric("CLC", function(x = NULL, pos = 1, ...) standardGeneric("CLC"))
+setGeneric("ICL", function(x = NULL, pos = 1, ...) standardGeneric("ICL"))
+setGeneric("ICLBIC", function(x = NULL, pos = 1, ...) standardGeneric("ICLBIC"))
+setGeneric("PRD", function(x = NULL, pos = 1, ...) standardGeneric("PRD"))
+setGeneric("SSE", function(x = NULL, pos = 1, ...) standardGeneric("SSE"))
 setGeneric("PC", function(x = NULL, pos = 1, ...) standardGeneric("PC"))
 
-setGeneric("demix", 
-  function(x = NULL, 
-    pos = 1, 
+setGeneric("demix",
+  function(x = NULL,
+    pos = 1,
     variables = expression(1:d), ...)
   standardGeneric("demix"))
 
-setGeneric("pemix", 
+setGeneric("pemix",
   function(x = NULL,
-    pos = 1, 
+    pos = 1,
     variables = expression(1:d),
-    lower.tail = TRUE, 
-    log.p = FALSE, ...) 
+    lower.tail = TRUE,
+    log.p = FALSE, ...)
   standardGeneric("pemix"))
-  
-setGeneric("dfmix",  
+
+setGeneric("dfmix",
   function(x = NULL,
     Dataset = data.frame(),
-    pos = 1, 
+    pos = 1,
     variables = expression(1:d), ...)
   standardGeneric("dfmix"))
-  
-setGeneric("pfmix",  
-  function(x = NULL,
-    Dataset = data.frame(),  
-    pos = 1, 
-    variables = expression(1:d),
-    lower.tail = TRUE, 
-    log.p = FALSE, ...) 
-  standardGeneric("pfmix"))
-  
-setGeneric("split", 
-  function(p = NULL,
-    Dataset = data.frame(),  
-    class = numeric(), ...) 
-  standardGeneric("split"))
-  
-setGeneric("chunk", 
-  function(x = NULL,
-    variables = expression(1:d)) 
-  standardGeneric("chunk"))    
 
-setGeneric("boot", 
+setGeneric("pfmix",
   function(x = NULL,
-    rseed = -1,  
+    Dataset = data.frame(),
+    pos = 1,
+    variables = expression(1:d),
+    lower.tail = TRUE,
+    log.p = FALSE, ...)
+  standardGeneric("pfmix"))
+
+setGeneric("split",
+  function(p = NULL,
+    Dataset = data.frame(),
+    class = numeric(), ...)
+  standardGeneric("split"))
+
+setGeneric("chunk",
+  function(x = NULL,
+    variables = expression(1:d))
+  standardGeneric("chunk"))
+
+setGeneric("boot",
+  function(x = NULL,
+    rseed = -1,
     pos = 1,
     Bootstrap = "parametric",
-    B = 100, 
-    n = numeric(), 
+    B = 100,
+    n = numeric(),
     replace = TRUE,
     prob = numeric(), ...)
   standardGeneric("boot"))
-  
-setGeneric("RCLRMIX", 
+
+setGeneric("RCLRMIX",
   function(model = "RCLRMIX",
     x = NULL,
-    pos = 1, 
+    pos = 1,
     Zt = factor(), ...)
   standardGeneric("RCLRMIX"))
 
-setGeneric("RCLSMIX", 
+setGeneric("RCLSMIX",
   function(model = "RCLSMIX",
     x = list(),
-    Dataset = data.frame(), 
+    Dataset = data.frame(),
     Zt = factor(), ...)
   standardGeneric("RCLSMIX"))
-  
+
 setGeneric("BFSMIX",
   function(model = "RCLSMIX",
     x = list(),
     Dataset = data.frame(),
     Zt = factor(), ...)
   standardGeneric("BFSMIX"))
-  
+
 setGeneric("a.d", function(x = NULL) standardGeneric("a.d"))
 setGeneric("a.theta1<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta1<-"))
 setGeneric("a.theta2<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta2<-"))
-  
+
 setGeneric("a.Dataset.name", function(x = NULL) standardGeneric("a.Dataset.name"))
 setGeneric("a.rseed", function(x = NULL) standardGeneric("a.rseed"))
 setGeneric("a.n", function(x = NULL) standardGeneric("a.n"))

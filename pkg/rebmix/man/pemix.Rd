@@ -7,12 +7,12 @@
 Empirical Distribution Function Calculation
 }
 \description{
-Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
-distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subvectors of 
+Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical
+distribution functions \eqn{F_{1}, \ldots, F_{n}}. Vectors \eqn{\bm{x}} are subvectors of
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{
-\S4method{pemix}{REBMIX}(x = NULL, pos = 1, variables = expression(1:d), 
+\S4method{pemix}{REBMIX}(x = NULL, pos = 1, variables = expression(1:d),
       lower.tail = TRUE, log.p = FALSE, ...)
 ## ... and for other signatures
 }
@@ -65,13 +65,13 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
 K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
   as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
 
-# Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = a.Dataset(simulated),
-  Preprocessing = "kernel density estimation", 
+  Preprocessing = "kernel density estimation",
   cmax = 4,
-  Criterion = "BIC", 
-  pdf = c("n", "n", "n"), 
+  Criterion = "BIC",
+  pdf = c("n", "n", "n"),
   K = K[1]:K[2])
 
 # Preprocess simulated dataset.
@@ -86,7 +86,7 @@ opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "dist")
 
 par(usr = opar[[1]]$usr, mfg = c(1, 1))
 
-text(x = f[20:25, 1], y = f[20:25, 2], labels = format(f[20:25, 3], 
+text(x = f[20:25, 1], y = f[20:25, 2], labels = format(f[20:25, 3],
   digits = 3), cex = 0.8, pos = 1)
 }
 \references{

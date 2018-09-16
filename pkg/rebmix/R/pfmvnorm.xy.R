@@ -8,7 +8,7 @@
 
       f[j] <- f[j] + w[i] * fi
     }
-  }  
+  }
 
   rm(list = ls()[!(ls() %in% c("f"))])
 

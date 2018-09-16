@@ -1,25 +1,25 @@
 setMethod("RNGMIX",
           signature(model = "RNGMIX"),
 function(model, ...)
-{ 
+{
   Names <- names(model@Theta)
 
   pdf <- unlist(model@Theta[grep("pdf", Names)])
-  
+
   theta1 <- unlist(model@Theta[grep("theta1", Names)])
-  
+
   theta1[is.na(theta1)] <- 0
 
   theta2 <- unlist(model@Theta[grep("theta2", Names)])
-  
+
   theta2[is.na(theta2)] <- 0
-  
+
   c <- length(model@n); d <- length(model@Variables)
-  
+
   length(pdf) <- d
-  
+
   xmin <- rep(+Inf, d)
-  xmax <- rep(-Inf, d)  
+  xmax <- rep(-Inf, d)
 
   IDum <- model@rseed
 
@@ -29,7 +29,7 @@ function(model, ...)
     flush.console()
 
     output <- .C(C_RRNGMIX,
-      IDum = as.integer(IDum), 
+      IDum = as.integer(IDum),
       d = as.integer(d),
       c = as.integer(c),
       N = as.integer(model@n),
@@ -40,7 +40,7 @@ function(model, ...)
       Theta = as.double(c(theta1, theta2)),
       n = integer(1),
       Y = double(sum(model@n) * d),
-      Z = integer(sum(model@n)),      
+      Z = integer(sum(model@n)),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -54,48 +54,48 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
-    
+
     if (i == 1) {
       model@Zt <- factor(output$Z)
-    }  
+    }
 
     IDum <- IDum - 1
   }
-  
+
   names(model@Dataset) <- model@Dataset.name
-  
+
   model@w <- model@n / output$n
-  
+
   model@ymin <- xmin
-  model@ymax <- xmax  
+  model@ymax <- xmax
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
-  return(model)  
+  return(model)
 }) ## RNGMIX
 
 setMethod("RNGMIX",
           signature(model = "RNGMVNORM"),
 function(model, ...)
-{ 
+{
   Names <- names(model@Theta)
 
   pdf <- unlist(model@Theta[grep("pdf", Names)])
-  
+
   theta1 <- unlist(model@Theta[grep("theta1", Names)])
-  
+
   theta1[is.na(theta1)] <- 0
 
   theta2 <- unlist(model@Theta[grep("theta2", Names)])
-  
+
   theta2[is.na(theta2)] <- 0
-  
+
   c <- length(model@n); d <- length(model@Variables)
-  
+
   length(pdf) <- 1
-  
+
   xmin <- rep(+Inf, d)
-  xmax <- rep(-Inf, d)  
+  xmax <- rep(-Inf, d)
 
   IDum <- model@rseed
 
@@ -105,7 +105,7 @@ function(model, ...)
     flush.console()
 
     output <- .C(C_RRNGMVNORM,
-      IDum = as.integer(IDum), 
+      IDum = as.integer(IDum),
       d = as.integer(d),
       c = as.integer(c),
       N = as.integer(model@n),
@@ -129,24 +129,24 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
-    
+
     if (i == 1) {
       model@Zt <- factor(output$Z)
-    }  
+    }
 
     IDum <- IDum - 1
   }
-  
+
   names(model@Dataset) <- model@Dataset.name
-  
+
   model@w <- model@n / output$n
-  
+
   model@ymin <- xmin
-  model@ymax <- xmax  
+  model@ymax <- xmax
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
-  return(model)  
+  return(model)
 }) ## RNGMIX
 
 setMethod("RNGMIX",
@@ -160,26 +160,26 @@ function(model,
   digits <- getOption("digits"); options(digits = 15)
 
   message("RNGMIX Version 2.10.3")
-  
+
   flush.console()
-  
+
   model <- new(model,
     Dataset.name = Dataset.name,
     rseed = rseed,
     n = n,
     Theta = Theta)
-    
-  output <- RNGMIX(model = model)     
-  
+
+  output <- RNGMIX(model = model)
+
   model@Dataset <- output@Dataset
   model@Zt <- output@Zt
   model@w <- output@w
   model@ymin <- output@ymin
   model@ymax <- output@ymax
-    
-  options(digits = digits)  
+
+  options(digits = digits)
 
   rm(list = ls()[!(ls() %in% c("model"))])
-  
+
   return(model)
 }) ## RNGMIX

@@ -9,7 +9,7 @@
 #include <float.h>
 
 #ifndef _MEMORY_LEAK_SWITCH
-#define _MEMORY_LEAK_SWITCH 0 
+#define _MEMORY_LEAK_SWITCH 0
 #endif
 
 #ifndef _MAINTAIN_SWITCH
@@ -17,34 +17,34 @@
 #endif
 
 #ifndef FLOAT
-#define FLOAT double 
+#define FLOAT double
 #endif
 
 #ifndef FLOAT_MIN
-#define FLOAT_MIN DBL_MIN 
+#define FLOAT_MIN DBL_MIN
 #endif
 
 #ifndef FLOAT_MAX
-#define FLOAT_MAX DBL_MAX 
+#define FLOAT_MAX DBL_MAX
 #endif
 
 #ifndef FLOAT_EPSILON
-#define FLOAT_EPSILON DBL_EPSILON  
+#define FLOAT_EPSILON DBL_EPSILON
 #endif
 
 #ifndef Sqrt2
 #define Sqrt2 (FLOAT)1.4142135623730950488016887242097
-#endif               
+#endif
 
-#ifndef Pi            
+#ifndef Pi
 #define Pi (FLOAT)3.1415926535897932384626433832795
 #endif
 
-#ifndef Pi2            
+#ifndef Pi2
 #define Pi2 (FLOAT)6.2831853071795864769252867665590
 #endif
 
-#ifndef SqrtPi            
+#ifndef SqrtPi
 #define SqrtPi (FLOAT)1.7724538509055160272981674833411
 #endif
 
@@ -62,21 +62,21 @@
 
 #ifndef LogSqrtPi2
 #define LogSqrtPi2 (FLOAT)0.91893853320467274178032973640562
-#endif 
+#endif
 
-#ifndef Euler       
+#ifndef Euler
 #define Euler (FLOAT)0.5772156649015328606065120900824
 #endif
 
-#ifndef Phi       
+#ifndef Phi
 #define Phi (FLOAT)1.6180339887498948482045868343656
-#endif  
+#endif
 
 #ifndef Eps
 #define Eps (FLOAT)0.00001
 #endif
 
-#ifndef TLA_MAX_LN 
+#ifndef TLA_MAX_LN
 #define TLA_MAX_LN 46.0
 #endif
 
@@ -120,11 +120,11 @@
 #define RNMX (FLOAT)(1.0 - 1.2E-7)
 #endif
 
-#define Min(x, y) ((x < y) ? x : y) 
+#define Min(x, y) ((x < y) ? x : y)
 
-#define Max(x, y) ((x > y) ? x : y) 
+#define Max(x, y) ((x > y) ? x : y)
 
-#define IsNan(x) ((x) != (x)) 
+#define IsNan(x) ((x) != (x))
 
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x)))
 
@@ -144,7 +144,7 @@ class Base {
 public:
     // Members.
     int Trigger_;       // Trigger.
-    int length_pdf_;    // Length of pdf_. 
+    int length_pdf_;    // Length of pdf_.
     int length_Theta_;  // Length of Theta_.
     int *length_theta_; // Length of Theta_[i].
     // Constructor.
@@ -220,24 +220,24 @@ int LUinvdet(int   n,      // Size of square matrix.
              FLOAT *Ainv,  // Pointer to the inverse matrix of A.
              FLOAT *Adet); // Pointer to the determinant of A.
 
-// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/ 
+// Returns the Cholesky decomposition of matrix A. See http://www.nr.com/
 
 int Choldc(int   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
            FLOAT *L); // Lower triangular factors.
 
-// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/ 
+// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/
 
 int Cholinvdet(int   n,         // Size of square matrix.
                FLOAT *A,        // Pointer to the symmetric square matrix A.
                FLOAT *Ainv,     // Pointer to the inverse matrix of A.
                FLOAT *logAdet); // Pointer to the logarithm of determinant of A.
 
-// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
 
 FLOAT BesselI0(FLOAT y);
 
-// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm 
+// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
 
 FLOAT BesselI1(FLOAT y);
 

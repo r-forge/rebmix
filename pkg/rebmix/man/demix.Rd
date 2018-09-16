@@ -7,9 +7,9 @@
 Empirical Density Calculation
 }
 \description{
-Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical 
-densities \eqn{f_{1}, \ldots, f_{n}} for the kernel density estimation or \emph{k}-nearest neighbour or bin means \eqn{\bar{\bm{x}}_{1}, \ldots, \bar{\bm{x}}_{v}} 
-and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessing. Vectors \eqn{\bm{x}} and \eqn{\bar{\bm{x}}} are subvectors of 
+Returns the data frame containing observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} and empirical
+densities \eqn{f_{1}, \ldots, f_{n}} for the kernel density estimation or \emph{k}-nearest neighbour or bin means \eqn{\bar{\bm{x}}_{1}, \ldots, \bar{\bm{x}}_{v}}
+and empirical densities \eqn{f_{1}, \ldots, f_{v}} for the histogram preprocessing. Vectors \eqn{\bm{x}} and \eqn{\bar{\bm{x}}} are subvectors of
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}} and \eqn{\bar{\bm{y}} = (\bar{y}_{1}, \ldots, \bar{y}_{d})^{\top}}.
 }
 \usage{
@@ -59,14 +59,14 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
 K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
   as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
 
-# Estimate number of components, component weights and component parameters. 
+# Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(model = "REBMVNORM",
   Dataset = a.Dataset(simulated),
-  Preprocessing = "h", 
+  Preprocessing = "h",
   cmax = 4,
-  Criterion = "BIC", 
-  pdf = c("n", "n", "n"), 
+  Criterion = "BIC",
+  pdf = c("n", "n", "n"),
   K = K[1]:K[2])
 
 # Preprocess simulated dataset.

@@ -7,7 +7,7 @@
 Extracts Chunk from Train and Test Datasets
 }
 \description{
-Returns (invisibly) the object containing train and test observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} as well as true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. Vectors \eqn{\bm{x}} are subvectors of 
+Returns (invisibly) the object containing train and test observations \eqn{\bm{x}_{1}, \ldots, \bm{x}_{n}} as well as true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. Vectors \eqn{\bm{x}} are subvectors of
 \eqn{\bm{y} = (y_{1}, \ldots, y_{d})^{\top}}.
 }
 \usage{

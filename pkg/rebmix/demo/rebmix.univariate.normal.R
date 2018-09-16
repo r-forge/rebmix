@@ -91,9 +91,9 @@ N[[12]]$Theta <- list(pdf1 = "normal", theta1.1 = c(0, theta1(-2:2)), theta2 = c
 N[[13]]$density <- "Asimetric double claw"
 N[[13]]$w <- c(rep(46/100, 2), rep(1/300, 3), rep(7/300, 3))
 
-theta1.1 <- function(x) 2 * x - 1 
-theta1.2 <- function(x) -x / 2 
-theta1.3 <- function(x) x / 2 
+theta1.1 <- function(x) 2 * x - 1
+theta1.2 <- function(x) -x / 2
+theta1.3 <- function(x) x / 2
 
 N[[13]]$Theta <- list(pdf1 = "normal", theta1.1 = c(theta1.1(0:1), theta1.2(1:3), theta1.3(1:3)), theta2.1 = c(rep(2/3, 2), rep(1/100, 3), rep(7/100, 3)))
 
@@ -124,7 +124,7 @@ normal <- array(data = list(NULL), dim = c(15, 3))
 
 for (i in 1:15) {
   for (j in 1:length(n)) {
-    normal[[i, j]] <- RNGMIX(Dataset.name = paste("normal_", i, "_", j, "_", 1:100, sep = ""), 
+    normal[[i, j]] <- RNGMIX(Dataset.name = paste("normal_", i, "_", j, "_", 1:100, sep = ""),
       n = ceiling(N[[i]]$w * n[j]), Theta = N[[i]]$Theta)
   }
 }
@@ -142,10 +142,10 @@ for (j in 1:length(n)) {
   for (i in 1:15) {
     normalest[[i, j]] <- REBMIX(Dataset = a.Dataset(normal[[i, j]]),
       Preprocessing = "histogram", cmax = 20, Criterion = "BIC",
-      pdf = "normal", K = Sturges:Log10, y0 = 0.0, 
+      pdf = "normal", K = Sturges:Log10, y0 = 0.0,
       ymin = a.ymin(normal[[i, j]]), ymax = a.ymax(normal[[i, j]]))
 
-    table[i, j * 2 - 1] <- mean(a.summary(normalest[[i, j]], "c"))  
+    table[i, j * 2 - 1] <- mean(a.summary(normalest[[i, j]], "c"))
     table[i, j * 2] <- sd(a.summary(normalest[[i, j]], "c"))
   }
 }
