@@ -48,12 +48,9 @@ function(object, ...)
     stop(sQuote("object"), " object of class REBMIX.boot is requested!", call. = FALSE)
   }
 
-  w.cv <- matrix(object@w.cv, nrow = 1)
+  w.cv <- object@w.cv
 
-  c <- ncol(w.cv)
-
-  rownames(w.cv) <- "w.cv"
-  colnames(w.cv) <- paste(1:object@c.mode, sep = "")
+  cat("w.cv", "\n", sep = "")
 
   print(w.cv, quote = FALSE, ...)
 
@@ -66,7 +63,7 @@ function(object, ...)
   theta1.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
 
   rownames(theta1.cv) <- Names
-  colnames(theta1.cv) <- paste(1:d, sep = "")
+  colnames(theta1.cv) <- NULL
 
   print(theta1.cv, quote = FALSE, ...)
 
@@ -75,7 +72,7 @@ function(object, ...)
   theta2.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
 
   rownames(theta2.cv) <- Names
-  colnames(theta2.cv) <- paste(1:d, sep = "")
+  colnames(theta2.cv) <- NULL
 
   print(theta2.cv, quote = FALSE, ...)
 
@@ -92,12 +89,9 @@ function(object, ...)
     stop(sQuote("object"), " object of class REBMVNORM.boot is requested!", call. = FALSE)
   }
 
-  w.cv <- matrix(object@w.cv, nrow = 1)
-
-  c <- ncol(w.cv)
-
-  rownames(w.cv) <- "w.cv"
-  colnames(w.cv) <- paste(1:object@c.mode, sep = "")
+  w.cv <- object@w.cv
+  
+  cat("w.cv", "\n", sep = "")
 
   print(w.cv, quote = FALSE, ...)
 
@@ -110,7 +104,7 @@ function(object, ...)
   theta1.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
 
   rownames(theta1.cv) <- Names
-  colnames(theta1.cv) <- paste(1:d, sep = "")
+  colnames(theta1.cv) <- NULL
 
   print(theta1.cv, quote = FALSE, ...)
 
@@ -119,7 +113,7 @@ function(object, ...)
   theta2.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d * d, byrow = TRUE)
 
   rownames(theta2.cv) <- Names
-  colnames(theta2.cv) <- paste(rep(1:d, each = d), rep(1:d, d), sep = "-")
+  colnames(theta2.cv) <- NULL
 
   print(theta2.cv, quote = FALSE, ...)
 

@@ -24,7 +24,7 @@ function(x,
   if (model@Bootstrap == .rebmix.boot$Bootstrap[1]) {
     bsample <- RNGMIX(Dataset.name = paste("bsample_", 1:model@B, sep = ""), rseed = rseed,
       n = ceiling(model@n * as.numeric(model@x@w[[model@pos]])),
-      Theta = model@x@Theta[[model@pos]], ...)
+      Theta = model@x@Theta[[model@pos]])
 
     Dataset <- bsample@Dataset
   }
@@ -56,11 +56,43 @@ function(x,
   }
 
   d <- length(model@x@Variables)
+  
+  # cmax.
+  
+  cmax <- list(...)$cmax
+
+  if (is.null(cmax) || (length(cmax) == 0)) cmax <- as.numeric(model@x@summary[model@pos, "cmax"])
+
+  if (!is.wholenumber(cmax)) {
+    stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmax < 1) {
+    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  # cmin.
+  
+  cmin <- list(...)$cmin
+
+  if (is.null(cmin) || (length(cmin) == 0)) cmin <- as.numeric(model@x@summary[model@pos, "cmin"])
+
+  if (!is.wholenumber(cmin)) {
+    stop(sQuote("cmin"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmin < 1) {
+    stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
+  }
+
+  if (cmin > cmax) {
+    stop(sQuote("cmin"), " must be less or equal than ", cmax, "!", call. = FALSE)
+  }  
 
   bsampleest <- REBMIX(Dataset = Dataset,
     Preprocessing = as.character(model@x@summary[model@pos, "Preprocessing"]),
-    cmax = as.numeric(model@x@summary[model@pos, "cmax"]),
-    cmin = as.numeric(model@x@summary[model@pos, "cmin"]),
+    cmax = cmax,
+    cmin = cmin,
     Criterion = as.character(model@x@summary[model@pos, "Criterion"]),
     Variables = model@x@Variables,
     pdf = model@x@pdf,
@@ -93,8 +125,8 @@ function(x,
   colnames(model@w) <- paste(1:c, sep = "")
   rownames(model@w) <- paste(which(bsampleest@summary$c == c), sep = "")
 
-  model@w.se <- apply(model@w, 2, sd)
-  model@w.cv <- model@w.se / apply(model@w, 2, mean)
+  model@w.se <- as.vector(apply(model@w, 2, sd))
+  model@w.cv <- as.vector(model@w.se / apply(model@w, 2, mean))
 
   for (i in 1:model@c.mode) {
     theta1 <- paste("theta1.",  i, sep = "")
@@ -107,14 +139,14 @@ function(x,
 
     model@Theta[[theta1]] <- matrix(model@Theta[[theta1]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta1]]) <- paste(1:d, sep = "")
+    colnames(model@Theta[[theta1]]) <- NULL
     rownames(model@Theta[[theta1]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta1.se <- paste("theta1.",  i, ".se", sep = "")
     theta1.cv <- paste("theta1.",  i, ".cv", sep = "")
 
-    model@Theta.se[[theta1.se]] <- apply(model@Theta[[theta1]], 2, sd)
-    model@Theta.cv[[theta1.cv]] <- model@Theta.se[[theta1.se]] / apply(model@Theta[[theta1]], 2, mean)
+    model@Theta.se[[theta1.se]] <- as.vector(apply(model@Theta[[theta1]], 2, sd))
+    model@Theta.cv[[theta1.cv]] <- as.vector(model@Theta.se[[theta1.se]] / apply(model@Theta[[theta1]], 2, mean))
   }
 
   for (i in 1:model@c.mode) {
@@ -128,14 +160,14 @@ function(x,
 
     model@Theta[[theta2]] <- matrix(model@Theta[[theta2]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta2]]) <- paste(1:d, sep = "")
+    colnames(model@Theta[[theta2]]) <- NULL
     rownames(model@Theta[[theta2]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta2.se <- paste("theta2.",  i, ".se", sep = "")
     theta2.cv <- paste("theta2.",  i, ".cv", sep = "")
 
-    model@Theta.se[[theta2.se]] <- apply(model@Theta[[theta2]], 2, sd)
-    model@Theta.cv[[theta2.cv]] <- model@Theta.se[[theta2.se]] / apply(model@Theta[[theta2]], 2, mean)
+    model@Theta.se[[theta2.se]] <- as.vector(apply(model@Theta[[theta2]], 2, sd))
+    model@Theta.cv[[theta2.cv]] <- as.vector(model@Theta.se[[theta2.se]] / apply(model@Theta[[theta2]], 2, mean))
   }
 
   options(digits = digits)
@@ -171,7 +203,7 @@ function(x,
   if (model@Bootstrap == .rebmix.boot$Bootstrap[1]) {
     bsample <- RNGMIX(model = "RNGMVNORM", Dataset.name = paste("bsample_", 1:model@B, sep = ""), rseed = rseed,
       n = ceiling(model@n * as.numeric(model@x@w[[model@pos]])),
-      Theta = model@x@Theta[[model@pos]], ...)
+      Theta = model@x@Theta[[model@pos]])
 
     Dataset <- bsample@Dataset
   }
@@ -204,11 +236,43 @@ function(x,
 
   d <- length(model@x@Variables)
 
+  # cmax.
+  
+  cmax <- list(...)$cmax
+
+  if (is.null(cmax) || (length(cmax) == 0)) cmax <- as.numeric(model@x@summary[model@pos, "cmax"])
+
+  if (!is.wholenumber(cmax)) {
+    stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmax < 1) {
+    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  # cmin.
+  
+  cmin <- list(...)$cmin
+
+  if (is.null(cmin) || (length(cmin) == 0)) cmin <- as.numeric(model@x@summary[model@pos, "cmin"])
+
+  if (!is.wholenumber(cmin)) {
+    stop(sQuote("cmin"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmin < 1) {
+    stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
+  }
+
+  if (cmin > cmax) {
+    stop(sQuote("cmin"), " must be less or equal than ", cmax, "!", call. = FALSE)
+  }  
+
   bsampleest <- REBMIX(model = "REBMVNORM",
     Dataset = Dataset,
     Preprocessing = as.character(model@x@summary[model@pos, "Preprocessing"]),
-    cmax = as.numeric(model@x@summary[model@pos, "cmax"]),
-    cmin = as.numeric(model@x@summary[model@pos, "cmin"]),
+    cmax = cmax,
+    cmin = cmin,
     Criterion = as.character(model@x@summary[model@pos, "Criterion"]),
     Variables = model@x@Variables,
     pdf = model@x@pdf,
@@ -241,8 +305,8 @@ function(x,
   colnames(model@w) <- paste(1:c, sep = "")
   rownames(model@w) <- paste(which(bsampleest@summary$c == c), sep = "")
 
-  model@w.se <- apply(model@w, 2, sd)
-  model@w.cv <- model@w.se / apply(model@w, 2, mean)
+  model@w.se <- as.vector(apply(model@w, 2, sd))
+  model@w.cv <- as.vector(model@w.se / apply(model@w, 2, mean))
 
   for (i in 1:model@c.mode) {
     theta1 <- paste("theta1.",  i, sep = "")
@@ -255,14 +319,14 @@ function(x,
 
     model@Theta[[theta1]] <- matrix(model@Theta[[theta1]], ncol = d, byrow = TRUE)
 
-    colnames(model@Theta[[theta1]]) <- paste(1:d, sep = "")
+    colnames(model@Theta[[theta1]]) <- NULL
     rownames(model@Theta[[theta1]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta1.se <- paste("theta1.",  i, ".se", sep = "")
     theta1.cv <- paste("theta1.",  i, ".cv", sep = "")
 
-    model@Theta.se[[theta1.se]] <- apply(model@Theta[[theta1]], 2, sd)
-    model@Theta.cv[[theta1.cv]] <- model@Theta.se[[theta1.se]] / apply(model@Theta[[theta1]], 2, mean)
+    model@Theta.se[[theta1.se]] <- as.vector(apply(model@Theta[[theta1]], 2, sd))
+    model@Theta.cv[[theta1.cv]] <- as.vector(model@Theta.se[[theta1.se]] / apply(model@Theta[[theta1]], 2, mean))
   }
 
   for (i in 1:model@c.mode) {
@@ -276,14 +340,14 @@ function(x,
 
     model@Theta[[theta2]] <- matrix(model@Theta[[theta2]], ncol = d * d, byrow = TRUE)
 
-    colnames(model@Theta[[theta2]]) <- paste(rep(1:d, each = d), rep(1:d, d), sep = "-")
+    colnames(model@Theta[[theta2]]) <- NULL
     rownames(model@Theta[[theta2]]) <- paste(which(bsampleest@summary$c == c), sep = "")
 
     theta2.se <- paste("theta2.",  i, ".se", sep = "")
     theta2.cv <- paste("theta2.",  i, ".cv", sep = "")
 
-    model@Theta.se[[theta2.se]] <- apply(model@Theta[[theta2]], 2, sd)
-    model@Theta.cv[[theta2.cv]] <- model@Theta.se[[theta2.se]] / apply(model@Theta[[theta2]], 2, mean)
+    model@Theta.se[[theta2.se]] <- as.vector(apply(model@Theta[[theta2]], 2, sd))
+    model@Theta.cv[[theta2.cv]] <- as.vector(model@Theta.se[[theta2.se]] / apply(model@Theta[[theta2]], 2, mean))
   }
 
   options(digits = digits)

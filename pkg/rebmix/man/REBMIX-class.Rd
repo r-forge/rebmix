@@ -7,12 +7,11 @@
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)},
 \code{a.Preprocessing(x = NULL)}, \code{a.cmax(x = NULL)}, \code{a.cmin(x = NULL)}, \code{a.Criterion(x = NULL)}, \code{a.Variables(x = NULL)},
-\code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)},
-\code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)}, \code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)},
-\code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, col.name = character())}, \code{a.pos(x = NULL)},
+\code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)},
+\code{a.ymax(x = NULL)}, \cr 
+\code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())}, \code{a.pos(x = NULL)},
 \code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
-\code{a.theta1.all(x = NULL, pos = 1)} and \cr
-\code{a.theta2.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
+\code{a.theta1.all(x = NULL, pos = 1)} and \code{a.theta2.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
 a desired slot item and a desired column name, respectively.
 }
 \section{Slots}{
@@ -29,7 +28,7 @@ a character vector giving the preprocessing types. One of \code{"histogram"}, \c
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
 \item{\code{cmin}:}{
-minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{2}.
+minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}.
 }
 \item{\code{Criterion}:}{
 a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},

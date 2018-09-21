@@ -178,7 +178,8 @@ for (l in 1:c) {
   Sigma[[l]] <- P %*% Lambda %*% t(P)
 }
 
-# Numbers of observations are calculated and component means and variance-covariance matrices are stored.
+# Numbers of observations are calculated and component means and 
+# variance-covariance matrices are stored.
 
 n <- round(w * n); Theta <- list()
 for (l in 1:c) {

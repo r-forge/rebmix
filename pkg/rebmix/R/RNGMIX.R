@@ -54,6 +54,8 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
+    
+    colnames(model@Dataset[[i]]) <- paste(1:d, sep = "")
 
     if (i == 1) {
       model@Zt <- factor(output$Z)
@@ -129,6 +131,8 @@ function(model, ...)
     xmax <- as.numeric(apply(rbind(xmax, output$Y), 2, max))
 
     model@Dataset[[i]] <- as.data.frame(output$Y, stringsAsFactors = FALSE)
+    
+    colnames(model@Dataset[[i]]) <- paste(1:d, sep = "")
 
     if (i == 1) {
       model@Zt <- factor(output$Z)

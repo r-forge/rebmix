@@ -48,7 +48,7 @@ function(model, ...)
         else
         if (pdf[(j - 1) * d + i] == .rebmix$pdf[6]) {
           if (j == 1) {
-            nlevels[i] <- 2
+            nlevels[i] <- length(unique(dataset[, i]))
 
             model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
 
@@ -95,9 +95,13 @@ function(model, ...)
 
     if (is.null(colnames(dataset))) {
       colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+      
+      names(model@pi) <- 1:d
     }
     else {
       colnames(model@P) <- c(colnames(dataset), "Nt", "Np")
+      
+      names(model@pi) <- colnames(dataset)
     }
 
     rownames(model@pi[[i]]) <- paste(1:c, sep = "")

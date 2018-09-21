@@ -543,11 +543,28 @@ function(.Object, ...,
   # theta1.
 
   if (missing(theta1) || (length(theta1) == 0)) {
-    theta1 <- .Object@theta1
+    if (any(pdf == .rebmix$pdf[4])) {
+      stop(sQuote("theta1"), " must not be empty for ", dQuote(.rebmix$pdf[4]), "!", call. = FALSE)
+    }
+    else {
+      theta1 <- .Object@theta1
+    }
   }
   else {
     if (length(theta1) != d) {
       stop("lengths of ", sQuote("theta1"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
+    
+    for (i in 1:d) {
+      if (pdf[i] == .rebmix$pdf[4]) {
+        if (!is.wholenumber(theta1[i])) {
+          stop(sQuote("theta1"), " integer is requested for ", dQuote(.rebmix$pdf[4]), "!", call. = FALSE)
+        }
+
+        if (theta1[i] < 0.0) {
+          stop(sQuote("theta1"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0!", call. = FALSE)
+        }
+      }
     }
 
     class(theta1) <- "numeric"

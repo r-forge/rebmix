@@ -39,7 +39,7 @@ a character vector giving the preprocessing types. One of \code{"histogram"}, \c
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
 \item{cmin}{
-minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{2}.
+minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}.
 }
 \item{Criterion}{
 a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},

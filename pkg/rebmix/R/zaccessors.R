@@ -588,19 +588,29 @@ function(x, pos)
 
 setMethod("a.summary",
           signature(x = "REBMIX"),
-function(x, col.name)
+function(x, pos, col.name)
 {
-  if (missing(col.name) || (length(col.name) == 0)) {
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+
+  length(pos) <- 1
+  
+  if ((pos < 1) || (pos > nrow(x@summary))) {
     output <- x@summary
   }
   else {
+    output <- x@summary[pos, ]
+  }
+
+  if (!missing(col.name) && (length(col.name) > 0)) {
     if (!is.character(col.name)) {
       stop(sQuote("col.name"), " character is requested!", call. = FALSE)
     }
 
-    col.name <- match.arg(col.name, colnames(x@summary), several.ok = FALSE)
+    col.name <- match.arg(col.name, colnames(output), several.ok = FALSE)
 
-    output <- x@summary[, col.name]
+    output <- output[, col.name]
 
     if (is.number(output) == TRUE) {
       output <- as.numeric(output)

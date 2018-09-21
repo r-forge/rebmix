@@ -1262,7 +1262,7 @@ S1:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -1503,7 +1503,7 @@ S1:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -1728,7 +1728,7 @@ S0:;
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         if ((LooseTheta->pdf_[i] == pfDirac) ||
-            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 3))) goto E1;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2))) goto E1;
 
         // Bracketing.
 
@@ -4269,7 +4269,7 @@ int Rebmix::CombineComponents(int                  c,          // Number of comp
                     ed += xlogx(Tmp[k] + Tmp[l]) - xlogx(Tmp[k]) - xlogx(Tmp[l]);
                 }
 
-                if (ed > ED[i - 2]) {
+                if (ed >= ED[i - 2]) {
                     ED[i - 2] = ed; II = ii; J = j;
                 }
             }

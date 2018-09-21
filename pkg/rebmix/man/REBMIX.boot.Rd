@@ -51,7 +51,7 @@ logical. The sampling is with replacement if \code{TRUE}, see also \code{\link[b
 a vector of length \eqn{n} containing probability weights, see also \code{\link[base]{sample}}. The default value is \code{numeric()}.
 }
 \item{\dots}{
-further arguments to \code{\link[base]{sample}}; additional arguments affecting the summary produced.
+maximum number of components \code{cmax}, minimum number of components \code{cmin} and further arguments to \code{\link[base]{sample}}; additional arguments affecting the summary produced.
 }
 \item{object}{
 see Methods section below.
