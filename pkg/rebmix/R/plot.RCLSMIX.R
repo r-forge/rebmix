@@ -108,8 +108,8 @@ function(x,
           xlab = "",
           ylab = "",
           col = "black",
-          lwd = 1,
-          cex = plot.cex,
+          lwd = 0.6,
+          cex = 0.6 * plot.cex,
           pch = 1)
 
         box(col = fg, lty = "solid", lwd = 1)
@@ -199,8 +199,8 @@ function(x,
       xlab = "",
       ylab = "",
       col = "black",
-      lwd = 1,
-      cex = plot.cex,
+      lwd = 0.6,
+      cex = 0.6 * plot.cex,
       pch = 1)
 
     box(col = fg, lty = "solid", lwd = 1)
@@ -374,8 +374,8 @@ function(x,
           xlab = "",
           ylab = "",
           col = "black",
-          lwd = 1,
-          cex = plot.cex,
+          lwd = 0.6,
+          cex = 0.6 * plot.cex,
           pch = 1)
 
         box(col = fg, lty = "solid", lwd = 1)
@@ -465,8 +465,8 @@ function(x,
       xlab = "",
       ylab = "",
       col = "black",
-      lwd = 1,
-      cex = plot.cex,
+      lwd = 0.6,
+      cex = 0.6 * plot.cex,
       pch = 1)
 
     box(col = fg, lty = "solid", lwd = 1)

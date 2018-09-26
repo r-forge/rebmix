@@ -85,10 +85,10 @@ text(x = f[, 1], y = f[, 2], labels = format(f[, 3], digits = 3), cex = 0.8, pos
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{http://dx.doi.org/10.1080/03610920903480890}.\cr\cr
+Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{https://doi.org/10.1080/03610920903480890}.\cr\cr
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.\cr\cr
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{https://doi.org/10.1080/03610921003725788}.\cr\cr
 M. Nagode. Finite mixture modeling via REBMIX.
-Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://dx.doi.org/10.5963/JAO0302001}.
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{https://doi.org/10.5963/JAO0302001}.
 }
 \keyword{distributions}

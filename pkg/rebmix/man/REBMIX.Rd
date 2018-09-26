@@ -102,26 +102,26 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 \author{Marko Nagode}
 \references{
 H. A. Sturges. The choice of a class interval. Journal of American Statistical Association, 21(153):
-65-66, 1926. \url{http://www.jstor.org/stable/2965501}.\cr\cr
+65-66, 1926. \url{https://www.jstor.org/stable/2965501}.\cr\cr
 P. F. Velleman. Interactive computing for exploratory data analysis I: display algorithms. Proceedings of the Statistical Computing Section,
 American Statistical Association, 1976.\cr\cr
 W. J. Dixon and R. A. Kronmal. The Choice of origin and scale for graphs. Journal of the ACM, 12(2):
-259-261, 1965. \url{http://dx.doi.org/10.1145/321264.321277}.\cr\cr
+259-261, 1965. \url{https://doi.org/10.1145/321264.321277}.\cr\cr
 M. Nagode and M. Fajdiga. A general multi-modal probability density function suitable for the
 rainflow ranges of stationary random processes. International Journal of Fatigue, 20(3):211-223,
-1998. \url{http://dx.doi.org/10.1016/S0142-1123(97)00106-0}.\cr\cr
+1998. \url{https://doi.org/10.1016/S0142-1123(97)00106-0}.\cr\cr
 M. Nagode and M. Fajdiga. An improved algorithm for parameter estimation suitable for mixed
-weibull distributions. International Journal of Fatigue, 22(1):75-80, 2000. \url{http://dx.doi.org/10.1016/S0142-1123(99)00112-7}.\cr\cr
+weibull distributions. International Journal of Fatigue, 22(1):75-80, 2000. \url{https://doi.org/10.1016/S0142-1123(99)00112-7}.\cr\cr
 M. Nagode, J. Klemenc, and M. Fajdiga. Parametric modelling and scatter prediction of rainflow
-matrices. International Journal of Fatigue, 23(6):525-532, 2001. \url{http://dx.doi.org/10.1016/S0142-1123(01)00007-X}.\cr\cr
+matrices. International Journal of Fatigue, 23(6):525-532, 2001. \url{https://doi.org/10.1016/S0142-1123(01)00007-X}.\cr\cr
 M. Nagode and M. Fajdiga. An alternative perspective on the mixture estimation problem. Reliability
-Engineering & System Safety, 91(4):388-397, 2006. \url{http://dx.doi.org/10.1016/j.ress.2005.02.005}.\cr\cr
+Engineering & System Safety, 91(4):388-397, 2006. \url{https://doi.org/10.1016/j.ress.2005.02.005}.\cr\cr
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{http://dx.doi.org/10.1080/03610920903480890}.\cr\cr
+Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \url{https://doi.org/10.1080/03610920903480890}.\cr\cr
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
-Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{http://dx.doi.org/10.1080/03610921003725788}.\cr\cr
+Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \url{https://doi.org/10.1080/03610921003725788}.\cr\cr
 M. Nagode. Finite mixture modeling via REBMIX.
-Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{http://dx.doi.org/10.5963/JAO0302001}.
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{https://doi.org/10.5963/JAO0302001}.
 }
 \examples{
 # Generate and plot univariate normal dataset.
