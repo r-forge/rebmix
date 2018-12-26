@@ -514,10 +514,10 @@ function(.Object, ...,
   if (missing(Criterion) || (length(Criterion) == 0)) Criterion <- .Object@Criterion
 
   if (!is.character(Criterion)) {
-    stop(sQuote("Criterion"), " character vector is requested!", call. = FALSE)
+    stop(sQuote("Criterion"), " character is requested!", call. = FALSE)
   }
 
-  Criterion <- match.arg(Criterion, .rebmix$Criterion, several.ok = TRUE)
+  Criterion <- match.arg(Criterion, .rebmix$Criterion, several.ok = FALSE)
 
   # pdf.
 
@@ -596,10 +596,6 @@ function(.Object, ...,
 
     if (!all(unlist(lapply(K, function(x) all(x > 0)))) == TRUE) {
       stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
-    }
-
-    if (length(K) != length(Preprocessing)) {
-      stop("lengths of ", sQuote("Preprocessing"), " and ", sQuote("K"), " must match!", call. = FALSE)
     }
   }
   else
@@ -1185,6 +1181,7 @@ slots = c(s = "numeric",
   levels = "character",
   ntrain = "numeric",
   train = "list",
+  Zr = "list",
   ntest = "numeric",
   test = "data.frame",
   Zt = "factor"))

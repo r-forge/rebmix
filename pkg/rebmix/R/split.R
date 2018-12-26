@@ -32,13 +32,13 @@ function(p = 0.75, Dataset, class, ...)
 
   names <- colnames(Dataset)
 
-  Dataset[, class] <- as.factor(Dataset[, class])
+  f <- as.factor(Dataset[, class])
 
-  output@levels <- levels(Dataset[, class])
+  output@levels <- levels(f)
 
   levels <- output@levels
 
-  Dataset <- base::split(Dataset, Dataset[, class])
+  output@train <- Dataset <- base::split(Dataset, f)
 
   output@s <- length(Dataset)
 
@@ -52,7 +52,7 @@ function(p = 0.75, Dataset, class, ...)
     if (output@ntrain[i] > 1) {
       sample <- sample.int(n = n, size = output@ntrain[i])
 
-      output@train[[i]] <- data.frame(Dataset[[i]][sample,])
+      output@train[[i]] <- output@train[[i]][sample,]
 
       output@test <- rbind(output@test, Dataset[[i]][-sample,])
     }
@@ -73,10 +73,14 @@ function(p = 0.75, Dataset, class, ...)
     output@ntrain <- output@ntrain[-r]
 
     levels <- c(levels[-r], levels[r])
+
+    message("Note: Test dataset contains more classes than train datasets!")
   }
 
-  output@train <- lapply(output@train, function(x) {x <- data.frame(x[, -class]); colnames(x) <- names[-class]; x})
+  output@Zr <- lapply(output@train, function(x) {x <- factor(x[, class], levels = output@levels); x})
 
+  output@train <- lapply(output@train, function(x) {x <- data.frame(x[, -class]); colnames(x) <- names[-class]; x})
+  
   output@Zt <- factor(output@test[, class], levels = levels)
 
   output@test <- data.frame(output@test[, -class])
@@ -140,8 +144,6 @@ function(p = list(), Dataset, class, ...)
     stop(sQuote("p$type"), " must be greater than 0 and less or equal than ", ncol(Dataset), "!", call. = FALSE)
   }
 
-  output <- new("RCLS.chunk")
-
   type <- as.character(unique(Dataset[, p$type]))
 
   if (!(p$train %in% type)) {
@@ -151,34 +153,41 @@ function(p = list(), Dataset, class, ...)
   if (!(p$test %in% type)) {
     stop(sQuote("p$test"), " should be one of ", paste(dQuote(type), collapse = ", "), "!", call. = FALSE)
   }
+  
+  output <- new("RCLS.chunk") 
 
   names <- colnames(Dataset)
-
-  Dataset[, class] <- as.factor(Dataset[, class])
-
-  output@levels <- levels(Dataset[, class])
-
+  
   output@test <- subset(Dataset, subset = Dataset[, p$type] == p$test)
-
+  
   output@ntest <- nrow(output@test)
+  
+  f <- droplevels(as.factor(output@test[, class]))
+  
+  levels.test <- levels(f)
+  
+  output@train <- subset(Dataset, subset = Dataset[, p$type] == p$train)
 
-  levels <- output@levels
+  f <- droplevels(as.factor(output@train[, class]))
 
-  Dataset <- subset(Dataset, subset = Dataset[, p$type] == p$train)
+  r <- f %in% levels.test
 
-  Dataset <- base::split(Dataset, Dataset[, class])
+  output@train <- output@train[r, ]
 
-  output@s <- length(Dataset)
+  f <- droplevels(f[r])
 
-  r <- integer()
+  output@train <- base::split(output@train, f)
+
+  levels.train <- levels(f)
+
+  output@s <- length(output@train)  
+
+  r <- integer()  
 
   for (i in 1:output@s) {
-    output@ntrain[i] <- nrow(Dataset[[i]])
+    output@ntrain[i] <- nrow(output@train[[i]])
 
-    if (output@ntrain[i] > 1) {
-      output@train[[i]] <- Dataset[[i]]
-    }
-    else {
+    if (output@ntrain[i] <= 1) {
       r <- c(r, i)
     }
   }
@@ -186,20 +195,30 @@ function(p = list(), Dataset, class, ...)
   if (length(r) > 0) {
     output@s <- output@s - length(r)
 
-    output@levels <- output@levels[-r]
+    levels.train <- levels.train[-r]
 
     output@train <- output@train[-r]
 
     output@ntrain <- output@ntrain[-r]
-
-    levels <- c(levels[-r], levels[r])
   }
+
+  r <- levels.test %in% levels.train
+  
+  if (any(r == FALSE)) {
+    message("Note: Test dataset contains more classes than train datasets!")
+  }
+
+  levels.test <- c(levels.test[r], levels.test[!r])
+
+  output@Zr <- lapply(output@train, function(x) {x <- factor(x[, class], levels = levels.train); x})
 
   output@train <- lapply(output@train, function(x) {x <- data.frame(x[, c(-class, -p$type)]); colnames(x) <- names[c(-class, -p$type)]; x})
 
-  output@Zt <- factor(output@test[, class], levels = levels)
+  output@Zt <- factor(output@test[, class], levels = levels.test)
 
   output@test <- data.frame(output@test[, c(-class, -p$type)])
+  
+  output@levels <- levels.test
 
   colnames(output@test) <- names[c(-class, -p$type)]
 

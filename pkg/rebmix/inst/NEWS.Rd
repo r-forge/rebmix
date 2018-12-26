@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.11.0}{ 
+\itemize{
+\item ???.
+}
+}
 \section{Changes in version 2.10.3}{ 
 \itemize{
 \item Method \code{Zp} is replaced by \code{a.Zp} accessor method.

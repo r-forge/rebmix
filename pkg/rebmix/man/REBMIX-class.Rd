@@ -31,7 +31,7 @@ maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \c
 minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}.
 }
 \item{\code{Criterion}:}{
-a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},
+a character giving the information criterion type. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},
 Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"}, minimum description length \code{"MDL2"} or \code{"MDL5"},
 approximate weight of evidence \code{"AWE"}, classification likelihood \code{"CLC"},
 integrated classification likelihood \code{"ICL"} or \code{"ICL-BIC"}, partition coefficient \code{"PC"},
@@ -50,12 +50,12 @@ a vector of length \eqn{d} containing initial component parameters. One of \eqn{
 a vector of length \eqn{d} containing initial component parameters. Currently not used.
 }
 \item{\code{K}:}{
-a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
+a character or a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour. There is no genuine rule to identify \eqn{v} or \eqn{k}. Consequently,
 the REBMIX algorithm identifies them from the set \code{K} of input values by
 minimizing the information criterion. The Sturges rule \eqn{v = 1 + \mathrm{log_{2}}(n)}, \eqn{\mathrm{Log}_{10}} rule \eqn{v = 10 \mathrm{log_{10}}(n)} or RootN
 rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bins
-or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation.
+or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. The default value is \code{"auto"}.
 }
 \item{\code{y0}:}{
 a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.

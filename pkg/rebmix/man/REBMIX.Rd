@@ -42,7 +42,7 @@ maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \c
 minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}.
 }
 \item{Criterion}{
-a character vector giving the information criterion types. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},
+a character giving the information criterion type. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},
 Bayesian \code{"BIC"}, consistent Akaike \code{"CAIC"}, Hannan-Quinn \code{"HQC"}, minimum description length \code{"MDL2"} or \code{"MDL5"},
 approximate weight of evidence \code{"AWE"}, classification likelihood \code{"CLC"},
 integrated classification likelihood \code{"ICL"} or \code{"ICL-BIC"}, partition coefficient \code{"PC"},

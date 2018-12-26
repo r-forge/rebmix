@@ -5,7 +5,7 @@
 \description{Object of class \code{RCLS.chunk}.}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("RCLS.chunk", ...)}. Accessor methods for the slots are \code{a.s(x = NULL)},
-\code{a.levels(x = NULL)}, \code{a.ntrain(x = NULL)}, \code{a.train(x = NULL)}, \code{a.ntest(x = NULL)}, \code{a.test(x = NULL)} and \code{a.Zt(x = NULL)},
+\code{a.levels(x = NULL)}, \code{a.ntrain(x = NULL)}, \code{a.train(x = NULL)}, \code{a.Zr(x = NULL)}, \code{a.ntest(x = NULL)}, \code{a.test(x = NULL)} and \code{a.Zt(x = NULL)},
 where \code{x} stands for an object of class \code{RCLS.chunk}.
 }
 \section{Slots}{
@@ -21,6 +21,9 @@ a vector of length \eqn{s} containing numbers of observations in train datasets 
 }
 \item{\code{train}:}{
 a list of data frames containing train datasets \eqn{Y_{\mathrm{train}g}} of length \eqn{n_{\mathrm{train}g}}.
+}
+\item{\code{Zr}:}{
+a list of factors of true class membership \eqn{\bm{\Omega}_{g}} for the train datasets.
 }
 \item{\code{ntest}:}{
 number of observations in test dataset \eqn{Y_{\mathrm{test}}}.

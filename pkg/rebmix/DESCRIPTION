@@ -1,5 +1,5 @@
 Package: rebmix
-Version: 2.10.3
+Version: 2.11.0
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si"))
 Title: Finite Mixture Modeling, Clustering & Classification

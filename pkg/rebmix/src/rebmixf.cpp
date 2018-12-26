@@ -101,7 +101,7 @@ Rebmix::Rebmix()
     p_value_ = (FLOAT)0.0;
     min_dist_mul_ = (FLOAT)0.0;
     var_mul_ = (FLOAT)0.0;
-    kmax_ = (FLOAT)0.0;
+    kmax_ = (int)0;
     ChiSqr_ = (FLOAT)0.0;
     curr_ = NULL;
     o_ = 0;
@@ -285,7 +285,7 @@ int Rebmix::Initialize()
 
     var_mul_ = (FLOAT)0.0625;
 
-    kmax_ = ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_));
+    kmax_ = (int)floor(((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_)));
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
@@ -444,7 +444,7 @@ S0:;
 
         Y[*k][length_pdf_] = (FLOAT)1.0; (*k)++;
 
-        if ((*State) && (*k > kmax_)) {
+        if ((*State) && (*k >= kmax_)) {
             *State = 2; goto E0;
         }
 S1:;
@@ -456,7 +456,7 @@ E0: return Error;
 // Global mode detection for k-nearest neighbour.
 
 int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
-                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
+                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,logV,R].
                           FLOAT *h,  // Normalizing vector.
                           int   *I)  // Pointer to the inlier observations.
 {
@@ -526,7 +526,7 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
 // Global mode detection for kernel density estimation.
 
 int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
-                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
+                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,k].
                           FLOAT *h,  // Sides of the hypersquare.
                           int   *I)  // Pointer to the inlier observations.
 {
@@ -1197,7 +1197,6 @@ S1:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] * k / nl) - Y[m][length_pdf_ + 1] - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-//      if (epsilon < (FLOAT)1.0)
         Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
@@ -1256,7 +1255,7 @@ S1:;
 
     if (Error) goto E0;
 
-    if (Restraints_ == rtRigid) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
 
     // Loose restraints.
 
@@ -1438,7 +1437,6 @@ S1:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] * Y[m][length_pdf_ + 1] / nl) - logV - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-//      if (epsilon < (FLOAT)1.0)
         Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
@@ -1497,7 +1495,7 @@ S1:;
 
     if (Error) goto E0;
 
-    if (Restraints_ == rtRigid) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
 
     // Loose restraints.
 
@@ -1663,7 +1661,6 @@ S0:;
     epsilon = (FLOAT)exp(((FLOAT)log(Y[m][length_pdf_] / nl) - logV - logflm) / length_pdf_);
 
     for (i = 0; i < length_pdf_; i++) {
-//      if (epsilon < (FLOAT)1.0)
         Mode[i].flm *= epsilon;
 
         switch (RigidTheta->pdf_[i]) {
@@ -1722,7 +1719,7 @@ S0:;
 
     if (Error) goto E0;
 
-    if (Restraints_ == rtRigid) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
 
     // Loose restraints.
 
@@ -2203,6 +2200,10 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
     if (Error) goto E0;
 
+    if (nl <= (FLOAT)1.0) {
+        Error = 1; goto E0;
+    }
+
     for (i = 0; i < length_pdf_; i++) {
         switch (RigidTheta->pdf_[i]) {
         case pfNormal:
@@ -2518,6 +2519,10 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
     Error = EnhanTheta->Realloc(length_pdf_, length_Theta_, length_theta_);
 
     if (Error) goto E0;
+
+    if (nl <= (FLOAT)1.0) {
+        Error = 1; goto E0;
+    }
 
     for (i = 0; i < length_pdf_; i++) {
         switch (RigidTheta->pdf_[i]) {
@@ -2835,6 +2840,10 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
     Error = EnhanTheta->Realloc(length_pdf_, length_Theta_, length_theta_);
 
     if (Error) goto E0;
+
+    if (nl <= (FLOAT)1.0) {
+        Error = 1; goto E0;
+    }
 
     for (i = 0; i < length_pdf_; i++) {
         switch (RigidTheta->pdf_[i]) {
@@ -4456,7 +4465,12 @@ int Rebmix::REBMIXKNN()
     Error = NULL == h; if (Error) goto E0;
 
     for (i = 0; i < length_pdf_; i++) {
-        h[i] = ymax[i] - ymin[i];
+        if ((FLOAT)fabs(ymax[i] - ymin[i]) <= FLOAT_EPSILON) {
+            h[i] = (FLOAT)1.0;
+        }
+        else {
+            h[i] = ymax[i] - ymin[i] + (FLOAT)2.0 * Eps;
+        }
     }
 
     R = (FLOAT*)malloc(n_ * sizeof(FLOAT));
@@ -4557,6 +4571,8 @@ int Rebmix::REBMIXKNN()
     Error = Initialize();
 
     if (Error) goto E0;
+
+    if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
 
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
@@ -5056,6 +5072,8 @@ int Rebmix::REBMIXKDE()
 
     if (Error) goto E0;
 
+    if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
+
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
 
@@ -5064,7 +5082,14 @@ int Rebmix::REBMIXKDE()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / all_K_[i]; logV += (FLOAT)log(h[j]);
+                if ((FLOAT)fabs(ymax[j] - ymin[j]) <= FLOAT_EPSILON) {
+                    h[j] = (FLOAT)1.0;
+                }
+                else {
+                    h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
+                }
+
+                logV += (FLOAT)log(h[j]);
 
                 break;
             case vtDiscrete:
@@ -5444,19 +5469,11 @@ int Rebmix::REBMIXH()
             for (j = 1; j < n_; j++) {
                 if (Y_[j][i] < ymin[i]) ymin[i] = Y_[j][i];
             }
-
-            if (Variables_[i] == vtContinuous) {
-                ymin[i] -= Eps;
-            }
         }
     }
     else {
         for (i = 0; i < length_pdf_; i++) {
             ymin[i] = ymin_[i];
-
-            if (Variables_[i] == vtContinuous) {
-                ymin[i] -= Eps;
-            }
         }
     }
 
@@ -5471,19 +5488,11 @@ int Rebmix::REBMIXH()
             for (j = 1; j < n_; j++) {
                 if (Y_[j][i] > ymax[i]) ymax[i] = Y_[j][i];
             }
-
-            if (Variables_[i] == vtContinuous) {
-                ymax[i] += Eps;
-            }
         }
     }
     else {
         for (i = 0; i < length_pdf_; i++) {
             ymax[i] = ymax_[i];
-
-            if (Variables_[i] == vtContinuous) {
-                ymax[i] += Eps;
-            }
         }
     }
 
@@ -5593,6 +5602,8 @@ int Rebmix::REBMIXH()
 
     if (Error) goto E0;
 
+    if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
+
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
 
@@ -5601,10 +5612,15 @@ int Rebmix::REBMIXH()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / all_K_[i];
+                if ((FLOAT)fabs(ymax[j] - ymin[j]) <= FLOAT_EPSILON) {
+                    h[j] = (FLOAT)1.0;
+                }
+                else {
+                    h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
+                }
 
                 if (y0_ == NULL) {
-                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
+                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j] - Eps;
                 }
                 else {
                     y0[j] = y0_[j];
@@ -6418,7 +6434,7 @@ int Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     int   Error = 0;
 
-    printf("REBMIX Version 2.10.3\n");
+    printf("REBMIX Version 2.11.0\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

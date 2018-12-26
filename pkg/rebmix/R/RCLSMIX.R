@@ -141,9 +141,11 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RCLSMIX Version 2.10.3")
+  message("RCLSMIX Version 2.11.0")
 
   flush.console()
+
+  levels <- levels(Zt)
 
   model <- new(model,
     x = x,
@@ -153,6 +155,9 @@ function(model,
   model <- RCLSMIX(model = model, ...)
 
   model@Zp <- factor(model@Zp, levels = levels(model@Zt))
+
+#  levels(model@Zt) <- levels
+#  levels(model@Zp) <- levels
 
   model@CM <- table(model@Zt, model@Zp)
 
@@ -184,7 +189,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("BFSMIX Version 2.10.3")
+  message("BFSMIX Version 2.11.0")
 
   flush.console()
 

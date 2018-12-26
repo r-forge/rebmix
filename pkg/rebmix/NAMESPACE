@@ -118,4 +118,5 @@ exportMethods("RNGMIX",
               "a.Chunks",
               "a.levels",
               "a.train",
-              "a.test")
+              "a.Zr",
+              "a.test") 

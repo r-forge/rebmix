@@ -15,11 +15,13 @@ function(model, ...)
 
     n <- nrow(X)
     d <- ncol(X)
+    
+    Preprocessing <- model@Preprocessing[min(i, length(model@Preprocessing))]
 
     length.pdf <- d
 
     if (is.character(model@K)) {
-      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+      if (Preprocessing == .rebmix$Preprocessing[3]) {
         K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
 
         K <- unique(K)
@@ -33,7 +35,12 @@ function(model, ...)
       }
     }
     else {
-      K <- model@K
+      if (is.list(model@K)) {
+        K <- unique(model@K[[min(i, length(model@K))]])
+      }
+      else {
+        K <- unique(model@K)
+      }
     }
 
     if (length(model@theta1) > 0) {
@@ -51,7 +58,7 @@ function(model, ...)
     }
 
     output <- .C(C_RREBMIX,
-      Preprocessing = as.character(model@Preprocessing),
+      Preprocessing = as.character(Preprocessing),
       cmax = as.integer(model@cmax),
       cmin = as.integer(model@cmin),
       Criterion = as.character(model@Criterion),
@@ -152,7 +159,7 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
+    if (Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d
 
       summary[[i]] <- c(Dataset.name,
@@ -174,7 +181,7 @@ function(model, ...)
         output$summary.M)
     }
     else
-    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+    if (Preprocessing == .rebmix$Preprocessing[2]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -185,6 +192,7 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        rep(NA, d),
         output$summary.ymin,
         output$summary.ymax,
         output$summary.h,
@@ -192,7 +200,7 @@ function(model, ...)
         output$summary.logL,
         output$summary.M)
     }
-    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+    if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -203,6 +211,7 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        rep(NA, d),
         output$summary.ymin,
         output$summary.ymax,
         output$summary.h,
@@ -221,62 +230,23 @@ function(model, ...)
 
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
 
-  if (model@Preprocessing == .rebmix$Preprocessing[1]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("y0", if (d > 1) 1:d else "", sep = ""),
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
-  else
-  if (model@Preprocessing == .rebmix$Preprocessing[2]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
-  if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
+  colnames(model@summary) <- c("Dataset",
+    "Preprocessing",
+    "cmax",
+    "cmin",
+    "Criterion",
+    "ar",
+    "Restraints",
+    "c",
+    "v/k",
+    "K",
+    paste("y0", if (d > 1) 1:d else "", sep = ""),
+    paste("ymin", if (d > 1) 1:d else "", sep = ""),
+    paste("ymax", if (d > 1) 1:d else "", sep = ""),
+    paste("h", if (d > 1) 1:d else "", sep = ""),
+    "IC",
+    "logL",
+    "M")
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -300,11 +270,13 @@ function(model, ...)
 
     n <- nrow(X)
     d <- ncol(X)
+    
+    Preprocessing <- model@Preprocessing[min(i, length(model@Preprocessing))]
 
     length.pdf <- d
 
     if (is.character(model@K)) {
-      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+      if (Preprocessing == .rebmix$Preprocessing[3]) {
         K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
 
         K <- unique(K)
@@ -318,7 +290,12 @@ function(model, ...)
       }
     }
     else {
-      K <- model@K
+      if (is.list(model@K)) {
+        K <- unique(model@K[[min(i, length(model@K))]])
+      }
+      else {
+        K <- unique(model@K)
+      }
     }
 
     if (length(model@theta1) > 0) {
@@ -336,7 +313,7 @@ function(model, ...)
     }
 
     output <- .C(C_RREBMVNORM,
-      Preprocessing = as.character(model@Preprocessing),
+      Preprocessing = as.character(Preprocessing),
       cmax = as.integer(model@cmax),
       cmin = as.integer(model@cmin),
       Criterion = as.character(model@Criterion),
@@ -437,7 +414,7 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
+    if (Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d
 
       summary[[i]] <- c(Dataset.name,
@@ -459,7 +436,7 @@ function(model, ...)
         output$summary.M)
     }
     else
-    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+    if (Preprocessing == .rebmix$Preprocessing[2]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -470,6 +447,7 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        rep(NA, d),
         output$summary.ymin,
         output$summary.ymax,
         output$summary.h,
@@ -477,7 +455,7 @@ function(model, ...)
         output$summary.logL,
         output$summary.M)
     }
-    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+    if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -488,6 +466,7 @@ function(model, ...)
         output$summary.c,
         output$summary.k,
         output$K,
+        rep(NA, d),
         output$summary.ymin,
         output$summary.ymax,
         output$summary.h,
@@ -506,62 +485,23 @@ function(model, ...)
 
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
 
-  if (model@Preprocessing == .rebmix$Preprocessing[1]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("y0", if (d > 1) 1:d else "", sep = ""),
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
-  else
-  if (model@Preprocessing == .rebmix$Preprocessing[2]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
-  if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-    colnames(model@summary) <- c("Dataset",
-      "Preprocessing",
-      "cmax",
-      "cmin",
-      "Criterion",
-      "ar",
-      "Restraints",
-      "c",
-      "v/k",
-      "K",
-      paste("ymin", if (d > 1) 1:d else "", sep = ""),
-      paste("ymax", if (d > 1) 1:d else "", sep = ""),
-      paste("h", if (d > 1) 1:d else "", sep = ""),
-      "IC",
-      "logL",
-      "M")
-  }
+  colnames(model@summary) <- c("Dataset",
+    "Preprocessing",
+    "cmax",
+    "cmin",
+    "Criterion",
+    "ar",
+    "Restraints",
+    "c",
+    "v/k",
+    "K",
+    paste("y0", if (d > 1) 1:d else "", sep = ""),
+    paste("ymin", if (d > 1) 1:d else "", sep = ""),
+    paste("ymax", if (d > 1) 1:d else "", sep = ""),
+    paste("h", if (d > 1) 1:d else "", sep = ""),
+    "IC",
+    "logL",
+    "M")
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -588,7 +528,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.10.3")
+  message("REBMIX Version 2.11.0")
 
   flush.console()
 
@@ -601,49 +541,36 @@ function(model,
      pdf = pdf,
      theta1 = theta1,
      theta2 = theta2,
-     K = sort(K),
+     K = K,
      y0 = y0,
      ymin = ymin,
      ymax = ymax,
      ar = ar,
      Restraints = Restraints)
 
-  Preprocessing <- model@Preprocessing; K <- model@K; Criterion <- model@Criterion
 
-  for (i in 1:length(Preprocessing)) {
-    model@Preprocessing <- Preprocessing[i]
+  output <- REBMIX(model = model, ...)
 
-    if (is.list(K)) model@K <- K[[i]] else model@K <- K
-
-    for (j in 1:length(Criterion)) {
-      model@Criterion <- Criterion[j]
-
-      output <- REBMIX(model = model, ...)
-
-      for (k in (1:length(Dataset))) {
-        model@w[[length(model@w) + 1]] <- output@w[[k]]
-        model@Theta[[length(model@Theta) + 1]] <- output@Theta[[k]]
-      }
-
-      if (is.null(model@summary)) {
-        model@summary <- output@summary
-      }
-      else {
-        model@summary <- merge(model@summary, output@summary, all = TRUE, sort = FALSE)
-      }
-
-      for (k in (1:length(Dataset))) {
-        model@opt.c[[length(model@opt.c) + 1]] <- output@opt.c[[k]]
-        model@opt.IC[[length(model@opt.IC) + 1]] <- output@opt.IC[[k]]
-        model@opt.logL[[length(model@opt.logL) + 1]] <- output@opt.logL[[k]]
-        model@opt.D[[length(model@opt.D) + 1]] <- output@opt.D[[k]]
-        model@all.K[[length(model@all.K) + 1]] <- output@all.K[[k]]
-        model@all.IC[[length(model@all.IC) + 1]] <- output@all.IC[[k]]
-      }
-    }
+  for (k in (1:length(Dataset))) {
+    model@w[[length(model@w) + 1]] <- output@w[[k]]
+    model@Theta[[length(model@Theta) + 1]] <- output@Theta[[k]]
   }
 
-  model@Preprocessing <- Preprocessing; model@K <- K; model@Criterion <- Criterion
+  if (is.null(model@summary)) {
+    model@summary <- output@summary
+  }
+  else {
+    model@summary <- merge(model@summary, output@summary, all = TRUE, sort = FALSE)
+  }
+
+  for (k in (1:length(Dataset))) {
+    model@opt.c[[length(model@opt.c) + 1]] <- output@opt.c[[k]]
+    model@opt.IC[[length(model@opt.IC) + 1]] <- output@opt.IC[[k]]
+    model@opt.logL[[length(model@opt.logL) + 1]] <- output@opt.logL[[k]]
+    model@opt.D[[length(model@opt.D) + 1]] <- output@opt.D[[k]]
+    model@all.K[[length(model@all.K) + 1]] <- output@all.K[[k]]
+    model@all.IC[[length(model@all.IC) + 1]] <- output@all.IC[[k]]
+  }
 
   model@pos <- which(as.numeric(model@summary[, "logL"]) == max(as.numeric(model@summary[, "logL"])))
 
