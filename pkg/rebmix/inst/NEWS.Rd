@@ -2,7 +2,11 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.11.0}{ 
 \itemize{
-\item ???.
+\item Method \code{split} is improved.
+\item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXKDE()} and \code{REBMIXH()}.
+\item Method \code{RCLSMIX} is improved.
+\item Method \code{plot} is improved.
+\item ...
 }
 }
 \section{Changes in version 2.10.3}{ 

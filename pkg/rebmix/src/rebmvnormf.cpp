@@ -775,7 +775,7 @@ S0:;
             RigidTheta->Theta_[2][p] = RigidTheta->Theta_[2][q] /= epsilon;
         }
     }
-
+    
     Error = LooseTheta->Memmove(RigidTheta);
 
     if (Error) goto E0;

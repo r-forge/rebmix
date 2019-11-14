@@ -183,7 +183,5 @@ levels(adult[["Race"]])
 levels(adult[["Sex"]])
 levels(adult[["Native.Country"]])
 levels(adult[["Income"]])
-
-save(adult, file = "adult_complete_cases.rda")
 }
 \keyword{datasets}

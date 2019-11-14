@@ -4465,12 +4465,7 @@ int Rebmix::REBMIXKNN()
     Error = NULL == h; if (Error) goto E0;
 
     for (i = 0; i < length_pdf_; i++) {
-        if ((FLOAT)fabs(ymax[i] - ymin[i]) <= FLOAT_EPSILON) {
-            h[i] = (FLOAT)1.0;
-        }
-        else {
-            h[i] = ymax[i] - ymin[i] + (FLOAT)2.0 * Eps;
-        }
+        h[i] = ymax[i] - ymin[i] + (FLOAT)2.0 * Eps;
     }
 
     R = (FLOAT*)malloc(n_ * sizeof(FLOAT));
@@ -5082,12 +5077,7 @@ int Rebmix::REBMIXKDE()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                if ((FLOAT)fabs(ymax[j] - ymin[j]) <= FLOAT_EPSILON) {
-                    h[j] = (FLOAT)1.0;
-                }
-                else {
-                    h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
-                }
+                h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
 
                 logV += (FLOAT)log(h[j]);
 
@@ -5612,12 +5602,7 @@ int Rebmix::REBMIXH()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                if ((FLOAT)fabs(ymax[j] - ymin[j]) <= FLOAT_EPSILON) {
-                    h[j] = (FLOAT)1.0;
-                }
-                else {
-                    h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
-                }
+                h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
 
                 if (y0_ == NULL) {
                     y0[j] = ymin[j] + (FLOAT)0.5 * h[j] - Eps;

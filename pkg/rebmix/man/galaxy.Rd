@@ -23,18 +23,4 @@ and p.j. green. Journal of the Royal Statistical Society B, 59(4):779-780, 1997.
 M. Stephens. Bayesian analysis of mixture models with an unknown number of components -
 an alternative to reversible jump methods. The Annals of Statistics, 28(1):40-74, 2000. \url{https://www.jstor.org/stable/2673981}.
 }
-\examples{
-data("galaxy")
-
-colnames(galaxy)
-
-# Write dataset into tab delimited ASCII file.
-
-write.table(galaxy, file = "galaxy.txt", sep = "\t",
-  eol = "\n", row.names = FALSE, col.names = FALSE)
-
-# Write dataset into rda file.
-
-save(galaxy, file = "galaxy.rda")
-}
 \keyword{datasets}

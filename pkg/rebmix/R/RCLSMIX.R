@@ -58,7 +58,7 @@ function(model, ...)
     stop("in RCLSMIX!", call. = FALSE); return(NA)
   }
 
-  model@Zp <- as.factor(output$Z)
+  model@Zp <- factor(output$Z, levels = levels(model@Zt))
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -125,7 +125,7 @@ function(model, ...)
     stop("in RCLSMIX!", call. = FALSE); return(NA)
   }
 
-  model@Zp <- as.factor(output$Z)
+  model@Zp <- factor(output$Z, levels = levels(model@Zt))
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -154,10 +154,8 @@ function(model,
 
   model <- RCLSMIX(model = model, ...)
 
-  model@Zp <- factor(model@Zp, levels = levels(model@Zt))
-
-#  levels(model@Zt) <- levels
-#  levels(model@Zp) <- levels
+  levels(model@Zt) <- levels
+  levels(model@Zp) <- levels
 
   model@CM <- table(model@Zt, model@Zp)
 

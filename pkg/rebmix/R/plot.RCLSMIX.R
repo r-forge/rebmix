@@ -35,12 +35,12 @@ function(x,
 
   d <- ncol(x@Dataset)
 
-  Zp <- as.numeric(levels(x@Zp))[x@Zp]
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]
+  Zp <- as.numeric(x@Zp)
+  Zt <- as.numeric(x@Zt)
 
   zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-
-  unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)
+  
+  s <- length(levels(x@Zp))
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -71,10 +71,10 @@ function(x,
     interpolate = "linear")
 
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
+  
+  legend.col <- rgb(ramp((1:s - 1) / zmax), maxColorValue = 255)
 
-  legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
-
-  legend.text <- as.character(sort.unique.Zp)
+  legend.text <- as.character(levels(x@Zp))
 
   legend.pch <- rep(plot.pch, s)
 
@@ -301,12 +301,12 @@ function(x,
 
   d <- ncol(x@Dataset)
 
-  Zp <- as.numeric(levels(x@Zp))[x@Zp]
-  Zt <- as.numeric(levels(x@Zt))[x@Zt]
+  Zp <- as.numeric(x@Zp)
+  Zt <- as.numeric(x@Zt)
 
   zlim <- c(0, max(1, max(Zp) - 1)); zmax <- zlim[2]
-
-  unique.Zp <- unique(Zp); s <- length(unique.Zp); sort.unique.Zp <- sort(unique.Zp)
+  
+  s <- length(levels(x@Zp))  
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -337,10 +337,10 @@ function(x,
     interpolate = "linear")
 
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
+  
+  legend.col <- rgb(ramp((1:s - 1) / zmax), maxColorValue = 255)  
 
-  legend.col <- rgb(ramp((sort.unique.Zp - 1) / zmax), maxColorValue = 255)
-
-  legend.text <- as.character(sort.unique.Zp)
+  legend.text <- as.character(levels(x@Zp))
 
   legend.pch <- rep(plot.pch, s)
 
