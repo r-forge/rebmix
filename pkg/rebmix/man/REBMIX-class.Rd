@@ -84,7 +84,9 @@ Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_
 \item{\code{summary}:}{
 a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, \eqn{c_{\mathrm{min}}}, information criterion type,
 \eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, \eqn{y_{i\mathrm{min}}}, \eqn{y_{i\mathrm{max}}}, optimal \eqn{h_{i}},
-information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
+information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L}, degrees of freedom \eqn{M}, strategy for the EM algorithm \code{EMStrategy},
+variant of the EM algorithm \code{EMVariant}, acceleration type \code{EMAcceleration.type}, tolerance \code{EMTolerance.value}, acceleration multilplier \code{EMAcceleration.value},
+maximum allowed number of iterations \code{EMMax.iter.value}, number of iterations used for obtaining optimal solution \code{EMNum.iter.opt} and total number of iterations of the EM algorithm \code{EMNum.iter.total}.
 }
 \item{\code{pos}:}{
 position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.

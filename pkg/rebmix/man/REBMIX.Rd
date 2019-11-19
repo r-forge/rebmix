@@ -16,9 +16,10 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
 }
 \usage{
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(),
-       cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), theta1 = numeric(),
-       theta2 = numeric(), K = "auto", y0 = numeric(), ymin = numeric(),
-       ymax = numeric(), ar = 0.1, Restraints = "loose", ...)
+       cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
+       theta1 = numeric(),theta2 = numeric(), K = "auto", y0 = numeric(), 
+       ymin = numeric(), ymax = numeric(), ar = 0.1, Restraints = "loose", 
+       EMcontrol = list(strategy = "None"), ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
 ## ... and for other signatures
@@ -80,6 +81,12 @@ acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.
 \item{Restraints}{
 a character giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
 The rigid restraints are obsolete and applicable for well separated components only.
+}
+\item{EMcontrol}{
+a named list of control parameters for the EM algorithm. Named list contains fields: \code{strategy}, \code{variant}, \code{acceleration}, \code{tolerance}, \code{acceleration.multiplier} and \code{maximum.iterations}. Field \code{strategy} can be one of: \code{"None"}, \code{"Exhaustive"}, \code{"Best"} and \code{"Single"}.  Field \code{variant} can be one of \code{"EM"} or \code{"ECM"}.
+Field \code{acceleration} can be one of \code{"Fixed"}, \code{"Line"} and \code{"Golden"}. Field \code{tolerance} specifies the tolerance for convergence of EM algorithm.
+Field \code{acceleration.multiplier} specifies the value of acceeleration multiplier of the EM parameters increment in each iteration \eqn{dTheta} (with minumum value 1.0 and maximum value of 2.0).
+Field \code{maximum.iterations} specifies the maximum allowed iterations of the EM algorithm. The default value is \code{list(strategy = "None", variant = "EM", acceleration = "Fixed", tolerance = 1e-4, acceleration.multiplier = 1.0, maximum.iterations = 1000)} disabling the EM algorithm utilization. This argument can be also generated with the class \code{EM.Control}.   
 }
 \item{object}{
 see Methods section below.
@@ -159,5 +166,38 @@ logL(normalest)
 # Plot finite mixture.
 
 plot(normalest, nrow = 2, what = c("den", "dis"), npts = 1000)
+
+# EM algorithm utilization
+
+# Load iris data.
+
+data(iris)
+
+Dataset <- list(data.frame(iris[, c(1:4)]))
+
+# Create EM.Control object.
+
+EM <- new("EM.Control", 
+  strategy = "Exhaustive", 
+  variant = "EM", 
+  acceleration = "Fixed", 
+  tolerance = 1e-4, 
+  acceleration.multiplier = 1.0, 
+  maximum.iterations = 1000)
+
+# Mixture parameter estimation using REBMIX and EM algorithm.
+
+irisest <- REBMIX(model="REBMVNORM", 
+  Dataset = Dataset, 
+  Preprocessing = "histogram",
+  cmax = 10,
+  Criterion = "BIC",
+  EMcontrol = a.as.list(EM.Control))
+
+irisest
+
+# Print total number of EM iterations used in Ehxaustive strategy from summary slot.
+
+a.summary(irisest, pos = 1, col.name = "EMNum.iter.total")
 }
 \keyword{parameter estimation}

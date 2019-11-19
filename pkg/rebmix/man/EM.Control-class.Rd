@@ -15,19 +15,19 @@ Objects can be created by calls of the form \code{new("EM.Control", ...)}. Acces
 a character containing the EM and REBMIX strategy. One of \code{"None"}, \code{"Exhaustive"}, \code{"Best"} and \code{"Single"}. The default value is \code{"None"}.  
 }
 \item{\code{variant}:}{
-a character containing the type of EM algorithm to be used. One of \code{"EM"} of \code{"ECM"}. The default value is \code{"EM"}.
+a character containing the type of the EM algorithm to be used. One of \code{"EM"} of \code{"ECM"}. The default value is \code{"EM"}.
 }
 \item{\code{acceleration}:}{
-a character containing the type of acceleration of EM iteration increment. One of \code{"Fixed"}, \code{"Line"} or \code{"Golden"}. The default value is \code{"Fixed"}.
+a character containing the type of acceleration of the EM iteration increment. One of \code{"Fixed"}, \code{"Line"} or \code{"Golden"}. The default value is \code{"Fixed"}.
 }
 \item{\code{tolerence}:}{
 tolerance value for the EM convergence criteria. The default value is 1e-4
 }
 \item{\code{acceleration.multiplier}:}{
-acceleration.multiplier \eqn{a_{\mathrm{EM}}}, \eqn{1.0 \leq a_{\mathrm{EM}} \leq 2.0}. acceleration.multiplier for EM step increment. The default value is 1.0.
+acceleration.multiplier \eqn{a_{\mathrm{EM}}}, \eqn{1.0 \leq a_{\mathrm{EM}} \leq 2.0}. acceleration.multiplier for the EM step increment. The default value is 1.0.
 }
 \item{\code{maximum.iterations}:}{
-maximum.iterations is positive integer containing the maximum allowed number of iterations of EM algorithm. The default value is 1000.
+maximum.iterations is positive integer containing the maximum allowed number of iterations of the EM algorithm. The default value is 1000.
 }
 }
 }
@@ -39,7 +39,7 @@ G. Celeux and G. Govaert. A classification EM algorithm for clustering and two s
 \url{https://doi.org/10.1016/0167-9473(92)90042-E}.
 }
 \examples{
-## inline creation by function new call
+# Inline creation by function new call.
 
 EM <- new("EM.Control", strategy = "Exhaustive", 
   variant = "EM", acceleration = "Fixed", 
@@ -48,7 +48,7 @@ EM <- new("EM.Control", strategy = "Exhaustive",
 
 EM
 
-## Creation of EM object with setter functions
+# Creation of EM object with setter functions.
 
 EM <- new("EM.Control")
 
@@ -61,7 +61,7 @@ a.maximum.iterations(EM) <- 1000
 
 EM
 
-## Creating a named list for REBMIX method
+# Creating a named list for REBMIX method.
 
 EMcontrol <- a.as.list(EM)
 }
