@@ -81,6 +81,16 @@ function(model, ...)
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
       Y = as.double(X),
+### Panic Branislav.      
+      EMStrategy = as.character(model@EMcontrol@strategy),
+      EMVariant = as.character(model@EMcontrol@variant),
+      EMAcceleration = as.character(model@EMcontrol@acceleration),
+      EMTolerance = as.double(model@EMcontrol@tolerance),
+      EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
+      EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
+      n_iter = as.integer(0),
+      n_iter_all = as.integer(0),
+### End            
       summary.k = integer(1),
       summary.h = double(d),
       summary.y0 = double(d),
@@ -178,7 +188,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.        
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End        
     }
     else
     if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -198,7 +218,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End        
     }
     if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
@@ -217,7 +247,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.        
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End        
     }
 
     model@opt.c[[i]] <- output$opt.c
@@ -246,7 +286,17 @@ function(model, ...)
     paste("h", if (d > 1) 1:d else "", sep = ""),
     "IC",
     "logL",
-    "M")
+    "M",
+### Panic Branislav.      
+    "EMStrategy",
+    "EMVariant",
+    "EMAcceleration.type",
+    "EMAcceleration.value",
+    "EMTolerance.value",
+    "EMMax.iter.value",
+    "EMNum.iter.opt",
+    "EMNum.iter.total")
+### End    
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -336,6 +386,16 @@ function(model, ...)
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
       Y = as.double(X),
+### Panic Branislav.      
+      EMStrategy = as.character(model@EMcontrol@strategy),
+      EMVariant = as.character(model@EMcontrol@variant),
+      EMAcceleration = as.character(model@EMcontrol@acceleration),
+      EMTolerance = as.double(model@EMcontrol@tolerance),
+      EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
+      EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
+      n_iter = as.integer(0),
+      n_iter_all = as.integer(0),
+### End         
       summary.k = integer(1),
       summary.h = double(d),
       summary.y0 = double(d),
@@ -433,7 +493,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End         
     }
     else
     if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -453,7 +523,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.        
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End         
     }
     if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
@@ -472,7 +552,17 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
+        output$summary.M,
+### Panic Branislav.        
+        output$EMStrategy,
+        output$EMVariant,
+        output$EMAcceleration,
+        output$EMAccelerationMul,
+        output$EMTolerance,
+        output$EMMaxIter,
+        output$n_iter,
+        output$n_iter_all)
+### End         
     }
 
     model@opt.c[[i]] <- output$opt.c
@@ -501,7 +591,17 @@ function(model, ...)
     paste("h", if (d > 1) 1:d else "", sep = ""),
     "IC",
     "logL",
-    "M")
+    "M",
+### Panic Branislav.    
+    "EMStrategy",
+    "EMVariant",
+    "EMAcceleration.type",
+    "EMAcceleration.value",
+    "EMTolerance.value",
+    "EMMax.iter.value",
+    "EMNum.iter.opt",
+    "EMNum.iter.total")
+### End    
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -524,7 +624,10 @@ function(model,
   ymin,
   ymax,
   ar,
-  Restraints, ...)
+  Restraints,
+### Panic Branislav.
+  EMcontrol, ...)
+### End    
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -546,8 +649,10 @@ function(model,
      ymin = ymin,
      ymax = ymax,
      ar = ar,
-     Restraints = Restraints)
-
+     Restraints = Restraints,
+### Panic Branislav.
+     EMcontrol = EMcontrol)
+### End     
 
   output <- REBMIX(model = model, ...)
 

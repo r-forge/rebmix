@@ -5,8 +5,13 @@ Variables = c("continuous", "discrete"),
 pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma", "uniform", "vonMises", "Gumbel"),
 pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2, 2, 2),
 pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous", "continuous", "continuous", "continuous"),
-Restraints = c("rigid", "loose")),
-.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints"))
+Restraints = c("rigid", "loose"),
+### Panic Branislav.
+EMStrategy = c("None", "Exhaustive", "Best", "Single"),
+EMVariant = c("EM", "ECM"),
+EMAcceleration = c("Fixed", "Line", "Golden")),
+### End
+.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "EMStrategy", "EMVariant", "EMAcceleration"))
 
 .rebmix.plot <- structure(list(
 what = c("density", "marginal", "IC", "logL", "D", "distribution", "K")),

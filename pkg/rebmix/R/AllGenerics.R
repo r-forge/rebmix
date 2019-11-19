@@ -21,7 +21,10 @@ setGeneric("REBMIX",
     ymin = numeric(),
     ymax = numeric(),
     ar = 0.1,
-    Restraints = "loose", ...)
+    Restraints = "loose",
+### Panic Branislav.    
+    EMcontrol = NULL, ...)
+### End    
   standardGeneric("REBMIX"))
 
 setGeneric(".IC", function(x = NULL, Criterion = "AIC", pos = 1, ...) standardGeneric(".IC"))
@@ -195,7 +198,22 @@ setGeneric("a.levels", function(x = NULL) standardGeneric("a.levels"))
 setGeneric("a.train", function(x = NULL) standardGeneric("a.train"))
 setGeneric("a.test", function(x = NULL) standardGeneric("a.test"))
 
+### Panic Branislav.
 
+setGeneric("a.strategy", function(x = NULL) standardGeneric("a.strategy"))
+setGeneric("a.strategy<-", function(x = NULL, value = character()) standardGeneric("a.strategy<-"))
+setGeneric("a.variant", function(x = NULL) standardGeneric("a.variant"))
+setGeneric("a.variant<-", function(x = NULL, value = character()) standardGeneric("a.variant<-"))
+setGeneric("a.acceleration", function(x = NULL) standardGeneric("a.acceleration"))
+setGeneric("a.acceleration<-", function(x = NULL, value = character()) standardGeneric("a.acceleration<-"))
+setGeneric("a.tolerance", function(x = NULL) standardGeneric("a.tolerance"))
+setGeneric("a.tolerance<-", function(x = NULL, value = numeric()) standardGeneric("a.tolerance<-"))
+setGeneric("a.acceleration.multiplier", function(x = NULL) standardGeneric("a.acceleration.multiplier"))
+setGeneric("a.acceleration.multiplier<-", function(x = NULL, value = numeric()) standardGeneric("a.acceleration.multiplier<-"))
+setGeneric("a.maximum.iterations", function(x = NULL) standardGeneric("a.maximum.iterations"))
+setGeneric("a.maximum.iterations<-", function(x = NULL, value = numeric()) standardGeneric("a.maximum.iterations<-"))
+
+### End
 
 
 

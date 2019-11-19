@@ -1,3 +1,148 @@
+### Panic Branislav.
+
+setClass(Class = "EM.Control",
+slots = c(strategy = "character",
+  variant = "character",
+  acceleration = "character",
+  tolerance = "numeric",
+  acceleration.multiplier = "numeric",
+  maximum.iterations = "numeric"))
+
+setMethod("initialize", "EM.Control",
+function(.Object, ...,
+  strategy,
+  variant,
+  acceleration,
+  tolerance,
+  acceleration.multiplier,
+  maximum.iterations)
+{
+  # strategy.
+
+  if (missing(strategy) || length(strategy) == 0) {
+    strategy <- .rebmix$EMStrategy[1]
+  } 
+  else {
+    strategy <- match.arg(strategy, .rebmix$EMStrategy)
+  }
+
+  # variant.
+
+  if (missing(variant) || length(variant) == 0) {
+    variant <- .rebmix$EMVariant[1]
+  } 
+  else {
+    variant <- match.arg(variant, .rebmix$EMVariant)
+  }
+
+  # acceleration.
+
+  if (missing(acceleration) || length(acceleration) == 0) {
+    acceleration <- .rebmix$EMAcceleration[1]
+  } 
+  else {
+    acceleration <- match.arg(acceleration, .rebmix$EMAcceleration)
+  }
+
+  # tolerance.
+  
+  if (missing(tolerance) || (length(tolerance) == 0)) {
+    tolerance <- 1e-4
+  }
+
+  if (!is.numeric(tolerance)) {
+    stop(sQuote("tolerance"), " numeric is requested!", call. = FALSE)
+  }
+
+  length(tolerance) <- 1
+
+  if (tolerance <= 0.0) {
+    stop(sQuote("tolerance"), " must be greater than 0.0!", call. = FALSE)
+  }  
+
+  # acceleration.multiplier.
+  
+  if (missing(acceleration.multiplier) || (length(acceleration.multiplier) == 0)) {
+    acceleration.multiplier <- 1.0
+  }
+
+  if (!is.numeric(acceleration.multiplier)) {
+    stop(sQuote("acceleration.multiplier"), " numeric is requested!", call. = FALSE)
+  }
+
+  length(acceleration.multiplier) <- 1
+
+  if (acceleration.multiplier < 1.0 || acceleration.multiplier > 2.0) {
+    stop(sQuote("acceleration.multiplier"), " must be greater or equal than 1.0 and less or equal than 2.0!", call. = FALSE)
+  }  
+
+  # maximum.iterations.
+  
+  if (missing(maximum.iterations) || (length(maximum.iterations) == 0)) {
+    maximum.iterations <- as.integer(1000)
+  }
+
+  if (!is.wholenumber(maximum.iterations)) {
+    stop(sQuote("maximum.iterations"), " integer is requested!", call. = FALSE)
+  }
+
+  length(maximum.iterations) <- 1
+
+  if (maximum.iterations < 1) {
+    stop(sQuote("maximum.iterations"), " must be greater than 0!", call. = FALSE)
+  }  
+
+  .Object@strategy <- strategy
+  .Object@variant <- variant
+  .Object@acceleration <- acceleration
+  .Object@tolerance <- tolerance
+  .Object@acceleration.multiplier <- acceleration.multiplier
+  .Object@maximum.iterations <- maximum.iterations
+
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+
+  .Object
+}) ## initialize
+
+setMethod("show", 
+  signature(object = "EM.Control"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class EM.Control is requested!", call. = FALSE)
+  }
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
+  cat("Slot \"strategy\":", "\n", sep = "")
+
+  print(object@strategy, quote = FALSE)
+
+  cat("Slot \"variant\":", "\n", sep = "")
+
+  print(object@variant, quote = FALSE)
+    
+  cat("Slot \"acceleration\":", "\n", sep = "")
+
+  print(object@acceleration, quote = FALSE)
+
+  cat("Slot \"tolerance\":", "\n", sep = "")
+
+  print(object@tolerance, quote = FALSE)
+
+  cat("Slot \"acceleration.multiplier\":", "\n", sep = "")
+
+  print(object@acceleration.multiplier, quote = FALSE)
+
+  cat("Slot \"maximum.iterations\":", "\n", sep = "")
+
+  print(object@maximum.iterations, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
+
+### End
+
 # Class RNGMIX.Theta
 
 setClass(Class = "RNGMIX.Theta",
@@ -399,6 +544,9 @@ slots = c(Dataset = "list",
   ymax = "numeric",
   ar = "numeric",
   Restraints = "character",
+### Panic Branislav.  
+  EMcontrol = "ANY",
+### End    
   w = "list",
   Theta = "list",
   summary = "ANY",
@@ -431,7 +579,10 @@ function(.Object, ...,
   ymin,
   ymax,
   ar,
-  Restraints)
+  Restraints,
+### Panic Branislav.  
+  EMcontrol)
+### End  
 {
   # Dataset.
 
@@ -690,6 +841,18 @@ function(.Object, ...,
       }
     }
   }
+ 
+### Panic Branislav.
+
+  if (missing(EMcontrol) || length(EMcontrol) == 0) {
+    EMcontrol <- new("EM.Control")
+  }
+
+  if (class(EMcontrol) != "EM.Control") {
+    stop(sQuote("EMcontrol"), " object of class ", "EM.Control", " is requested!", call. = FALSE)
+  }
+
+### End  
 
   .Object@Dataset <- Dataset
   .Object@Preprocessing <- Preprocessing
@@ -705,6 +868,9 @@ function(.Object, ...,
   .Object@ymax <- ymax
   .Object@ar <- ar
   .Object@Restraints <- Restraints
+### Panic Branislav.  
+  .Object@EMcontrol <- EMcontrol
+### End
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 
