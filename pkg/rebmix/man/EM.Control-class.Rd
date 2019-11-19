@@ -12,7 +12,7 @@ Objects can be created by calls of the form \code{new("EM.Control", ...)}. Acces
 \section{Slots}{
 \describe{
 \item{\code{strategy}:}{
-a character containing the EM\&REBMIX strategy. One of \code{"None"}, \code{"Exhaustive"}, \code{"Best"} and \code{"Single"}. The default value is \code{"None"}.  
+a character containing the EM and REBMIX strategy. One of \code{"None"}, \code{"Exhaustive"}, \code{"Best"} and \code{"Single"}. The default value is \code{"None"}.  
 }
 \item{\code{variant}:}{
 a character containing the type of EM algorithm to be used. One of \code{"EM"} of \code{"ECM"}. The default value is \code{"EM"}.
@@ -33,16 +33,21 @@ maximum.iterations is positive integer containing the maximum allowed number of 
 }
 \author{Panic Branislav}
 \references{
-Dempster, A. P., et al. “Maximum Likelihood from Incomplete Data via the EM Algorithm.” Journal of the Royal Statistical Society. Series B (Methodological), vol. 39, no. 1, 1977, 
-JSTOR, www.jstor.org/stable/2984875.\cr\cr
-Gilles Celeux, Gérard Govaert, A classification EM algorithm for clustering and two stochastic versions, Computational Statistics & Data Analysis,Volume 14, Issue 3, 1992,
-https://doi.org/10.1016/0167-9473(92)90042-E.
+A. P. Dempster et al. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society. Series B, 39(1):1-38, 1977. 
+\url{https://www.jstor.org/stable/2984875}.\cr\cr
+G. Celeux and G. Govaert. A classification EM algorithm for clustering and two stochastic versions, Computational Statistics & Data Analysis, 14(3):315:332, 1992.
+\url{https://doi.org/10.1016/0167-9473(92)90042-E}.
 }
 \examples{
 ## inline creation by function new call
-EM <- new("EM.Control", strategy = "Exhaustive", variant = "EM", acceleration = "Fixed", tolerance = 1e-4, acceleration.multiplier = 1.0, maximum.iterations = 1000)
+
+EM <- new("EM.Control", strategy = "Exhaustive", 
+  variant = "EM", acceleration = "Fixed", 
+  tolerance = 1e-4, acceleration.multiplier = 1.0, 
+  maximum.iterations = 1000)
 
 EM
+
 ## Creation of EM object with setter functions
 
 EM <- new("EM.Control")
