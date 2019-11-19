@@ -44,6 +44,18 @@
 
       fix <- output$f
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[10]) {
+      output <- .C(C_RGumbelPdf,
+        n = as.integer(n),
+        y = as.double(x),
+        Mean = as.double(xTheta[[i]]$theta1),
+        Beta = as.double(xTheta[[i]]$theta2),
+        f = double(n),
+        PACKAGE = "rebmix")
+
+      fix <- output$f      
+    }      
 
     if (yTheta[[i]]$pdf == .rebmix$pdf[1]) {
       fiy <- dnorm(as.numeric(y), mean = as.numeric(yTheta[[i]]$theta1), sd = as.numeric(yTheta[[i]]$theta2), ...)
@@ -84,6 +96,18 @@
 
       fiy <- output$f
     }
+    else
+    if (yTheta[[i]]$pdf == .rebmix$pdf[10]) {
+      output <- .C(C_RGumbelPdf,
+        n = as.integer(n),
+        y = as.double(y),
+        Mean = as.double(yTheta[[i]]$theta1),
+        Beta = as.double(yTheta[[i]]$theta2),
+        f = double(n),
+        PACKAGE = "rebmix")
+
+      fiy <- output$f      
+    }      
 
     f <- f + w[i] * fix * fiy
   }

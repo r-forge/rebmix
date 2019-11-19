@@ -133,12 +133,51 @@ typedef enum {
     pfLognormal, // Lognormal distribution.
     pfWeibull,   // Weibull distribution.
     pfGamma,     // Gamma distribution.
-	pfvonMises,  // Von Mises distribution.
+    pfGumbel,    // Gumbel distribution.
+    pfvonMises,  // Von Mises distribution.
     pfBinomial,  // Binomial distribution.
     pfPoisson,   // Poisson distribution.
     pfDirac,     // Dirac distribution.
     pfUniform    // Uniform distribution.
 } ParametricFamilyType_e;
+
+typedef enum {
+    varEM,     // Classic Expectation-Maximization algorithm (Soft (continious posterior)).
+    varECM,    // Expectation - Conditional - Maximization algorithm (Hard (posterior 0 or 1) EM).
+} EmVariantType_e;
+
+typedef enum {
+    accFIXED,  // Fixed constant multiplier acceleration of the EM algorithm.
+    accLINE,   // Line search for multiplier acceleration of the EM algorithm.
+    accGOLDEN  // Golden search for multiplier accleration of the EM algorithm.
+} EmAccelerationType_e;
+
+typedef enum {
+    strategy_None,       // EM algorithm is not employed for estimation of mixture model parameters.
+    strategy_Single,     // Single REBMIX + EM strategy.
+    strategy_Best,       // Best REBMIX + EM strategy.
+    strategy_Exhaustive  // Exhaustive REBMIX + EM strategy.
+} EmStrategyType_e;
+
+typedef struct summaryparametertype {
+    int   c;     // Optimal number of components.
+    int   k;     // Optimal v or optimal k.
+    FLOAT *y0;   // Optimal origins of length d.
+    FLOAT *ymin; // Minimum observations.
+    FLOAT *ymax; // Maximum observations.
+    FLOAT *h;    // Optimal class widths of length d.
+    FLOAT IC;    // Optimal information criterion.
+    FLOAT logL;  // Log-likelihood.
+    int   M;     // Degrees of freedom.
+} SummaryParameterType;
+
+typedef struct additinalparametertype {
+    int Bracket; // 1 for bracketing and 0 for golden section.
+    int a;       // Golden section constant.
+    int b;       // Golden section constant.
+    int c;       // Golden section constant.
+    int d;       // Golden section constant.
+} AdditionalParameterType;
 
 class Base {
 public:
@@ -152,6 +191,36 @@ public:
     // Destructor.
     ~Base();
 }; // Base
+
+class CompnentDistribution : public Base {
+public:
+    // Members.
+    Base                   *owner_;  // Owner object.
+    ParametricFamilyType_e *pdf_;    // Parametric family types.
+    FLOAT                  **Theta_; // Component parameters.
+    // Constructor.
+    CompnentDistribution(Base *owner);
+    // Destructor.
+    ~CompnentDistribution();
+    // Methods.
+    int Realloc(int length_pdf, int length_Theta, int *length_theta);
+    int Memmove(CompnentDistribution *CmpTheta);
+}; // CompnentDistribution
+
+typedef struct mixtureparametertype {
+    FLOAT *W_;                        // Pointer to weight.
+    CompnentDistribution **MixTheta_; // Pointer to mixture parameters.
+    int C_;                           // Number of components in mixture.
+    FLOAT LogL_;                      // Estimated value of log likelihood.
+    FLOAT logV_;                      // Logaritmic value of V.
+    int k_;                           // Bin number for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *h_;                        // Bin widths for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *y0_;                       // Bin origins for histogram preprocessing or NULL for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *ymin_;                     // Minimum values from data.
+    FLOAT *ymax_;                     // Maximum values from data.
+    int n_iter_em_;                   // Number of performed iterations of EM algorithm.
+    int initialized_;                 // boolean indicator if struct contains mixture model parameters. 
+} MixtureParameterType;
 
 FLOAT Ran1(int *IDum);
 

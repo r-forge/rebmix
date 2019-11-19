@@ -44,6 +44,18 @@
 
       fix <- output$f
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[10]) {
+      output <- .C(C_RGumbelPdf,
+        n = as.integer(n),
+        y = as.double(x),
+        Mean = as.double(xTheta[[i]]$theta1),
+        Beta = as.double(xTheta[[i]]$theta2),
+        f = double(n),
+        PACKAGE = "rebmix")
+
+      fix <- output$f    
+    }    
 
     f <- f + w[i] * fix
   }

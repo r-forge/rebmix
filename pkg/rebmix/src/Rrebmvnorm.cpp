@@ -136,6 +136,16 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 char   **Restraints,    // Restraints type.
                 int    *n,              // Number of observations.
                 double *Y,              // Dataset.
+/// Panic Branislav.
+                char   **EMStrategy,       // Strategy for EM algorithm.
+                char   **EMVariant,        // EM algorithm variant.
+                char   **EMAcceleration,   // Acceleration for the standard EM algorithm.
+                double *EMTolerance,       // Tolerance for EM algortihm.
+                double *EMAccelerationMul, // Acceleration rate for Em algorithm.
+                int    *EMMaxIter,         // Maximum number of iterations in EM algorithm.
+                int    *n_iter,            // Number of iterations for optimal case.
+                int    *n_iter_sum,        // Number of iterations in whole run.
+/// End
                 int    *summary_k,      // Optimal v or optimal k.
                 double *summary_h,      // Optimal class widths of length d.
                 double *summary_y0,     // Optimal origins of length d.
@@ -347,6 +357,63 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         *Error = 1; goto E0;
     }
 
+/// Panic Branislav.
+
+    if (!strcmp(EMStrategy[0], "Exhaustive")) {
+        rebmvnorm->EM_strategy_ = strategy_Exhaustive;
+    }
+    else
+    if (!strcmp(EMStrategy[0], "Best")) {
+        rebmvnorm->EM_strategy_ = strategy_Best;
+    }
+    else
+    if (!strcmp(EMStrategy[0], "Single")) {
+        rebmvnorm->EM_strategy_ = strategy_Single;
+    }
+    else{
+        rebmvnorm->EM_strategy_ = strategy_None;
+    }
+
+    if (!strcmp(EMVariant[0], "EM")) {
+        rebmvnorm->EM_variant_ = varEM;
+    }
+    else
+    if (!strcmp(EMVariant[0], "ECM")) {
+        rebmvnorm->EM_variant_ = varECM;
+    }
+    else{
+        if (rebmvnorm->EM_strategy_ != strategy_None) {
+            *Error = 1; goto E0;
+        }
+        rebmvnorm->EM_variant_ = varEM;
+    }
+
+    if (!strcmp(EMAcceleration[0], "Fixed")) {
+        rebmvnorm->EM_accel_ = accFIXED;
+    }
+    else
+    if (!strcmp(EMAcceleration[0], "Line")) {
+        rebmvnorm->EM_accel_ = accLINE;
+    }
+    else
+    if (!strcmp(EMAcceleration[0], "Golden")) {
+        rebmvnorm->EM_accel_ = accGOLDEN;
+    }
+    else{
+        if (rebmvnorm->EM_strategy_ != strategy_None) {
+            *Error = 1; goto E0;
+        }
+        rebmvnorm->EM_accel_ = accFIXED;
+    }
+
+    rebmvnorm->EM_TOL_ = *EMTolerance;
+
+    rebmvnorm->EM_ar_ = *EMAccelerationMul;
+
+    rebmvnorm->EM_max_iter_ = *EMMaxIter;
+
+/// End
+
     rebmvnorm->n_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->n_ * sizeof(FLOAT*));
@@ -380,6 +447,14 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     *Error = rebmvnorm->REBMIX();
 
     if (*Error) goto E0;
+
+/// Panic Branislav.
+
+    *n_iter = rebmvnorm->n_iter_;
+
+    *n_iter_sum = rebmvnorm->n_iter_sum_;
+
+/// End
 
     *summary_k = rebmvnorm->summary_.k;
 

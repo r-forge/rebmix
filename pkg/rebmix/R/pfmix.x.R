@@ -34,16 +34,28 @@
     }
     else
     if (xTheta[[i]]$pdf == .rebmix$pdf[9]) {
-        output <- .C(C_RvonMisesCdf,
-          n = as.integer(n),
-          y = as.double(x),
-          Mean = as.double(xTheta[[i]]$theta1),
-          Kappa = as.double(xTheta[[i]]$theta2),
-          F = double(n),
-          PACKAGE = "rebmix")
-
-        fix <- output$F
+      output <- .C(C_RvonMisesCdf,
+        n = as.integer(n),
+        y = as.double(x),
+        Mean = as.double(xTheta[[i]]$theta1),
+        Kappa = as.double(xTheta[[i]]$theta2),
+        F = double(n),
+        PACKAGE = "rebmix")
+         
+      fix <- output$F
     }
+    else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[10]) {
+      output <- .C(C_RGumbelCdf,
+        n = as.integer(n),
+        y = as.double(x),
+        Mean = as.double(xTheta[[i]]$theta1),
+        Beta = as.double(xTheta[[i]]$theta2),
+        F = double(n),
+        PACKAGE = "rebmix")
+
+      fix <- output$F    
+    } 
 
     f <- f + w[i] * fix
   }

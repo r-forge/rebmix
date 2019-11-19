@@ -199,6 +199,12 @@ function(x, value)
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[9]), " must be greater than 0.0!", call. = FALSE)
       }
     }
+    else
+    if (x@pdf == .rebmix$pdf[10]) {
+      if (value[l] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be greater than 0.0!", call. = FALSE)
+      }
+    }    
   }
 
   for (l in 1:x@c) {
@@ -290,6 +296,12 @@ function(x, l, value)
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[9]), " must be greater than 0.0!", call. = FALSE)
       }
     }
+    else
+    if (x@pdf[i] == .rebmix$pdf[10]) {
+      if (value[i] < 0.0) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be greater than 0.0!", call. = FALSE)
+      }
+    }    
   }
 
   x@Theta[[3 + (l - 1) * 3]] <- value

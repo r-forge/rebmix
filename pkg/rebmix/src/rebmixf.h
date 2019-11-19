@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "base.h"
+#include "emf.h"
 
 typedef enum {
     poHistogram,        // Histogram approach.
@@ -46,46 +47,11 @@ typedef enum {
 } InformationCriterionType_e;
 
 typedef struct roughparametertype {
-	FLOAT h;   // Mode class width;
+    FLOAT h;   // Mode class width;
     FLOAT ym;  // Mode position.
     FLOAT flm; // Component conditional empirical density.
     FLOAT klm; // Component conditional total number of observations.
 } RoughParameterType;
-
-typedef struct summaryparametertype {
-    int   c;     // Optimal number of components.
-    int   k;     // Optimal v or optimal k.
-    FLOAT *y0;   // Optimal origins of length d.
-    FLOAT *ymin; // Minimum observations.
-    FLOAT *ymax; // Maximum observations.
-    FLOAT *h;    // Optimal class widths of length d.
-    FLOAT IC;    // Optimal information criterion.
-    FLOAT logL;  // Log-likelihood.
-    int   M;     // Degrees of freedom.
-} SummaryParameterType;
-
-typedef struct additinalparametertype {
-    int Bracket; // 1 for bracketing and 0 for golden section.
-    int a;       // Golden section constant.
-    int b;       // Golden section constant.
-    int c;       // Golden section constant.
-    int d;       // Golden section constant.
-} AdditionalParameterType;
-
-class CompnentDistribution : public Base {
-public:
-    // Members.
-    Base                   *owner_;  // Owner object.
-    ParametricFamilyType_e *pdf_;    // Parametric family types.
-    FLOAT                  **Theta_; // Component parameters.
-    // Constructor.
-    CompnentDistribution(Base *owner);
-    // Destructor.
-    ~CompnentDistribution();
-    // Methods.
-    int Realloc(int length_pdf, int length_Theta, int *length_theta);
-    int Memmove(CompnentDistribution *CmpTheta);
-}; // CompnentDistribution
 
 class Rebmix : public Base {
     // Methods.
@@ -104,7 +70,7 @@ public:
     // Input members.
     FLOAT                      p_value_;       // Probability of obtaining a result equal to or "more extreme" than what was actually observed.
     FLOAT                      min_dist_mul_;  // Minimum distance multiplier.
-	FLOAT                      var_mul_;       // Variance multiplier.
+    FLOAT                      var_mul_;       // Variance multiplier.
     int                        kmax_;          // Maximum number of nonempty bins.
     FLOAT                      ChiSqr_;        // Critical Chi square value for outlier detection and p = 2.0 * p_value_.
     char                       *curr_;         // Path to the currently open data file.
@@ -124,6 +90,15 @@ public:
     FLOAT                      *ymax_;         // Maximum observations.
     FLOAT                      ar_;            // Acceleration rate.
     PestraintsType_e           Restraints_;    // Restraints type.
+/// Panic Branislav: fields for EM algorithm.
+    FLOAT                      EM_TOL_;        // Tolerance for EM algorithm.
+    FLOAT                      EM_ar_;         // Acceleration rate for EM algorithm.
+    int                        EM_max_iter_;   // Maximum number of iterations of EM algorithm.    
+    EmStrategyType_e           EM_strategy_;   // EM strategy utilization.
+    EmVariantType_e            EM_variant_;    // Type of EM variant algorithm.
+    EmAccelerationType_e       EM_accel_;      // Type of acceleration of standard EM algorithm.
+    MixtureParameterType       *OptMixTheta_;  // Best mixture parameters.
+/// End
     // Input members.
     int                        n_;             // Number of observations.
     FLOAT                      **Y_;           // Dataset.
@@ -142,6 +117,10 @@ public:
     int                        *all_K_;        // All processed numbers of bins v or all processed numbers of nearest neighbours k.
     FLOAT                      *all_IC_;       // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
     AdditionalParameterType    additional_;    // Additional parameters.
+/// Panic Branislav.
+    int                        n_iter_;        // Number of iterations performed by EM algorithm for optimal mixture selected.
+    int                        n_iter_sum_;    // Total number of iterations performed by EM algorithm. 
+/// End
     // Constructor.
     Rebmix();
     // Destructor.
@@ -165,6 +144,9 @@ public:
     virtual int BayesClassificationKDE(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     virtual int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     virtual int DegreesOffreedom(int c, CompnentDistribution **MixTheta, int *M);
+/// Panic Branislav: method for invoking EM algorithm.
+    virtual int ExpectationMaximizationStep(int c, FLOAT *W, CompnentDistribution **MixTheta, int *n_iter);
+/// End 
     int MixtureDist(FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int MixtureDist(FLOAT logV, FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);

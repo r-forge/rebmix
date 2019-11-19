@@ -74,10 +74,14 @@ void RRNGMIX(int    *IDum,         // Random seed.
             rngmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rngmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rngmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rngmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rngmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -174,6 +178,16 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              char   **Restraints,    // Restraints type.
              int    *n,              // Number of observations.
              double *Y,              // Dataset.
+/// Panic Branislav.
+             char   **EMStrategy,       // Strategy for EM algorithm.
+             char   **EMVariant,        // EM algorithm variant.
+             char   **EMAcceleration,   // Acceleration for the standard EM algorithm.
+             double *EMTolerance,       // Tolerance for EM algortihm.
+             double *EMAccelerationMul, // Acceleration rate for Em algorithm.
+             int    *EMMaxIter,         // Maximum number of iterations in EM algorithm.
+             int    *n_iter,            // Number of iterations for optimal case.
+             int    *n_iter_sum,        // Number of iterations in whole run.
+/// End
              int    *summary_k,      // Optimal v or optimal k.
              double *summary_h,      // Optimal class widths of length d.
              double *summary_y0,     // Optimal origins of length d.
@@ -325,10 +339,14 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -421,6 +439,65 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
         *Error = 1; goto E0;
     }
 
+/// Panic Branislav.
+
+    if (!strcmp(EMStrategy[0], "Exhaustive")) {
+        rebmix->EM_strategy_ = strategy_Exhaustive;
+    }
+    else
+    if (!strcmp(EMStrategy[0], "Best")) {
+        rebmix->EM_strategy_ = strategy_Best;
+    }
+    else
+    if (!strcmp(EMStrategy[0], "Single")) {
+        rebmix->EM_strategy_ = strategy_Single;
+    }
+    else{
+        rebmix->EM_strategy_ = strategy_None;
+    }
+
+    if (!strcmp(EMVariant[0], "EM")) {
+        rebmix->EM_variant_ = varEM;
+    }
+    else
+    if (!strcmp(EMVariant[0], "ECM")) {
+        rebmix->EM_variant_ = varECM;
+    }
+    else {
+        if (rebmix->EM_strategy_ != strategy_None) {
+            *Error = 1; goto E0;
+        }
+
+        rebmix->EM_variant_ = varEM;
+    }
+
+    if (!strcmp(EMAcceleration[0], "Fixed")) {
+        rebmix->EM_accel_ = accFIXED;
+    }
+    else
+    if (!strcmp(EMAcceleration[0], "Line")) {
+        rebmix->EM_accel_ = accLINE;
+    }
+    else
+    if (!strcmp(EMAcceleration[0], "Golden")) {
+        rebmix->EM_accel_ = accGOLDEN;
+    }
+    else {
+        if (rebmix->EM_strategy_ != strategy_None) {
+            *Error = 1; goto E0;
+        }
+
+        rebmix->EM_accel_ = accFIXED;
+    }
+
+    rebmix->EM_TOL_ = *EMTolerance;
+
+    rebmix->EM_ar_ = *EMAccelerationMul;
+
+    rebmix->EM_max_iter_ = *EMMaxIter;
+
+/// End
+
     rebmix->n_ = *n;
 
     rebmix->Y_ = (FLOAT**)malloc(rebmix->n_ * sizeof(FLOAT*));
@@ -454,6 +531,14 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
     *Error = rebmix->REBMIX();
 
     if (*Error) goto E0;
+
+/// Panic Branislav.
+
+    *n_iter = rebmix->n_iter_;
+
+    *n_iter_sum = rebmix->n_iter_sum_;
+
+/// End
 
     *summary_k = rebmix->summary_.k;
 
@@ -646,10 +731,14 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         pdfx = pfGamma;
     }
     else
-	if (!strcmp(px[0], "vonMises")) {
-		pdfx = pfvonMises;
-	}
-	else
+    if (!strcmp(px[0], "Gumbel")) {
+        pdfx = pfGumbel;
+    }
+    else
+    if (!strcmp(px[0], "vonMises")) {
+        pdfx = pfvonMises;
+    }
+    else
     if (!strcmp(px[0], "binomial")) {
         pdfx = pfBinomial;
     }
@@ -685,10 +774,14 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         pdfy = pfGamma;
     }
     else
-	if (!strcmp(py[0], "vonMises")) {
-		pdfy = pfvonMises;
-	}
-	else
+    if (!strcmp(py[0], "Gumbel")) {
+        pdfy = pfGumbel;
+    }
+    else
+    if (!strcmp(py[0], "vonMises")) {
+        pdfy = pfvonMises;
+    }
+    else
     if (!strcmp(py[0], "binomial")) {
         pdfy = pfBinomial;
     }
@@ -718,8 +811,8 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-			break;
+        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+            break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
         }
@@ -729,8 +822,8 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         y[*k] = (*y0) + j * (*hy);
 
         switch (pdfy) {
-		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-			break;
+        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+            break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (y[*k] <= FLOAT_MIN) y[*k] += (*hy);
         }
@@ -858,10 +951,14 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         pdfx = pfGamma;
     }
     else
-	if (!strcmp(px[0], "vonMises")) {
-		pdfx = pfvonMises;
-	}
-	else
+    if (!strcmp(px[0], "Gumbel")) {
+        pdfx = pfGumbel;
+    }
+    else
+    if (!strcmp(px[0], "vonMises")) {
+        pdfx = pfvonMises;
+    }
+    else
     if (!strcmp(px[0], "binomial")) {
         pdfx = pfBinomial;
     }
@@ -891,8 +988,8 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         x[*k] = (*x0) + j * (*hx);
 
         switch (pdfx) {
-		case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: default:
-			break;
+        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+            break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
         }
@@ -1030,13 +1127,20 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
                         Theta[j][k][l]->Theta_[1][m] = theta2[i];
                     }
                     else
-					if (!strcmp(pdf[i], "vonMises")) {
-						Theta[j][k][l]->pdf_[m] = pfvonMises;
+                    if (!strcmp(pdf[i], "Gumbel")) {
+                        Theta[j][k][l]->pdf_[m] = pfGumbel;
 
-						Theta[j][k][l]->Theta_[0][m] = theta1[i];
-						Theta[j][k][l]->Theta_[1][m] = theta2[i];
-					}
-					else
+                        Theta[j][k][l]->Theta_[0][m] = theta1[i];
+                        Theta[j][k][l]->Theta_[1][m] = theta2[i];
+                    }
+                    else
+                    if (!strcmp(pdf[i], "vonMises")) {
+                        Theta[j][k][l]->pdf_[m] = pfvonMises;
+
+                        Theta[j][k][l]->Theta_[0][m] = theta1[i];
+                        Theta[j][k][l]->Theta_[1][m] = theta2[i];
+                    }
+                    else
                     if (!strcmp(pdf[i], "binomial")) {
                         Theta[j][k][l]->pdf_[m] = pfBinomial;
 
@@ -1222,13 +1326,20 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
                 Theta[j]->Theta_[1][k] = theta2[i];
             }
             else
-			if (!strcmp(pdf[i], "vonMises")) {
-				Theta[j]->pdf_[k] = pfvonMises;
+            if (!strcmp(pdf[i], "Gumbel")) {
+                Theta[j]->pdf_[k] = pfGumbel;
 
-				Theta[j]->Theta_[0][k] = theta1[i];
-				Theta[j]->Theta_[1][k] = theta2[i];
-			}
-			else
+                Theta[j]->Theta_[0][k] = theta1[i];
+                Theta[j]->Theta_[1][k] = theta2[i];
+            }
+            else
+            if (!strcmp(pdf[i], "vonMises")) {
+                Theta[j]->pdf_[k] = pfvonMises;
+
+                Theta[j]->Theta_[0][k] = theta1[i];
+                Theta[j]->Theta_[1][k] = theta2[i];
+            }
+            else
             if (!strcmp(pdf[i], "binomial")) {
                 Theta[j]->pdf_[k] = pfBinomial;
 
@@ -1465,10 +1576,14 @@ void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -1658,10 +1773,14 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -1891,10 +2010,14 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2132,10 +2255,14 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2316,10 +2443,14 @@ void RCombineComponentsMIX(int    *c,            // Number of components.
             rebmix->IniTheta_->pdf_[i] = pfGamma;
         }
         else
-		if (!strcmp(pdf[i], "vonMises")) {
-			rebmix->IniTheta_->pdf_[i] = pfvonMises;
-		}
-		else
+        if (!strcmp(pdf[i], "Gumbel")) {
+            rebmix->IniTheta_->pdf_[i] = pfGumbel;
+        }
+        else
+        if (!strcmp(pdf[i], "vonMises")) {
+            rebmix->IniTheta_->pdf_[i] = pfvonMises;
+        }
+        else
         if (!strcmp(pdf[i], "binomial")) {
             rebmix->IniTheta_->pdf_[i] = pfBinomial;
         }
@@ -2410,63 +2541,87 @@ E0: if (rebmix) delete rebmix;
 
 void RvonMisesPdf(int *n, double *y, double *Mean, double *Kappa, double *f)
 {
-	FLOAT A;
-	int   i;
+    FLOAT A;
+    int   i;
 
-	A = Pi2 * BesselI0(*Kappa);
+    A = Pi2 * BesselI0(*Kappa);
 
-	for (i = 0; i < *n; i++) {
-		if (y[i] > Pi2) {
-			f[i] = (FLOAT)0.0;
-		}
-		else
-		if (y[i] < (FLOAT)0.0) {
-			f[i] = (FLOAT)0.0;
-		}
-		else {
-			f[i] = (FLOAT)exp(*Kappa * (FLOAT)cos(y[i] - *Mean)) / A;
-		}
+    for (i = 0; i < *n; i++) {
+        if (y[i] > Pi2) {
+            f[i] = (FLOAT)0.0;
+        }
+        else
+        if (y[i] < (FLOAT)0.0) {
+            f[i] = (FLOAT)0.0;
+        }
+        else {
+            f[i] = (FLOAT)exp(*Kappa * (FLOAT)cos(y[i] - *Mean)) / A;
+        }
     }
 } // RvonMisesPdf
 
 void RvonMisesCdf(int *n, double *y, double *Mean, double *Kappa, double *F)
 {
-	FLOAT A[3], Io, In, I0, I1;
-	int   i, j, Error;
+    FLOAT A[3], Io, In, I0, I1;
+    int   i, j, Error;
 
-	I0 = BesselI0(*Kappa); I1 = BesselI1(*Kappa);
+    I0 = BesselI0(*Kappa); I1 = BesselI1(*Kappa);
 
-	A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / I0;
+    A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / I0;
+
+    for (i = 0; i < *n; i++) {
+        if (y[i] > Pi2) {
+            F[i] = (FLOAT)1.0;
+        }
+        else
+        if (y[i] < (FLOAT)0.0) {
+            F[i] = (FLOAT)0.0;
+        }
+        else {
+            Io = I0; In = I1; j = 1; F[i] = A[0] * y[i]; Error = 1;
+            while ((j <= ItMax) && Error) {
+                F[i] += A[1] * In * ((FLOAT)sin(j * (y[i] - *Mean)) + (FLOAT)sin(j * *Mean)) / j;
+
+                if (In < Eps) Error = 0;
+
+                A[2] = Io - (FLOAT)2.0 * j * In / *Kappa; Io = In; In = A[2];
+
+                j++;
+            }
+
+            if (F[i] > (FLOAT)1.0) {
+                F[i] = (FLOAT)1.0;
+            }
+            else
+            if (F[i] < (FLOAT)0.0) {
+                F[i] = (FLOAT)0.0;
+            }
+        }
+    }
+} // RvonMisesCdf
+
+void RGumbelPdf(int *n, double *y, double *Mean, double *Beta, double *f)
+{
+    FLOAT A;
+    int   i;
+
+    for (i = 0; i < *n; i++) {
+		A = (y[i] - *Mean) / (*Beta);
+
+        f[i] = (FLOAT)exp(-(A + (FLOAT)exp(-A))) / (*Beta);
+    }
+} // RvonMisesPdf
+
+void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
+{
+    FLOAT A;
+	int   i;
 
 	for (i = 0; i < *n; i++) {
-		if (y[i] > Pi2) {
-			F[i] = (FLOAT)1.0;
-		}
-		else
-		if (y[i] < (FLOAT)0.0) {
-			F[i] = (FLOAT)0.0;
-		}
-		else {
-			Io = I0; In = I1; j = 1; F[i] = A[0] * y[i]; Error = 1;
-			while ((j <= ItMax) && Error) {
-				F[i] += A[1] * In * ((FLOAT)sin(j * (y[i] - *Mean)) + (FLOAT)sin(j * *Mean)) / j;
-
-				if (In < Eps) Error = 0;
-
-				A[2] = Io - (FLOAT)2.0 * j * In / *Kappa; Io = In; In = A[2];
-
-				j++;
-			}
-
-			if (F[i] >(FLOAT)1.0) {
-				F[i] = (FLOAT)1.0;
-			}
-			else
-			if (F[i] < (FLOAT)0.0) {
-				F[i] = (FLOAT)0.0;
-			}
-		}
-	}
-} // RvonMisesCdf
+	    A = (y[i] - *Mean) / (*Beta);
+      
+		F[i] = (FLOAT)exp(-(FLOAT)exp(-A));
+    }
+} // RGumbelCdf
 
 }

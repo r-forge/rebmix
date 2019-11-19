@@ -138,7 +138,7 @@ int Digamma(FLOAT y, FLOAT *Psi)
     FLOAT den, aug, sgn, ymy0, ymax, upper, ymin;
     int Error = 0;
 
-	ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
+    ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
 
     if (y < (FLOAT)0.5) {
         if ((FLOAT)fabs(y) <= ymin) {
@@ -264,7 +264,7 @@ int GammaSer(FLOAT a,       // Constant a > 0.
     *Gamln = Gammaln(a);
 
     if (y <= FLOAT_MIN) {
-		*GamSer = (FLOAT)0.0;
+        *GamSer = (FLOAT)0.0;
     }
     else {
         ap = a; Sum = (FLOAT)1.0 / a; Del = Sum; Error = 1; i = 1;
@@ -300,7 +300,7 @@ int GammaCfg(FLOAT a,       // Constant a > 0.
     *Gamln = Gammaln(a);
 
     if (y <= FLOAT_MIN) {
-		*GamCfg = (FLOAT)0.0;
+        *GamCfg = (FLOAT)0.0;
     }
     else {
         G = (FLOAT)0.0; Gold = (FLOAT)0.0; Fac = (FLOAT)1.0;
@@ -343,8 +343,8 @@ int GammaP(FLOAT a,       // Constant a > 0.
     FLOAT GamSer, GamCfg;
     int   Error = 0;
 
-	if ((y <= FLOAT_MIN) || (a <= FLOAT_MIN)) {
-		*GamP = (FLOAT)0.0;
+    if ((y <= FLOAT_MIN) || (a <= FLOAT_MIN)) {
+        *GamP = (FLOAT)0.0;
     }
     else
     if (y < a + (FLOAT)1.0) {
@@ -373,9 +373,9 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
     int   i;
     int   Error = 0;
 
-	if (Beta > (FLOAT)1.0) {
-		*y = (Beta - (FLOAT)1.0) * Theta + Eps;
-	}
+    if (Beta > (FLOAT)1.0) {
+        *y = (Beta - (FLOAT)1.0) * Theta + Eps;
+    }
     else
         *y = Eps;
 
@@ -390,7 +390,7 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
         *y -= dy;
 
         if (IsNan(dy) || IsInf(dy)) {
-			Error = 1; goto E0;
+            Error = 1; goto E0;
         }
         else
         if (*y < Eps) {
@@ -402,7 +402,7 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
         i++;
     }
 
-	if (Error) Error = 0; // ItMax too small.
+    if (Error) Error = 0; // ItMax too small.
 
 E0: return (Error);
 } // GammaInv
@@ -720,36 +720,36 @@ E0: if (p) free(p);
 
 FLOAT BesselI0(FLOAT y)
 {
-	FLOAT t, I0;
+    FLOAT t, I0;
 
-	y = (FLOAT)fabs(y); t =  y / (FLOAT)3.75;
+    y = (FLOAT)fabs(y); t =  y / (FLOAT)3.75;
 
-	if (y <= FLOAT_MIN) {
-		I0 = (FLOAT)1.0;
-	}
-	else
-	if (y <= (FLOAT)3.75) {
-		I0 = (FLOAT)1.0 +
-		 	 (FLOAT)3.5156229 * (FLOAT)pow(t, 2) +
-			 (FLOAT)3.0899424 * (FLOAT)pow(t, 4) +
-			 (FLOAT)1.2067492 * (FLOAT)pow(t, 6) +
-			 (FLOAT)0.2659732 * (FLOAT)pow(t, 8) +
-			 (FLOAT)0.0360768 * (FLOAT)pow(t, 10) +
-			 (FLOAT)0.0045813 * (FLOAT)pow(t, 12);
-	}
-	else {
-		I0 = (FLOAT)0.39894228 +
-			 (FLOAT)0.01328592 * (FLOAT)pow(t, -1) +
-			 (FLOAT)0.00225319 * (FLOAT)pow(t, -2) -
-			 (FLOAT)0.00157565 * (FLOAT)pow(t, -3) +
-			 (FLOAT)0.00916281 * (FLOAT)pow(t, -4) -
-			 (FLOAT)0.02057706 * (FLOAT)pow(t, -5) +
-			 (FLOAT)0.02635537 * (FLOAT)pow(t, -6) -
-			 (FLOAT)0.01647633 * (FLOAT)pow(t, -7) +
-			 (FLOAT)0.00392377 * (FLOAT)pow(t, -8);
+    if (y <= FLOAT_MIN) {
+        I0 = (FLOAT)1.0;
+    }
+    else
+    if (y <= (FLOAT)3.75) {
+        I0 = (FLOAT)1.0 +
+              (FLOAT)3.5156229 * (FLOAT)pow(t, 2) +
+             (FLOAT)3.0899424 * (FLOAT)pow(t, 4) +
+             (FLOAT)1.2067492 * (FLOAT)pow(t, 6) +
+             (FLOAT)0.2659732 * (FLOAT)pow(t, 8) +
+             (FLOAT)0.0360768 * (FLOAT)pow(t, 10) +
+             (FLOAT)0.0045813 * (FLOAT)pow(t, 12);
+    }
+    else {
+        I0 = (FLOAT)0.39894228 +
+             (FLOAT)0.01328592 * (FLOAT)pow(t, -1) +
+             (FLOAT)0.00225319 * (FLOAT)pow(t, -2) -
+             (FLOAT)0.00157565 * (FLOAT)pow(t, -3) +
+             (FLOAT)0.00916281 * (FLOAT)pow(t, -4) -
+             (FLOAT)0.02057706 * (FLOAT)pow(t, -5) +
+             (FLOAT)0.02635537 * (FLOAT)pow(t, -6) -
+             (FLOAT)0.01647633 * (FLOAT)pow(t, -7) +
+             (FLOAT)0.00392377 * (FLOAT)pow(t, -8);
 
-		I0 *= (FLOAT)exp(y) / (FLOAT)sqrt(y);
-	}
+        I0 *= (FLOAT)exp(y) / (FLOAT)sqrt(y);
+    }
 
     return (I0);
 } // BesselI0
@@ -758,133 +758,133 @@ FLOAT BesselI0(FLOAT y)
 
 FLOAT BesselI1(FLOAT y)
 {
-	FLOAT t, I1, sgn;
+    FLOAT t, I1, sgn;
 
-	if (y < (FLOAT)0.0) {
-		sgn = -(FLOAT)1.0; y = -y;
-	}
-	else {
-		sgn = (FLOAT)1.0;
-	}
+    if (y < (FLOAT)0.0) {
+        sgn = -(FLOAT)1.0; y = -y;
+    }
+    else {
+        sgn = (FLOAT)1.0;
+    }
 
-	t = y / (FLOAT)3.75;
+    t = y / (FLOAT)3.75;
 
-	if (y <= FLOAT_MIN) {
-		I1 = (FLOAT)0.0;
-	}
-	else
-	if (y <= (FLOAT)3.75) {
-		I1 = (FLOAT)0.5 +
-			 (FLOAT)0.87890594 * (FLOAT)pow(t, 2) +
-			 (FLOAT)0.51498869 * (FLOAT)pow(t, 4) +
-			 (FLOAT)0.15084934 * (FLOAT)pow(t, 6) +
-			 (FLOAT)0.02658733 * (FLOAT)pow(t, 8) +
-			 (FLOAT)0.00301532 * (FLOAT)pow(t, 10) +
-			 (FLOAT)0.00032411 * (FLOAT)pow(t, 12);
+    if (y <= FLOAT_MIN) {
+        I1 = (FLOAT)0.0;
+    }
+    else
+    if (y <= (FLOAT)3.75) {
+        I1 = (FLOAT)0.5 +
+             (FLOAT)0.87890594 * (FLOAT)pow(t, 2) +
+             (FLOAT)0.51498869 * (FLOAT)pow(t, 4) +
+             (FLOAT)0.15084934 * (FLOAT)pow(t, 6) +
+             (FLOAT)0.02658733 * (FLOAT)pow(t, 8) +
+             (FLOAT)0.00301532 * (FLOAT)pow(t, 10) +
+             (FLOAT)0.00032411 * (FLOAT)pow(t, 12);
 
-		I1 *= sgn * y;
-	}
-	else {
-		I1 = (FLOAT)0.39894228 -
-			 (FLOAT)0.03988024 * (FLOAT)pow(t, -1) -
-			 (FLOAT)0.00362018 * (FLOAT)pow(t, -2) +
-			 (FLOAT)0.00163801 * (FLOAT)pow(t, -3) -
-			 (FLOAT)0.01031555 * (FLOAT)pow(t, -4) +
-			 (FLOAT)0.02282967 * (FLOAT)pow(t, -5) -
-			 (FLOAT)0.02895312 * (FLOAT)pow(t, -6) +
-			 (FLOAT)0.01787654 * (FLOAT)pow(t, -7) -
-			 (FLOAT)0.00420059 * (FLOAT)pow(t, -8);
+        I1 *= sgn * y;
+    }
+    else {
+        I1 = (FLOAT)0.39894228 -
+             (FLOAT)0.03988024 * (FLOAT)pow(t, -1) -
+             (FLOAT)0.00362018 * (FLOAT)pow(t, -2) +
+             (FLOAT)0.00163801 * (FLOAT)pow(t, -3) -
+             (FLOAT)0.01031555 * (FLOAT)pow(t, -4) +
+             (FLOAT)0.02282967 * (FLOAT)pow(t, -5) -
+             (FLOAT)0.02895312 * (FLOAT)pow(t, -6) +
+             (FLOAT)0.01787654 * (FLOAT)pow(t, -7) -
+             (FLOAT)0.00420059 * (FLOAT)pow(t, -8);
 
-		I1 *= sgn * (FLOAT)exp(y) / (FLOAT)sqrt(y);
-	}
+        I1 *= sgn * (FLOAT)exp(y) / (FLOAT)sqrt(y);
+    }
 
-	return (I1);
+    return (I1);
 } // BesselI1
 
 // Returns the von Mises c.d.f. for the specified Mean and Kappa.
 
 FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa)
 {
-	FLOAT A[3], Io, In, Fy;
-	int   i, Error;
+    FLOAT A[3], Io, In, Fy;
+    int   i, Error;
 
-	if (y > Pi2) {
-		Fy = (FLOAT)1.0;
-	}
-	else
-	if (y < (FLOAT)0.0) {
-		Fy = (FLOAT)0.0;
-	}
-	else {
-		Io = BesselI0(Kappa); In = BesselI1(Kappa);
+    if (y > Pi2) {
+        Fy = (FLOAT)1.0;
+    }
+    else
+    if (y < (FLOAT)0.0) {
+        Fy = (FLOAT)0.0;
+    }
+    else {
+        Io = BesselI0(Kappa); In = BesselI1(Kappa);
 
-		A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / Io;
+        A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / Io;
 
-		i = 1; Fy = A[0] * y; Error = 1;
-		while ((i <= ItMax) && Error) {
-			Fy += A[1] * In * ((FLOAT)sin(i * (y - Mean)) + (FLOAT)sin(i * Mean)) / i;
+        i = 1; Fy = A[0] * y; Error = 1;
+        while ((i <= ItMax) && Error) {
+            Fy += A[1] * In * ((FLOAT)sin(i * (y - Mean)) + (FLOAT)sin(i * Mean)) / i;
 
-			if (In < Eps) Error = 0;
+            if (In < Eps) Error = 0;
 
-			A[2] = Io - (FLOAT)2.0 * i * In / Kappa; Io = In; In = A[2];
+            A[2] = Io - (FLOAT)2.0 * i * In / Kappa; Io = In; In = A[2];
 
-			i++;
-		}
+            i++;
+        }
 
-		if (Fy >(FLOAT)1.0) {
-			Fy = (FLOAT)1.0;
-		}
-		else
-		if (Fy < (FLOAT)0.0) {
-			Fy = (FLOAT)0.0;
-		}
-	}
+        if (Fy >(FLOAT)1.0) {
+            Fy = (FLOAT)1.0;
+        }
+        else
+        if (Fy < (FLOAT)0.0) {
+            Fy = (FLOAT)0.0;
+        }
+    }
 
-	return (Fy);
+    return (Fy);
 } // vonMisesCdf
 
 // Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
 
 FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa)
 {
-	FLOAT yl, ym, yh, fl, fm;
-	int   Stop;
+    FLOAT yl, ym, yh, fl, fm;
+    int   Stop;
 
-	if (Fy >= (FLOAT)1.0) {
-		ym = Pi2;
-	}
-	else
-	if (Fy <= (FLOAT)0.0) {
-		ym = (FLOAT)0.0;
-	}
-	else {
-		yl = (FLOAT)0.0; fl = Fy - vonMisesCdf(yl, Mean, Kappa);
-		yh = Pi2;
+    if (Fy >= (FLOAT)1.0) {
+        ym = Pi2;
+    }
+    else
+    if (Fy <= (FLOAT)0.0) {
+        ym = (FLOAT)0.0;
+    }
+    else {
+        yl = (FLOAT)0.0; fl = Fy - vonMisesCdf(yl, Mean, Kappa);
+        yh = Pi2;
 
-		// Bisection.
+        // Bisection.
 
-		Stop = 0;
+        Stop = 0;
 
-		while (!Stop) {
-			ym = (yh + yl) / (FLOAT)2.0;
+        while (!Stop) {
+            ym = (yh + yl) / (FLOAT)2.0;
 
-			fm = Fy - vonMisesCdf(ym, Mean, Kappa);
+            fm = Fy - vonMisesCdf(ym, Mean, Kappa);
 
-			if (((FLOAT)fabs(fm) < Eps) || (yh - yl < Eps)) {
-				Stop = 1;
-			}
-			else {
-				if (fm * fl >(FLOAT)0.0) {
-					yl = ym; fl = fm;
-				}
-				else {
-					yh = ym;
-				}
-			}
-		}
-	}
+            if (((FLOAT)fabs(fm) < Eps) || (yh - yl < Eps)) {
+                Stop = 1;
+            }
+            else {
+                if (fm * fl >(FLOAT)0.0) {
+                    yl = ym; fl = fm;
+                }
+                else {
+                    yh = ym;
+                }
+            }
+        }
+    }
 
-	return (ym);
+    return (ym);
 } // vonMisesInv
 
 FLOAT xlogx(FLOAT x)

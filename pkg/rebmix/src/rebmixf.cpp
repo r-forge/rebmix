@@ -8,12 +8,6 @@
 #include "base.h"
 #include "rebmixf.h"
 
-#if (_MEMORY_LEAK_SWITCH)
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#endif
-
 // CompnentDistribution constructor.
 
 CompnentDistribution::CompnentDistribution(Base *owner)
@@ -120,6 +114,14 @@ Rebmix::Rebmix()
     ymax_ = NULL;
     ar_ = (FLOAT)0.1;
     Restraints_ = rtLoose;
+/// Panic Branislav.
+    EM_TOL_ = (FLOAT)0.0;
+    EM_ar_ = (FLOAT)0.0;
+    EM_max_iter_ = (int)0;
+    EM_strategy_ = strategy_None;
+    EM_variant_ = varEM;
+    EM_accel_ = accFIXED;
+/// End
     n_ = 0;
     Y_ = NULL;
     X_ = NULL;
@@ -136,6 +138,11 @@ Rebmix::Rebmix()
     all_K_ = NULL;
     all_IC_ = NULL;
     memset(&additional_, 0, sizeof(AdditionalParameterType));
+/// Panic Branislav.
+    OptMixTheta_ = NULL;
+    n_iter_ = 0;
+    n_iter_sum_ = 0;
+/// End
 } // Rebmix
 
 // Rebmix destructor.
@@ -1061,6 +1068,8 @@ int ComponentMarginalDist(int                  i,           // Index of variable
         }
 
         break;
+    case pfGumbel:
+        break;
     case pfvonMises:
         if ((Y[i] < (FLOAT)0.0) || (Y[i] > Pi2)) {
             *CmpMrgDist = (FLOAT)0.0;
@@ -1224,6 +1233,8 @@ S1:;
             if (Error) goto E0;
 
             break;
+        case pfGumbel:
+            break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1310,6 +1321,8 @@ S1:;
 
                 if (Error) goto E0;
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1464,6 +1477,8 @@ S1:;
             if (Error) goto E0;
 
             break;
+        case pfGumbel:
+            break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1550,6 +1565,8 @@ S1:;
 
                 if (Error) goto E0;
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1688,6 +1705,8 @@ S0:;
             if (Error) goto E0;
 
             break;
+        case pfGumbel:
+            break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1774,6 +1793,8 @@ S0:;
 
                 if (Error) goto E0;
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1916,6 +1937,8 @@ int Rebmix::ComponentDist(FLOAT                *Y,        // Pointer to the inpu
                 *CmpDist = (FLOAT)0.0; goto E0;
             }
 
+            break;
+        case pfGumbel:
             break;
         case pfvonMises:
             if (Outlier) {
@@ -2090,6 +2113,8 @@ int Rebmix::LogComponentDist(FLOAT                *Y,        // Pointer to the i
                 *CmpDist = -FLOAT_MAX; goto E0;
             }
 
+            break;
+        case pfGumbel:
             break;
         case pfvonMises:
             if (Outlier) {
@@ -2368,6 +2393,8 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 Error = 1; goto E0;
             }
 
+            break;
+        case pfGumbel:
             break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
@@ -2688,6 +2715,8 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                 Error = 1; goto E0;
             }
 
+            break;
+        case pfGumbel:
             break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
@@ -3010,6 +3039,8 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             }
 
             break;
+        case pfGumbel:
+            break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
 
@@ -3175,6 +3206,8 @@ int Rebmix::MomentsCalculation(CompnentDistribution *CmpTheta, // Component para
 
             SecondM[i] = CmpTheta->Theta_[1][i] * CmpTheta->Theta_[0][i] * CmpTheta->Theta_[0][i] * ((FLOAT)1.0 + CmpTheta->Theta_[1][i]);
 
+            break;
+        case pfGumbel:
             break;
         case pfvonMises:
             R = BesselI1(CmpTheta->Theta_[1][i]) / BesselI0(CmpTheta->Theta_[1][i]);
@@ -3377,7 +3410,7 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
 
                  for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[i][j] * Y[i][j] - SecondM[l][j]) / W[l];
@@ -3420,6 +3453,8 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
 
                 MixTheta[i]->Theta_[0][j] = FirstM[i][j] / MixTheta[i]->Theta_[1][j];
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -3487,7 +3522,7 @@ int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer t
 
                 for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[i][j] * Y[i][j] - SecondM[l][j]) / W[l];
@@ -3530,6 +3565,8 @@ int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer t
 
                 MixTheta[i]->Theta_[0][j] = FirstM[i][j] / MixTheta[i]->Theta_[1][j];
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -3598,7 +3635,7 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
 
                 for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[i][j] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[i][j] * Y[i][j] - SecondM[l][j]) / W[l];
@@ -3641,6 +3678,8 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
 
                 MixTheta[i]->Theta_[0][j] = FirstM[i][j] / MixTheta[i]->Theta_[1][j];
 
+                break;
+            case pfGumbel:
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -3690,6 +3729,10 @@ int Rebmix::DegreesOffreedom(int                  c,          // Number of compo
 
                 break;
             case pfGamma:
+                *M += 2;
+
+                break;
+            case pfGumbel:
                 *M += 2;
 
                 break;
@@ -3768,6 +3811,59 @@ int Rebmix::MixtureDist(FLOAT                logV,       // Logarithm of volume 
 
 E0: return Error;
 } // MixtureDist
+
+/// Panic Branislav: Runs the EM algorithm or its variant for the initial parameters assesed by the REBMIX algorithm.
+
+int Rebmix::ExpectationMaximizationStep(int                  c,          // Number of components.
+                                        FLOAT                *W,         // Initial weights of the components in mixture model (assesed by REBMIX).
+                                        CompnentDistribution **MixTheta, // Initial parameters of the components in mixture model (assesed by REBMIX).  
+                                        int                  *n_iter)    // Number of iterations of the EM algorithm.
+{
+    int j = 0; int Error = 0;
+
+    // Here implementation of different distribution mixture model is missing...
+
+    GaussianDiagMixture *em = NULL;
+
+    for (j = 0; j < length_pdf_; j++) {
+        if (MixTheta[0]->pdf_[j] != pfNormal) {
+
+            Error = 1;
+
+            break;
+        }
+    }
+
+    if (Error) goto E0;
+
+    em = new GaussianDiagMixture;
+
+    Error = em == NULL;
+
+    if (Error) goto E0;
+
+    Error = em->Initialize(c, W, MixTheta, EM_TOL_, EM_max_iter_, EM_variant_, EM_accel_, EM_ar_);
+
+    if (Error) goto E0;
+
+    Error = em->Run(Y_, n_);
+
+    if (Error) goto E0;
+
+    for (j = 0; j < c; j++) {
+        W[j] = em->W_[j];
+
+        MixTheta[j]->Memmove(em->MixTheta_[j]);
+    }
+
+    *n_iter = em->n_iter_;
+
+E0: if (em != NULL) delete em;
+
+    return Error;
+} // ExpectationMaximizationStep
+
+/// End
 
 // Returns information criterion for k-nearest neighbour.
 
@@ -4330,9 +4426,9 @@ int Rebmix::REBMIXKNN()
     FLOAT                *opt_logL = NULL;
     FLOAT                *opt_D = NULL;
     int                  c = 0, i, I, j, J, l, m, M;
-    FLOAT                Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D;
+    FLOAT                Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D, EMIC;
     FLOAT                A = (FLOAT)0.0, ar;
-    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0;
+    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0, all_c = 0, emp, n_iter_em;
 
     // Allocation and initialisation.
 
@@ -4569,6 +4665,66 @@ int Rebmix::REBMIXKNN()
 
     if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
 
+/// Panic Branislav.
+
+    all_c = cmax_ - cmin_ + 1;
+
+    if (all_c <= 0) {
+        Error = 1; goto E0;
+    }
+
+    OptMixTheta_ = (MixtureParameterType*)malloc(all_c * sizeof(MixtureParameterType));
+
+    Error = OptMixTheta_ == NULL; if (Error) goto E0;
+
+    for (i = 0; i < all_c; i++) {
+        OptMixTheta_[i].W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].W_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].MixTheta_ = new CompnentDistribution*[(unsigned int)cmax_];
+
+        Error = OptMixTheta_[i].MixTheta_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].C_ = i + cmin_;
+
+        OptMixTheta_[i].LogL_ = -FLOAT_MAX;
+
+        OptMixTheta_[i].initialized_ = 0;
+
+        OptMixTheta_[i].h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].h_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymin_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymin_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymax_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymax_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].y0_ = NULL;
+
+        for (j = 0; j < cmax_; j++) {
+            OptMixTheta_[i].MixTheta_[j] = new CompnentDistribution(this);
+
+            Error = NULL == OptMixTheta_[i].MixTheta_[j];
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Memmove(IniTheta_);
+
+            if (Error) goto E0;
+        }
+    }
+
+/// End
+
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
 
@@ -4707,8 +4863,35 @@ int Rebmix::REBMIXKNN()
 
             if (Error) goto E0;
 
-            if (IC < all_IC_[i]) all_IC_[i] = IC;
+/// Panic Branislav.
 
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].C_ == c) {
+                    if (OptMixTheta_[j].LogL_ < logL) {
+                        OptMixTheta_[j].LogL_ = logL;
+
+                        OptMixTheta_[j].k_ = all_K_[i];
+
+                        memmove(OptMixTheta_[j].h_, h, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymin_, ymin, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymax_, ymax, length_pdf_ * sizeof(FLOAT));
+
+                        for (int ii = 0; ii < c; ii++) {
+                            OptMixTheta_[j].W_[ii] = W[ii];
+
+                            OptMixTheta_[j].MixTheta_[ii]->Memmove(LooseTheta[ii]);
+                        }
+
+                        OptMixTheta_[j].initialized_ = 1;
+                    }
+                }
+            }
+
+/// End
+
+            if (IC < all_IC_[i]) all_IC_[i] = IC;
 
             if ((IC < summary_.IC) && (c >= cmin_)) {
                 Found = 1;
@@ -4739,6 +4922,83 @@ int Rebmix::REBMIXKNN()
             if (Stop) break;
         }
 
+/// Panic Branislav.
+
+        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+            Found = 0;
+
+            EMIC = FLOAT_MAX;
+
+            emp = -1;
+
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].initialized_ == 1) {
+                    if (ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em) != 1) {
+                        n_iter_sum_ += n_iter_em;
+
+                        OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                        Error = InformationCriterionKNN(OptMixTheta_[j].k_, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                        if (IC < EMIC) {
+                            EMIC = IC;
+
+                            emp = j;
+                        }
+                    }
+                    else {
+                        n_iter_sum_ += n_iter_em;
+                    }
+                }
+            }
+
+            c = OptMixTheta_[emp].C_;
+
+            memmove(W, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+            for (j = 0; j < c; j++) {
+                Error = LooseTheta[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+                if (Error) goto E0;
+            }
+
+            n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+            Error = InformationCriterionKNN(OptMixTheta_[emp].k_, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
+
+            if (IC < all_IC_[i]) all_IC_[i] = IC;
+
+            if ((IC < summary_.IC) && (c >= cmin_)) {
+                Found = 1;
+
+                summary_.k = OptMixTheta_[emp].k_;
+
+                memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+                summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c;
+
+                memmove(W_, W, c * sizeof(FLOAT));
+
+                for (j = 0; j < c; j++) {
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
+                }
+            }
+
+            for (j = 0; j < all_c; j++) {
+                OptMixTheta_[j].LogL_ = -FLOAT_MAX;
+
+                OptMixTheta_[j].initialized_ = 0;
+            }
+        }
+
+/// End
+
         opt_length = J - 1;
 
         if (Found) {
@@ -4751,6 +5011,72 @@ int Rebmix::REBMIXKNN()
         }
     }
     while (!Golden());
+
+/// Panic Branislav.
+
+    if (EM_strategy_ == strategy_Best) {
+        EMIC = FLOAT_MAX;
+
+        emp = -1;
+
+        for (j = 0; j < all_c; j++) {
+            opt_length_ = all_c;
+
+            if (OptMixTheta_[j].initialized_ == 1) {
+                Error = InformationCriterionKNN(OptMixTheta_[j].k_, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
+
+                ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em);
+
+                n_iter_sum_ += n_iter_em;
+
+                OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                Error = InformationCriterionKNN(OptMixTheta_[j].k_, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                if (IC < EMIC) {
+                    EMIC = IC;
+
+                    emp = j;
+                }
+            }
+        }
+
+        c = OptMixTheta_[emp].C_;
+
+        memmove(W_, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+        for (j = 0; j < OptMixTheta_[emp].C_; j++) {
+            Error = MixTheta_[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+            if (Error) goto E0;
+        }
+
+        n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+        Error = InformationCriterionKNN(OptMixTheta_[emp].k_, Y, c, W_, MixTheta_, &IC, &logL, &M, &D);
+
+        summary_.k = OptMixTheta_[emp].k_;
+
+        memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+        summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = OptMixTheta_[emp].C_;
+
+        memmove(opt_c_, opt_c, opt_length_ * sizeof(int));
+
+        memmove(opt_IC_, opt_IC, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_logL_, opt_logL, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));
+    }
+
+/// End
 
 E0: if (O) free(O);
 
@@ -4816,6 +5142,34 @@ E0: if (O) free(O);
         free(Y);
     }
 
+/// Panic Branislav.
+
+    if (OptMixTheta_) {
+        for (j = 0; j < all_c; j++) {
+            if (OptMixTheta_[j].MixTheta_) {
+                for (i = 0; i < cmax_; i++) {
+                    if (OptMixTheta_[j].MixTheta_[i]) delete OptMixTheta_[j].MixTheta_[i];
+                }
+
+                delete[] OptMixTheta_[j].MixTheta_;
+            }
+
+            if (OptMixTheta_[j].W_) free(OptMixTheta_[j].W_);
+
+            if (OptMixTheta_[j].h_) free(OptMixTheta_[j].h_);
+
+            if (OptMixTheta_[j].y0_) free(OptMixTheta_[j].y0_);
+
+            if (OptMixTheta_[j].ymin_) free(OptMixTheta_[j].ymin_);
+
+            if (OptMixTheta_[j].ymax_) free(OptMixTheta_[j].ymax_);
+        }
+
+        free(OptMixTheta_);
+    }
+
+/// End
+
     return Error;
 } // REBMIXKNN
 
@@ -4835,9 +5189,9 @@ int Rebmix::REBMIXKDE()
     FLOAT                *opt_logL = NULL;
     FLOAT                *opt_D = NULL;
     int                  c = 0, i, I, j, J, l, m, M;
-    FLOAT                logV, Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D;
+    FLOAT                logV = (FLOAT)0.0, Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D, EMIC;
     FLOAT                A = (FLOAT)0.0, ar;
-    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0;
+    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0, all_c = 0, emp, n_iter_em;
 
     // Allocation and initialisation.
 
@@ -5069,6 +5423,66 @@ int Rebmix::REBMIXKDE()
 
     if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
 
+/// Panic Branislav.
+
+    all_c = cmax_ - cmin_ + 1;
+
+    if (all_c <= 0) {
+        Error = 1; goto E0;
+    }
+
+    OptMixTheta_ = (MixtureParameterType*)malloc(all_c * sizeof(MixtureParameterType));
+
+    Error = OptMixTheta_ == NULL; if (Error) goto E0;
+
+    for (i = 0; i < all_c; i++) {
+        OptMixTheta_[i].W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].W_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].MixTheta_ = new CompnentDistribution*[(unsigned int)cmax_];
+
+        Error = OptMixTheta_[i].MixTheta_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].C_ = i + cmin_;
+
+        OptMixTheta_[i].LogL_ = -FLOAT_MAX;
+
+        OptMixTheta_[i].initialized_ = 0;
+
+        OptMixTheta_[i].h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].h_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymin_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymin_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymax_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymax_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].y0_ = NULL;
+
+        for (j = 0; j < cmax_; j++) {
+            OptMixTheta_[i].MixTheta_[j] = new CompnentDistribution(this);
+
+            Error = NULL == OptMixTheta_[i].MixTheta_[j];
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Memmove(IniTheta_);
+
+            if (Error) goto E0;
+        }
+    }
+
+/// End
+
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
 
@@ -5222,6 +5636,36 @@ int Rebmix::REBMIXKDE()
 
             if (Error) goto E0;
 
+/// Panic Branislav.
+
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].C_ == c) {
+                    if (OptMixTheta_[j].LogL_ < logL) {
+                        OptMixTheta_[j].LogL_ = logL;
+
+                        OptMixTheta_[j].logV_ = logV;
+
+                        OptMixTheta_[j].k_ = all_K_[i];
+
+                        memmove(OptMixTheta_[j].h_, h, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymin_, ymin, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymax_, ymax, length_pdf_ * sizeof(FLOAT));
+
+                        for (int ii = 0; ii < c; ii++) {
+                            OptMixTheta_[j].W_[ii] = W[ii];
+
+                            OptMixTheta_[j].MixTheta_[ii]->Memmove(LooseTheta[ii]);
+                        }
+
+                        OptMixTheta_[j].initialized_ = 1;
+                    }
+                }
+            }
+
+/// End
+
             if (IC < all_IC_[i]) all_IC_[i] = IC;
 
             if ((IC < summary_.IC) && (c >= cmin_)) {
@@ -5253,6 +5697,88 @@ int Rebmix::REBMIXKDE()
             if (Stop) break;
         }
 
+/// Panic Branislav.
+
+        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+            Found = 0;
+
+            EMIC = FLOAT_MAX;
+
+            emp = -1;
+
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].initialized_ == 1) {
+                    if (ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em) != 1) {
+
+                        n_iter_sum_ += n_iter_em;
+
+                        OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                        logV = OptMixTheta_[j].logV_;
+
+                        Error = InformationCriterionKDE(logV, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                        if (IC < EMIC) {
+                            EMIC = IC;
+
+                            emp = j;
+                        }
+                    }
+                    else {
+                        n_iter_sum_ += n_iter_em;
+                    }
+                }
+            }
+
+            c = OptMixTheta_[emp].C_;
+
+            memmove(W, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+            for (j = 0; j < c; j++) {
+                Error = LooseTheta[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+                if (Error) goto E0;
+            }
+
+            n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+            logV = OptMixTheta_[emp].logV_;
+
+            Error = InformationCriterionKDE(logV, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
+
+            if (IC < all_IC_[i]) all_IC_[i] = IC;
+
+            if ((IC < summary_.IC) && (c >= cmin_)) {
+                Found = 1;
+
+                summary_.k = OptMixTheta_[emp].k_;
+
+                memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+                summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c;
+
+                memmove(W_, W, c * sizeof(FLOAT));
+
+                for (j = 0; j < c; j++) {
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
+                }
+            }
+
+            for (j = 0; j < all_c; j++) {
+                OptMixTheta_[j].LogL_ = -FLOAT_MAX;
+
+                OptMixTheta_[j].initialized_ = 0;
+            }
+        }
+
+/// End
+
         opt_length = J - 1;
 
         if (Found) {
@@ -5265,6 +5791,76 @@ int Rebmix::REBMIXKDE()
         }
     }
     while (!Golden());
+
+/// Panic Branislav.
+
+    if (EM_strategy_ == strategy_Best) {
+        EMIC = FLOAT_MAX;
+
+        emp = -1;
+
+        for (j = 0; j < all_c; j++) {
+            opt_length_ = all_c;
+
+            if (OptMixTheta_[j].initialized_ == 1) {
+                Error = InformationCriterionKDE(logV, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                opt_c[j] = OptMixTheta_[j].C_; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
+
+                ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em);
+
+                n_iter_sum_ += n_iter_em;
+
+                OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                logV = OptMixTheta_[j].logV_;
+
+                Error = InformationCriterionKDE(logV, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                if (IC < EMIC) {
+                    EMIC = IC;
+
+                    emp = j;
+                }
+            }
+        }
+
+        c = OptMixTheta_[emp].C_;
+
+        memmove(W_, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+        for (j = 0; j < OptMixTheta_[emp].C_; j++) {
+            Error = MixTheta_[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+            if (Error) goto E0;
+        }
+
+        n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+        logV = OptMixTheta_[emp].logV_;
+
+        Error = InformationCriterionKDE(logV, Y, c, W_, MixTheta_, &IC, &logL, &M, &D);
+
+        summary_.k = OptMixTheta_[emp].k_;
+
+        memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+        summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = OptMixTheta_[emp].C_;
+
+        memmove(opt_c_, opt_c, opt_length_ * sizeof(int));
+
+        memmove(opt_IC_, opt_IC, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_logL_, opt_logL, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));
+    }
+
+/// End
 
 E0: if (O) free(O);
 
@@ -5330,6 +5926,34 @@ E0: if (O) free(O);
         free(Y);
     }
 
+/// Panic Branislav.
+
+    if (OptMixTheta_) {
+        for (j = 0; j < all_c; j++) {
+            if (OptMixTheta_[j].MixTheta_) {
+                for (i = 0; i < cmax_; i++) {
+                    if (OptMixTheta_[j].MixTheta_[i]) delete OptMixTheta_[j].MixTheta_[i];
+                }
+
+                delete[] OptMixTheta_[j].MixTheta_;
+            }
+
+            if (OptMixTheta_[j].W_) free(OptMixTheta_[j].W_);
+
+            if (OptMixTheta_[j].h_) free(OptMixTheta_[j].h_);
+
+            if (OptMixTheta_[j].y0_) free(OptMixTheta_[j].y0_);
+
+            if (OptMixTheta_[j].ymin_) free(OptMixTheta_[j].ymin_);
+
+            if (OptMixTheta_[j].ymax_) free(OptMixTheta_[j].ymax_);
+        }
+
+        free(OptMixTheta_);
+    }
+
+/// End
+
     return Error;
 } // REBMIXKDE
 
@@ -5349,10 +5973,10 @@ int Rebmix::REBMIXH()
     FLOAT                *opt_IC = NULL;
     FLOAT                *opt_logL = NULL;
     FLOAT                *opt_D = NULL;
-    int                  c = 0, i, I, j, J, k, l, m, M;
-    FLOAT                logV, Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D;
+    int                  c = 0, i, I, j, J, k = 0, l, m, M;
+    FLOAT                logV = (FLOAT)0.0, Dmin, r, lognl, nl, elp, eln, epsilonlmax, logfl, fl, Dl, f, IC, logL, D, EMIC;
     FLOAT                A = (FLOAT)0.0, ar;
-    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0, State = 0;
+    int                  Error = 0, Stop = 0, Found = 0, Outlier = 0, State = 0, all_c = 0, emp, n_iter_em;
 
     // Allocation and initialisation.
 
@@ -5594,6 +6218,64 @@ int Rebmix::REBMIXH()
 
     if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
 
+/// Panic Branislav.
+
+    all_c = cmax_ - cmin_ + 1;
+
+    OptMixTheta_ = (MixtureParameterType*)malloc(all_c * sizeof(MixtureParameterType));
+
+    Error = OptMixTheta_ == NULL; if (Error) goto E0;
+
+    for (i = 0; i < all_c; i++) {
+        OptMixTheta_[i].W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].W_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].MixTheta_ = new CompnentDistribution*[(unsigned int)cmax_];
+
+        Error = OptMixTheta_[i].MixTheta_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].C_ = i + cmin_;
+
+        OptMixTheta_[i].LogL_ = -FLOAT_MAX;
+
+        OptMixTheta_[i].initialized_ = 0;
+
+        OptMixTheta_[i].h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].h_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].y0_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].y0_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymin_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymin_ == NULL; if (Error) goto E0;
+
+        OptMixTheta_[i].ymax_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = OptMixTheta_[i].ymax_ == NULL; if (Error) goto E0;
+
+        for (j = 0; j < cmax_; j++) {
+            OptMixTheta_[i].MixTheta_[j] = new CompnentDistribution(this);
+
+            Error = NULL == OptMixTheta_[i].MixTheta_[j];
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+
+            Error = OptMixTheta_[i].MixTheta_[j]->Memmove(IniTheta_);
+
+            if (Error) goto E0;
+        }
+    }
+
+/// End 
+
     do for (i = 0; i < all_length_; i++) if (all_K_[i] && (all_I_[i] == 0)) {
         // Preprocessing of observations.
 
@@ -5764,6 +6446,38 @@ int Rebmix::REBMIXH()
 
             if (Error) goto E0;
 
+/// Panic Branislav.
+
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].C_ == c) {
+                    if (OptMixTheta_[j].LogL_ < logL) {
+                        OptMixTheta_[j].LogL_ = logL;
+
+                        OptMixTheta_[j].logV_ = logV;
+
+                        OptMixTheta_[j].k_ = k;
+
+                        memmove(OptMixTheta_[j].h_, h, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].y0_, y0, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymin_, ymin, length_pdf_ * sizeof(FLOAT));
+
+                        memmove(OptMixTheta_[j].ymax_, ymax, length_pdf_ * sizeof(FLOAT));
+
+                        for (int ii = 0; ii < c; ii++) {
+                            OptMixTheta_[j].W_[ii] = W[ii];
+
+                            OptMixTheta_[j].MixTheta_[ii]->Memmove(LooseTheta[ii]);
+                        }
+
+                        OptMixTheta_[j].initialized_ = 1;
+                    }
+                }
+            }
+
+/// End 
+
             if (IC < all_IC_[i]) all_IC_[i] = IC;
 
             if ((IC < summary_.IC) && (c >= cmin_)) {
@@ -5797,6 +6511,93 @@ int Rebmix::REBMIXH()
             if (Stop) break;
         }
 
+/// Panic Branislav.
+
+        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+            Found = 0;
+
+            EMIC = FLOAT_MAX;
+
+            emp = -1;
+
+            for (j = 0; j < all_c; j++) {
+                if (OptMixTheta_[j].initialized_ == 1) {
+                    if (ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em) != 1) {
+                        n_iter_sum_ += n_iter_em;
+
+                        OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                        logV = OptMixTheta_[j].logV_;
+
+                        k = OptMixTheta_[j].k_;
+
+                        Error = InformationCriterionH(logV, k, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                        if (IC < EMIC) {
+                            EMIC = IC;
+
+                            emp = j;
+                        }
+                    }
+                    else {
+                        n_iter_sum_ += n_iter_em;
+                    }
+                }
+            }
+
+            c = OptMixTheta_[emp].C_;
+
+            memmove(W, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+            for (j = 0; j < c; j++) {
+                Error = LooseTheta[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+                if (Error) goto E0;
+            }
+
+            n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+            logV = OptMixTheta_[emp].logV_;
+
+            k = OptMixTheta_[emp].k_;
+
+            Error = InformationCriterionH(logV, k, Y, c, W, LooseTheta, &IC, &logL, &M, &D);
+
+            if (IC < all_IC_[i]) all_IC_[i] = IC;
+
+            if ((IC < summary_.IC) && (c >= cmin_)) {
+                Found = 1;
+
+                summary_.k = k;
+
+                memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.y0, OptMixTheta_[emp].y0_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+                memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+                summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = c;
+
+                memmove(W_, W, c * sizeof(FLOAT));
+
+                for (j = 0; j < c; j++) {
+                    Error = MixTheta_[j]->Memmove(LooseTheta[j]);
+
+                    if (Error) goto E0;
+                }
+            }
+
+            for (j = 0; j < all_c; j++) {
+                OptMixTheta_[j].LogL_ = -FLOAT_MAX;
+
+                OptMixTheta_[j].initialized_ = 0;
+            }
+        }
+
+/// End
+
         opt_length = J - 1;
 
         if (Found) {
@@ -5811,6 +6612,84 @@ int Rebmix::REBMIXH()
 E1:     all_K_[i] = k;
     }
     while (!Golden());
+
+/// Panic Branislav.
+
+    if (EM_strategy_ == strategy_Best) {
+        EMIC = FLOAT_MAX;
+
+        emp = -1;
+
+        for (j = 0; j < all_c; j++) {
+            opt_length_ = all_c;
+
+            if (OptMixTheta_[j].initialized_ == 1) {
+                Error = InformationCriterionH(logV, k, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                opt_c[j] = OptMixTheta_[j].C_; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
+
+                ExpectationMaximizationStep(OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &n_iter_em);
+
+                n_iter_sum_ += n_iter_em;
+
+                OptMixTheta_[j].n_iter_em_ = n_iter_em;
+
+                logV = OptMixTheta_[j].logV_;
+
+                k = OptMixTheta_[j].k_;
+
+                Error = InformationCriterionH(logV, k, Y, OptMixTheta_[j].C_, OptMixTheta_[j].W_, OptMixTheta_[j].MixTheta_, &IC, &logL, &M, &D);
+
+                if (IC < EMIC) {
+                    EMIC = IC;
+
+                    emp = j;
+                }
+            }
+        }
+
+        c = OptMixTheta_[emp].C_;
+
+        memmove(W_, OptMixTheta_[emp].W_, c * sizeof(FLOAT));
+
+        for (j = 0; j < OptMixTheta_[emp].C_; j++) {
+            Error = MixTheta_[j]->Memmove(OptMixTheta_[emp].MixTheta_[j]);
+
+            if (Error) goto E0;
+        }
+
+        n_iter_ = OptMixTheta_[emp].n_iter_em_;
+
+        logV = OptMixTheta_[emp].logV_;
+
+        k = OptMixTheta_[emp].k_;
+
+        Error = InformationCriterionH(logV, k, Y, c, W_, MixTheta_, &IC, &logL, &M, &D);
+
+        summary_.k = k;
+
+        memmove(summary_.h, OptMixTheta_[emp].h_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.y0, OptMixTheta_[emp].y0_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymin, OptMixTheta_[emp].ymin_, length_pdf_ * sizeof(FLOAT));
+
+        memmove(summary_.ymax, OptMixTheta_[emp].ymax_, length_pdf_ * sizeof(FLOAT));
+
+        summary_.IC = IC; summary_.logL = logL; summary_.M = M; summary_.c = OptMixTheta_[emp].C_;
+
+        opt_length_ = opt_length;
+
+        memmove(opt_c_, opt_c, opt_length_ * sizeof(int));
+
+        memmove(opt_IC_, opt_IC, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_logL_, opt_logL, opt_length_ * sizeof(FLOAT));
+
+        memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));
+    }
+
+/// End 
 
 E0: if (O) free(O);
 
@@ -5879,6 +6758,34 @@ E0: if (O) free(O);
 
         free(Y);
     }
+
+/// Panic Branislav.
+
+    if (OptMixTheta_) {
+        for (j = 0; j < all_c; j++) {
+            if (OptMixTheta_[j].MixTheta_) {
+                for (i = 0; i < cmax_; i++) {
+                    if (OptMixTheta_[j].MixTheta_[i]) delete OptMixTheta_[j].MixTheta_[i];
+                }
+
+                delete[] OptMixTheta_[j].MixTheta_;
+            }
+
+            if (OptMixTheta_[j].W_) free(OptMixTheta_[j].W_);
+
+            if (OptMixTheta_[j].h_) free(OptMixTheta_[j].h_);
+
+            if (OptMixTheta_[j].y0_) free(OptMixTheta_[j].y0_);
+
+            if (OptMixTheta_[j].ymin_) free(OptMixTheta_[j].ymin_);
+
+            if (OptMixTheta_[j].ymax_) free(OptMixTheta_[j].ymax_);
+        }
+
+        free(OptMixTheta_);
+    }
+
+/// End
 
     return Error;
 } // REBMIXH
@@ -6311,6 +7218,10 @@ int Rebmix::WriteDataFile()
                 fprintf(fp1, "\t%s", "gamma");
 
                 break;
+            case pfGumbel:
+                fprintf(fp1, "\t%s", "Gumbel");
+
+                break;
             case pfvonMises:
                 fprintf(fp1, "\t%s", "vonMises");
 
@@ -6664,6 +7575,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (!strcmp(pchar, "GAMMA"))
                     IniTheta_->pdf_[i] = pfGamma;
                 else
+                if (!strcmp(pchar, "GUMBEL"))
+                    IniTheta_->pdf_[i] = pfGumbel;
+                else
                 if (!strcmp(pchar, "VONMISES"))
                     IniTheta_->pdf_[i] = pfvonMises;
                 else
@@ -6860,6 +7774,77 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
             strcpy(save_, pchar);
         }
+/// Panic Branislav.
+        else
+        if (!strcmp(ident, "EMSTRATEGY")) {
+            if (!strcmp(pchar, "EXHAUSTIVE")) {
+                EM_strategy_ = strategy_Exhaustive;
+            }
+            else
+            if (!strcmp(pchar, "BEST")) {
+                EM_strategy_ = strategy_Best;
+            }
+            else
+            if (!strcmp(pchar, "SINGLE")) {
+                EM_strategy_ = strategy_Single;
+            }
+            else
+            if (!strcmp(pchar, "NONE")) {
+                EM_strategy_ = strategy_None;
+            }
+        }
+        else
+        if (!strcmp(ident, "EMVARIANT")) {
+            if (!strcmp(pchar, "EM")) {
+                EM_variant_ = varEM;
+            }
+            else
+            if (!strcmp(pchar, "ECM")) {
+                EM_variant_ = varECM;
+            }
+            else{
+                Error = 1; goto E0;
+            }
+        }
+        else
+        if (!strcmp(ident, "EMACCELERATION")) {
+            if (!strcmp(pchar, "FIXED")) {
+                EM_accel_ = accFIXED;
+            }
+            else
+            if (!strcmp(pchar, "LINE")) {
+                EM_accel_ = accLINE;
+            }
+            else
+            if (!strcmp(pchar, "GOLDEN")) {
+                EM_accel_ = accGOLDEN;
+            }
+            else{
+                Error = 1; goto E0;
+            }
+        }
+        else
+        if (!strcmp(ident, "EMTOLERANCE")) {
+            EM_TOL_ = isF = (FLOAT)atof(pchar);
+
+            Error = (isF <= (FLOAT)0.0); if (Error) goto E0;
+
+        }
+        else
+        if (!strcmp(ident, "EMMAXIMUMITER")) {
+
+            EM_max_iter_ = isI = (int)atol(pchar);
+
+            Error = isI <= 0; if (Error) goto E0;
+        }
+        else
+        if (!strcmp(ident, "EMACCELERATIONMUL")) {
+
+            EM_ar_ = isF = (FLOAT)atof(pchar);
+
+            Error = (isF < (FLOAT)1.0) || (isF >(FLOAT)2.0); if (Error) goto E0;
+        }
+/// End
     }
 
 E0: if (fp) fclose(fp);

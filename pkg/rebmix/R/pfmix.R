@@ -125,6 +125,18 @@ function(x,
 
         fi <- fi * output$F
       }
+      else
+      if (pdf[[i]][j] == .rebmix$pdf[10]) {
+        output <- .C(C_RGumbelCdf,
+          n = as.integer(n),
+          y = as.double(Dataset[, j]),
+          Mean = as.double(theta1[[i]][j]),
+          Beta = as.double(theta2[[i]][j]),
+          F = double(n),
+          PACKAGE = "rebmix")
+
+        fi <- fi * output$F      
+      }        
     }
 
     f <- f + as.numeric(w[i]) * fi

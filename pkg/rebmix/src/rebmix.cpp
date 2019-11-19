@@ -40,11 +40,11 @@ int main(int argc, char* argv[])
     }
     else
     if (!strcmp(argv[2], "REBMIX")) {
-		rebmix = new Rebmix;
+        rebmix = new Rebmix;
 
-		Error = NULL == rebmix; if (Error) goto E0;
+        Error = NULL == rebmix; if (Error) goto E0;
 
-		Error = rebmix->RunTemplateFile(argv[1]);
+        Error = rebmix->RunTemplateFile(argv[1]);
 
         if (Error) goto E0;
     }

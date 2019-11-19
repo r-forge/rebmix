@@ -41,7 +41,7 @@ total of positive relative deviations \code{"D"} or sum of squares error \code{"
 a character vector of length \eqn{d} containing types of variables. One of \code{"continuous"} or \code{"discrete"}.
 }
 \item{\code{pdf}:}{
-a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or \code{"vonMises"}.
+a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"Gumbel"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or \code{"vonMises"}.
 }
 \item{\code{theta1}:}{
 a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise.
@@ -77,9 +77,9 @@ The rigid restraints are obsolete and applicable for well separated components o
 a list of vectors of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.
 }
 \item{\code{Theta}:}{
-a list of lists each containing \eqn{c} parametric family types \code{pdfl}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or circular \code{"vonMises"} defined for \eqn{0 \leq y_{i} \leq 2 \pi}.
-Component parameters \code{theta1.l} follow the parametric family types. One of \eqn{\mu_{il}} for normal, lognormal and von Mises distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull and gamma distributions, \eqn{p_{il}} for binomial distribution and \eqn{\kappa_{il}} for von Mises distribution.
+a list of lists each containing \eqn{c} parametric family types \code{pdfl}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"Gumbel"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or circular \code{"vonMises"} defined for \eqn{0 \leq y_{i} \leq 2 \pi}.
+Component parameters \code{theta1.l} follow the parametric family types. One of \eqn{\mu_{il}} for normal, lognormal, Gumbel and von Mises distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
+Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull, gamma and Gumbel distributions, \eqn{p_{il}} for binomial distribution and \eqn{\kappa_{il}} for von Mises distribution.
 }
 \item{\code{summary}:}{
 a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, \eqn{c_{\mathrm{min}}}, information criterion type,
