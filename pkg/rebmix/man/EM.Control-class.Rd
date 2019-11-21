@@ -12,13 +12,13 @@ Objects can be created by calls of the form \code{new("EM.Control", ...)}. Acces
 \section{Slots}{
 \describe{
 \item{\code{strategy}:}{
-a character containing the EM and REBMIX strategy. One of \code{"None"}, \code{"Exhaustive"}, \code{"Best"} and \code{"Single"}. The default value is \code{"None"}.  
+a character containing the EM and REBMIX strategy. One of \code{"none"}, \code{"exhaustive"}, \code{"best"} and \code{"single"}. The default value is \code{"none"}.  
 }
 \item{\code{variant}:}{
 a character containing the type of the EM algorithm to be used. One of \code{"EM"} of \code{"ECM"}. The default value is \code{"EM"}.
 }
 \item{\code{acceleration}:}{
-a character containing the type of acceleration of the EM iteration increment. One of \code{"Fixed"}, \code{"Line"} or \code{"Golden"}. The default value is \code{"Fixed"}.
+a character containing the type of acceleration of the EM iteration increment. One of \code{"fixed"}, \code{"line"} or \code{"golden"}. The default value is \code{"fixed"}.
 }
 \item{\code{tolerence}:}{
 tolerance value for the EM convergence criteria. The default value is 1e-4
@@ -41,8 +41,8 @@ G. Celeux and G. Govaert. A classification EM algorithm for clustering and two s
 \examples{
 # Inline creation by function new call.
 
-EM <- new("EM.Control", strategy = "Exhaustive", 
-  variant = "EM", acceleration = "Fixed", 
+EM <- new("EM.Control", strategy = "exhaustive", 
+  variant = "EM", acceleration = "fixed", 
   tolerance = 1e-4, acceleration.multiplier = 1.0, 
   maximum.iterations = 1000)
 
@@ -52,9 +52,9 @@ EM
 
 EM <- new("EM.Control")
 
-a.strategy(EM) <- "Exhaustive"
+a.strategy(EM) <- "exhaustive"
 a.variant(EM) <- "EM"
-a.acceleration(EM) <- "Fixed"
+a.acceleration(EM) <- "fixed"
 a.tolerance(EM) <- 1e-4
 a.acceleration.multiplier(EM) <- 1.0
 a.maximum.iterations(EM) <- 1000

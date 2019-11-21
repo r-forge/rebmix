@@ -19,7 +19,7 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
        cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
        theta1 = numeric(),theta2 = numeric(), K = "auto", y0 = numeric(), 
        ymin = numeric(), ymax = numeric(), ar = 0.1, Restraints = "loose", 
-       EMcontrol = EM.Control(strategy = "None"), ...)
+       EMcontrol = EM.Control(strategy = "none"), ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
 ## ... and for other signatures
@@ -175,9 +175,9 @@ Dataset <- list(data.frame(iris[, c(1:4)]))
 # Create EM.Control object.
 
 EM <- new("EM.Control", 
-  strategy = "Exhaustive", 
+  strategy = "exhaustive", 
   variant = "EM", 
-  acceleration = "Fixed", 
+  acceleration = "fixed", 
   tolerance = 1e-4, 
   acceleration.multiplier = 1.0, 
   maximum.iterations = 1000)

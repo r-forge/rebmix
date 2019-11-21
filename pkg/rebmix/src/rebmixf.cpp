@@ -118,9 +118,9 @@ Rebmix::Rebmix()
     EM_TOL_ = (FLOAT)0.0;
     EM_ar_ = (FLOAT)0.0;
     EM_max_iter_ = (int)0;
-    EM_strategy_ = strategy_None;
+    EM_strategy_ = strategy_none;
     EM_variant_ = varEM;
-    EM_accel_ = accFIXED;
+    EM_accel_ = acc_fixed;
 /// End
     n_ = 0;
     Y_ = NULL;
@@ -4924,7 +4924,7 @@ int Rebmix::REBMIXKNN()
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0;
 
             EMIC = FLOAT_MAX;
@@ -5014,7 +5014,7 @@ int Rebmix::REBMIXKNN()
 
 /// Panic Branislav.
 
-    if (EM_strategy_ == strategy_Best) {
+    if (EM_strategy_ == strategy_best) {
         EMIC = FLOAT_MAX;
 
         emp = -1;
@@ -5699,7 +5699,7 @@ int Rebmix::REBMIXKDE()
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0;
 
             EMIC = FLOAT_MAX;
@@ -5794,7 +5794,7 @@ int Rebmix::REBMIXKDE()
 
 /// Panic Branislav.
 
-    if (EM_strategy_ == strategy_Best) {
+    if (EM_strategy_ == strategy_best) {
         EMIC = FLOAT_MAX;
 
         emp = -1;
@@ -6513,7 +6513,7 @@ int Rebmix::REBMIXH()
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_Exhaustive || EM_strategy_ == strategy_Single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0;
 
             EMIC = FLOAT_MAX;
@@ -6615,7 +6615,7 @@ E1:     all_K_[i] = k;
 
 /// Panic Branislav.
 
-    if (EM_strategy_ == strategy_Best) {
+    if (EM_strategy_ == strategy_best) {
         EMIC = FLOAT_MAX;
 
         emp = -1;
@@ -7778,19 +7778,19 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         else
         if (!strcmp(ident, "EMSTRATEGY")) {
             if (!strcmp(pchar, "EXHAUSTIVE")) {
-                EM_strategy_ = strategy_Exhaustive;
+                EM_strategy_ = strategy_exhaustive;
             }
             else
             if (!strcmp(pchar, "BEST")) {
-                EM_strategy_ = strategy_Best;
+                EM_strategy_ = strategy_best;
             }
             else
             if (!strcmp(pchar, "SINGLE")) {
-                EM_strategy_ = strategy_Single;
+                EM_strategy_ = strategy_single;
             }
             else
             if (!strcmp(pchar, "NONE")) {
-                EM_strategy_ = strategy_None;
+                EM_strategy_ = strategy_none;
             }
         }
         else
@@ -7809,15 +7809,15 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         else
         if (!strcmp(ident, "EMACCELERATION")) {
             if (!strcmp(pchar, "FIXED")) {
-                EM_accel_ = accFIXED;
+                EM_accel_ = acc_fixed;
             }
             else
             if (!strcmp(pchar, "LINE")) {
-                EM_accel_ = accLINE;
+                EM_accel_ = acc_line;
             }
             else
             if (!strcmp(pchar, "GOLDEN")) {
-                EM_accel_ = accGOLDEN;
+                EM_accel_ = acc_golden;
             }
             else{
                 Error = 1; goto E0;

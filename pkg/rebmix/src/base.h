@@ -147,16 +147,16 @@ typedef enum {
 } EmVariantType_e;
 
 typedef enum {
-    accFIXED,  // Fixed constant multiplier acceleration of the EM algorithm.
-    accLINE,   // Line search for multiplier acceleration of the EM algorithm.
-    accGOLDEN  // Golden search for multiplier accleration of the EM algorithm.
+    acc_fixed,  // Fixed constant multiplier acceleration of the EM algorithm.
+    acc_line,   // Line search for multiplier acceleration of the EM algorithm.
+    acc_golden  // Golden search for multiplier accleration of the EM algorithm.
 } EmAccelerationType_e;
 
 typedef enum {
-    strategy_None,       // EM algorithm is not employed for estimation of mixture model parameters.
-    strategy_Single,     // Single REBMIX + EM strategy.
-    strategy_Best,       // Best REBMIX + EM strategy.
-    strategy_Exhaustive  // Exhaustive REBMIX + EM strategy.
+    strategy_none,       // EM algorithm is not employed for estimation of mixture model parameters.
+    strategy_single,     // Single REBMIX + EM strategy.
+    strategy_best,       // Best REBMIX + EM strategy.
+    strategy_exhaustive  // Exhaustive REBMIX + EM strategy.
 } EmStrategyType_e;
 
 typedef struct summaryparametertype {

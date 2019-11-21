@@ -7,9 +7,9 @@ pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2, 2, 2),
 pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous", "continuous", "continuous", "continuous"),
 Restraints = c("rigid", "loose"),
 ### Panic Branislav.
-EMStrategy = c("None", "Exhaustive", "Best", "Single"),
+EMStrategy = c("none", "exhaustive", "best", "single"),
 EMVariant = c("EM", "ECM"),
-EMAcceleration = c("Fixed", "Line", "Golden")),
+EMAcceleration = c("fixed", "line", "golden")),
 ### End
 .Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "EMStrategy", "EMVariant", "EMAcceleration"))
 

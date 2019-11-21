@@ -359,19 +359,19 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
 
 /// Panic Branislav.
 
-    if (!strcmp(EMStrategy[0], "Exhaustive")) {
-        rebmvnorm->EM_strategy_ = strategy_Exhaustive;
+    if (!strcmp(EMStrategy[0], "exhaustive")) {
+        rebmvnorm->EM_strategy_ = strategy_exhaustive;
     }
     else
-    if (!strcmp(EMStrategy[0], "Best")) {
-        rebmvnorm->EM_strategy_ = strategy_Best;
+    if (!strcmp(EMStrategy[0], "best")) {
+        rebmvnorm->EM_strategy_ = strategy_best;
     }
     else
-    if (!strcmp(EMStrategy[0], "Single")) {
-        rebmvnorm->EM_strategy_ = strategy_Single;
+    if (!strcmp(EMStrategy[0], "single")) {
+        rebmvnorm->EM_strategy_ = strategy_single;
     }
     else{
-        rebmvnorm->EM_strategy_ = strategy_None;
+        rebmvnorm->EM_strategy_ = strategy_none;
     }
 
     if (!strcmp(EMVariant[0], "EM")) {
@@ -382,28 +382,28 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
         rebmvnorm->EM_variant_ = varECM;
     }
     else{
-        if (rebmvnorm->EM_strategy_ != strategy_None) {
+        if (rebmvnorm->EM_strategy_ != strategy_none) {
             *Error = 1; goto E0;
         }
         rebmvnorm->EM_variant_ = varEM;
     }
 
-    if (!strcmp(EMAcceleration[0], "Fixed")) {
-        rebmvnorm->EM_accel_ = accFIXED;
+    if (!strcmp(EMAcceleration[0], "fixed")) {
+        rebmvnorm->EM_accel_ = acc_fixed;
     }
     else
-    if (!strcmp(EMAcceleration[0], "Line")) {
-        rebmvnorm->EM_accel_ = accLINE;
+    if (!strcmp(EMAcceleration[0], "line")) {
+        rebmvnorm->EM_accel_ = acc_line;
     }
     else
-    if (!strcmp(EMAcceleration[0], "Golden")) {
-        rebmvnorm->EM_accel_ = accGOLDEN;
+    if (!strcmp(EMAcceleration[0], "golden")) {
+        rebmvnorm->EM_accel_ = acc_golden;
     }
     else{
-        if (rebmvnorm->EM_strategy_ != strategy_None) {
+        if (rebmvnorm->EM_strategy_ != strategy_none) {
             *Error = 1; goto E0;
         }
-        rebmvnorm->EM_accel_ = accFIXED;
+        rebmvnorm->EM_accel_ = acc_fixed;
     }
 
     rebmvnorm->EM_TOL_ = *EMTolerance;

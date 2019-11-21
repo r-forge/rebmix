@@ -441,19 +441,19 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
 
 /// Panic Branislav.
 
-    if (!strcmp(EMStrategy[0], "Exhaustive")) {
-        rebmix->EM_strategy_ = strategy_Exhaustive;
+    if (!strcmp(EMStrategy[0], "exhaustive")) {
+        rebmix->EM_strategy_ = strategy_exhaustive;
     }
     else
-    if (!strcmp(EMStrategy[0], "Best")) {
-        rebmix->EM_strategy_ = strategy_Best;
+    if (!strcmp(EMStrategy[0], "best")) {
+        rebmix->EM_strategy_ = strategy_best;
     }
     else
-    if (!strcmp(EMStrategy[0], "Single")) {
-        rebmix->EM_strategy_ = strategy_Single;
+    if (!strcmp(EMStrategy[0], "single")) {
+        rebmix->EM_strategy_ = strategy_single;
     }
     else{
-        rebmix->EM_strategy_ = strategy_None;
+        rebmix->EM_strategy_ = strategy_none;
     }
 
     if (!strcmp(EMVariant[0], "EM")) {
@@ -464,30 +464,30 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
         rebmix->EM_variant_ = varECM;
     }
     else {
-        if (rebmix->EM_strategy_ != strategy_None) {
+        if (rebmix->EM_strategy_ != strategy_none) {
             *Error = 1; goto E0;
         }
 
         rebmix->EM_variant_ = varEM;
     }
 
-    if (!strcmp(EMAcceleration[0], "Fixed")) {
-        rebmix->EM_accel_ = accFIXED;
+    if (!strcmp(EMAcceleration[0], "fixed")) {
+        rebmix->EM_accel_ = acc_fixed;
     }
     else
-    if (!strcmp(EMAcceleration[0], "Line")) {
-        rebmix->EM_accel_ = accLINE;
+    if (!strcmp(EMAcceleration[0], "line")) {
+        rebmix->EM_accel_ = acc_line;
     }
     else
-    if (!strcmp(EMAcceleration[0], "Golden")) {
-        rebmix->EM_accel_ = accGOLDEN;
+    if (!strcmp(EMAcceleration[0], "golden")) {
+        rebmix->EM_accel_ = acc_golden;
     }
     else {
-        if (rebmix->EM_strategy_ != strategy_None) {
+        if (rebmix->EM_strategy_ != strategy_none) {
             *Error = 1; goto E0;
         }
 
-        rebmix->EM_accel_ = accFIXED;
+        rebmix->EM_accel_ = acc_fixed;
     }
 
     rebmix->EM_TOL_ = *EMTolerance;

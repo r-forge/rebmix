@@ -38,7 +38,7 @@ Em::Em()
     
     Initialized_ = 0;
     
-    acceleration_t_ = accFIXED;
+    acceleration_t_ = acc_fixed;
     
     variant_t_ = varEM;
     
@@ -101,7 +101,7 @@ int Em::Initialize(int C,                              // Number of components.
     if (C == 1) {
         ar_ = (FLOAT)1.0;
         
-        acceleration_t_ = accFIXED;
+        acceleration_t_ = acc_fixed;
         
         variant_t_ = varEM;
     }
@@ -293,19 +293,20 @@ int Em::UpdateMixtureParameters(int                  c,           // Number of c
 {
     int i, ii, jj;
     int Error = 0;
+    
     for (i = 0; i < c; i++) {
         W[i] += ar * dW[i];
 
-        Error = W[i] <= (FLOAT)0.0; if (Error) return Error;
+        if (W[i] < (FLOAT)0.0) W[i] = (FLOAT)0.0;
 
         for (ii = 0; ii < MixTheta[i]->length_pdf_; ii++) {
             MixTheta[i]->Theta_[0][ii] += ar * dMixTheta[i]->Theta_[0][ii];
 
             MixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + ii] += ar * dMixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + ii];
 
-            Error = MixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + ii] <= (FLOAT)0.0;
-
-            if (Error) return Error;
+            if (MixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + ii] < Eps) {
+                MixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + ii] = Eps;
+            }
 
             for (jj = 0; jj < ii; jj++) {
                 MixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + jj] += ar * dMixTheta[i]->Theta_[1][ii * MixTheta[i]->length_pdf_ + jj];
@@ -598,13 +599,13 @@ int Em::MaximizationStep(FLOAT                **Y,        // Pointer to the inpu
 
         dW_[j] = (TmpWeightVal - W_[j]);
     }
-    if (acceleration_t_ == accGOLDEN) {
+    if (acceleration_t_ == acc_golden) {
         Error = GoldenRatioSearch(Y, N, c, W, MixTheta, dW_, dMixTheta_, &ar_opt); if (Error) ar_opt = (FLOAT)1.0;
     } else
-    if (acceleration_t_ == accLINE) {
+    if (acceleration_t_ == acc_line) {
         Error = LineSearch(Y, N, c, W, MixTheta, dW_, dMixTheta_, &ar_opt); if (Error) ar_opt = (FLOAT)1.0;
     } else
-    if (acceleration_t_ == accFIXED) {
+    if (acceleration_t_ == acc_fixed) {
         ar_opt = ar_;
     } else {
         ar_opt = (FLOAT)1.0;
@@ -911,13 +912,13 @@ int GaussianDiagMixture::MaximizationStep(FLOAT                   **Y,     // Po
         dW_[j] = (TmpWeightVal - W_[j]);
     }
 
-    if (acceleration_t_ == accGOLDEN) {
+    if (acceleration_t_ == acc_golden) {
         Error = GoldenRatioSearch(Y, N, c, W, MixTheta, dW_, dMixTheta_, &ar_opt); if (Error) ar_opt = (FLOAT)1.0;
     } else
-    if (acceleration_t_ == accLINE) {
+    if (acceleration_t_ == acc_line) {
         Error = LineSearch(Y, N, c, W, MixTheta, dW_, dMixTheta_, &ar_opt); if (Error) ar_opt = (FLOAT)1.0;
     } else
-    if (acceleration_t_ == accFIXED) {
+    if (acceleration_t_ == acc_fixed) {
         ar_opt = ar_;
     } else {
         ar_opt = (FLOAT)1.0;
