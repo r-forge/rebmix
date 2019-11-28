@@ -9,7 +9,8 @@ Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor 
 \code{a.Preprocessing(x = NULL)}, \code{a.cmax(x = NULL)}, \code{a.cmin(x = NULL)}, \code{a.Criterion(x = NULL)}, \code{a.Variables(x = NULL)},
 \code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)},
 \code{a.ymax(x = NULL)}, \cr 
-\code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())}, \code{a.pos(x = NULL)},
+\code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())},
+\code{a.summary.EM(x = NULL, pos = 0, col.name = character())}, \code{a.pos(x = NULL)},
 \code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
 \code{a.theta1.all(x = NULL, pos = 1)} and \code{a.theta2.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
 a desired slot item and a desired column name, respectively.
@@ -84,9 +85,12 @@ Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_
 \item{\code{summary}:}{
 a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, \eqn{c_{\mathrm{min}}}, information criterion type,
 \eqn{a_{\mathrm{r}}}, restraints type, optimal \eqn{c}, optimal \eqn{v} or \eqn{k}, \eqn{K}, \eqn{y_{i0}}, \eqn{y_{i\mathrm{min}}}, \eqn{y_{i\mathrm{max}}}, optimal \eqn{h_{i}},
-information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L}, degrees of freedom \eqn{M}, strategy for the EM algorithm \code{EMStrategy},
-variant of the EM algorithm \code{EMVariant}, acceleration type \code{EMAcceleration.type}, tolerance \code{EMTolerance.value}, acceleration multilplier \code{EMAcceleration.value},
-maximum allowed number of iterations \code{EMMax.iter.value}, number of iterations used for obtaining optimal solution \code{EMNum.iter.opt} and total number of iterations of the EM algorithm \code{EMNum.iter.total}.
+information criterion \eqn{\mathrm{IC}}, log likelihood \eqn{\mathrm{log}\, L} and degrees of freedom \eqn{M}.
+}
+\item{\code{summary.EM}:}{
+a data frame with additional information about dataset, strategy for the EM algorithm \code{strategy},
+variant of the EM algorithm \code{variant}, acceleration type \code{acceleration}, tolerance \code{tolerance}, acceleration multilplier \code{acceleration.multiplier},
+maximum allowed number of iterations \code{maximum.iterations}, number of iterations used for obtaining optimal solution \code{opt.iterations.nbr} and total number of iterations of the EM algorithm \code{total.iterations.nbr}.
 }
 \item{\code{pos}:}{
 position in the \code{summary} data frame at which log likelihood \eqn{\mathrm{log}\, L} attains its maximum.

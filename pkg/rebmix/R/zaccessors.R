@@ -789,6 +789,46 @@ function(x, pos, col.name)
   output
 }) ## a.summary
 
+### Panic Branislav.
+
+setMethod("a.summary.EM",
+          signature(x = "REBMIX"),
+function(x, pos, col.name)
+{
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+
+  length(pos) <- 1
+  
+  if ((pos < 1) || (pos > nrow(x@summary.EM))) {
+    output <- x@summary.EM
+  }
+  else {
+    output <- x@summary.EM[pos, ]
+  }
+
+  if (!missing(col.name) && (length(col.name) > 0)) {
+    if (!is.character(col.name)) {
+      stop(sQuote("col.name"), " character is requested!", call. = FALSE)
+    }
+
+    col.name <- match.arg(col.name, colnames(output), several.ok = FALSE)
+
+    output <- output[, col.name]
+
+    if (is.number(output) == TRUE) {
+      output <- as.numeric(output)
+    }
+  }
+
+  rm(list = ls()[!(ls() %in% c("output"))])
+
+  output
+}) ## a.summary.EM
+
+### End
+
 setMethod("a.pos", signature(x = "REBMIX"), function(x) x@pos)
 setMethod("a.opt.c", signature(x = "REBMIX"), function(x) x@opt.c)
 setMethod("a.opt.IC", signature(x = "REBMIX"), function(x) x@opt.IC)

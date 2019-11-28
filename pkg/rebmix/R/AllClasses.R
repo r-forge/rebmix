@@ -550,6 +550,9 @@ slots = c(Dataset = "list",
   w = "list",
   Theta = "list",
   summary = "ANY",
+### Panic Branislav.   
+  summary.EM = "ANY",
+### End   
   pos = "numeric",
   opt.c = "list",
   opt.IC = "list",

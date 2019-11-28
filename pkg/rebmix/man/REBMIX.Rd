@@ -19,7 +19,7 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
        cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
        theta1 = numeric(),theta2 = numeric(), K = "auto", y0 = numeric(), 
        ymin = numeric(), ymax = numeric(), ar = 0.1, Restraints = "loose", 
-       EMcontrol = EM.Control(strategy = "none"), ...)
+       EMcontrol = NULL, ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
 ## ... and for other signatures
@@ -193,8 +193,8 @@ irisest <- REBMIX(model="REBMVNORM",
 
 irisest
 
-# Print total number of EM iterations used in Ehxaustive strategy from summary slot.
+# Print total number of EM iterations used in Ehxaustive strategy from summary.EM slot.
 
-a.summary(irisest, pos = 1, col.name = "EMNum.iter.total")
+a.summary.EM(irisest, pos = 1, col.name = "total.iterations.nbr")
 }
 \keyword{parameter estimation}

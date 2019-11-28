@@ -21,7 +21,7 @@ a character containing the type of the EM algorithm to be used. One of \code{"EM
 a character containing the type of acceleration of the EM iteration increment. One of \code{"fixed"}, \code{"line"} or \code{"golden"}. The default value is \code{"fixed"}.
 }
 \item{\code{tolerence}:}{
-tolerance value for the EM convergence criteria. The default value is 1e-4
+tolerance value for the EM convergence criteria. The default value is 1e-4.
 }
 \item{\code{acceleration.multiplier}:}{
 acceleration.multiplier \eqn{a_{\mathrm{EM}}}, \eqn{1.0 \leq a_{\mathrm{EM}} \leq 2.0}. acceleration.multiplier for the EM step increment. The default value is 1.0.

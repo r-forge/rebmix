@@ -54,6 +54,9 @@ extern void RCombineComponentsMVNORM(void *, void *, void *, void *, void *, voi
 extern void RvonMisesPdf(void *, void *, void *, void *, void *);
 extern void RvonMisesCdf(void *, void *, void *, void *, void *);
 
+extern void RGumbelPdf(void *, void *, void *, void *, void *);
+extern void RGumbelCdf(void *, void *, void *, void *, void *);
+
 static const R_CMethodDef CMethods[] = {
 	{"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
 	{"RREBMIX", (DL_FUNC) &RREBMIX, 52},
@@ -85,6 +88,8 @@ static const R_CMethodDef CMethods[] = {
 	{"RCombineComponentsMVNORM", (DL_FUNC) &RCombineComponentsMVNORM, 15},
 	{"RvonMisesPdf", (DL_FUNC) &RvonMisesPdf, 5},
 	{"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
+	{"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 5},
+	{"RGumbelCdf", (DL_FUNC) &RGumbelCdf, 5},
     {NULL, NULL, 0}
 };
 

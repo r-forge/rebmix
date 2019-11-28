@@ -7,7 +7,8 @@
 \item Method \code{RCLSMIX} is improved.
 \item Method \code{plot} is improved.
 \item Continuous parametric family \code{"Gumbel"} is added.  
-\item ...
+\item EM algorithm is added to the C++ code for the improved estimation of the Gaussian mixture model parameters.
+\item Class \code{EM.Control} is added for EM algorithm control parameters handling.
 }
 }
 \section{Changes in version 2.10.3}{ 

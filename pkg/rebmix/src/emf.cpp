@@ -768,12 +768,12 @@ int Em::ECM(FLOAT  **Y, // Pointer to the input points [y0,...,yd-1].
 E0:
     if (P != NULL) { 
         for (i = 0; i < N; i++) {
-             if (P[i] != NULL) {
+            if (P[i] != NULL) {
                 free(P[i]); 
             }
-            
-            free(P);
         }
+        
+        free(P);
     }
 
     return Error;

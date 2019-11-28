@@ -24,7 +24,7 @@
 %\VignettePackage{rebmix}
 \bibliographystyle{abbrvnat}
 \title{\pkg{rebmix}: Finite Mixture Modeling, Clustering \& Classification}
-\author{Marko Nagode}
+\author{Marko Nagode \& Branislav Pani\'{c}}
 \date{\today}
 \maketitle
 
@@ -35,8 +35,30 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload also \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.10.3}}
-Methods \texttt{Zp} and \texttt{coef} are replaced by \texttt{a.Zp}, \texttt{a.theta1.all} and \texttt{a.theta2.all} getters. All slots can now be accessed via accessors. Their names are  generally composed of \texttt{a.} followed by the slot name and are used to read the slots. Class \texttt{"RNGMIX.Theta"} is added to simplify random finite mixture model generation. Method \texttt{show} is added for \texttt{"RCLS.chunk"} class. Minimum number of component \texttt{cmin} is added to \texttt{REBMIX} arguments and to the \texttt{"REBMIX"} class.  The \texttt{"Parzen window"} preprocessing is renamed to more well known \texttt{"kernel density estimation"}. Rough parameter estimation for binomial and Poisson parametric families is improved. The package is broadened to latent class analysis in version 2.10.3, too. Method \texttt{split} is improved and examples for its proper use are added. GCC 8.1 notes and warnings in C++ functions are eliminated in version 2.10.2, too. Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention is paid to resolving numerical problems related to high dimensional datasets. Version 2.10.1 is the further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
+\section{What's new in version \texttt{2.11.0}}
+
+Version \texttt{2.11.0} introduces the Expectation-Maximization (EM) algorithm for the improved estimation of the Gaussian Mixture model parameters (with diagonal and unrestriced covariance matrices). Here REBMIX algorithm is used to asses the initial parameters for EM algorithm. Two different variants of EM algorithm are implemented, namely original EM from \citep{Dempster_1977} and k-means like variant of EM (Classification EM) described in \citep{Celeux_1992}. Additionally, due to the fact that REBMIX algorithm estimates wide range of parameters of Gaussian mixture model for different number of components three different strategies, named \textbf{exhaustive}, \textbf{best} and \textbf{single} are implemented. \textbf{exhaustive} strategy is used to run the EM algorithm (or variant) on each solution of Gaussian mixture model parameters provided by the REBMIX algorithm. \textbf{best} strategy utiizies voting scheme for estimated parameters from REBMIX algorithm and runs the EM algorithm on only selected optimal ones. Best candidates are chosen based on value of likelihood function (the highest one) for each number of components $c$ from minimum specified \texttt{cmin} to maximum specified \texttt{cmax}. \textbf{single} strategy is useful when the single value of, for example, number of bins in histogram preprocessing is supplied as input for REBMIX algorithm. Otherwise, when multiple numbers of bins $k$ are supplied this strategy is same as \textbf{exhaustive}. To tackle the slow linear convergence of EM, simple acceleration methods are implemented which can be controled through parameters \texttt{acceleration} and \texttt{acceleration.multiplier}. Increment of EM algorithm in each iterations can be written as:
+
+\begin{equation}
+\varDelta\boldsymbol{\Theta} = \boldsymbol{\Theta}^{(i+1)} - \boldsymbol{\Theta}^{(i)}
+\end{equation}
+
+Insted of using standard EM increment $\varDelta\boldsymbol{\Theta}$ to reduce the number of iterations need for EM algorithm this increment can be multiplied with some multiplier $a_{\textmd{EM}}$ which is reffered to as acceleration.multiplier. Therefore update in each EM iteration now becomes:
+
+\begin{equation}
+\boldsymbol{\Theta}^{i+1} = \boldsymbol{\Theta}^{(i)} + a_{\textmd{EM}}\varDelta\boldsymbol{\Theta}
+\end{equation}
+
+Safe range for the $a_{\textmd{EM}}$ multiplier lies between 1.0 and 2.0, where 1.0 gives standard EM increment and 2.0 doubles the EM increment, yet this does not indicate that the multiplication of value 2.0 will double the speed of EM algorithm (reduce the needed number of iterations by 2). Here, 1.5 is the safe value which mostly speeds the EM algorithm while preserves the good results of the estimated parameters. Value of 1.9 can significantly speed up the estimation process, yet it can also detoriate results of estimated parameters. Therefore, the value of multiplicator needs to be set carefully. This value is set with \texttt{acceleration.multiplier} parameter. Other parameter \texttt{acceleration} controls how the $a_{\textmd{EM}}$ is handled and can be one of \textbf{fixed}, \textbf{line} and \textbf{golden}. \textbf{fixed} represent that the $a_{\textmd{EM}}$ is specified through the \texttt{acceleration.multiplier} parameter and each iteration of the EM algorithm the increment is incresed for the specified value of $a_{\textmd{EM}}$. \textbf{line} and \textbf{golden} performs the, respectively, line and golden search for the optimal value of $a_{\textmd{EM}}$ for which the highest increase in likelihood function of each EM iteration is achieved.
+
+EM handling is made with new introduced class \texttt{"EM.Control"}. Classes \texttt{"REBMIX"} and \texttt{"REBMVNORM"} and its signature method \texttt{REBMIX} now accept the \texttt{"EM.Control"} object through argument called \texttt{"EMcontrol"}. Class \texttt{EM.Control} has the same name convection for slots as the input argument \texttt{EMcontrol} (\texttt{strategy}, \texttt{variant}, \texttt{acceleration}, \texttt{tolerance}, \texttt{acceleration.multiplier} and \texttt{maximum.iterations}) aswell as all accessor functions with the same name convection as \texttt{a.\textit{slot name}} and setter function \texttt{a.\textit{slot name}<-}. Additionally, the accessor \texttt{a.as.list} is created for transforming the object \texttt{EM.Control} to a named list suitable for input argument for method \texttt{REBMIX}.
+
+\section{Previous versions}
+Methods \texttt{Zp} and \texttt{coef} are replaced by \texttt{a.Zp}, \texttt{a.theta1.all} and \texttt{a.theta2.all} getters. All slots can now be accessed via accessors. Their names are  generally composed of \texttt{a.} followed by the slot name and are used to read the slots. Class \texttt{"RNGMIX.Theta"} is added to simplify random finite mixture model generation. Method \texttt{show} is added for \texttt{"RCLS.chunk"} class. Minimum number of component \texttt{cmin} is added to \texttt{REBMIX} arguments and to the \texttt{"REBMIX"} class.  The \texttt{"Parzen window"} preprocessing is renamed to more well known \texttt{"kernel density estimation"}. Rough parameter estimation for binomial and Poisson parametric families is improved. The package is broadened to latent class analysis in version 2.10.3, too. Method \texttt{split} is improved and examples for its proper use are added.
+
+GCC 8.1 notes and warnings in C++ functions are eliminated in version 2.10.2, too. Cholesky decomposition is now used to calculate logarithm of determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention is paid to resolving numerical problems related to high dimensional datasets.
+
+Version 2.10.1 is the further debugged version 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
 \begin{equation}
 v_{\mathrm{max}} = \frac{1 + d}{d} n^\frac{d}{1 + d}.
 \end{equation}
@@ -48,7 +70,7 @@ is calculated. Acceleration rate $a_{\mathrm{r}}$ at $I_{2} = 1$ always equals t
 \begin{equation}
 a_{\mathrm{r}} = \left. \frac{1}{A (D_{l} w_{l} - D_{\mathrm{min}}) + 1} \right|_{I_{2} > 1}.
 \end{equation}
-The Newton-Raphson root finding in C++ functions is improved in version 2.9.3, too. This affects only Weibull, gamma and von Mises parametric families. Circular von Mises parametric family is added and further debugging is done in version 2.9.2. Version 2.9.1 is further debugged version 2.8.4. The R code is extended and rewritten in S4 class system. The background C code is extended and rewritten as object-oriented C++ code, too. The package can easier be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices are added. Clustering is added and classification is improved.
+The Newton-Raphson root finding in C\texttt{++} functions is improved in version 2.9.3, too. This affects only Weibull, gamma and von Mises parametric families. Circular von Mises parametric family is added and further debugging is done in version 2.9.2. Version 2.9.1 is further debugged version 2.8.4. The R code is extended and rewritten in S4 class system. The background C code is extended and rewritten as object-oriented C\texttt{++} code, too. The package can easier be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices are added. Clustering is added and classification is improved.
 
 \section{Examples}
 To illustrate the use of the REBMIX algorithm, univariate and multivariate datasets are considered. The \pkg{rebmix} is loaded and the prompt before starting new page is set to \texttt{TRUE}.
@@ -142,7 +164,7 @@ gamma3 <- RNGMIX(Dataset.name = "gamma3", rseed = -4, n = n, Theta = a.Theta(The
 gamma1est <- REBMIX(Dataset = a.Dataset(gamma1),
   Preprocessing = "kernel density estimation",
   cmax = 8,
-  Criterion = c("AIC", "BIC"),
+  Criterion = "BIC",
   pdf = "gamma")
 
 gamma2est <- REBMIX(Dataset = a.Dataset(gamma2),
@@ -171,9 +193,9 @@ plot(gamma3est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(gamma2est)
 
-a.theta1.all(gamma1est, pos = 2)
+a.theta1.all(gamma1est, pos = 1)
 
-a.theta2.all(gamma1est, pos = 2)
+a.theta2.all(gamma1est, pos = 1)
 @
 
 \subsubsection{Bootstrap methods}
@@ -286,7 +308,7 @@ plot(wreathest)
 
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
 plot(wreathclu, s = 14)
@@ -310,28 +332,83 @@ A \texttt{ex4.1} dataset \citep{Baudry_2010, mclust_20__} consist of $600$ two~d
 data("Baudry_etal_2010_JCGS_examples", package = "mclust")
 @
 
-\subsubsection{Finite mixture estimation}
+\subsubsection{Finite mixture estimation using exhaustive REBMIX\&EM strategy}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
-ex4.1est <- REBMIX(model = "REBMVNORM",
+## Create the EM.Control object to utilize one of the REBMIX&EM strategies
+
+EM <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est.dens <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
-  Preprocessing = "kernel density estimation",
+  Preprocessing = "histogram",
   cmax = 10,
-  Criterion = "AIC")
+  Criterion = "AIC",
+  EMcontrol = EM)
 @
 
 \subsubsection{Plot method}
 \begin{figure}[h]\centering
-<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
+<<ex4_1_dens-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(ex4.1est.dens, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 
 \subsubsection{Clustering}
 \begin{figure}[h]\centering
-<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<ex4_1_dens-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+ex4.1clu.dens <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est.dens)
+
+plot(ex4.1clu.dens)
+@
+\caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
+\end{figure}
+
+\subsubsection{Summary method}
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+summary(ex4.1est.dens)
+@
+
+\subsubsection{Clustering with exhaustive REBMIX\&ECM strategy and ICL criterion}
+
+<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
+## Estimate number of components, component weights and component parameters.
+
+## Create the EM.Control object to utilize one of the REBMIX&EM strategies
+
+CEM <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "ECM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est <- REBMIX(model = "REBMVNORM",
+  Dataset = list(as.data.frame(ex4.1)),
+  Preprocessing = "histogram",
+  cmax = 10,
+  Criterion = "ICL",
+  EMcontrol = CEM)
+@
+
+\begin{figure}[h]\centering
+<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
+@
+\caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
+\end{figure}
+
+\begin{figure}[h]\centering
+<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 2.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
 
 plot(ex4.1clu)
@@ -339,9 +416,106 @@ plot(ex4.1clu)
 \caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
 \end{figure}
 
-\subsubsection{Summary method}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(ex4.1est)
+@
+
+\subsubsection{Acceleration of EM algorithm}
+
+Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.0$:
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+## Estimate number of components, component weights and component parameters.
+
+## Create the EM.Control object to utilize one of the REBMIX&EM strategies
+
+EM.normal <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est.em.normal <- REBMIX(model = "REBMVNORM",
+  Dataset = list(as.data.frame(ex4.1)),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "AIC",
+  EMcontrol = EM.normal)
+
+cat("Total number of EM algorithm iterations: ",
+  a.summary.EM(ex4.1est.em.normal, pos=1, col.name = "total.iterations.nbr"),
+  ". Value of AIC: ", a.summary(ex4.1est.em.normal, pos = 1, col.name = "IC"))
+@
+
+Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.5$::
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+EM.fixed1.5 <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.5,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est.em.fixed1.5 <- REBMIX(model = "REBMVNORM",
+  Dataset = list(as.data.frame(ex4.1)),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "AIC",
+  EMcontrol = EM.fixed1.5)
+
+cat("Total number of EM algorithm iterations: ",
+  a.summary.EM(ex4.1est.em.fixed1.5, pos=1, col.name = "total.iterations.nbr"),
+  ". Value of AIC: ", a.summary(ex4.1est.em.fixed1.5, pos = 1, col.name = "IC"))
+@
+
+Standard EM algorithm with line search for optimal increment $a_{\texttt{EM}}$ in each iteration:
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+EM.line <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "line",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est.em.line <- REBMIX(model = "REBMVNORM",
+  Dataset = list(as.data.frame(ex4.1)),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "AIC",
+  EMcontrol = EM.line)
+
+cat("Total number of EM algorithm iterations: ",
+  a.summary.EM(ex4.1est.em.line, pos=1, col.name = "total.iterations.nbr"),
+  ". Value of AIC: ", a.summary(ex4.1est.em.line, pos = 1, col.name = "IC"))
+@
+
+Standard EM algorithm with golden search for optimal increment $a_{\texttt{EM}}$ in each iteration:
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+EM.golden <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "golden",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000)
+
+ex4.1est.em.golden <- REBMIX(model = "REBMVNORM",
+  Dataset = list(as.data.frame(ex4.1)),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "AIC",
+  EMcontrol = EM.golden)
+
+cat("Total number of EM algorithm iterations: ",
+  a.summary.EM(ex4.1est.em.golden, pos=1, col.name = "total.iterations.nbr"),
+  ". Value of AIC: ", a.summary(ex4.1est.em.golden, pos = 1, col.name = "IC"))
 @
 
 \subsection{Multivariate \texttt{iris} dataset}
@@ -479,9 +653,6 @@ rm(list = ls())
 
 \section{Summary}\label{sec:summary}
 The users of the \texttt{rebmix} package are kindly encouraged to inform the author about bugs and wishes.
-
-\section{Acknowledgement}\label{sec:acknowledgement}
-The author thanks Branislav Pani\'{c} for his contribution to the \citet{Velleman_1976} rule extension to multidimensions and for his other valuable suggestions on the package from version 2.9.0 on.
 
 \bibliography{rebmix}
 \vspace{\baselineskip}\noindent\emph{Marko Nagode\\

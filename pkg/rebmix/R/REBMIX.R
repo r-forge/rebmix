@@ -4,6 +4,12 @@ function(model, ...)
 {
   summary <- list()
 
+### Panic Branislav.
+
+  summary.EM <- list()
+
+### End  
+
   for (i in 1:length(model@Dataset)) {
     Dataset.name <- names(model@Dataset)[i]
 
@@ -188,17 +194,7 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.        
-        output$EMStrategy,
-        output$EMVariant,
-        output$EMAcceleration,
-        output$EMAccelerationMul,
-        output$EMTolerance,
-        output$EMMaxIter,
-        output$n_iter,
-        output$n_iter_all)
-### End        
+        output$summary.M)
     }
     else
     if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -218,17 +214,7 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.
-        output$EMStrategy,
-        output$EMVariant,
-        output$EMAcceleration,
-        output$EMAccelerationMul,
-        output$EMTolerance,
-        output$EMMaxIter,
-        output$n_iter,
-        output$n_iter_all)
-### End        
+        output$summary.M)
     }
     if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
@@ -247,18 +233,22 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.        
-        output$EMStrategy,
-        output$EMVariant,
-        output$EMAcceleration,
-        output$EMAccelerationMul,
-        output$EMTolerance,
-        output$EMMaxIter,
-        output$n_iter,
-        output$n_iter_all)
-### End        
+        output$summary.M)
     }
+    
+### Panic Branislav.
+
+    summary.EM[[i]] <- c(Dataset.name,
+      output$EMStrategy,
+      output$EMVariant,
+      output$EMAcceleration,
+      output$EMAccelerationMul,
+      output$EMTolerance,
+      output$EMMaxIter,
+      output$n_iter,
+      output$n_iter_all)
+
+### End     
 
     model@opt.c[[i]] <- output$opt.c
     model@opt.IC[[i]] <- output$opt.IC
@@ -269,6 +259,12 @@ function(model, ...)
   }
 
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
+  
+### Panic Branislav.
+
+  model@summary.EM <- as.data.frame(do.call("rbind", summary.EM), stringsAsFactors = FALSE)
+  
+### End  
 
   colnames(model@summary) <- c("Dataset",
     "Preprocessing",
@@ -286,17 +282,21 @@ function(model, ...)
     paste("h", if (d > 1) 1:d else "", sep = ""),
     "IC",
     "logL",
-    "M",
-### Panic Branislav.      
-    "EMStrategy",
-    "EMVariant",
-    "EMAcceleration.type",
-    "EMAcceleration.value",
-    "EMTolerance.value",
-    "EMMax.iter.value",
-    "EMNum.iter.opt",
-    "EMNum.iter.total")
-### End    
+    "M")
+    
+### Panic Branislav.
+
+  colnames(model@summary.EM) <- c("Dataset",
+    "strategy",
+    "variant",
+    "acceleration",
+    "acceleration.multiplier",
+    "tolerance",
+    "maximum.iterations",
+    "opt.iterations.nbr",
+    "total.iterations.nbr")
+    
+### End   
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -308,6 +308,12 @@ setMethod("REBMIX",
 function(model, ...)
 {
   summary <- list()
+  
+### Panic Branislav.
+
+  summary.EM <- list()
+  
+### End  
 
   for (i in 1:length(model@Dataset)) {
     Dataset.name <- names(model@Dataset)[i]
@@ -493,17 +499,7 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.
-        output$EMStrategy,
-        output$EMVariant,
-        output$EMAcceleration,
-        output$EMAccelerationMul,
-        output$EMTolerance,
-        output$EMMaxIter,
-        output$n_iter,
-        output$n_iter_all)
-### End         
+        output$summary.M)
     }
     else
     if (Preprocessing == .rebmix$Preprocessing[2]) {
@@ -523,17 +519,7 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.        
-        output$EMStrategy,
-        output$EMVariant,
-        output$EMAcceleration,
-        output$EMAccelerationMul,
-        output$EMTolerance,
-        output$EMMaxIter,
-        output$n_iter,
-        output$n_iter_all)
-### End         
+        output$summary.M)
     }
     if (Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
@@ -552,8 +538,12 @@ function(model, ...)
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M,
-### Panic Branislav.        
+        output$summary.M)
+    }
+    
+### Panic Branislav.
+
+    summary.EM[[i]] <- c(Dataset.name,
         output$EMStrategy,
         output$EMVariant,
         output$EMAcceleration,
@@ -562,8 +552,8 @@ function(model, ...)
         output$EMMaxIter,
         output$n_iter,
         output$n_iter_all)
-### End         
-    }
+        
+### End    
 
     model@opt.c[[i]] <- output$opt.c
     model@opt.IC[[i]] <- output$opt.IC
@@ -574,6 +564,12 @@ function(model, ...)
   }
 
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
+  
+### Panic Branislav.
+
+  model@summary.EM <- as.data.frame(do.call("rbind", summary.EM), stringsAsFactors = FALSE)
+  
+### End  
 
   colnames(model@summary) <- c("Dataset",
     "Preprocessing",
@@ -591,17 +587,21 @@ function(model, ...)
     paste("h", if (d > 1) 1:d else "", sep = ""),
     "IC",
     "logL",
-    "M",
-### Panic Branislav.    
-    "EMStrategy",
-    "EMVariant",
-    "EMAcceleration.type",
-    "EMAcceleration.value",
-    "EMTolerance.value",
-    "EMMax.iter.value",
-    "EMNum.iter.opt",
-    "EMNum.iter.total")
-### End    
+    "M")
+    
+### Panic Branislav.
+
+  colnames(model@summary.EM) <- c("Dataset",
+    "strategy",
+    "variant",
+    "acceleration",
+    "acceleration.multiplier",
+    "tolerance",
+    "maximum.iterations",
+    "opt.iterations.nbr",
+    "total.iterations.nbr")
+    
+### End       
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -667,6 +667,17 @@ function(model,
   else {
     model@summary <- merge(model@summary, output@summary, all = TRUE, sort = FALSE)
   }
+  
+### Panic Branislav.  
+  
+  if (is.null(model@summary.EM)) {
+    model@summary.EM <- output@summary.EM 
+  }
+  else {
+    model@summary.EM <- merge(model@summary.EM, output@summary.EM, all = TRUE, sort = FALSE)
+  }
+  
+### End    
 
   for (k in (1:length(Dataset))) {
     model@opt.c[[length(model@opt.c) + 1]] <- output@opt.c[[k]]

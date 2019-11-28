@@ -7038,6 +7038,18 @@ int Rebmix::WriteDataFile()
 
         fprintf(fp1, "\n");
     }
+    
+/// Panic Branislav.
+    fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", "strategy",
+                                                   "variant",
+                                                   "acceleration",
+                                                   "acceleration.multiplier",
+                                                   "tolerance",
+                                                   "maximum.iterations",
+                                                   "opt.number.iterations",
+                                                   "total.number.iterations");
+
+/// End    
 
     strcpy(path, curr_);
 
@@ -7197,6 +7209,61 @@ int Rebmix::WriteDataFile()
 
     fprintf(fp0, "\t%E\t%E\n", summary_.IC,
                                summary_.logL);
+
+/// Panic Branislav
+    
+    switch (EM_strategy_) {
+    case strategy_none:
+        fprintf(fp0, "\t%s", "none");
+        
+        break;
+    case strategy_exhaustive:
+        fprintf(fp0, "\t%s", "exhaustive");
+        
+        break;
+    case strategy_best:
+        fprintf(fp0, "\t%s", "best");
+        
+        break;
+    case strategy_single:
+        fprintf(fp0, "\t%s", "single");
+        
+        break;
+    }
+    
+    switch (EM_variant_) {
+    case varEM:
+        fprintf(fp0, "\t%s", "EM");
+        
+        break;
+    case varECM:
+        fprintf(fp0, "\t%s", "ECM");
+        
+        break;
+    }
+    
+    switch (EM_accel_) {
+    case acc_fixed:
+        fprintf(fp0, "\t%s", "fixed");
+        
+        break;
+    case acc_line:
+        fprintf(fp0, "\t%s", "line");
+        
+        break;
+    case acc_golden:
+        fprintf(fp0, "\t%s", "golden");
+        
+        break;
+    }
+    
+    fprintf(fp0, "\t%E\t%E\t%d\t%d\t%d", EM_ar_,
+                                         EM_TOL_,
+                                         EM_max_iter_,
+                                         n_iter_,
+                                         n_iter_sum_);
+    
+/// End
 
     for (i = 0; i < summary_.c; i++) {
         fprintf(fp1, "%s\t%E", path, W_[i]);
