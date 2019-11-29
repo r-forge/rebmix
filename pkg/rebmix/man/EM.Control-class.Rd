@@ -12,7 +12,7 @@ Objects can be created by calls of the form \code{new("EM.Control", ...)}. Acces
 \section{Slots}{
 \describe{
 \item{\code{strategy}:}{
-a character containing the EM and REBMIX strategy. One of \code{"none"}, \code{"exhaustive"}, \code{"best"} and \code{"single"}. The default value is \code{"none"}.  
+a character containing the EM and REBMIX strategy. One of \code{"none"}, \code{"exhaustive"}, \code{"best"} and \code{"single"}. The default value is \code{"none"}.
 }
 \item{\code{variant}:}{
 a character containing the type of the EM algorithm to be used. One of \code{"EM"} of \code{"ECM"}. The default value is \code{"EM"}.
@@ -20,7 +20,7 @@ a character containing the type of the EM algorithm to be used. One of \code{"EM
 \item{\code{acceleration}:}{
 a character containing the type of acceleration of the EM iteration increment. One of \code{"fixed"}, \code{"line"} or \code{"golden"}. The default value is \code{"fixed"}.
 }
-\item{\code{tolerence}:}{
+\item{\code{tolerance}:}{
 tolerance value for the EM convergence criteria. The default value is 1e-4.
 }
 \item{\code{acceleration.multiplier}:}{
@@ -33,7 +33,7 @@ maximum.iterations is positive integer containing the maximum allowed number of 
 }
 \author{Panic Branislav}
 \references{
-A. P. Dempster et al. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society. Series B, 39(1):1-38, 1977. 
+A. P. Dempster et al. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society. Series B, 39(1):1-38, 1977.
 \url{https://www.jstor.org/stable/2984875}.\cr\cr
 G. Celeux and G. Govaert. A classification EM algorithm for clustering and two stochastic versions, Computational Statistics & Data Analysis, 14(3):315:332, 1992.
 \url{https://doi.org/10.1016/0167-9473(92)90042-E}.

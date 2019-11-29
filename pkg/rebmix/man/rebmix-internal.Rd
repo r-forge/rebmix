@@ -294,13 +294,6 @@
 \alias{a.acceleration.multiplier}
 \alias{a.maximum.iterations}
 
-\alias{a.strategy,EM.Control-class}
-\alias{a.variant,EM.Control-class}
-\alias{a.acceleration,EM.Control-class}
-\alias{a.tolerance,EM.Control-class}
-\alias{a.acceleration.multiplier,EM.Control-class}
-\alias{a.maximum.iterations,EM.Control-class}
-
 \alias{a.strategy,EM.Control-method}
 \alias{a.variant,EM.Control-method}
 \alias{a.acceleration,EM.Control-method}
@@ -314,13 +307,6 @@
 \alias{a.tolerance<-}
 \alias{a.acceleration.multiplier<-}
 \alias{a.maximum.iterations<-}
-
-\alias{a.strategy<-,EM.Control-class}
-\alias{a.variant<-,EM.Control-class}
-\alias{a.acceleration<-,EM.Control-class}
-\alias{a.tolerance<-,EM.Control-class}
-\alias{a.acceleration.multiplier<-,EM.Control-class}
-\alias{a.maximum.iterations<-,EM.Control-class}
 
 \alias{a.strategy<-,EM.Control-method}
 \alias{a.variant<-,EM.Control-method}
