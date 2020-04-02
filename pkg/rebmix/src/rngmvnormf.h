@@ -9,7 +9,7 @@
 
 class Rngmvnorm : public Rngmix {
 public:
-    int InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y);
+    int InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y);
 }; // Rngmvnorm
 
 #endif

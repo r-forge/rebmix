@@ -162,21 +162,22 @@ E0:
 
 // Calculates the log component distribution for Gaussian mixture model with unrestricted covariance matrix. Return 0 on success, 1 otherwise.
 
-int Em::LogComponentDist(FLOAT                *Y,        // Pointer to the input point [y0,...,yd-1].
+int Em::LogComponentDist(int                  j,         // Indey of observation.  
+                         FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
                          CompnentDistribution *CmpTheta, // Component parameters.
                          FLOAT                *CmpDist)  // Component distribution value.
 {
-    FLOAT y, yi, yj;
-    int i, j;
+    FLOAT y, yi, yk;
+    int i, k;
     int Error = 0;
 
     y = (FLOAT)0.0;
 
     for (i = 0; i < CmpTheta->length_pdf_; i++) {
-        yi = Y[i] - CmpTheta->Theta_[0][i]; y += (FLOAT)0.5 * CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + i] * yi * yi;
+        yi = Y[i][j] - CmpTheta->Theta_[0][i]; y += (FLOAT)0.5 * CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + i] * yi * yi;
 
-        for (j = i + 1; j < CmpTheta->length_pdf_; j++) {
-            yj = Y[j] - CmpTheta->Theta_[0][j]; y += CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + j] * yi * yj;
+        for (k = i + 1; k < CmpTheta->length_pdf_; k++) {
+            yk = Y[k][j] - CmpTheta->Theta_[0][k]; y += CmpTheta->Theta_[2][i * CmpTheta->length_pdf_ + k] * yi * yk;
         }
     }
     
@@ -187,7 +188,8 @@ int Em::LogComponentDist(FLOAT                *Y,        // Pointer to the input
 
 // Calculates mixture distribution density probability value. Returns 0 on success, 1 otherwise.
 
-int Em::MixtureDist(FLOAT                *Y,         // Pointer to the input point [y0,...,yd-1].
+int Em::MixtureDist(int                  j,          // Indey of observation.  
+                    FLOAT                **Y,        // Pointer to the input array [y0,...,yd-1,...]
                     int                  c,          // Number of components.
                     FLOAT                *W,         // Component weights.
                     CompnentDistribution **MixTheta, // Mixture parameters.
@@ -200,7 +202,7 @@ int Em::MixtureDist(FLOAT                *Y,         // Pointer to the input poi
     *MixDist = (FLOAT)0.0;
 
     for (i = 0; i < c; i++) {
-        Error = LogComponentDist(Y, MixTheta[i], &CmpDist); if (Error) goto E0;
+        Error = LogComponentDist(j, Y, MixTheta[i], &CmpDist); if (Error) goto E0;
 
         *MixDist += W[i] * (FLOAT)exp(CmpDist);
     }
@@ -229,7 +231,7 @@ int Em::ExpectationStep(FLOAT                 **Y,        // Pointer to the inpu
         PostProb = (FLOAT)0.0;
 
         for (j = 0; j < c; j++) {
-            Error = LogComponentDist(Y[i], MixTheta[j], &CmpDist);
+            Error = LogComponentDist(i, Y, MixTheta[j], &CmpDist);
 
             if (Error) goto E0;
 
@@ -551,7 +553,7 @@ int Em::MaximizationStep(FLOAT                **Y,        // Pointer to the inpu
             TmpWeightVal += P[i][j];
             
             for (ii = 0; ii < MixTheta[j]->length_pdf_; ii++) {
-                TmpMeanVal = P[i][j] * Y[i][ii];
+                TmpMeanVal = P[i][j] * Y[ii][i];
                 
                 TmpMeanVec[ii] += TmpMeanVal; 
             }
@@ -565,12 +567,12 @@ int Em::MaximizationStep(FLOAT                **Y,        // Pointer to the inpu
         
         for (i = 0; i < N; i++) {
             for (ii = 0; ii < MixTheta[j]->length_pdf_; ii++) {
-                TmpCovVal = P[i][j] * (Y[i][ii] - TmpMeanVec[ii]) * (Y[i][ii] - TmpMeanVec[ii]);
+                TmpCovVal = P[i][j] * (Y[ii][i] - TmpMeanVec[ii]) * (Y[ii][i] - TmpMeanVec[ii]);
                 
                 TmpCovVec[ii * MixTheta[j]->length_pdf_ + ii] += TmpCovVal;
                 
                 for (jj = 0; jj < ii; jj++) {
-                    TmpCovVal = P[i][j] * (Y[i][ii] - TmpMeanVec[ii]) * (Y[i][jj] - TmpMeanVec[jj]);
+                    TmpCovVal = P[i][j] * (Y[ii][i] - TmpMeanVec[ii]) * (Y[jj][i] - TmpMeanVec[jj]);
                     
                     TmpCovVec[ii * MixTheta[j]->length_pdf_ + jj] += TmpCovVal;
                     
@@ -622,12 +624,12 @@ E0:
 
 // Calculates the log likelihood value of current mixture model parameters. Return 0 on success, 1 otherwise.
 
-int Em::LogLikelihood(FLOAT                   **Y,     // Pointer to the input points [y0,...,yd-1].
-                      int                   N,         // Len of data pointer.
+int Em::LogLikelihood(FLOAT                **Y,        // Pointer to the input points [y0,...,yd-1].
+                      int                  N,          // Len of data pointer.
                       int                  c,          // Number of components.
                       FLOAT                *W,         // Component weights.
                       CompnentDistribution **MixTheta, // Mixture parameters.
-                      FLOAT                   *LogL)   // Value of log likelihood.
+                      FLOAT                *LogL)      // Value of log likelihood.
 {
     int i, Error = 0;
     FLOAT MixDistVal = (FLOAT)0.0;
@@ -635,7 +637,7 @@ int Em::LogLikelihood(FLOAT                   **Y,     // Pointer to the input p
     *LogL = (FLOAT)0.0;
     
     for (i = 0; i < N; i++) { 
-        Error = MixtureDist(Y[i], c, W, MixTheta, &MixDistVal);
+        Error = MixtureDist(i, Y, c, W, MixTheta, &MixDistVal);
     
         if (Error) goto E0;
         
@@ -807,9 +809,10 @@ E0:
 
 // Calculates the log component distrubition value for Gaussian mixture model with diagonal covariance structure. Return 0 on success, 1 otherwise.
 
-int GaussianDiagMixture::LogComponentDist(FLOAT                *Y,         // Pointer to the input point [y0,...,yd-1].
-                                           CompnentDistribution *CmpTheta, // Component parameters.
-                                           FLOAT                *CmpDist)  // Component distribution value.
+int GaussianDiagMixture::LogComponentDist(int                  j,         // Indey of observation.  
+                                          FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
+                                          CompnentDistribution *CmpTheta, // Component parameters.
+                                          FLOAT                *CmpDist)  // Component distribution value.
 {
     FLOAT y;
     int i;
@@ -818,7 +821,7 @@ int GaussianDiagMixture::LogComponentDist(FLOAT                *Y,         // Po
     *CmpDist = (FLOAT)0.0;
     
     for (i = 0; i < CmpTheta->length_pdf_; i++) {
-        y = (Y[i] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
+        y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
         *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
     }
@@ -887,11 +890,11 @@ int GaussianDiagMixture::MaximizationStep(FLOAT                   **Y,     // Po
             TmpWeightVal += P[i][j];
             
             for (ii = 0; ii < MixTheta[j]->length_pdf_; ii++) {
-                TmpMeanVal = P[i][j] * Y[i][ii];
+                TmpMeanVal = P[i][j] * Y[ii][i];
                 
                 TmpMeanVec[ii] += TmpMeanVal;
                 
-                TmpCovVal = P[i][j] * (Y[i][ii] - MixTheta[j]->Theta_[0][ii]) * (Y[i][ii] - MixTheta[j]->Theta_[0][ii]);
+                TmpCovVal = P[i][j] * (Y[ii][i] - MixTheta[j]->Theta_[0][ii]) * (Y[ii][i] - MixTheta[j]->Theta_[0][ii]);
 
                 TmpCovVec[ii] += TmpCovVal;
             }

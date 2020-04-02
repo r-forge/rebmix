@@ -56,9 +56,9 @@ typedef struct roughparametertype {
 class Rebmix : public Base {
     // Methods.
     int Golden();
-    int GlobalModeKNN(int *m, FLOAT **Y, FLOAT *h, int *I);
-    int GlobalModeKDE(int *m, FLOAT **Y, FLOAT *h, int *I);
-    int GlobalModeH(int *m, int k, FLOAT **Y, FLOAT *h, int *I);
+    int GlobalModeKNN(int *m, FLOAT **Y, int *I);
+    int GlobalModeKDE(int *m, FLOAT **Y, int *I);
+    int GlobalModeH(int *m, int k, FLOAT **Y, int *O);
     int REBMIXKNN();
     int REBMIXKDE();
     int REBMIXH();
@@ -134,8 +134,8 @@ public:
     virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationKDE(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
-    virtual int ComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
-    virtual int LogComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
+    virtual int ComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
+    virtual int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
     virtual int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationKDE(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
@@ -147,8 +147,8 @@ public:
 /// Panic Branislav: method for invoking EM algorithm.
     virtual int ExpectationMaximizationStep(int c, FLOAT *W, CompnentDistribution **MixTheta, int *n_iter);
 /// End 
-    int MixtureDist(FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
-    int MixtureDist(FLOAT logV, FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    int MixtureDist(FLOAT logV, int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionKDE(FLOAT logV, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionH(FLOAT logV, int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);

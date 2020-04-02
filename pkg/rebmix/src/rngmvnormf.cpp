@@ -11,11 +11,11 @@
 static int   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;
 
-int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
+int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
 {
     FLOAT C[4];
     FLOAT *y, Sum;
-    int   i, j;
+    int   i, k;
     int   Error = 0;
 
     y = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
@@ -53,11 +53,11 @@ int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
     for (i = 0; i < length_pdf_; i++) {
         Sum = (FLOAT)0.0;
 
-        for (j = 0; j <= i; j++) {
-            Sum += CmpDist->Theta_[2][i * length_pdf_ + j] * y[j];
+        for (k = 0; k <= i; k++) {
+            Sum += CmpDist->Theta_[2][i * length_pdf_ + k] * y[k];
         }
 
-        Y[i] = Sum + CmpDist->Theta_[0][i];
+        Y[i][j] = Sum + CmpDist->Theta_[0][i];
     }
 
 E0: if (y) free(y);

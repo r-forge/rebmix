@@ -38,8 +38,8 @@ public:
     // Destructor.
     virtual ~Em();
     int Initialize(int C, FLOAT *iniW, CompnentDistribution **IniMixTheta, FLOAT TOL, int MAX_ITER, EmVariantType_e algType, EmAccelerationType_e accelType, FLOAT accel_mul);
-    virtual int LogComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
-    int MixtureDist(FLOAT *Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    virtual int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int ExpectationStep(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **P);
     int ConditionalStep(int n, int c, FLOAT **P);
     virtual int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT ar);
@@ -54,7 +54,7 @@ public:
 
 class GaussianDiagMixture: public Em{
 public:
-    int LogComponentDist(FLOAT *Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
     virtual int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT ar);
     int MaximizationStep(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **P);
 }; // GaussianDiagMixture

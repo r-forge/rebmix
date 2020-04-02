@@ -49,7 +49,7 @@ Rngmix::~Rngmix()
     if (N_) free(N_);
 
     if (Y_) {
-        for (i = 0; i < n_; i++) {
+        for (i = 0; i < length_pdf_; i++) {
             if (Y_[i]) free(Y_[i]);
         }
 
@@ -83,9 +83,9 @@ int Rngmix::WriteDataFile()
     }
 
     for (i = 0; i < n_; i++) {
-        fprintf(fp, "%E", Y_[i][0]);
+        fprintf(fp, "%E", Y_[0][i]);
 
-        for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[i][j]);
+        for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[j][i]);
 
         fprintf(fp, "\t%d\n", Z_[i]);
     }
@@ -97,7 +97,7 @@ E0: if (fp) fclose(fp);
     Z_ = NULL;
 
     if (Y_) {
-        for (i = 0; i < n_; i++) {
+        for (i = 0; i < length_pdf_; i++) {
             if (Y_[i]) free(Y_[i]);
         }
 
@@ -147,11 +147,11 @@ E0: if (fp) fclose(fp);
 } // WriteParameterFile
 #endif
 
-int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
+int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
 {
     FLOAT C[8];
     FLOAT y, p;
-    int   i, j;
+    int   i, k;
     int   Error = 0;
 
     for (i = 0; i < length_pdf_; i++) {
@@ -175,7 +175,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
                 y = NDevVSet; NDevISet = 0;
             }
 
-            Y[i] = CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i];
+            Y[i][j] = CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i];
 
             break;
         case pfLognormal:
@@ -197,11 +197,11 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
                 y = LDevVSet; LDevISet = 0;
             }
 
-            Y[i] = (FLOAT)exp(CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i]);
+            Y[i][j] = (FLOAT)exp(CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i]);
 
             break;
         case pfWeibull:
-            Y[i] = CmpDist->Theta_[0][i] * (FLOAT)exp((FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_))) / CmpDist->Theta_[1][i]);
+            Y[i][j] = CmpDist->Theta_[0][i] * (FLOAT)exp((FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_))) / CmpDist->Theta_[1][i]);
 
             break;
         case pfGamma:
@@ -209,7 +209,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
 
             if (Error) goto E0;
 
-            Y[i] = y;
+            Y[i][j] = y;
 
             break;
         case pfGumbel:
@@ -217,7 +217,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
         case pfvonMises:
             CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
 
-            Y[i] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
+            Y[i][j] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
 
             break;
         case pfBinomial:
@@ -230,25 +230,25 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
 
             C[0] = CmpDist->Theta_[0][i] * p;
             if ((int)CmpDist->Theta_[0][i] < 25) {
-                Y[i] = (FLOAT)0.0;
+                Y[i][j] = (FLOAT)0.0;
 
-                for (j = 0; j < (int)CmpDist->Theta_[0][i]; j++) {
-                    if (Ran1(&IDum_) < p) ++Y[i];
+                for (k = 0; k < (int)CmpDist->Theta_[0][i]; k++) {
+                    if (Ran1(&IDum_) < p) ++Y[i][j];
                 }
             }
             else
             if (C[0] < (FLOAT)1.0) {
                 C[1] = (FLOAT)exp(-C[0]); C[2] = (FLOAT)1.0;
 
-                for (j = 0; j < (int)CmpDist->Theta_[0][i]; j++) {
+                for (k = 0; k < (int)CmpDist->Theta_[0][i]; k++) {
                     C[2] *= Ran1(&IDum_); if (C[2] < C[1]) break;
                 }
 
-                if (j > (int)CmpDist->Theta_[0][i]) {
-                    Y[i] = CmpDist->Theta_[0][i];
+                if (k > (int)CmpDist->Theta_[0][i]) {
+                    Y[i][j] = CmpDist->Theta_[0][i];
                 }
                 else {
-                    Y[i] = j;
+                    Y[i][j] = k;
                 }
             }
             else {
@@ -286,11 +286,11 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
 
                 } while (Ran1(&IDum_) > C[7]);
 
-                Y[i] = C[6];
+                Y[i][j] = C[6];
             }
 
             if (p != CmpDist->Theta_[1][i]) {
-                Y[i] = CmpDist->Theta_[0][i] - Y[i];
+                Y[i][j] = CmpDist->Theta_[0][i] - Y[i][j];
             }
 
             break;
@@ -332,15 +332,15 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y)
                 } while (Ran1(&IDum_) > C[1]);
             }
 
-            Y[i] = C[0];
+            Y[i][j] = C[0];
 
             break;
         case pfDirac:
-            Y[i] = CmpDist->Theta_[0][i];
+            Y[i][j] = CmpDist->Theta_[0][i];
 
             break;
         case pfUniform:
-           Y[i] = CmpDist->Theta_[0][i] + Ran1(&IDum_) * (CmpDist->Theta_[1][i] - CmpDist->Theta_[0][i]);
+            Y[i][j] = CmpDist->Theta_[0][i] + Ran1(&IDum_) * (CmpDist->Theta_[1][i] - CmpDist->Theta_[0][i]);
         default:;
         }
     }
@@ -357,12 +357,12 @@ int Rngmix::RNGMIX()
 
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
 
-    Y_ = (FLOAT**)malloc(n_ * sizeof(FLOAT*));
+    Y_ = (FLOAT**)malloc(length_pdf_ * sizeof(FLOAT*));
 
     Error = NULL == Y_; if (Error) goto E0;
 
-    for (i = 0; i < n_; i++) {
-        Y_[i] = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+    for (i = 0; i < length_pdf_; i++) {
+        Y_[i] = (FLOAT*)malloc(n_ * sizeof(FLOAT));
 
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
@@ -377,7 +377,7 @@ int Rngmix::RNGMIX()
         Trigger_ = 1;
 
         for (j = 0; j < N_[i]; j++) {
-            Error = InvComponentDist(MixTheta_[i], Y_[k]);
+            Error = InvComponentDist(MixTheta_[i], k, Y_);
 
             Z_[k] = i + 1;
 
@@ -406,7 +406,7 @@ int Rngmix::RunTemplateFile(char *file)
         Error = 1; goto E0;
     }
 
-    printf("RNGMIX Version 2.11.0\n");
+    printf("RNGMIX Version 2.12.0\n");
 
 S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(line, "\n");

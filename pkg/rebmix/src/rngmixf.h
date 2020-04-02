@@ -32,7 +32,7 @@ public:
     // Destructor.
     virtual ~Rngmix();
     // Methods.
-    virtual int InvComponentDist(CompnentDistribution *CmpDist, FLOAT *Y);
+    virtual int InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y);
     int RNGMIX();
     #if (_MAINTAIN_SWITCH)
     int RunTemplateFile(char *file);
