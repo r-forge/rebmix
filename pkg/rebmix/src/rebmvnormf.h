@@ -27,7 +27,7 @@ public:
     int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     int DegreesOffreedom(int c, CompnentDistribution **MixTheta, int *M);
     /// Panic Branislav: Method for invoking EM algorithm. ///
-    int ExpectationMaximizationStep(int c, FLOAT *W, CompnentDistribution **MixTheta, int *n_iter);
+    int EMInitialize();
     /// End                                                ///
 }; // Rebmvnorm
 

@@ -492,7 +492,7 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
 
     rebmix->EM_TOL_ = *EMTolerance;
 
-    rebmix->EM_ar_ = *EMAccelerationMul;
+    rebmix->EM_am_ = *EMAccelerationMul;
 
     rebmix->EM_max_iter_ = *EMMaxIter;
 

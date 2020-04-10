@@ -13,7 +13,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 0
+#define _MAINTAIN_SWITCH 1
 #endif
 
 #ifndef FLOAT
@@ -208,18 +208,18 @@ public:
 }; // CompnentDistribution
 
 typedef struct mixtureparametertype {
-    FLOAT *W_;                        // Pointer to weight.
-    CompnentDistribution **MixTheta_; // Pointer to mixture parameters.
-    int C_;                           // Number of components in mixture.
-    FLOAT LogL_;                      // Estimated value of log likelihood.
-    FLOAT logV_;                      // Logaritmic value of V.
-    int k_;                           // Bin number for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
-    FLOAT *h_;                        // Bin widths for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
-    FLOAT *y0_;                       // Bin origins for histogram preprocessing or NULL for kernel density estimation and k-nearest neighbour preprocessing.
-    FLOAT *ymin_;                     // Minimum values from data.
-    FLOAT *ymax_;                     // Maximum values from data.
-    int n_iter_em_;                   // Number of performed iterations of EM algorithm.
-    int initialized_;                 // boolean indicator if struct contains mixture model parameters. 
+    FLOAT *W;                        // Pointer to weight.
+    CompnentDistribution **MixTheta; // Pointer to mixture parameters.
+    int c;                           // Number of components in mixture.
+    FLOAT logL;                      // Estimated value of log likelihood.
+    FLOAT logV;                      // Logaritmic value of V.
+    int k;                           // Bin number for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *h;                        // Bin widths for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *y0;                       // Bin origins for histogram preprocessing or NULL for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT *ymin;                     // Minimum values from data.
+    FLOAT *ymax;                     // Maximum values from data.
+    int n_iter_em;                   // Number of performed iterations of EM algorithm.
+    int initialized;                 // Boolean indicator if struct contains mixture model parameters. 
 } MixtureParameterType;
 
 FLOAT Ran1(int *IDum);

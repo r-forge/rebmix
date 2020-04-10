@@ -18,46 +18,52 @@
 #include <string.h>
 #include "base.h"
 
-class Em : public Base {
+class Emmix : public Base {
 public:
-    FLOAT                TOL_;             // Tolerance for stoping criteria.
-    FLOAT                ar_;              // Acceleration rate.
-    int                  MAX_ITER_;        // Maximum allowed iterations.
-    int                  Initialized_;     // Status check for initialization.
-    int                  C_;               // Number of components.
+    // Members.
+    int                  n_;               // Number of observations.
+    FLOAT                **Y_;             // Dataset.
+    int                  cmax_;            // Maximum number of components.
+    FLOAT                TOL_;             // Tolerance for EM algorithm.
+    FLOAT                am_;              // Acceleration multiplier for EM algorithm.
+    int                  max_iter_;        // Maximum number of iterations of EM algorithm.
+    EmStrategyType_e     strategy_;        // EM strategy utilization.
+    EmVariantType_e      variant_;         // Type of EM variant algorithm.
+    EmAccelerationType_e accel_;           // Type of acceleration of standard EM algorithm.
+    int                  n_iter_;          // Number of iterations.
+    int                  c_;               // Number of components.
     FLOAT                *W_;              // Component weights.
-    FLOAT                *dW_;             // Update component weights.
     CompnentDistribution **MixTheta_;      // Mixture parameters.    
+    FLOAT                *dW_;             // Update component weights.
     CompnentDistribution **dMixTheta_;     // Update mixture parameters.
     SummaryParameterType summary_;         // Summary.
-    EmVariantType_e      variant_t_;       // Type of EM algorithm (variant).
-    EmAccelerationType_e acceleration_t_;  // Type of acceleration.
-    int                  n_iter_;          // Number of iterations.
+    FLOAT                **P_;             // Pointer to posterior probabilities.
     // Constructor.
-    Em();
+    Emmix();
     // Destructor.
-    virtual ~Em();
-    int Initialize(int C, FLOAT *iniW, CompnentDistribution **IniMixTheta, FLOAT TOL, int MAX_ITER, EmVariantType_e algType, EmAccelerationType_e accelType, FLOAT accel_mul);
-    virtual int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual ~Emmix();
+    int Initialize(int n, FLOAT **Y, int cmax, int length_pdf, int length_Theta, int *length_theta, FLOAT TOL, FLOAT am, int max_iter, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
     int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
-    int ExpectationStep(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **P);
-    int ConditionalStep(int n, int c, FLOAT **P);
-    virtual int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT ar);
-    int GoldenRatioSearch(FLOAT **Y, int N, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT *ar_opt);
-    int LineSearch(FLOAT **Y, int N, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT *ar_opt);
-    virtual int MaximizationStep(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **P);
-    int LogLikelihood(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);
-    int EM(FLOAT **Y, int n);
-    int ECM(FLOAT **Y, int n);
-    int Run(FLOAT **Y, int n);
-}; // EM
+    int LogLikelihood(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);
+    int ExpectationStep();
+    int ConditionalStep();
+    int GoldenRatioSearch(FLOAT *am_opt);
+    int LineSearch(FLOAT *am_opt);
+    int EM();
+    int ECM();
+    int Run(int c, FLOAT *W, CompnentDistribution **MixTheta);
+    virtual int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
+    virtual int MaximizationStep();
+}; // Emmix
 
-class GaussianDiagMixture: public Em{
+class Emmvnorm : public Emmix {
 public:
+    // Constructor.
     int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
-    virtual int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT ar);
-    int MaximizationStep(FLOAT **Y, int n, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **P);
-}; // GaussianDiagMixture
+    int UpdateMixtureParameters(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
+    int MaximizationStep();
+}; // Emmvnorm
 
 #endif
 

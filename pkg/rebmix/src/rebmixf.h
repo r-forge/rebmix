@@ -91,8 +91,9 @@ public:
     FLOAT                      ar_;            // Acceleration rate.
     PestraintsType_e           Restraints_;    // Restraints type.
 /// Panic Branislav: fields for EM algorithm.
+    Emmix                      *EM_;           // Object of class Emmix.
     FLOAT                      EM_TOL_;        // Tolerance for EM algorithm.
-    FLOAT                      EM_ar_;         // Acceleration rate for EM algorithm.
+    FLOAT                      EM_am_;         // Acceleration multiplier for EM algorithm.
     int                        EM_max_iter_;   // Maximum number of iterations of EM algorithm.    
     EmStrategyType_e           EM_strategy_;   // EM strategy utilization.
     EmVariantType_e            EM_variant_;    // Type of EM variant algorithm.
@@ -145,7 +146,8 @@ public:
     virtual int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     virtual int DegreesOffreedom(int c, CompnentDistribution **MixTheta, int *M);
 /// Panic Branislav: method for invoking EM algorithm.
-    virtual int ExpectationMaximizationStep(int c, FLOAT *W, CompnentDistribution **MixTheta, int *n_iter);
+    virtual int EMInitialize();
+    virtual int EMRun(int c, FLOAT *W, CompnentDistribution **MixTheta);
 /// End 
     int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int MixtureDist(FLOAT logV, int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);

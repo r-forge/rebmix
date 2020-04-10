@@ -408,7 +408,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
 
     rebmvnorm->EM_TOL_ = *EMTolerance;
 
-    rebmvnorm->EM_ar_ = *EMAccelerationMul;
+    rebmvnorm->EM_am_ = *EMAccelerationMul;
 
     rebmvnorm->EM_max_iter_ = *EMMaxIter;
 

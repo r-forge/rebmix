@@ -1446,41 +1446,31 @@ int Rebmvnorm::DegreesOffreedom(int c,                  // Number of components.
 
 /// Panic Branislav: Runs the EM algorithm or its variant for the initial parameters assesed by the REBMIX algorithm.
 
-int Rebmvnorm::ExpectationMaximizationStep(int                  c,          // Number of components.
-                                           FLOAT                *W,         // Component weights.  
-                                           CompnentDistribution **MixTheta, // Mixture parameters.
-                                           int                  *n_iter)    // Number of iterations. 
+int Rebmvnorm::EMInitialize()
 {
-    int j, Error = 0;
+    int Error = 0;
 
-    Em *em = NULL;
+    EM_ = new Emmvnorm();
 
-    em = new Em;
+    Error = EM_ == NULL; if (Error) goto E0;
 
-    Error = em == NULL;
+    Error = EM_->Initialize(n_,
+        Y_,
+        cmax_,
+        length_pdf_,
+        length_Theta_,
+        length_theta_,
+        EM_TOL_,
+        EM_am_,
+        EM_max_iter_,
+        EM_strategy_,
+        EM_variant_,
+        EM_accel_);
 
     if (Error) goto E0;
 
-    Error = em->Initialize(c, W, MixTheta, EM_TOL_, EM_max_iter_, EM_variant_, EM_accel_, EM_ar_);
-
-    if (Error) goto E0;
-
-    Error = em->Run(Y_, n_);
-
-    if (Error) goto E0;
-
-    for (j = 0; j < c; j++)	{
-        W[j] = em->W_[j];
-
-        MixTheta[j]->Memmove(em->MixTheta_[j]);
-    }
-
-    *n_iter = em->n_iter_;
-
-E0: if (em != NULL) delete em;
-
-    return Error;
-}
+E0: return Error;
+} // EMInitialize
 
 /// End
 
