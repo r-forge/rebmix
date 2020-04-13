@@ -379,7 +379,7 @@ int Rebmix::PreprocessingKDE(FLOAT *h,   // Sides of the hypersquare.
 
     for (i = 0; i < n_; i++) {
         for (j = i; j < n_; j++) {
-            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][i] - Y[l][j]) >(FLOAT)0.5 * h[l]) goto S0;
+            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][i] - Y[l][j]) > (FLOAT)0.5 * h[l]) goto S0;
 
             Y[length_pdf_ + 1][i] += (FLOAT)1.0; if (i != j) Y[length_pdf_ + 1][j] += (FLOAT)1.0;
 S0:;
@@ -447,7 +447,7 @@ int Rebmix::PreprocessingH(FLOAT *h,     // Sides of the hypersquare.
         }
 
         for (j = 0; j < *k; j++) {
-            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][j] - Y[l][*k]) >(FLOAT)0.5 * h[l]) goto S0;
+            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][j] - Y[l][*k]) > (FLOAT)0.5 * h[l]) goto S0;
 
             Y[length_pdf_][j] += (FLOAT)1.0; goto S1;
 S0:;
@@ -5646,7 +5646,7 @@ int Rebmix::REBMIXKDE()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
+                h[j] = (ymax[j] - ymin[j]) / all_K_[i] + FLOAT_MIN;
 
                 logV += (FLOAT)log(h[j]);
 
@@ -6427,10 +6427,10 @@ int Rebmix::REBMIXH()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j] + (FLOAT)2.0 * Eps) / all_K_[i];
+                h[j] = (ymax[j] - ymin[j]) / all_K_[i] + FLOAT_MIN;
 
                 if (y0_ == NULL) {
-                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j] - Eps;
+                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
                 }
                 else {
                     y0[j] = y0_[j];

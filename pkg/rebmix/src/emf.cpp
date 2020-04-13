@@ -655,7 +655,7 @@ int Emmix::UpdateMixtureParameters(int                  c,           // Number o
             MixTheta[l]->Theta_[1][i] += am * dMixTheta[l]->Theta_[1][i];
 
             if (MixTheta[l]->Theta_[1][i] < Eps) {
-                MixTheta[l]->Theta_[1][i] = Eps;
+                W[l] = (FLOAT)0.0; MixTheta[l]->Theta_[1][i] = Eps;
             }
         }
     }
@@ -792,7 +792,7 @@ int Emmvnorm::UpdateMixtureParameters(int                  c,           // Numbe
             MixTheta[l]->Theta_[1][p] += am * dMixTheta[l]->Theta_[1][p];
 
             if (MixTheta[l]->Theta_[1][p] < Eps) {
-                MixTheta[l]->Theta_[1][p] = Eps;
+                W[l] = (FLOAT)0.0; MixTheta[l]->Theta_[1][p] = Eps;
             }
 
             for (ii = 0; ii < i; ii++) {
