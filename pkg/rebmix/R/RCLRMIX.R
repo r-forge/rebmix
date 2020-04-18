@@ -164,7 +164,7 @@ function(model, ...)
 
   i <- length(model@from)
 
-  while (i > 1) {
+  while (i > 0) {
     from.in.unique.Z <- model@from[i] %in% unique.Z
     to.in.unique.Z <- model@to[i] %in% unique.Z
 
@@ -286,7 +286,7 @@ function(model, ...)
 
   i <- length(model@from)
 
-  while (i > 1) {
+  while (i > 0) {
     from.in.unique.Z <- model@from[i] %in% unique.Z
     to.in.unique.Z <- model@to[i] %in% unique.Z
 

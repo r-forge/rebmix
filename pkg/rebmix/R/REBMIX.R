@@ -22,30 +22,32 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
     
-    Preprocessing <- model@Preprocessing[min(i, length(model@Preprocessing))]
-
     length.pdf <- d
 
     if (is.character(model@K)) {
-      if (Preprocessing == .rebmix$Preprocessing[3]) {
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
         K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
-
-        K <- unique(K)
       }
       else {
         Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
 
         K <- kseq(Sturges, RootN, f = 0.25)
-
-        K <- unique(K)
       }
+      
+      K <- unique(K) 
+      
+      dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
     }
     else {
-      if (is.list(model@K)) {
-        K <- unique(model@K[[min(i, length(model@K))]])
+      if (is.matrix(model@K)) {
+        K <- model@K[i, ]
+        
+        dK <- 1; length.K <- 1
       }
       else {
-        K <- unique(model@K)
+        K <- sort(unique(model@K))
+        
+        dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
       }
     }
 
@@ -64,18 +66,18 @@ function(model, ...)
     }
 
     output <- .C(C_RREBMIX,
-      Preprocessing = as.character(Preprocessing),
+      Preprocessing = as.character(model@Preprocessing),
       cmax = as.integer(model@cmax),
       cmin = as.integer(model@cmin),
       Criterion = as.character(model@Criterion),
       d = as.integer(d),
       Variables = as.character(model@Variables),
-      length.pdf = length.pdf,
+      length.pdf = as.integer(length.pdf),
       pdf = as.character(model@pdf),
       length.Theta = as.integer(2),
       length.theta = as.integer(c(length.theta1, length.theta2)),
       Theta = as.double(c(theta1, theta2)),
-      length.K = as.integer(length(K)),
+      length.K = as.integer(length.K),
       K = as.integer(K),
       length.y0 = as.integer(length(model@y0)),
       y0 = as.double(model@y0),
@@ -115,8 +117,8 @@ function(model, ...)
       opt.logL = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
-      all.K = integer(max(K) - min(K) + 1),
-      all.IC = double(max(K) - min(K) + 1),
+      all.K = integer(dK),
+      all.IC = double(dK),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -175,7 +177,7 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (Preprocessing == .rebmix$Preprocessing[1]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d
 
       summary[[i]] <- c(Dataset.name,
@@ -197,7 +199,7 @@ function(model, ...)
         output$summary.M)
     }
     else
-    if (Preprocessing == .rebmix$Preprocessing[2]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -216,7 +218,7 @@ function(model, ...)
         output$summary.logL,
         output$summary.M)
     }
-    if (Preprocessing == .rebmix$Preprocessing[3]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -327,30 +329,32 @@ function(model, ...)
     n <- nrow(X)
     d <- ncol(X)
     
-    Preprocessing <- model@Preprocessing[min(i, length(model@Preprocessing))]
-
     length.pdf <- d
 
     if (is.character(model@K)) {
-      if (Preprocessing == .rebmix$Preprocessing[3]) {
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
         K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
-
-        K <- unique(K)
       }
       else {
         Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
 
         K <- kseq(Sturges, RootN, f = 0.25)
-
-        K <- unique(K)
       }
+      
+      K <- unique(K) 
+      
+      dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
     }
     else {
-      if (is.list(model@K)) {
-        K <- unique(model@K[[min(i, length(model@K))]])
+      if (is.matrix(model@K)) {
+        K <- model@K[i, ]
+        
+        dK <- 1; length.K <- 1
       }
       else {
-        K <- unique(model@K)
+        K <- sort(unique(model@K))
+        
+        dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
       }
     }
 
@@ -367,20 +371,20 @@ function(model, ...)
     else {
       length.theta2 <- -d * d; length.theta3 <- -1; theta2 <- numeric()
     }
-
+    
     output <- .C(C_RREBMVNORM,
-      Preprocessing = as.character(Preprocessing),
+      Preprocessing = as.character(model@Preprocessing),
       cmax = as.integer(model@cmax),
       cmin = as.integer(model@cmin),
       Criterion = as.character(model@Criterion),
       d = as.integer(d),
       Variables = as.character(model@Variables),
-      length.pdf = length.pdf,
+      length.pdf = as.integer(length.pdf),
       pdf = as.character(model@pdf),
       length.Theta = as.integer(4),
       length.theta = as.integer(c(length.theta1, length.theta2, length.theta2, length.theta3)),
       Theta = as.double(c(theta1, theta2)),
-      length.K = as.integer(length(K)),
+      length.K = as.integer(length.K),
       K = as.integer(K),
       length.y0 = as.integer(length(model@y0)),
       y0 = as.double(model@y0),
@@ -420,8 +424,8 @@ function(model, ...)
       opt.logL = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
-      all.K = integer(max(K) - min(K) + 1),
-      all.IC = double(max(K) - min(K) + 1),
+      all.K = integer(dK),
+      all.IC = double(dK),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -480,7 +484,7 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (Preprocessing == .rebmix$Preprocessing[1]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
       length(output$summary.y0) <- d
 
       summary[[i]] <- c(Dataset.name,
@@ -502,7 +506,7 @@ function(model, ...)
         output$summary.M)
     }
     else
-    if (Preprocessing == .rebmix$Preprocessing[2]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,
@@ -521,7 +525,7 @@ function(model, ...)
         output$summary.logL,
         output$summary.M)
     }
-    if (Preprocessing == .rebmix$Preprocessing[3]) {
+    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
       summary[[i]] <- c(Dataset.name,
         output$Preprocessing,
         output$cmax,

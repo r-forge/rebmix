@@ -297,11 +297,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
 
     rebmvnorm->length_K_ = *length_K;
 
-    rebmvnorm->K_ = (int*)malloc(rebmvnorm->length_K_ * sizeof(int));
+    rebmvnorm->K_ = (int*)malloc(rebmvnorm->length_K_ * rebmvnorm->length_pdf_ * sizeof(int));
 
     *Error = NULL == rebmvnorm->K_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmvnorm->length_K_; i++) {
+    for (i = 0; i < rebmvnorm->length_K_ * rebmvnorm->length_pdf_; i++) {
         rebmvnorm->K_[i] = K[i];
     }
 

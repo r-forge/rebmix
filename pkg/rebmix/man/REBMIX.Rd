@@ -33,7 +33,7 @@ a list of data frames of size \eqn{n \times d} containing \emph{d}-dimensional d
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{Preprocessing}{
-a character vector giving the preprocessing types. One of \code{"histogram"}, \cr
+a character giving the preprocessing type. One of \code{"histogram"}, \cr
 \code{"kernel density estimation"} or \code{"k-nearest neighbour"}.
 }
 \item{cmax}{
@@ -59,12 +59,14 @@ a vector of length \eqn{d} containing initial component parameters. One of \eqn{
 a vector of length \eqn{d} containing initial component parameters. Currently not used.
 }
 \item{K}{
-a character or a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
+a character or a vector or a matrix containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour. There is no genuine rule to identify \eqn{v} or \eqn{k}. Consequently,
 the REBMIX algorithm identifies them from the set \code{K} of input values by
 minimizing the information criterion. The Sturges rule \eqn{v = 1 + \mathrm{log_{2}}(n)}, \eqn{\mathrm{Log}_{10}} rule \eqn{v = 10 \mathrm{log_{10}}(n)} or RootN
 rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bins
-or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. The default value is \code{"auto"}.
+or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. 
+If, e.g., \code{K = matrix(c(10, 15, 18, 5, 7, 9), byrow = TRUE, ncol = 3)} than \eqn{d = 3} and the list \code{Dataset} contains two data frames. Hence, different numbers of bins can be assigned to \eqn{y_{1}, \ldots, y_{d}}.
+See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. The default value is \code{"auto"}.
 }
 \item{y0}{
 a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.

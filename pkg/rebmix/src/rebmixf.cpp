@@ -256,10 +256,12 @@ int Rebmix::Golden()
 
         additional_.c = additional_.b - (int)ceil((additional_.b - additional_.a) / Phi);
         additional_.d = additional_.a + (int)ceil((additional_.b - additional_.a) / Phi);
-
-        all_K_[additional_.c] = additional_.c + all_K_[0];
-        all_K_[additional_.d] = additional_.d + all_K_[0];
-
+        
+        for (i = 0; i < length_pdf_; i++) {
+            all_K_[i * all_length_ + additional_.c] = additional_.c + all_K_[0];
+            all_K_[i * all_length_ + additional_.d] = additional_.d + all_K_[0];
+        }
+        
         additional_.Bracket = 0;
     }
     else {
@@ -275,10 +277,12 @@ int Rebmix::Golden()
 
         Stop = additional_.b - additional_.a < 3;
 
-        all_K_[additional_.a] = additional_.a + all_K_[0];
-        all_K_[additional_.b] = additional_.b + all_K_[0];
-        all_K_[additional_.c] = additional_.c + all_K_[0];
-        all_K_[additional_.d] = additional_.d + all_K_[0];
+        for (i = 0; i < length_pdf_; i++) {
+            all_K_[i * all_length_ + additional_.a] = additional_.a + all_K_[0];
+            all_K_[i * all_length_ + additional_.b] = additional_.b + all_K_[0];
+            all_K_[i * all_length_ + additional_.c] = additional_.c + all_K_[0];
+            all_K_[i * all_length_ + additional_.d] = additional_.d + all_K_[0];
+        }
     }
 
     return (Stop);
@@ -4639,12 +4643,14 @@ int Rebmix::REBMIXKNN()
 
     Error = NULL == all_I_; if (Error) goto E0;
 
-    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)(all_length_ * length_pdf_), sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
     for (i = 0; i < length_K_; i++) {
-        all_K_[K_[i] - K_[0]] = K_[i];
+        for (j = 0; j < length_pdf_; j++) {
+            all_K_[j * all_length_ + K_[i] - K_[0]] = K_[j * length_K_ + i];
+        }
     }
 
     additional_.Bracket = 1;
@@ -4714,7 +4720,7 @@ int Rebmix::REBMIXKNN()
     Error = NULL == h; if (Error) goto E0;
 
     for (i = 0; i < length_pdf_; i++) {
-        h[i] = ymax[i] - ymin[i] + (FLOAT)2.0 * Eps;
+        h[i] = ymax[i] - ymin[i] + FLOAT_MIN;
     }
 
     R = (FLOAT*)malloc(n_ * sizeof(FLOAT));
@@ -5400,12 +5406,14 @@ int Rebmix::REBMIXKDE()
 
     Error = NULL == all_I_; if (Error) goto E0;
 
-    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)(all_length_ * length_pdf_), sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
     for (i = 0; i < length_K_; i++) {
-        all_K_[K_[i] - K_[0]] = K_[i];
+        for (j = 0; j < length_pdf_; j++) {
+            all_K_[j * all_length_ + K_[i] - K_[0]] = K_[j * length_K_ + i];
+        }
     }
 
     additional_.Bracket = 1;
@@ -5646,7 +5654,7 @@ int Rebmix::REBMIXKDE()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / all_K_[i] + FLOAT_MIN;
+                h[j] = (ymax[j] - ymin[j]) / all_K_[j * all_length_ + i] + FLOAT_MIN;
 
                 logV += (FLOAT)log(h[j]);
 
@@ -6179,12 +6187,14 @@ int Rebmix::REBMIXH()
 
     Error = NULL == all_I_; if (Error) goto E0;
 
-    all_K_ = (int*)calloc((size_t)all_length_, sizeof(int));
+    all_K_ = (int*)calloc((size_t)(all_length_ * length_pdf_), sizeof(int));
 
     Error = NULL == all_K_; if (Error) goto E0;
 
     for (i = 0; i < length_K_; i++) {
-        all_K_[K_[i] - K_[0]] = K_[i];
+        for (j = 0; j < length_pdf_; j++) {
+            all_K_[j * all_length_ + K_[i] - K_[0]] = K_[j * length_K_ + i];
+        }
     }
 
     additional_.Bracket = 1;
@@ -6427,7 +6437,7 @@ int Rebmix::REBMIXH()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / all_K_[i] + FLOAT_MIN;
+                h[j] = (ymax[j] - ymin[j]) / all_K_[j * all_length_ + i] + FLOAT_MIN;
 
                 if (y0_ == NULL) {
                     y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
@@ -7818,7 +7828,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             }
         }
         else
-        if (!strcmp(ident, "K")) {
+        if (!strcmp(ident, "KV")) {
             i = 0;
 
             while (pchar != NULL) {
@@ -7862,6 +7872,38 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
                 pchar = strtok(NULL, "\t");
             }
+
+            K_ = (int*)realloc(K_, length_K_ * length_pdf_ * sizeof(int));
+
+            for (i = 1; i < length_pdf_; i++) {
+                for (j = 0; j < length_K_; j++) {
+                    K_[i * length_K_ + j] = K_[j];
+                }
+            }
+        }
+        else
+        if (!strcmp(ident, "KM")) {
+            i = 0;
+
+            while (pchar != NULL) {
+                K_ = (int*)realloc(K_, (i + 1) * sizeof(int));
+
+                Error = NULL == K_; if (Error) goto E0;
+
+                K_[i] = isI = (int)atol(pchar);
+
+                Error = isI <= 0; if (Error) goto E0;
+
+                length_K_ = ++i;
+
+                pchar = strtok(NULL, "\t");
+            }
+
+            if (length_K_ != length_pdf_) {
+                Error = 1; goto E0;
+            }
+
+            length_K_ = 1;
         }
         else
         if (!strcmp(ident, "Y0")) {

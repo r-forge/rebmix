@@ -379,11 +379,11 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
 
     rebmix->length_K_ = *length_K;
 
-    rebmix->K_ = (int*)malloc(rebmix->length_K_ * sizeof(int));
+    rebmix->K_ = (int*)malloc(rebmix->length_K_ * rebmix->length_pdf_ * sizeof(int));
 
     *Error = NULL == rebmix->K_; if (*Error) goto E0;
 
-    for (i = 0; i < rebmix->length_K_; i++) {
+    for (i = 0; i < rebmix->length_K_ * rebmix->length_pdf_; i++) {
         rebmix->K_[i] = K[i];
     }
 
