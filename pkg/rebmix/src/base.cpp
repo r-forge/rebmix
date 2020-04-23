@@ -227,7 +227,7 @@ FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p)
         y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Sum += ypb;
     }
 
-    if ((Fy < (FLOAT)0.5) && (y >(FLOAT)0.0)) y--;
+    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
 
     return (y);
 } // BinomialInv
@@ -831,7 +831,7 @@ FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa)
             i++;
         }
 
-        if (Fy >(FLOAT)1.0) {
+        if (Fy > (FLOAT)1.0) {
             Fy = (FLOAT)1.0;
         }
         else
@@ -874,7 +874,7 @@ FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa)
                 Stop = 1;
             }
             else {
-                if (fm * fl >(FLOAT)0.0) {
+                if (fm * fl > (FLOAT)0.0) {
                     yl = ym; fl = fm;
                 }
                 else {

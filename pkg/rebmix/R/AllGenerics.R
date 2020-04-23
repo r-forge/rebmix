@@ -216,7 +216,17 @@ setGeneric("a.summary.EM", function(x = NULL, pos = 0, col.name = character()) s
 
 ### End
 
+### Panic Branislav & Marko Nagode.
 
+setGeneric("optbins",
+  function(Dataset = list(),
+    Rule = "Knuth equal",  
+    y0 = numeric(),
+    ymin = numeric(),
+    ymax = numeric(), 
+    kmin = numeric(),
+    kmax = numeric(), ...)
+  standardGeneric("optbins"))
 
-
+### End
 

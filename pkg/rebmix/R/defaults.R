@@ -21,6 +21,10 @@ what = c("density", "marginal", "IC", "logL", "D", "distribution", "K")),
 Bootstrap = c("parametric", "nonparametric")),
 .Names = c("Bootstrap"))
 
+.optbins <- structure(list(
+Rule = c("Sturges", "Log10", "RootN", "Knuth equal", "Knuth unequal")),
+.Names = c("Rule"))
+
 
 
 

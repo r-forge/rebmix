@@ -81,7 +81,7 @@ exportMethods("RNGMIX",
               "a.summary",
 ### Panic Branislav.
               "a.summary.EM",
-### End              
+### End
               "a.pos",
               "a.opt.c",
               "a.opt.IC",
@@ -138,5 +138,6 @@ exportMethods("RNGMIX",
               "a.acceleration.multiplier",
               "a.acceleration.multiplier<-",
               "a.maximum.iterations",
-              "a.maximum.iterations<-")
+              "a.maximum.iterations<-",
+              "optbins")
 ### End 

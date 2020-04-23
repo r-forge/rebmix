@@ -2652,4 +2652,227 @@ void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
     }
 } // RGumbelCdf
 
+/// Panic Branislav & Marko Nagode.
+
+/// Optimal number of bins calculation.
+
+void Roptbins(int    *d,           // Number of independent random variables.
+              int    *n,           // Number of observations.
+              double *X,           // Dataset.
+              char   **Rule,       // Rule.
+              int    *length_y0,   // Length of y0.
+              double *y0,          // Origins.
+              int    *length_ymin, // Length of ymin.
+              double *ymin,        // Minimum observations.
+              int    *length_ymax, // Length of ymax.
+              double *ymax,        // Maximum observations.
+              int    *kmin,        // Minimum number of bins.
+              int    *kmax,        // Maximum number of bins.
+              int    *opt_k,       // Optimal number of bins.
+              double *opt_h,       // Optimal bin widths.
+              double *opt_y0,      // Optimal origins.
+              int    *Error)       // Error code.
+{
+    Rebmix *rebmix = NULL;
+    FLOAT  **Y = NULL;
+    FLOAT  *h = NULL;
+    int    i, j, l;
+
+    rebmix = new Rebmix;
+
+    *Error = NULL == rebmix; if (*Error) goto E0;
+
+    rebmix->length_pdf_ = *d;
+
+    rebmix->n_ = *n;
+
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmix->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->length_pdf_; i++) {
+        rebmix->Y_[i] = (FLOAT*)malloc(rebmix->n_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmix->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        for (l = 0; l < rebmix->n_; l++) {
+            rebmix->Y_[j][l] = X[i]; i++;
+        }
+    }
+
+    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
+
+    if (*length_y0 > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->y0_[i] = y0[i];
+        }
+    }
+
+    rebmix->ymin_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->ymin_; if (*Error) goto E0;
+
+    if (*length_ymin > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymin_[i] = ymin[i];
+        }
+    }
+    else {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymin_[i] = rebmix->Y_[i][0];
+
+            for (j = 1; j < rebmix->n_; j++) {
+                if (rebmix->Y_[i][j] < rebmix->ymin_[i]) rebmix->ymin_[i] = rebmix->Y_[i][j];
+            }
+        }
+    }
+
+    rebmix->ymax_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->ymax_; if (*Error) goto E0;
+
+    if (*length_ymax > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymax_[i] = ymax[i];
+        }
+    }
+    else {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymax_[i] = rebmix->Y_[i][0];
+
+            for (j = 1; j < rebmix->n_; j++) {
+                if (rebmix->Y_[i][j] > rebmix->ymax_[i]) rebmix->ymax_[i] = rebmix->Y_[i][j];
+            }
+        }
+    }
+
+    Y = (FLOAT**)malloc((rebmix->length_pdf_ + 1) * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
+        Y[i] = (FLOAT*)malloc(rebmix->n_ * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    h = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == h; if (*Error) goto E0;
+
+    if (!strcmp(Rule[0], "Sturges")) {
+        *opt_k = (int)ceil((FLOAT)1.0 + (FLOAT)log2((FLOAT)rebmix->n_));
+
+        for (j = 0; j < rebmix->length_pdf_; j++) {
+            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
+
+            if (*length_y0 == 0) {
+                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
+            }
+            else {
+                opt_y0[j] = rebmix->y0_[j];
+            }
+        }
+    }
+    else
+    if (!strcmp(Rule[0], "Log10")) {
+        *opt_k = (int)ceil((FLOAT)10.0 * (FLOAT)log10((FLOAT)rebmix->n_));
+
+        for (j = 0; j < rebmix->length_pdf_; j++) {
+            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
+
+            if (*length_y0 == 0) {
+                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
+            }
+            else {
+                opt_y0[j] = rebmix->y0_[j];
+            }
+        }
+    }
+    else
+    if (!strcmp(Rule[0], "RootN")) {
+        *opt_k = (int)ceil((FLOAT)2.0 * (FLOAT)sqrt((FLOAT)rebmix->n_));
+
+        for (j = 0; j < rebmix->length_pdf_; j++) {
+            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
+
+            if (*length_y0 == 0) {
+                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
+            }
+            else {
+                opt_y0[j] = rebmix->y0_[j];
+            }
+        }
+    }
+    else
+    if (!strcmp(Rule[0], "Knuth equal")) {
+        FLOAT logp, logpopt, M;
+        int   k;
+
+        logpopt = -FLOAT_MAX;
+
+        for (l = *kmin; l < *kmax + 1; l++) {
+            rebmix->kmax_ = l;
+
+            for (j = 0; j < rebmix->length_pdf_; j++) {
+                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l + FLOAT_MIN;
+
+                if (*length_y0 == 0) {
+                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
+                }
+            }
+
+            *Error = rebmix->PreprocessingH(h, rebmix->y0_, &k, Y);
+
+            if (*Error) goto E0;
+
+            M = (FLOAT)1.0;
+
+            for (j = 0; j < rebmix->length_pdf_; j++) {
+                M *= (FLOAT)l;
+            }
+
+            logp = (FLOAT)rebmix->n_ * (FLOAT)log(M) + (FLOAT)Gammaln((FLOAT)0.5 * M) - M * (FLOAT)Gammaln((FLOAT)0.5) - (FLOAT)Gammaln((FLOAT)rebmix->n_ + (FLOAT)0.5 * M);
+
+            for (j = 0; j < k; j++) {
+                logp += Gammaln(Y[rebmix->length_pdf_][j] + (FLOAT)0.5);
+            }
+
+            logp += Max(M - (FLOAT)k, (FLOAT)0.0) * Gammaln((FLOAT)0.5);
+
+            if (logp > logpopt) {
+                logpopt = logp; *opt_k = l;
+
+                for (j = 0; j < rebmix->length_pdf_; j++) {
+                    opt_h[j] = h[j]; opt_y0[j] = rebmix->y0_[j];
+                }
+            }
+        }
+    }
+    else
+    if (!strcmp(Rule[0], "Knuth unequal")) {
+
+    }
+
+E0: if (h) free(h);
+    
+    if (Y) {
+        for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmix) delete rebmix;
+} // Roptbins
+
+/// End
+
 }

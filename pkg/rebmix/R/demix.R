@@ -75,7 +75,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -105,7 +105,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     dim(output$y) <- c(n, d + 2)
@@ -136,7 +136,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     dim(output$y) <- c(n, d + 3)
@@ -236,7 +236,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -266,7 +266,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     dim(output$y) <- c(n, d + 2)
@@ -297,7 +297,7 @@ function(x, pos, variables, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in preprocessing!", call. = FALSE); return(NA)
+      stop("in demix!", call. = FALSE); return(NA)
     }
 
     dim(output$y) <- c(n, d + 3)

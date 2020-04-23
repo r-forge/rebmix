@@ -415,7 +415,7 @@ int Rebmix::PreprocessingH(FLOAT *h,  // Sides of the hypersquare.
         }
 
         for (j = 0; j < *k; j++) {
-            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][j] - Y[l][*k]) >(FLOAT)0.5 * h[l]) goto S0;
+            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y[l][j] - Y[l][*k]) > (FLOAT)0.5 * h[l]) goto S0;
 
             Y[length_pdf_][j] += (FLOAT)1.0; goto S1;
 S0:;
@@ -1560,7 +1560,7 @@ int Rebmix::RoughEstimationKDE(FLOAT                **Y,         // Pointer to t
             Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
-                for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) >(FLOAT)0.5 * h[l])) goto S0;
+                for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) > (FLOAT)0.5 * h[l])) goto S0;
 
                 Mode[i].klm += Y[length_pdf_][j];
 
@@ -2616,7 +2616,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
             EnhanTheta->Theta_[1][i] = T[0] / EnhanTheta->Theta_[0][i] / nl;
 
-            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] > (FLOAT)1.0)) {
                 Error = 1; goto E0;
             }
 
@@ -2938,7 +2938,7 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
             EnhanTheta->Theta_[1][i] = T[0] / EnhanTheta->Theta_[0][i] / nl;
 
-            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] > (FLOAT)1.0)) {
                 Error = 1; goto E0;
             }
 
@@ -3261,7 +3261,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
             EnhanTheta->Theta_[1][i] = T[0] / EnhanTheta->Theta_[0][i] / nl;
 
-            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] >(FLOAT)1.0)) {
+            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] > (FLOAT)1.0)) {
                 Error = 1; goto E0;
             }
 

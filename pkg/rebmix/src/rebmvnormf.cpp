@@ -372,7 +372,7 @@ int Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
             Mode[i].klm = (FLOAT)0.0;
 
             for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
-                for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) >(FLOAT)0.5 * h[l])) goto S0;
+                for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) > (FLOAT)0.5 * h[l])) goto S0;
 
                 Mode[i].klm += Y[length_pdf_][j];
 

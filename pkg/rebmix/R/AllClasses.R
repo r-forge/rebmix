@@ -805,6 +805,10 @@ function(.Object, ...,
     if (length(ymax) != d) {
       stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
+    
+    if (any(ymax <= ymin)) {
+      stop(sQuote("ymax"), " must be greater than ", sQuote("ymin"), "!", call. = FALSE)
+    }    
   }
 
   # ar.
