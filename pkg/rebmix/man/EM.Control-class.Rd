@@ -31,7 +31,7 @@ maximum.iterations is positive integer containing the maximum allowed number of 
 }
 }
 }
-\author{Panic Branislav}
+\author{Branislav Panic}
 \references{
 A. P. Dempster et al. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society. Series B, 39(1):1-38, 1977.
 \url{https://www.jstor.org/stable/2984875}.\cr\cr

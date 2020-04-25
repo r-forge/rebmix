@@ -20,7 +20,7 @@ a character vector of length \eqn{s} containing class names \eqn{\bm{\Omega}_{g}
 a vector of length \eqn{s} containing numbers of observations in train datasets \eqn{Y_{\mathrm{train}g}}.
 }
 \item{\code{train}:}{
-a list of data frames containing train datasets \eqn{Y_{\mathrm{train}g}} of length \eqn{n_{\mathrm{train}g}}.
+a list of length \eqn{n_{\mathrm{D}}} of data frames containing train datasets \eqn{Y_{\mathrm{train}g}} of length \eqn{n_{\mathrm{train}g}}.
 }
 \item{\code{Zr}:}{
 a list of factors of true class membership \eqn{\bm{\Omega}_{g}} for the train datasets.

@@ -2669,8 +2669,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
               int    *kmin,        // Minimum number of bins.
               int    *kmax,        // Maximum number of bins.
               int    *opt_k,       // Optimal number of bins.
-              double *opt_h,       // Optimal bin widths.
-              double *opt_y0,      // Optimal origins.
               int    *Error)       // Error code.
 {
     Rebmix *rebmix = NULL;
@@ -2767,47 +2765,26 @@ void Roptbins(int    *d,           // Number of independent random variables.
     *Error = NULL == h; if (*Error) goto E0;
 
     if (!strcmp(Rule[0], "Sturges")) {
-        *opt_k = (int)ceil((FLOAT)1.0 + (FLOAT)log2((FLOAT)rebmix->n_));
+        opt_k[0] = (int)ceil((FLOAT)1.0 + (FLOAT)log2((FLOAT)rebmix->n_));
 
-        for (j = 0; j < rebmix->length_pdf_; j++) {
-            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
-
-            if (*length_y0 == 0) {
-                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
-            }
-            else {
-                opt_y0[j] = rebmix->y0_[j];
-            }
+        for (j = 1; j < rebmix->length_pdf_; j++) {
+            opt_k[j] = opt_k[0];
         }
     }
     else
     if (!strcmp(Rule[0], "Log10")) {
-        *opt_k = (int)ceil((FLOAT)10.0 * (FLOAT)log10((FLOAT)rebmix->n_));
+        opt_k[0] = (int)ceil((FLOAT)10.0 * (FLOAT)log10((FLOAT)rebmix->n_));
 
-        for (j = 0; j < rebmix->length_pdf_; j++) {
-            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
-
-            if (*length_y0 == 0) {
-                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
-            }
-            else {
-                opt_y0[j] = rebmix->y0_[j];
-            }
+        for (j = 1; j < rebmix->length_pdf_; j++) {
+            opt_k[j] = opt_k[0];
         }
     }
     else
     if (!strcmp(Rule[0], "RootN")) {
-        *opt_k = (int)ceil((FLOAT)2.0 * (FLOAT)sqrt((FLOAT)rebmix->n_));
+        opt_k[0] = (int)ceil((FLOAT)2.0 * (FLOAT)sqrt((FLOAT)rebmix->n_));
 
-        for (j = 0; j < rebmix->length_pdf_; j++) {
-            opt_h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / *opt_k + FLOAT_MIN;
-
-            if (*length_y0 == 0) {
-                opt_y0[j] = rebmix->ymin_[j] + (FLOAT)0.5 * opt_h[j];
-            }
-            else {
-                opt_y0[j] = rebmix->y0_[j];
-            }
+        for (j = 1; j < rebmix->length_pdf_; j++) {
+            opt_k[j] = opt_k[0];
         }
     }
     else
@@ -2821,10 +2798,10 @@ void Roptbins(int    *d,           // Number of independent random variables.
             rebmix->kmax_ = l;
 
             for (j = 0; j < rebmix->length_pdf_; j++) {
-                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l + FLOAT_MIN;
+                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / (l - (FLOAT)1.0);
 
                 if (*length_y0 == 0) {
-                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
+                    rebmix->y0_[j] = rebmix->ymin_[j];
                 }
             }
 
@@ -2847,12 +2824,12 @@ void Roptbins(int    *d,           // Number of independent random variables.
             logp += Max(M - (FLOAT)k, (FLOAT)0.0) * Gammaln((FLOAT)0.5);
 
             if (logp > logpopt) {
-                logpopt = logp; *opt_k = l;
-
-                for (j = 0; j < rebmix->length_pdf_; j++) {
-                    opt_h[j] = h[j]; opt_y0[j] = rebmix->y0_[j];
-                }
+                logpopt = logp; opt_k[0] = l;
             }
+        }
+
+        for (j = 1; j < rebmix->length_pdf_; j++) {
+            opt_k[j] = opt_k[0];
         }
     }
     else

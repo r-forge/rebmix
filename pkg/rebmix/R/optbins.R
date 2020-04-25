@@ -49,14 +49,15 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
   }
 
   Rule <- match.arg(Rule, .optbins$Rule, several.ok = FALSE)
-
-  if (Rule %in% c(.optbins$Rule[4])) {
-    # kmin.   
   
-    if (missing(kmin) || length(kmin) == 0) {
+  # kmin.   
+  
+  if (missing(kmin) || length(kmin) == 0) {
+    if (Rule %in% c(.optbins$Rule[4], .optbins$Rule[5])) {
       stop(sQuote("kmin"), " must not be empty!", call. = FALSE)
     }
-    
+  }
+  else {
     if (!is.wholenumber(kmin)) {
       stop(sQuote("kmin"), " integer is requested!", call. = FALSE)
     }
@@ -65,14 +66,17 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
 
     if (kmin < 1) {
       stop(sQuote("kmin"), " must be greater than 0!", call. = FALSE)
-    }
+    }  
+  }
     
-    # kmax.
+  # kmax.
     
-    if (missing(kmax) || length(kmax) == 0) {
+  if (missing(kmax) || length(kmax) == 0) {
+    if (Rule %in% c(.optbins$Rule[4], .optbins$Rule[5])) {  
       stop(sQuote("kmax"), " must not be empty!", call. = FALSE)
     }
-    
+  }
+  else {
     if (!is.wholenumber(kmax)) {
       stop(sQuote("kmax"), " integer is requested!", call. = FALSE)
     }
@@ -82,7 +86,7 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
     if (kmax < kmin) {
       stop(sQuote("kmax"), " must be greater or equal than ", kmin, "!", call. = FALSE)
     }
-  }
+  }    
     
   # y0.
 
@@ -117,11 +121,11 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
   # ymax.
 
   if (missing(ymax) || (length(ymax) == 0)) {
-    ymax <- numeric()
+     ymax <- numeric()
   }
   else {
     if (!is.numeric(ymax)) {
-      stop(sQuote("ymax"), " numeric is requested!", call. = FALSE)
+       stop(sQuote("ymax"), " numeric is requested!", call. = FALSE)
     }
 
     if (length(ymax) != d) {
@@ -131,21 +135,17 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
     if (any(ymax <= ymin)) {
       stop(sQuote("ymax"), " must be greater than ", sQuote("ymin"), "!", call. = FALSE)
     }       
-  }          
+  }
+  
+  output <- matrix(0, nrow = length(Dataset), ncol = d)
 
   for (i in 1:length(Dataset)) {
-    Dataset.name <- names(Dataset)[i]
-
     X <- as.matrix(Dataset[[i]])
-
-    message("Dataset = ", Dataset.name)
-
-    flush.console()
 
     n <- nrow(X)
     d <- ncol(X)
 
-    output <- .C(C_Roptbins,
+    temp <- .C(C_Roptbins,
       d = as.integer(d),
       n = as.integer(n),
       X = as.double(X),
@@ -158,15 +158,15 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
       ymax = as.double(ymax),            
       kmin = as.integer(kmin),
       kmax = as.integer(kmax),
-      opt.k = integer(1),
-      opt.h = double(d),
-      opt.y0 = double(d),
+      opt.k = integer(d),
       error = integer(1),
       PACKAGE = "rebmix")
 
-    if (output$error == 1) {
+    if (temp$error == 1) {
       stop("in optbins!", call. = FALSE); return(NA)
     }
+    
+    output[i, ] <- temp$opt.k
   }
   
   options(digits = digits)
