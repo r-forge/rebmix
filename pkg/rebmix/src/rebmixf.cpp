@@ -395,10 +395,12 @@ E0: return Error;
 
 // Preprocessing of observations for histogram.
 
-int Rebmix::PreprocessingH(FLOAT *h,  // Sides of the hypersquare.
-                           FLOAT *y0, // Origins.
-                           int   *k,  // Total number of bins.
-                           FLOAT **Y) // Pointer to the input array [y0,...,yd-1,kl].
+int Rebmix::PreprocessingH(FLOAT *h,    // Sides of the hypersquare.
+                           FLOAT *y0,   // Origins.
+                           FLOAT *ymin, // Minimum observations.
+                           FLOAT *ymax, // Maximum observations.
+                           int   *k,    // Total number of bins.
+                           FLOAT **Y)   // Pointer to the input array [y0,...,yd-1,kl].
 {
     int i, j, l;
     int Error = n_ < 1;
@@ -412,6 +414,14 @@ int Rebmix::PreprocessingH(FLOAT *h,  // Sides of the hypersquare.
             l = (int)floor((Y_[j][i] - y0[j]) / h[j] + (FLOAT)0.5);
 
             Y[j][*k] = y0[j] + l * h[j];
+
+            if (Y[j][*k] < ymin[j]) {
+                Y[j][*k] += h[j];
+            }
+            else
+            if (Y[j][*k] > ymax[j]) {
+                Y[j][*k] -= h[j];
+            }
         }
 
         for (j = 0; j < *k; j++) {
@@ -432,6 +442,8 @@ E0: return Error;
 
 int Rebmix::PreprocessingH(FLOAT *h,     // Sides of the hypersquare.
                            FLOAT *y0,    // Origins.
+                           FLOAT *ymin,  // Minimum observations.
+                           FLOAT *ymax,  // Maximum observations.
                            int   *k,     // Total number of bins.
                            FLOAT **Y,    // Pointer to the input array [y0,...,yd-1,kl].
                            int   *State) // State variable.
@@ -448,6 +460,14 @@ int Rebmix::PreprocessingH(FLOAT *h,     // Sides of the hypersquare.
             l = (int)floor((Y_[j][i] - y0[j]) / h[j] + (FLOAT)0.5);
 
             Y[j][*k] = y0[j] + l * h[j];
+
+            if (Y[j][*k] < ymin[j]) {
+                Y[j][*k] += h[j];
+            }
+            else
+            if (Y[j][*k] > ymax[j]) {
+                Y[j][*k] -= h[j];
+            }
         }
 
         for (j = 0; j < *k; j++) {
@@ -5654,7 +5674,7 @@ int Rebmix::REBMIXKDE()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / (all_K_[j * all_length_ + i] - (FLOAT)1.0);
+                h[j] = (ymax[j] - ymin[j]) / all_K_[j * all_length_ + i];
 
                 logV += (FLOAT)log(h[j]);
 
@@ -6437,10 +6457,10 @@ int Rebmix::REBMIXH()
         for (j = 0; j < length_pdf_; j++) {
             switch (Variables_[j]) {
             case vtContinuous:
-                h[j] = (ymax[j] - ymin[j]) / (all_K_[j * all_length_ + i] - (FLOAT)1.0);
+                h[j] = (ymax[j] - ymin[j]) / all_K_[j * all_length_ + i];
 
                 if (y0_ == NULL) {
-                    y0[j] = ymin[j];
+                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
                 }
                 else {
                     y0[j] = y0_[j];
@@ -6456,7 +6476,7 @@ int Rebmix::REBMIXH()
 
         State = i > 0;
 
-        Error = PreprocessingH(h, y0, &all_K_[i], Y, &State);
+        Error = PreprocessingH(h, y0, ymin, ymax, &all_K_[i], Y, &State);
 
         if (Error) goto E0;
 

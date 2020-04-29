@@ -6,11 +6,12 @@
 Optimal Numbers of Bins Calculation
 }
 \description{
-Returns the matrix of size \eqn{n_{\mathrm{D}} \times d} containing numbers of bins \eqn{v_{1}, \ldots, v_{d}} for all processed datasets.
+Returns the matrix of size \eqn{n_{\mathrm{D}} \times d} containing optimal numbers of bins \eqn{v_{1}, \ldots, v_{d}} for all processed datasets.
 }
 \usage{
-\S4method{optbins}{list}(Dataset = list(), Rule = "Knuth equal", 
-  y0, ymin, ymax, kmin, kmax, ...)
+\S4method{optbins}{list}(Dataset = list(), Rule = "Knuth equal", y0 = numeric(), 
+        ymin = numeric(), ymax = numeric(), kmin = numeric(),
+        kmax = numeric(), ...)
 ## ... and for other signatures
 }
 \arguments{
@@ -71,7 +72,7 @@ sim2d <- RNGMIX(model = "RNGMVNORM",
 
 # Calculate optimal numbers of bins.
 
-opt.k <- optbins(sim2d@Dataset,
+opt.k <- optbins(Dataset = sim2d@Dataset,
   Rule = "Knuth equal",
   ymin = sim2d@ymin,
   ymax = sim2d@ymax,

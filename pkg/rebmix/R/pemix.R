@@ -24,8 +24,6 @@ function(x,
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
 
-  colnames <- colnames(Dataset)
-
   d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
 
@@ -75,12 +73,7 @@ function(x,
 
   output <- as.data.frame(cbind(Dataset, F), stringsAsFactors = FALSE)
 
-  if (is.null(colnames)) {
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "F")
-  }
-  else {
-    colnames(output) <- c(colnames[variables], "F")
-  }
+  colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "F")
 
   options(digits = digits)
 
@@ -115,8 +108,6 @@ function(x,
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
 
-  colnames <- colnames(Dataset)
-
   d <- ncol(Dataset); dini <- d; variables <- eval(variables)
   n <- nrow(Dataset)
 
@@ -166,12 +157,7 @@ function(x,
 
   output <- as.data.frame(cbind(Dataset, F), stringsAsFactors = FALSE)
 
-  if (is.null(colnames)) {
-    colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "F")
-  }
-  else {
-    colnames(output) <- c(colnames[variables], "F")
-  }
+  colnames(output) <- c(paste("x", if (dini > 1) variables else "", sep = ""), "F")
 
   options(digits = digits)
 

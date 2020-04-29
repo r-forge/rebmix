@@ -1,8 +1,8 @@
 ### Panic Branislav & Marko Nagode.  
 
-setMethod("optbins",
+setMethod("bins",
           signature(Dataset = "list"),
-function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
+function(Dataset, K, y0, ymin, ymax, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -42,52 +42,32 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
     stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
   }
   
-  # Rule.
-
-  if (!is.character(Rule)) {
-    stop(sQuote("Rule"), " character is requested!", call. = FALSE)
-  }
-
-  Rule <- match.arg(Rule, .optbins$Rule, several.ok = FALSE)
+  # K.
   
-  # kmin.   
+  if (missing(K) || (length(K) == 0)) {
+    stop(sQuote("K"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.matrix(K)) {
+    stop(sQuote("K"), " integer matrix is requested!", call. = FALSE)
+  }
   
-  if (missing(kmin) || length(kmin) == 0) {
-    if (Rule %in% c(.optbins$Rule[4], .optbins$Rule[5])) {
-      stop(sQuote("kmin"), " must not be empty!", call. = FALSE)
-    }
+  if (!all(unlist(lapply(K, is.wholenumber) == TRUE))) {
+    stop(sQuote("K"), " matrix of integer values is requested!", call. = FALSE)
   }
-  else {
-    if (!is.wholenumber(kmin)) {
-      stop(sQuote("kmin"), " integer is requested!", call. = FALSE)
-    }
 
-    length(kmin) <- 1
-
-    if (kmin < 1) {
-      stop(sQuote("kmin"), " must be greater than 0!", call. = FALSE)
-    }  
+  if (!all(unlist(lapply(K, function(x) all(x > 0)))) == TRUE) {
+    stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
   }
     
-  # kmax.
-    
-  if (missing(kmax) || length(kmax) == 0) {
-    if (Rule %in% c(.optbins$Rule[4], .optbins$Rule[5])) {  
-      stop(sQuote("kmax"), " must not be empty!", call. = FALSE)
-    }
+  if(ncol(K) != d) {
+    stop(sQuote("K"), " number of columns in matrix must equal ", d, "!", call. = FALSE)    
   }
-  else {
-    if (!is.wholenumber(kmax)) {
-      stop(sQuote("kmax"), " integer is requested!", call. = FALSE)
-    }
-
-    length(kmax) <- 1
-
-    if (kmax < kmin) {
-      stop(sQuote("kmax"), " must be greater or equal than ", kmin, "!", call. = FALSE)
-    }
-  }    
     
+  if(nrow(K) != length(Dataset)) {
+    stop(sQuote("K"), " number of rows in matrix must equal ", length(Dataset), "!", call. = FALSE)    
+  }
+  
   # y0.
 
   if (missing(y0) || (length(y0) == 0)) {
@@ -137,45 +117,45 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
     }       
   }
   
-  output <- matrix(0, nrow = length(Dataset), ncol = d)
+  output <- list()
 
   for (i in 1:length(Dataset)) {
     x <- as.matrix(Dataset[[i]])
     
     n <- nrow(x)
-    d <- ncol(x)
-
-    temp <- .C(C_Roptbins,
+    
+    temp <- .C(C_Rbins,
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(x),
-      Rule = as.character(Rule),
       length.y0 = as.integer(length(y0)),
       y0 = as.double(y0),
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),
       ymax = as.double(ymax),            
-      kmin = as.integer(kmin),
-      kmax = as.integer(kmax),
-      opt.k = integer(d),
+      k = as.integer(K[i, ]),
+      length.y = integer(1),
+      y = double(n * (d + 1)),
       error = integer(1),
       PACKAGE = "rebmix")
 
     if (temp$error == 1) {
-      stop("in optbins!", call. = FALSE); return(NA)
+      stop("in bins!", call. = FALSE); return(NA)
     }
     
-    output[i, ] <- temp$opt.k
+    length(temp$y) <- temp$length.y * (d + 1); dim(temp$y) <- c(temp$length.y, temp$d + 1)
+    
+    output[[i]] <- as.data.frame(temp$y, stringsAsFactors = FALSE)
+    
+    colnames(output[[i]]) <- c(paste("y", if (d > 1) 1:d else "", sep = ""), "k")
   }
-  
-  colnames(output) <- paste("y", if (d > 1) 1:d else "", sep = "")
   
   options(digits = digits)
   
   rm(list = ls()[!(ls() %in% c("output"))])
 
   invisible(output)  
-}) ## optbins
+}) ## bins
 
 ### End

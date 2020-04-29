@@ -227,6 +227,14 @@ setGeneric("optbins",
     kmin = numeric(),
     kmax = numeric(), ...)
   standardGeneric("optbins"))
+  
+setGeneric("bins",
+  function(Dataset = list(),
+    K = matrix(),
+    y0 = numeric(),
+    ymin = numeric(),
+    ymax = numeric(), ...)
+  standardGeneric("bins"))  
 
 ### End
 

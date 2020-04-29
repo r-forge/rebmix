@@ -2,7 +2,13 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.12.0}{ 
 \itemize{
-\item Improved C++ functions regarding memory allocation.
+\item Improved C++ functions regarding memory allocation and efficiency.
+\item Method \code{plot} is improved.
+\item Method \code{RCLRMIX} is debugged and improved.
+\item Method \code{REBMIX} is debugged and improved.
+\item Method \code{bins} is added.
+\item Method \code{optbins} is added.
+\item Fixed bugs in C++ and R code.
 }
 }
 \section{Changes in version 2.11.0}{ 

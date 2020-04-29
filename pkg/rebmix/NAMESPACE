@@ -139,5 +139,6 @@ exportMethods("RNGMIX",
               "a.acceleration.multiplier<-",
               "a.maximum.iterations",
               "a.maximum.iterations<-",
-              "optbins")
+              "optbins",
+              "bins")
 ### End 

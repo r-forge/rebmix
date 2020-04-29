@@ -1003,8 +1003,8 @@ E0: if (Y) {
 
 void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
                            double *y0,         // Origins.
-                           int    *length_pdf, // Length of pdf.
-                           char   **pdf,       // Parametric family types.
+                           double *ymin,       // Minimum observations.
+                           double *ymax,       // Maximum observations.
                            int    *k,          // Total number of bins.
                            int    *n,          // Total number of independent observations.
                            int    *d,          // Number of independent random variables.
@@ -1020,26 +1020,8 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->length_pdf_ = *d;
-
-    rebmvnorm->length_pdf_ = *length_pdf;
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = rebmvnorm->IniTheta_->Realloc(rebmvnorm->length_pdf_, 0, NULL);
-
-    if (*Error) goto E0;
-
-    for (i = 0; i < rebmvnorm->IniTheta_->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal")) {
-            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
-        }
-        else {
-            *Error = 1; goto E0;
-        }
-    }
-
     rebmvnorm->n_ = *n;
+    rebmvnorm->length_pdf_ = *d;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
 
@@ -1069,7 +1051,7 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
 
-    *Error = rebmvnorm->PreprocessingH(h, y0, k, Y);
+    *Error = rebmvnorm->PreprocessingH(h, y0, ymin, ymax, k, Y);
 
     if (*Error) goto E0;
 
@@ -1518,6 +1500,8 @@ E0: if (Y) {
 
 void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersquare.
                                   double *y0,           // Origins.
+                                  double *ymin,         // Minimum observations.
+                                  double *ymax,         // Maximum observations.
                                   int    *k,            // Total number of bins.
                                   char   **Criterion,   // Information criterion type.
                                   int    *c,            // Number of components.
@@ -1688,7 +1672,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
 
-    *Error = rebmvnorm->PreprocessingH(h, y0, k, Y);
+    *Error = rebmvnorm->PreprocessingH(h, y0, ymin, ymax, k, Y);
 
     if (*Error) goto E0;
 

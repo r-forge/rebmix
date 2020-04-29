@@ -766,8 +766,8 @@ function(.Object, ...,
       stop(sQuote("K"), " integer vector is requested!", call. = FALSE)
     }
 
-    if (!all(K > 0)) {
-      stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
+    if (!all(K > 1)) {
+      stop("all ", sQuote("K"), " must be greater than 1!", call. = FALSE)
     }
   }
   else {

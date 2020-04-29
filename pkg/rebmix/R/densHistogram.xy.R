@@ -1,4 +1,4 @@
-.densHistogram.xy <- function(k, x, y, x0, y0, hx, hy, cx, cy, px, py)
+.densHistogram.xy <- function(k, x, y, x0, xmin, xmax, y0, ymin, ymax, hx, hy, cx, cy, px, py)
 {
   output <- .C(C_RdensHistogramXY,
     k = as.integer(k),
@@ -7,7 +7,11 @@
     y = as.double(y),
     z = double(length(x)),
     x0 = as.double(x0),
+    xmin = as.double(xmin),    
+    xmax = as.double(xmax),    
     y0 = as.double(y0),
+    ymin = as.double(ymin),    
+    ymax = as.double(ymax),    
     hx = as.double(hx),
     hy = as.double(hy),
     px = as.character(px),

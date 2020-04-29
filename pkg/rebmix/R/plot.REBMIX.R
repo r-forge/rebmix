@@ -318,7 +318,7 @@ function(x,
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
           if (C == .rebmix$Preprocessing[1]) {
-            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], y0[j], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
@@ -615,7 +615,7 @@ function(x,
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, 1], y0[1], h[1], Variables[1], pdf[1])
+        edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
@@ -769,7 +769,7 @@ function(x,
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, i], y0[i], h[i], Variables[i], pdf[i])
+        edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
@@ -1447,7 +1447,7 @@ function(x,
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
           if (C == .rebmix$Preprocessing[1]) {
-            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], y0[j], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
           }
           else
           if (C == .rebmix$Preprocessing[2]) {
@@ -1644,7 +1644,7 @@ function(x,
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, 1], y0[1], h[1], Variables[1], pdf[1])
+        edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {
@@ -1798,7 +1798,7 @@ function(x,
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, i], y0[i], h[i], Variables[i], pdf[i])
+        edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
       }
       else
       if (C == .rebmix$Preprocessing[2]) {

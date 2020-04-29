@@ -130,8 +130,8 @@ public:
     virtual int Initialize();
     int PreprocessingKNN(int k, FLOAT *h, FLOAT **Y);
     int PreprocessingKDE(FLOAT *h, FLOAT **Y);
-    int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y);
-    int PreprocessingH(FLOAT *h, FLOAT *y0, int *k, FLOAT **Y, int *State);
+    int PreprocessingH(FLOAT *h, FLOAT *y0, FLOAT *ymin, FLOAT *ymax, int *k, FLOAT **Y);
+    int PreprocessingH(FLOAT *h, FLOAT *y0, FLOAT *ymin, FLOAT *ymax, int *k, FLOAT **Y, int *State);
     virtual int RoughEstimationKNN(FLOAT **Y, int k, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationKDE(FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual int RoughEstimationH(int k, FLOAT **Y, FLOAT *h, FLOAT nl, int m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);

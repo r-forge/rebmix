@@ -702,7 +702,11 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
                       double *y,     // Pointer to the input array y.
                       double *p,     // Pointer to the output array p.
                       double *x0,    // Origin.
+                      double *xmin,  // Minimum observation.
+                      double *xmax,  // Maximim observation.
                       double *y0,    // Origin.
+                      double *ymin,  // Minimum observation.
+                      double *ymax,  // Maximim observation.
                       double *hx,    // Side of the hypersquare.
                       double *hy,    // Side of the hypersquare.
                       char   **px,   // Parametric family type.
@@ -810,6 +814,14 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
 
         x[*k] = (*x0) + j * (*hx);
 
+        if (x[*k] < *xmin) {
+            x[*k] += (*hx);
+        }
+        else
+        if (x[*k] > *xmax) {
+            x[*k] -= (*hx);
+        }
+
         switch (pdfx) {
         case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
             break;
@@ -820,6 +832,14 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         j = (int)floor((y[i] - (*y0)) / (*hy) + (FLOAT)0.5);
 
         y[*k] = (*y0) + j * (*hy);
+
+        if (y[*k] < *ymin) {
+            y[*k] += (*hy);
+        }
+        else
+        if (y[*k] > *ymax) {
+            y[*k] -= (*hy);
+        }
 
         switch (pdfy) {
         case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
@@ -925,6 +945,8 @@ void RdensHistogramX(int    *k,     // Total number of bins.
                      double *x,     // Pointer to the input array x.
                      double *p,     // Pointer to the output array p.
                      double *x0,    // Origin.
+                     double *xmin,  // Minimum observation.
+                     double *xmax,  // Maximum observation.
                      double *hx,    // Side of the hypersquare.
                      char   **px,   // Parametric family type.
                      int    *Error) // Error code.
@@ -986,6 +1008,14 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         j = (int)floor((x[i] - (*x0)) / (*hx) + (FLOAT)0.5);
 
         x[*k] = (*x0) + j * (*hx);
+
+        if (x[*k] < *xmin) {
+            x[*k] += (*hx);
+        }
+        else
+        if (x[*k] > *xmax) {
+            x[*k] -= (*hx);
+        }
 
         switch (pdfx) {
         case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
@@ -1556,8 +1586,8 @@ E0: if (Y) {
 
 void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
                         double *y0,         // Origins.
-                        int    *length_pdf, // Length of pdf.
-                        char   **pdf,       // Parametric family types.
+                        double *ymin,       // Minimum observations.
+                        double *ymax,       // Maximum observations.
                         int    *k,          // Total number of bins.
                         int    *n,          // Total number of independent observations.
                         int    *d,          // Number of independent random variables.
@@ -1573,62 +1603,8 @@ void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
 
     *Error = NULL == rebmix; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *d;
-
-    rebmix->length_pdf_ = *length_pdf;
-
-    rebmix->IniTheta_ = new CompnentDistribution(rebmix);
-
-    *Error = rebmix->IniTheta_->Realloc(rebmix->length_pdf_, 0, NULL);
-
-    if (*Error) goto E0;
-
-    for (i = 0; i < rebmix->IniTheta_->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal")) {
-            rebmix->IniTheta_->pdf_[i] = pfNormal;
-        }
-        else
-        if (!strcmp(pdf[i], "lognormal")) {
-            rebmix->IniTheta_->pdf_[i] = pfLognormal;
-        }
-        else
-        if (!strcmp(pdf[i], "Weibull")) {
-            rebmix->IniTheta_->pdf_[i] = pfWeibull;
-        }
-        else
-        if (!strcmp(pdf[i], "gamma")) {
-            rebmix->IniTheta_->pdf_[i] = pfGamma;
-        }
-        else
-        if (!strcmp(pdf[i], "Gumbel")) {
-            rebmix->IniTheta_->pdf_[i] = pfGumbel;
-        }
-        else
-        if (!strcmp(pdf[i], "vonMises")) {
-            rebmix->IniTheta_->pdf_[i] = pfvonMises;
-        }
-        else
-        if (!strcmp(pdf[i], "binomial")) {
-            rebmix->IniTheta_->pdf_[i] = pfBinomial;
-        }
-        else
-        if (!strcmp(pdf[i], "Poisson")) {
-            rebmix->IniTheta_->pdf_[i] = pfPoisson;
-        }
-        else
-        if (!strcmp(pdf[i], "Dirac")) {
-            rebmix->IniTheta_->pdf_[i] = pfDirac;
-        }
-        else
-        if (!strcmp(pdf[i], "uniform")) {
-            rebmix->IniTheta_->pdf_[i] = pfUniform;
-        }
-        else {
-            *Error = 1; goto E0;
-        }
-    }
-
     rebmix->n_ = *n;
+    rebmix->length_pdf_ = *d;
 
     rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
 
@@ -1658,7 +1634,7 @@ void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
 
-    *Error = rebmix->PreprocessingH(h, y0, k, Y);
+    *Error = rebmix->PreprocessingH(h, y0, ymin, ymax, k, Y);
 
     if (*Error) goto E0;
 
@@ -2167,6 +2143,8 @@ E0: if (Y) {
 
 void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare.
                                double *y0,           // Origins.
+                               double *ymin,         // Minimum observations.
+                               double *ymax,         // Maximum observations.
                                int    *k,            // Total number of bins.
                                char   **Criterion,   // Information criterion type.
                                int    *c,            // Number of components.
@@ -2373,7 +2351,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
 
-    *Error = rebmix->PreprocessingH(h, y0, k, Y);
+    *Error = rebmix->PreprocessingH(h, y0, ymin, ymax, k, Y);
 
     if (*Error) goto E0;
 
@@ -2658,7 +2636,7 @@ void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
 
 void Roptbins(int    *d,           // Number of independent random variables.
               int    *n,           // Number of observations.
-              double *X,           // Dataset.
+              double *x,           // Dataset.
               char   **Rule,       // Rule.
               int    *length_y0,   // Length of y0.
               double *y0,          // Origins.
@@ -2698,7 +2676,7 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
     for (j = 0; j < rebmix->length_pdf_; j++) {
         for (l = 0; l < rebmix->n_; l++) {
-            rebmix->Y_[j][l] = X[i]; i++;
+            rebmix->Y_[j][l] = x[i]; i++;
         }
     }
 
@@ -2795,17 +2773,15 @@ void Roptbins(int    *d,           // Number of independent random variables.
         logpopt = -FLOAT_MAX;
 
         for (l = *kmin; l < *kmax + 1; l++) {
-            rebmix->kmax_ = l;
-
             for (j = 0; j < rebmix->length_pdf_; j++) {
-                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / (l - (FLOAT)1.0);
+                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
 
                 if (*length_y0 == 0) {
-                    rebmix->y0_[j] = rebmix->ymin_[j];
+                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
                 }
             }
 
-            *Error = rebmix->PreprocessingH(h, rebmix->y0_, &k, Y);
+            *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
 
             if (*Error) goto E0;
 
@@ -2849,6 +2825,148 @@ E0: if (h) free(h);
 
     if (rebmix) delete rebmix;
 } // Roptbins
+
+/// Binning of data.
+
+void Rbins(int    *d,           // Number of independent random variables.
+           int    *n,           // Number of observations.
+           double *x,           // Dataset.
+           int    *length_y0,   // Length of y0.
+           double *y0,          // Origins.
+           int    *length_ymin, // Length of ymin.
+           double *ymin,        // Minimum observations.
+           int    *length_ymax, // Length of ymax.
+           double *ymax,        // Maximum observations.
+           int    *k,           // Number of bins.
+           int    *length_y,    // Length of y.
+           double *y,           // Binned dataset.
+           int    *Error)       // Error code.
+{
+    Rebmix *rebmix = NULL;
+    FLOAT  **Y = NULL;
+    FLOAT  *h = NULL;
+    int    i, j, l;
+
+    rebmix = new Rebmix;
+
+    *Error = NULL == rebmix; if (*Error) goto E0;
+
+    rebmix->length_pdf_ = *d;
+
+    rebmix->n_ = *n;
+
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmix->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->length_pdf_; i++) {
+        rebmix->Y_[i] = (FLOAT*)malloc(rebmix->n_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmix->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        for (l = 0; l < rebmix->n_; l++) {
+            rebmix->Y_[j][l] = x[i]; i++;
+        }
+    }
+
+    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
+
+    if (*length_y0 > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->y0_[i] = y0[i];
+        }
+    }
+
+    rebmix->ymin_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->ymin_; if (*Error) goto E0;
+
+    if (*length_ymin > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymin_[i] = ymin[i];
+        }
+    }
+    else {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymin_[i] = rebmix->Y_[i][0];
+
+            for (j = 1; j < rebmix->n_; j++) {
+                if (rebmix->Y_[i][j] < rebmix->ymin_[i]) rebmix->ymin_[i] = rebmix->Y_[i][j];
+            }
+        }
+    }
+
+    rebmix->ymax_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->ymax_; if (*Error) goto E0;
+
+    if (*length_ymax > 0) {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymax_[i] = ymax[i];
+        }
+    }
+    else {
+        for (i = 0; i < rebmix->length_pdf_; i++) {
+            rebmix->ymax_[i] = rebmix->Y_[i][0];
+
+            for (j = 1; j < rebmix->n_; j++) {
+                if (rebmix->Y_[i][j] > rebmix->ymax_[i]) rebmix->ymax_[i] = rebmix->Y_[i][j];
+            }
+        }
+    }
+
+    Y = (FLOAT**)malloc((rebmix->length_pdf_ + 1) * sizeof(FLOAT*));
+
+    *Error = NULL == Y; if (*Error) goto E0;
+
+    for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
+        Y[i] = (FLOAT*)malloc(rebmix->n_ * sizeof(FLOAT));
+
+        *Error = NULL == Y[i]; if (*Error) goto E0;
+    }
+
+    h = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == h; if (*Error) goto E0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / k[j];
+
+        if (*length_y0 == 0) {
+            rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
+        }
+    }
+
+    *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, length_y, Y);
+
+    if (*Error) goto E0;
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_ + 1; j++) {
+        for (l = 0; l < *length_y; l++) {
+            y[i] = Y[j][l]; i++;
+        }
+    }
+
+E0: if (h) free(h);
+
+    if (Y) {
+        for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
+            if (Y[i]) free(Y[i]);
+        }
+
+        free(Y);
+    }
+
+    if (rebmix) delete rebmix;
+} // Rbins
 
 /// End
 
