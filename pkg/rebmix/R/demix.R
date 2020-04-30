@@ -52,10 +52,14 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[1]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]
     y0 <- x@summary[pos, grep("y0", Names)]; y0 <- y0[variables]
+    ymin <- x@summary[pos, grep("ymin", Names)]; ymin <- ymin[variables]
+    ymax <- x@summary[pos, grep("ymax", Names)]; ymax <- ymax[variables]    
 
     output <- .C(C_RPreprocessingHMIX,
       h = as.double(h),
       y0 = as.double(y0),
+      ymin = as.double(ymin),
+      ymax = as.double(ymax),      
       k = as.integer(k),
       n = as.integer(n),
       d = as.integer(d),
@@ -186,10 +190,14 @@ function(x, pos, variables, ...)
   if (Preprocessing == .rebmix$Preprocessing[1]) {
     h <- x@summary[pos, grep("h", Names)]; h <- h[variables]
     y0 <- x@summary[pos, grep("y0", Names)]; y0 <- y0[variables]
+    ymin <- x@summary[pos, grep("ymin", Names)]; ymin <- ymin[variables]
+    ymax <- x@summary[pos, grep("ymax", Names)]; ymax <- ymax[variables]
 
     output <- .C(C_RPreprocessingHMVNORM,
       h = as.double(h),
       y0 = as.double(y0),
+      ymin = as.double(ymin),
+      ymax = as.double(ymax),
       k = as.integer(k),
       n = as.integer(n),
       d = as.integer(d),

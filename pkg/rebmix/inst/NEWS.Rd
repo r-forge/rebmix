@@ -4,7 +4,7 @@
 \itemize{
 \item Improved C++ functions regarding memory allocation and efficiency.
 \item Improved outlier detection.
-\item \code{"Knuth equal") and \code{"Knuth unequal") binning rules are added to the existing \code{"Sturges"}, \code{"Log10"} and \code{"RootN"} rules.
+\item \code{"Knuth equal"} and \code{"Knuth unequal"} binning rules are added to the existing \code{"Sturges"}, \code{"Log10"} and \code{"RootN"} rules.
 \item Method \code{plot} is improved.
 \item Method \code{RCLRMIX} is debugged and improved.
 \item Method \code{REBMIX} is debugged and improved.

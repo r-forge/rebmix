@@ -53,10 +53,14 @@ function(x, Criterion, pos, ...)
 
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
+    ymin <- as.double(x@summary[pos, paste("ymin", if (d > 1) 1:d else "", sep = "")])
+    ymax <- as.double(x@summary[pos, paste("ymax", if (d > 1) 1:d else "", sep = "")])
 
     output <- .C(C_RInformationCriterionHMIX,
       h = as.double(h),
       y0 = as.double(y0),
+      ymin = as.double(ymin),
+      ymax = as.double(ymax),
       k = as.integer(x@summary[pos, "v/k"]),
       Criterion = as.character(Criterion),
       c = as.integer(c),
@@ -193,10 +197,14 @@ function(x, Criterion, pos, ...)
 
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
+    ymin <- as.double(x@summary[pos, paste("ymin", if (d > 1) 1:d else "", sep = "")])
+    ymax <- as.double(x@summary[pos, paste("ymax", if (d > 1) 1:d else "", sep = "")])
 
     output <- .C(C_RInformationCriterionHMVNORM,
       h = as.double(h),
       y0 = as.double(y0),
+      ymin = as.double(ymin),
+      ymax = as.double(ymax),
       k = as.integer(x@summary[pos, "v/k"]),
       Criterion = as.character(Criterion),
       c = as.integer(c),
