@@ -1075,6 +1075,7 @@ function(x, s)
   tau
 }) ## a.tau
 
+setMethod("a.Dataset", signature(x = "RCLRMIX"), function(x) x@Dataset)
 setMethod("a.prob", signature(x = "RCLRMIX"), function(x) x@prob)
 setMethod("a.from", signature(x = "RCLRMIX"), function(x) x@from)
 setMethod("a.to", signature(x = "RCLRMIX"), function(x) x@to)

@@ -6,7 +6,7 @@
 \description{Object of class \code{RCLRMIX}.}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("RCLRMIX", ...)}.
-Accessor methods for the slots are \code{a.pos(x = NULL)}, \code{a.Zt(x = NULL)}, \code{a.Zp(x = NULL, s = expression(c))}, \code{a.c(x = NULL)},
+Accessor methods for the slots are \code{a.Dataset(x = NULL)}, \code{a.pos(x = NULL)}, \code{a.Zt(x = NULL)}, \code{a.Zp(x = NULL, s = expression(c))}, \code{a.c(x = NULL)},
 \code{a.p(x = NULL, s = expression(c))}, \code{a.pi(x = NULL, s = expression(c))}, \cr
 \code{a.P(x = NULL, s = expression(c))}, \code{a.tau(x = NULL, s = expression(c))},
 \code{a.prob(x = NULL)}, \code{a.from(x = NULL)}, \code{a.to(x = NULL)}, \code{a.EN(x = NULL)} and \code{a.ED(x = NULL)}, where \code{x} stands for an object of class \code{RCLRMIX} and \code{s}
@@ -17,8 +17,11 @@ a desired number of clusters for which the slot is calculated.
 \item{\code{x}:}{
 an object of class \code{REBMIX}.
 }
+\item{\code{Dataset}:}{
+a data frame to be clustered. The default value is \code{data.frame()}.
+}
 \item{\code{pos}:}{
-a desired row number in \code{x@summary} to be clustered. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the clustering is performed. The default value is \code{1}.
 }
 \item{\code{Zt}:}{
 a factor of true cluster membership.

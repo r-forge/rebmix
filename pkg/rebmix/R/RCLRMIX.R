@@ -20,7 +20,14 @@ function(model, ...)
 
   d <- length(pdf) / c
 
-  dataset <- as.matrix(model@x@Dataset[[model@pos]])
+  dataset <- model@Dataset
+
+  if (missing(dataset) || (length(dataset) == 0)) {
+    dataset <- as.matrix(model@x@Dataset[[model@pos]])
+  }
+  else {
+    dataset <- as.matrix(dataset)
+  }  
 
   n <- nrow(dataset)
 
@@ -224,8 +231,15 @@ function(model, ...)
   w <- model@x@w[[model@pos]]
 
   d <- length(pdf) / c
+  
+  dataset <- model@Dataset
 
-  dataset <- as.matrix(model@x@Dataset[[model@pos]])
+  if (missing(dataset) || (length(dataset) == 0)) {
+    dataset <- as.matrix(model@x@Dataset[[model@pos]])
+  }
+  else {
+    dataset <- as.matrix(dataset)
+  } 
 
   n <- nrow(dataset)
 
@@ -329,6 +343,7 @@ setMethod("RCLRMIX",
           signature(model = "ANY"),
 function(model,
   x,
+  Dataset,
   pos,
   Zt, ...)
 {
@@ -340,6 +355,7 @@ function(model,
 
   model <- new(model,
     x = x,
+    Dataset = Dataset,
     pos = pos,
     Zt = Zt)
 

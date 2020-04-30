@@ -15,7 +15,8 @@ Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 Returns as default the RCLRMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities, following the methodology proposed in the article cited in the references. If \code{model} equals \code{"RCLRMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, pos = 1, Zt = factor(), ...)
+\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, Dataset = data.frame(), 
+        pos = 1, Zt = factor(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLRMIX}(object, ...)
 ## ... and for other signatures
@@ -27,8 +28,11 @@ see Methods section below.
 \item{x}{
 an object of class \code{REBMIX}.
 }
+\item{Dataset}{
+a data frame to be clustered. The default value is \code{data.frame()}.
+}
 \item{pos}{
-a desired row number in \code{x@summary} to be clustered. The default value is \code{1}.
+a desired row number in \code{x@summary} for which the clustering is performed. The default value is \code{1}.
 }
 \item{Zt}{
 a factor of true cluster membership. The default value is \code{factor()}.
@@ -94,6 +98,16 @@ summary(poissonclu)
 
 plot(poissonclu)
 
-summary(poissonclu)
+# Create new dataset.
+
+Dataset <- sample.int(n = 50, size = 10, replace = TRUE)
+
+Dataset <- as.data.frame(Dataset)
+
+# Cluster the dataset.
+
+poissonclu <- RCLRMIX(x = poissonest, Dataset = Dataset)
+
+a.Dataset(poissonclu)
 }
 \keyword{clustering}

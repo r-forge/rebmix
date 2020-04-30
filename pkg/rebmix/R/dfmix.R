@@ -42,7 +42,7 @@ function(x,
   n <- nrow(Dataset)
 
   if (n < 1) {
-    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 1!", call. = FALSE)
+    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
   }
 
   if (length(variables) != 0) {
@@ -191,7 +191,7 @@ function(x,
   n <- nrow(Dataset)
 
   if (n < 1) {
-    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 1!", call. = FALSE)
+    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
   }
 
   if (length(variables) != 0) {

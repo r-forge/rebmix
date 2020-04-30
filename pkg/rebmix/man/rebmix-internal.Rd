@@ -205,6 +205,7 @@
 \alias{a.to}
 \alias{a.EN}
 \alias{a.ED}
+\alias{a.Dataset,RCLRMIX-method}
 \alias{a.pos,RCLRMIX-method}
 \alias{a.Zt,RCLRMIX-method}
 \alias{a.Zp,RCLRMIX-method}
@@ -218,6 +219,7 @@
 \alias{a.to,RCLRMIX-method}
 \alias{a.EN,RCLRMIX-method}
 \alias{a.ED,RCLRMIX-method}
+\alias{a.Dataset,RCLRMVNORM-method}
 \alias{a.pos,RCLRMVNORM-method}
 \alias{a.Zt,RCLRMVNORM-method}
 \alias{a.Zp,RCLRMVNORM-method}

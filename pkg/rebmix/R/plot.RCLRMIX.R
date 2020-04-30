@@ -34,7 +34,12 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
-  d <- ncol(x@x@Dataset[[x@pos]])
+  if (length(x@Dataset) == 0) {
+    d <- ncol(x@x@Dataset[[x@pos]])
+  }
+  else {
+    d <- ncol(x@Dataset)
+  }  
 
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
@@ -83,7 +88,14 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- Zp - 1
+  if (length(x@Dataset) == 0) {
+    ey <- as.matrix(x@x@Dataset[[x@pos]]);
+  }
+  else {
+    ey <- as.matrix(x@Dataset);
+  }
+  
+  ep <- Zp - 1
 
   error <- is.error(Zt, Zp)
 
@@ -328,7 +340,12 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
-  d <- ncol(x@x@Dataset[[x@pos]])
+  if (length(x@Dataset) == 0) {
+    d <- ncol(x@x@Dataset[[x@pos]])
+  }
+  else {
+    d <- ncol(x@Dataset)
+  }
 
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
@@ -377,7 +394,14 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  ey <- as.matrix(x@x@Dataset[[x@pos]]); ep <- Zp - 1
+  if (length(x@Dataset) == 0) {
+    ey <- as.matrix(x@x@Dataset[[x@pos]]);
+  }
+  else {
+    ey <- as.matrix(x@Dataset);
+  }
+
+  ep <- Zp - 1
 
   error <- is.error(Zt, Zp)
 
