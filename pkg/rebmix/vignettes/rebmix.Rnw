@@ -24,7 +24,7 @@
 %\VignettePackage{rebmix}
 \bibliographystyle{abbrvnat}
 \title{\pkg{rebmix}: Finite Mixture Modeling, Clustering \& Classification}
-\author{Marko Nagode \& Branislav Pani\'{c}}
+\author{Marko Nagode, Branislav Pani\'{c}, Jernej Klemenc \& Simon Oman}
 \date{\today}
 \maketitle
 
@@ -35,8 +35,17 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.11.0}}
-
+\section{What's new in version \texttt{2.12.0}}
+Improved C++ functions regarding memory allocation and efficiency.
+Improved outlier detection.
+\code{"Knuth equal"} and \code{"Knuth unequal"} binning rules are added to the existing \code{"Sturges"}, \code{"Log10"} and \code{"RootN"} rules.
+Method \code{plot} is improved.
+Method \code{RCLRMIX} is debugged and improved.
+Method \code{REBMIX} is debugged and improved.
+Method \code{bins} is added.
+Method \code{optbins} is added.
+Fixed bugs in C++ and R code.
+\section{Previous versions}
 Version \texttt{2.11.0} introduces the Expectation-Maximization (EM) algorithm for the improved estimation of Gaussian mixture model parameters (with diagonal and unrestriced covariance matrices). Here the REBMIX algorithm is used to asses the initial parameters of the EM algorithm. Two different variants of the EM algorithm are implemented, namely the original EM algorithm from \citep{Dempster_1977} and a $k$-means like variant of the EM algorithm (Classification EM) as described in \citep{Celeux_1992}. As the REBMIX algorithm estimates a wide range of parameters for the Gaussian mixture model for different numbers of components, three different strategies, named \textbf{exhaustive}, \textbf{best} and \textbf{single} have been implemented. The \textbf{exhaustive} strategy is used to run the EM algorithm (or variant) on each solution of Gaussian mixture model parameters provided by the REBMIX algorithm. The \textbf{best} strategy utilizes a voting scheme for the estimated parameters from the REBMIX algorithm and runs the EM algorithm only on selected optimal parameters. Best candidates are chosen based on the value of the likelihood function (the highest one) for each number of components $c$ from a minimum specified \texttt{cmin} to a maximum specified \texttt{cmax}. The \textbf{single} strategy is useful when the single value of, for example, the number of bins in histogram preprocessing is supplied as input for the REBMIX algorithm. Otherwise, when multiple numbers of bins $k$ are supplied, this strategy is the same as the \textbf{exhaustive} strategy. To tackle the slow linear convergence of the EM algorithm, simple acceleration methods are implemented which can be controled with parameter \texttt{acceleration} and \texttt{acceleration.multiplier}. The increment of the EM algorithm in each iteration can be written as
 
 \begin{equation}
@@ -53,7 +62,6 @@ The safe range for the $a_{\textmd{EM}}$ multiplier lies between 1.0 and 2.0, wh
 
 EM handling is  carried out using the newly introduced class \texttt{"EM.Control"}. Classes \texttt{"REBMIX"} and \texttt{"REBMVNORM"} and its signature method \texttt{REBMIX} now accept the \texttt{"EM.Control"} object via the argument called \texttt{"EMcontrol"}. The class \texttt{EM.Control} has the same name convection for slots as the input argument \texttt{EMcontrol} (\texttt{strategy}, \texttt{variant}, \texttt{acceleration}, \texttt{tolerance}, \texttt{acceleration.multiplier} and \texttt{maximum.iterations}) as well as all accessor functions with the same name convention as \texttt{a.\textit{slot name}} and setter function \texttt{a.\textit{slot name}<-}.
 
-\section{Previous versions}
 Methods \texttt{Zp} and \texttt{coef} have been replaced by \texttt{a.Zp}, \texttt{a.theta1.all} and \texttt{a.theta2.all} getters. All slots can be accessed via accessors. Their names are  generally composed of \texttt{a.} followed by the slot name and are used to read the slots. Class \texttt{"RNGMIX.Theta"} has been added to simplify random finite mixture model generation. Method \texttt{show} has been added for \texttt{"RCLS.chunk"} class. The minimum number of components \texttt{cmin} was added to \texttt{REBMIX} arguments and to the \texttt{"REBMIX"} class.  The \texttt{"Parzen window"} preprocessing has been renamed to more commonly known \texttt{"kernel density estimation"}. Rough parameter estimation for binomial and Poisson parametric families has also been improved and the package is now broadened to latent class analysis in version 2.10.3. Method \texttt{split} has been improved and examples for its proper use are added.
 
 GCC 8.1 notes and warnings in C++ functions have been eliminated in version 2.10.2. Cholesky decomposition is now used to calculate the logarithm of the determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention has been paid to resolving numerical problems related to high dimensional datasets.

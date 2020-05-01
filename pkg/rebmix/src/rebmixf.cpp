@@ -566,25 +566,21 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
                           FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,logV,R].
                           int   *O)  // Pointer to the outlier observations.
 {
-    FLOAT cur, imax, omax, in, on;
+    FLOAT cur, imax, omax;
     int   i, im, om, j;
     int   Error = 0;
 
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
+    im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
         cur = Y[length_pdf_][i] / (FLOAT)exp(Y[length_pdf_ + 1][i]);
 
         if (O[i]) {
-            on += cur;
-
             if (cur > omax) {
                 om = i; omax = cur;
             }
         }
         else {
-            in += cur;
-
             if (cur > imax) {
                 im = i; imax = cur;
             }
@@ -677,25 +673,21 @@ int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
                           FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,k].
                           int   *O)  // Pointer to the outlier observations.
 {
-    FLOAT cur, imax, omax, in, on;
+    FLOAT cur, imax, omax;
     int   i, im, om, j;
     int   Error = 0;
 
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
+    im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < n_; i++) {
         cur = Y[length_pdf_][i] * Y[length_pdf_ + 1][i];
 
         if (O[i]) {
-            on += cur;
-
             if (cur > omax) {
                 om = i; omax = cur;
             }
         }
         else {
-            in += cur;
-
             if (cur > imax) {
                 im = i; imax = cur;
             }
@@ -790,25 +782,21 @@ int Rebmix::GlobalModeH(int   *m,  // Global mode.
                         FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
                         int   *O)  // Pointer to the outlier observations.
 {
-    FLOAT cur, imax, omax, in, on;
+    FLOAT cur, imax, omax;
     int   i, im, om, j;
     int   Error = 0;
 
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
+    im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < k; i++) {
         cur = Y[length_pdf_][i];
 
         if (O[i]) {
-            on += cur;
-
             if (cur > omax) {
                 om = i; omax = cur;
             }
         }
         else {
-            in += cur;
-
             if (cur > imax) {
                 im = i; imax = cur;
             }
