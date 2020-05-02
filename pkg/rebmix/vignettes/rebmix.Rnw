@@ -36,23 +36,16 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
 \section{What's new in version \texttt{2.12.0}}
-Improved C++ functions regarding memory allocation and efficiency.
-Improved outlier detection.
-\code{"Knuth equal"} and \code{"Knuth unequal"} binning rules are added to the existing \code{"Sturges"}, \code{"Log10"} and \code{"RootN"} rules.
-Method \code{plot} is improved.
-Method \code{RCLRMIX} is debugged and improved.
-Method \code{REBMIX} is debugged and improved.
-Method \code{bins} is added.
-Method \code{optbins} is added.
-Fixed bugs in C++ and R code.
+Version \texttt{2.12.0} introduces the Knuth algorithm \citep{Knuth_2019} as an effective way of optimal number of bins search. This affects the time efficiency of the \texttt{REBMIX} method considerably. The user can now enter different numbers of bins for different random variables. Two accompanied methods are added \texttt{optbins} and \texttt{bins}. The C++ code is optimized regarding memory allocation and efficiency. The R code is debugged and further improved regarding wrong user input messaging. Further debugging has been done. Outlier detection has been simplified. The \texttt{REBMIX} method now delivers some more components, but identifies also components with very low probability of occurrence, which is important regarding our future plans. The \texttt{plot} method is improved. The \texttt{RCLRMIX} method has been debugged and improved. The same holds for the \texttt{REBMIX} method.
+
 \section{Previous versions}
-Version \texttt{2.11.0} introduces the Expectation-Maximization (EM) algorithm for the improved estimation of Gaussian mixture model parameters (with diagonal and unrestriced covariance matrices). Here the REBMIX algorithm is used to asses the initial parameters of the EM algorithm. Two different variants of the EM algorithm are implemented, namely the original EM algorithm from \citep{Dempster_1977} and a $k$-means like variant of the EM algorithm (Classification EM) as described in \citep{Celeux_1992}. As the REBMIX algorithm estimates a wide range of parameters for the Gaussian mixture model for different numbers of components, three different strategies, named \textbf{exhaustive}, \textbf{best} and \textbf{single} have been implemented. The \textbf{exhaustive} strategy is used to run the EM algorithm (or variant) on each solution of Gaussian mixture model parameters provided by the REBMIX algorithm. The \textbf{best} strategy utilizes a voting scheme for the estimated parameters from the REBMIX algorithm and runs the EM algorithm only on selected optimal parameters. Best candidates are chosen based on the value of the likelihood function (the highest one) for each number of components $c$ from a minimum specified \texttt{cmin} to a maximum specified \texttt{cmax}. The \textbf{single} strategy is useful when the single value of, for example, the number of bins in histogram preprocessing is supplied as input for the REBMIX algorithm. Otherwise, when multiple numbers of bins $k$ are supplied, this strategy is the same as the \textbf{exhaustive} strategy. To tackle the slow linear convergence of the EM algorithm, simple acceleration methods are implemented which can be controled with parameter \texttt{acceleration} and \texttt{acceleration.multiplier}. The increment of the EM algorithm in each iteration can be written as
+Version \texttt{2.11.0} introduces the Expectation-Maximization (EM) algorithm for the improved estimation of Gaussian mixture model parameters (with diagonal and unrestriced covariance matrices). Here the REBMIX algorithm is used to assess the initial parameters of the EM algorithm. Two different variants of the EM algorithm are implemented, namely the original EM algorithm from \citep{Dempster_1977} and a $k$-means like variant of the EM algorithm (Classification EM) as described in \citep{Celeux_1992}. As the REBMIX algorithm estimates a wide range of parameters for the Gaussian mixture model for different numbers of components, three different strategies, named \textbf{exhaustive}, \textbf{best} and \textbf{single}, have been implemented. The \textbf{exhaustive} strategy is used to run the EM algorithm (or variant) on each solution of Gaussian mixture model parameters provided by the REBMIX algorithm. The \textbf{best} strategy utilizes a voting scheme for the estimated parameters from the REBMIX algorithm and runs the EM algorithm only on selected optimal parameters. The best candidates are chosen based on the value of the likelihood function (the highest one) for each number of components $c$ from a minimum specified \texttt{cmin} to a maximum specified \texttt{cmax}. The \textbf{single} strategy is useful when the single value of, for example, the number of bins in histogram preprocessing is supplied as input for the REBMIX algorithm. Otherwise, when multiple numbers of bins $k$ are supplied, this strategy is the same as the \textbf{exhaustive} strategy. To tackle the slow linear convergence of the EM algorithm, simple acceleration methods are implemented, which can be controlled with parameter \texttt{acceleration} and \texttt{acceleration.multiplier}. The increment of the EM algorithm in each iteration can be written as
 
 \begin{equation}
 \varDelta\boldsymbol{\Theta} = \boldsymbol{\Theta}^{(i+1)} - \boldsymbol{\Theta}^{(i)}
 \end{equation}
 
-Insted of using a standard EM increment $\varDelta\boldsymbol{\Theta}$ to reduce the number of iterations needed for the EM algorithm, this increment can be multiplied with some multiplier $a_{\textmd{EM}}$ which is referred to as \texttt{acceleration.multiplier}. Therefore the update in each EM iteration now becomes
+Instead of using a standard EM increment $\varDelta\boldsymbol{\Theta}$ to reduce the number of iterations needed for the EM algorithm, this increment can be multiplied with some multiplier $a_{\textmd{EM}}$, which is referred to as \texttt{acceleration.multiplier}. Therefore the update in each EM iteration now becomes
 
 \begin{equation}
 \boldsymbol{\Theta}^{i+1} = \boldsymbol{\Theta}^{(i)} + a_{\textmd{EM}}\varDelta\boldsymbol{\Theta}
@@ -67,17 +60,23 @@ Methods \texttt{Zp} and \texttt{coef} have been replaced by \texttt{a.Zp}, \text
 GCC 8.1 notes and warnings in C++ functions have been eliminated in version 2.10.2. Cholesky decomposition is now used to calculate the logarithm of the determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention has been paid to resolving numerical problems related to high dimensional datasets.
 
 Version 2.10.1 is the further debugged version of 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
+
 \begin{equation}
 v_{\mathrm{max}} = \frac{1 + d}{d} n^\frac{d}{1 + d}.
 \end{equation}
+
 If $d = \infty$, then $v_{\mathrm{max}} = n$. If $d = 1$, then $v_{\mathrm{max}} = 2 \sqrt{n}$. Minor debugging and function improvements have also been carried out in version 2.10.0. The acceleration rate is now progressively increasing. Each time the inner loop starts, the counter $I_{2}$ \citep[see][for details]{Nagode_2015} is initiated and constant
+
 \begin{equation}
 A = \left. \frac{1 - a_{\mathrm{r}}}{a_{\mathrm{r}} (D_{l} w_{l} - D_{\mathrm{min}})} \right|_{I_{2} = 1}
 \end{equation}
+
 is calculated. The acceleration rate $a_{\mathrm{r}}$ at $I_{2} = 1$ always equals the value stored in the input argument \texttt{ar}. Otherwise
+
 \begin{equation}
 a_{\mathrm{r}} = \left. \frac{1}{A (D_{l} w_{l} - D_{\mathrm{min}}) + 1} \right|_{I_{2} > 1}.
 \end{equation}
+
 The Newton-Raphson root finding in C\texttt{++} functions was improved in version 2.9.3. This affects only Weibull, gamma and von Mises parametric families. A circular von Mises parametric family has been added and further debugging carried out in version 2.9.2. Version 2.9.1 is a further debugged version 2.8.4. The R code has been extended and rewritten in S4 class system. The background C code has also been extended and rewritten as object-oriented C\texttt{++} code. The package can now more easily be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices have been added. Clustering has also been added and classification improved.
 
 \section{Examples}
@@ -105,6 +104,7 @@ devAskNewPage(ask = TRUE)
 
 \subsection{Gamma datasets}
 Three gamma mixtures are considered \citep{Wiper_2001}. The first has four well-separated components with means $2$, $4$, $6$ and $8$, respectively
+
 \begin{center}
 \(\begin{array}{lll}
 \theta_{1} = 1/100 & \beta_{1} = 200 & n_{1} = 100 \\
@@ -113,14 +113,18 @@ Three gamma mixtures are considered \citep{Wiper_2001}. The first has four well-
 \theta_{4} = 1/100 & \beta_{4} = 800 & n_{4} = 100.
 \end{array}\)
 \end{center}
+
 The second has equal means but different variances and weights
+
 \begin{center}
 \(\begin{array}{lll}
 \theta_{1} = 1/27 & \beta_{1} = 9 & n_{1} = 40 \\
 \theta_{2} = 1/270 & \beta_{2} = 90 & n_{2} = 360.
 \end{array}\)
 \end{center}
+
 The third is a mixture of a rather diffuse component with mean $6$ and two lower weighted components with smaller variances and means of $2$ and $10$, respectively
+
 \begin{center}
 \(\begin{array}{lll}
 \theta_{1} = 1/20 & \beta_{1} = 40 & n_{1} = 80 \\
@@ -219,6 +223,7 @@ summary(gamma3boot)
 
 \subsection{Poisson dataset}
 Dataset consists of $n = 600$ two~dimensional observations obtained by generating data points separately from each of three Poisson distributions. The component~dataset sizes and parameters, which are those studied in \citet{Jinwen_2009}, are displayed below
+
 \begin{center}
 \(\begin{array}{ll}
 \bm{\theta}_{1} = (3, 2)^{\top} & n_{1} = 200 \\
@@ -226,6 +231,7 @@ Dataset consists of $n = 600$ two~dimensional observations obtained by generatin
 \bm{\theta}_{3} = (15, 16)^{\top} & n_{3} = 200
 \end{array}\)
 \end{center}
+
 For the dataset \citet{Jinwen_2009} conduct $100$ experiments by selecting different initial values of the mixing proportions. In all the cases, the adaptive gradient BYY learning algorithm leads to the correct model selection, i.e., finally allocating the correct number of Poissons for the dataset. In the meantime, it also results in an estimate for each parameter in the original or true Poisson mixture which
 generated the dataset. As the dataset of \citet{Jinwen_2009} can not exactly be reproduced, $10$ datasets are generated with random seeds $r_{\mathrm{seed}}$ ranging from $-1$ to $-10$.
 
@@ -261,18 +267,17 @@ poissonest <- REBMIX(Dataset = a.Dataset(poisson),
 @
 
 \subsubsection{Plot method}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 6.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(poissonest, pos = 9, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
+plot(poissonest, pos = 1, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
 @
 \caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
 \end{figure}
 
-\pagebreak
 \subsubsection{Clustering}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-poissonclu <- RCLRMIX(x = poissonest, pos = 9, Zt = a.Zt(poisson))
+poissonclu <- RCLRMIX(x = poissonest, pos = 1, Zt = a.Zt(poisson))
 
 plot(poissonclu)
 @
@@ -285,9 +290,9 @@ plot(poissonclu)
 
 summary(poissonest)
 
-a.theta1.all(poissonest, pos = 9)
+a.theta1.all(poissonest, pos = 1)
 
-a.theta2.all(poissonest, pos = 9)
+a.theta2.all(poissonest, pos = 1)
 @
 
 \subsection{Multivariate normal \texttt{wreath} dataset}
@@ -308,7 +313,7 @@ wreathest <- REBMIX(model = "REBMVNORM",
 @
 
 \subsubsection{Plot method}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(wreathest)
 @
@@ -316,7 +321,7 @@ plot(wreathest)
 \end{figure}
 
 \subsubsection{Clustering}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
 
@@ -364,7 +369,7 @@ ex4.1est.dens <- REBMIX(model = "REBMVNORM",
 @
 
 \subsubsection{Plot method}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<ex4_1_dens-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(ex4.1est.dens, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 @
@@ -372,7 +377,7 @@ plot(ex4.1est.dens, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 \end{figure}
 
 \subsubsection{Clustering}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<ex4_1_dens-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu.dens <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est.dens)
 
@@ -392,7 +397,6 @@ summary(ex4.1clu.dens)
 @
 
 \subsubsection{Clustering with exhaustive REBMIX\&ECM strategy and ICL criterion}
-
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
@@ -424,8 +428,6 @@ plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(ex4.1est)
 @
-
-
 \begin{figure}[htb]\centering
 <<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
@@ -434,16 +436,12 @@ plot(ex4.1clu)
 @
 \caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
 \end{figure}
-
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 summary(ex4.1clu)
 @
 
-
 \subsubsection{Acceleration of EM algorithm}
-
 Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.0$:
-
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
@@ -468,9 +466,7 @@ cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.normal, pos=1, col.name = "total.iterations.nbr"),
   ". Value of AIC: ", a.summary(ex4.1est.em.normal, pos = 1, col.name = "IC"))
 @
-
-Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.5$::
-
+Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.5$:
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 EM.fixed1.5 <- new("EM.Control",
   strategy = "exhaustive",
@@ -491,9 +487,7 @@ cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.fixed1.5, pos=1, col.name = "total.iterations.nbr"),
   ". Value of AIC: ", a.summary(ex4.1est.em.fixed1.5, pos = 1, col.name = "IC"))
 @
-
 Standard EM algorithm with line search for optimal increment $a_{\texttt{EM}}$ in each iteration:
-
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 EM.line <- new("EM.Control",
   strategy = "exhaustive",
@@ -514,9 +508,7 @@ cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.line, pos=1, col.name = "total.iterations.nbr"),
   ". Value of AIC: ", a.summary(ex4.1est.em.line, pos = 1, col.name = "IC"))
 @
-
 Standard EM algorithm with golden search for optimal increment $a_{\texttt{EM}}$ in each iteration:
-
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 EM.golden <- new("EM.Control",
   strategy = "exhaustive",
@@ -582,9 +574,9 @@ iriscla
 
 summary(iriscla)
 @
-\pagebreak
+
 \subsubsection{Plot method}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<iris-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected features.
 
@@ -659,7 +651,7 @@ summary(adultcla)
 @
 
 \subsubsection{Plot method}
-\begin{figure}[h]\centering
+\begin{figure}[htb]\centering
 <<adult-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected chunks.
 
