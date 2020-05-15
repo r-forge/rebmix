@@ -125,7 +125,7 @@ AIC(weibullnormalestrebmix)
 timerebmix
 
 plot(weibullnormalestrebmix, nrow = 2, ncol = 3,
-  what = c("density", "marginal", "IC", "logL"), npts = 1000)
+  what = c("pdf", "marginal pdf", "IC", "logL"), npts = 1000)
 
 summary(weibullnormalestrebmix)
 

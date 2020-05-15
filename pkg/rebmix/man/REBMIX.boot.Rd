@@ -94,7 +94,7 @@ weibullest <- REBMIX(Dataset = list(weibull),
 
 # Plot finite mixture.
 
-plot(weibullest, what = c("density", "distribution", "IC", "logL", "D"),
+plot(weibullest, what = c("pdf", "marginal cdf", "IC", "logL", "D"),
   nrow = 3, ncol = 2, npts = 1000)
 
 # Bootstrap finite mixture.

@@ -3,7 +3,7 @@ setMethod("plot",
 function(x,
   y,
   pos = 1,
-  what = c("density"),
+  what = c("pdf"),
   nrow = 1,
   ncol = 1,
   npts = 200,
@@ -465,152 +465,152 @@ function(x,
       }
     }
 
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-      N <- d * (d - 1) / 2
-
-      figno <- 0
-
-      ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
-        space = "rgb",
-        interpolate = "linear")
-
-      for (i in 1:(d - 1)) {
-        for (j in (i + 1):d) {
-          edist <- .dist.xy(ey[, i], ey[, j], n)
-
-          pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i,], Theta[j,])
-
-          zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
-
-          zlim <- zlim / zmax
-
-          plot(x = edist$x,
-            y = edist$y,
-            type = "p",
-            main = "",
-            sub = "",
-            xlab = "",
-            ylab = "",
-            col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
-            axes = FALSE,
-            lwd = 1,
-            cex = plot.cex,
-            pch = plot.pch)
-
-          if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[2])) {
-            points(x = rep(py[[i]], length(py[[j]])),
-              y = rep(py[[j]], each = length(py[[i]])),
-              type = "p",
-              xlab = "",
-              ylab = "",
-              col = rgb(ramp(pdist / zmax), maxColorValue = 255),
-              lwd = 1,
-              cex = plot.cex * 0.5,
-              pch = plot.pch)
-          }
-          else
-          if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[1])) {
-            for (l in 1:length(py[[i]])) {
-              tx <- rep(py[[i]][l], length(py[[j]]))
-              ty <- py[[j]]
-
-              s <- 1:(length(tx) - 1)
-
-              segments(x0 = tx[s],
-                y0 = ty[s],
-                x1 = tx[s + 1],
-                y1 = ty[s + 1],
-                xlab = "",
-                ylab = "",
-                col = rgb(ramp((pdist[l, s] + pdist[l, s + 1]) / zmax / 2.0), maxColorValue = 255),
-                cex = plot.cex)
-            }
-          }
-          else
-          if ((Variables[i] == .rebmix$Variables[1]) && (Variables[j] == .rebmix$Variables[2])) {
-            for (l in 1:length(py[[j]])) {
-              tx <- py[[i]]
-              ty <- rep(py[[j]][l], length(py[[i]]))
-
-              s <- 1:(length(tx) - 1)
-
-              segments(x0 = tx[s],
-                y0 = ty[s],
-                x1 = tx[s + 1],
-                y1 = ty[s + 1],
-                xlab = "",
-                ylab = "",
-                col = rgb(ramp((pdist[s, l] + pdist[s + 1, l]) / zmax / 2.0), maxColorValue = 255),
-                cex = plot.cex)
-            }
-          }
-          else {
-            levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
-
-            contour(x = py[[i]],
-              y = py[[j]],
-              z = pdist,
-              levels = levels * zmax,
-              xlim = lim[, i],
-              ylim = lim[, j],
-              zlim = zlim * zmax,
-              labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
-              axes = FALSE, frame.plot = FALSE,
-              col = rgb(ramp(levels), maxColorValue = 255),
-              add = TRUE)
-          }
-
-          box(col = fg, lty = "solid", lwd = 1)
-
-          axis(side = 3,
-            outer = FALSE,
-            lty = "solid",
-            lwd = 1,
-            hadj = 0.5,
-            padj = 1.0)
-
-          axis(side = 2,
-            outer = FALSE,
-            lty = "solid",
-            lwd = 1,
-            hadj = 0.5,
-            padj = 1.0)
-
-          if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-          }
-          else {
-            text <- bquote(y[.(i)] - y[.(j)])
-          }
-
-          mtext(text = text,
-            side = 1,
-            line = 0,
-            outer = FALSE,
-            adj = 0.5,
-            padj = 0.2,
-            cex = cex)
-
-          figno <- figno + 1
-
-          if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-            for (l in 1:length(legend)) {
-              mtext(text = legend[[l]],
-                side = 1,
-                line = l - 1,
-                outer = TRUE,
-                adj = 0.5,
-                padj = 0.2,
-                cex = cex)
-            }
-
-            figno <- 0
-          }
-
-          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-        }
-      }
-    }
+#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+#     N <- d * (d - 1) / 2
+#
+#     figno <- 0
+#
+#     ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
+#       space = "rgb",
+#       interpolate = "linear")
+#
+#     for (i in 1:(d - 1)) {
+#       for (j in (i + 1):d) {
+#         edist <- .dist.xy(ey[, i], ey[, j], n)
+#
+#         pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i,], Theta[j,])
+#
+#         zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
+#
+#         zlim <- zlim / zmax
+#
+#         plot(x = edist$x,
+#           y = edist$y,
+#           type = "p",
+#           main = "",
+#           sub = "",
+#           xlab = "",
+#           ylab = "",
+#           col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
+#           axes = FALSE,
+#           lwd = 1,
+#           cex = plot.cex,
+#           pch = plot.pch)
+#
+#         if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[2])) {
+#           points(x = rep(py[[i]], length(py[[j]])),
+#             y = rep(py[[j]], each = length(py[[i]])),
+#             type = "p",
+#             xlab = "",
+#             ylab = "",
+#             col = rgb(ramp(pdist / zmax), maxColorValue = 255),
+#             lwd = 1,
+#             cex = plot.cex * 0.5,
+#             pch = plot.pch)
+#         }
+#         else
+#         if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[1])) {
+#           for (l in 1:length(py[[i]])) {
+#             tx <- rep(py[[i]][l], length(py[[j]]))
+#             ty <- py[[j]]
+#
+#             s <- 1:(length(tx) - 1)
+#
+#             segments(x0 = tx[s],
+#               y0 = ty[s],
+#               x1 = tx[s + 1],
+#               y1 = ty[s + 1],
+#               xlab = "",
+#               ylab = "",
+#               col = rgb(ramp((pdist[l, s] + pdist[l, s + 1]) / zmax / 2.0), maxColorValue = 255),
+#               cex = plot.cex)
+#           }
+#         }
+#         else
+#         if ((Variables[i] == .rebmix$Variables[1]) && (Variables[j] == .rebmix$Variables[2])) {
+#           for (l in 1:length(py[[j]])) {
+#             tx <- py[[i]]
+#             ty <- rep(py[[j]][l], length(py[[i]]))
+#
+#             s <- 1:(length(tx) - 1)
+#
+#             segments(x0 = tx[s],
+#               y0 = ty[s],
+#               x1 = tx[s + 1],
+#               y1 = ty[s + 1],
+#               xlab = "",
+#               ylab = "",
+#               col = rgb(ramp((pdist[s, l] + pdist[s + 1, l]) / zmax / 2.0), maxColorValue = 255),
+#               cex = plot.cex)
+#           }
+#         }
+#         else {
+#           levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
+#
+#           contour(x = py[[i]],
+#             y = py[[j]],
+#             z = pdist,
+#             levels = levels * zmax,
+#             xlim = lim[, i],
+#             ylim = lim[, j],
+#             zlim = zlim * zmax,
+#             labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
+#             axes = FALSE, frame.plot = FALSE,
+#             col = rgb(ramp(levels), maxColorValue = 255),
+#             add = TRUE)
+#         }
+#
+#         box(col = fg, lty = "solid", lwd = 1)
+#
+#         axis(side = 3,
+#           outer = FALSE,
+#           lty = "solid",
+#           lwd = 1,
+#           hadj = 0.5,
+#           padj = 1.0)
+#
+#         axis(side = 2,
+#           outer = FALSE,
+#           lty = "solid",
+#           lwd = 1,
+#           hadj = 0.5,
+#           padj = 1.0)
+#
+#         if (.Device == "tikz output") {
+#           text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
+#         }
+#         else {
+#           text <- bquote(y[.(i)] - y[.(j)])
+#         }
+#
+#         mtext(text = text,
+#           side = 1,
+#           line = 0,
+#           outer = FALSE,
+#           adj = 0.5,
+#           padj = 0.2,
+#           cex = cex)
+#
+#         figno <- figno + 1
+#
+#         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
+#           for (l in 1:length(legend)) {
+#             mtext(text = legend[[l]],
+#               side = 1,
+#               line = l - 1,
+#               outer = TRUE,
+#               adj = 0.5,
+#               padj = 0.2,
+#               cex = cex)
+#           }
+#
+#           figno <- 0
+#         }
+#
+#         opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
+#       }
+#     }
+#   }
   }
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
@@ -854,6 +854,85 @@ function(x,
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
   }
+  
+  if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+    for (i in 1:d) {
+      edist <- .dist.x(ey[, i], n)
+
+      pdist <- .pfmix.x(py[[i]], w, Theta[i,])
+
+      ylim <- c(0.0, max(edist$y, pdist))  
+
+      plot(x = edist$x,
+        y = edist$y,
+        type = "p",
+        main = "",
+        sub = "",
+        xlab = "",
+        ylab = "",
+        ylim = ylim,
+        col = "black",
+        axes = FALSE,
+        lwd = 1,
+        cex = plot.cex,
+        pch = plot.pch)
+
+      points(x = py[[i]],
+        y = pdist,
+        type = "l",
+        col = "black")
+
+      box(col = fg, lty = "solid", lwd = 1)
+
+      axis(side = 3,
+        outer = FALSE,
+        lty = "solid",
+        lwd = 1,
+        hadj = 0.5,
+        padj = 1.0)
+
+      axis(side = 2,
+        outer = FALSE,
+        lty = "solid",
+        lwd = 1,
+        hadj = 0.5,
+        padj = 1.0)
+
+      if (.Device == "tikz output") {
+        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$F(y_{", i, "})$", sep = "")
+      }
+      else {
+        text <- bquote(y[.(i)] - F(y[.(i)]))
+      }
+
+      mtext(text = text,
+        side = 1,
+        line = 0,
+        outer = FALSE,
+        adj = 0.5,
+        padj = 0.2,
+        cex = cex)
+
+      if (m <= 0) {
+        for (l in 1:length(legend)) {
+          mtext(text = legend[[l]],
+            side = 1,
+            line = l - 1,
+            outer = TRUE,
+            adj = 0.5,
+            padj = 0.2,
+            cex = cex)
+        }
+
+        m <- nrow * ncol - 1
+      }
+      else {
+        m <- m - 1
+      }
+
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
+    }
+  }  
 
   if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
@@ -1137,7 +1216,7 @@ setMethod("plot",
 function(x,
   y,
   pos = 1,
-  what = c("density"),
+  what = c("pdf"),
   nrow = 1,
   ncol = 1,
   npts = 200,
@@ -1543,103 +1622,103 @@ function(x,
       }
     }
 
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-      N <- d * (d - 1) / 2
-
-      figno <- 0
-
-      ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
-        space = "rgb",
-        interpolate = "linear")
-
-      for (i in 1:(d - 1)) {
-        for (j in (i + 1):d) {
-          edist <- .dist.xy(ey[, i], ey[, j], n)
-
-          pdist <- outer(py[[i]], py[[j]], ".pfmvnorm.xy", w, Theta, i, j)
-
-          zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
-
-          zlim <- zlim / zmax
-
-          plot(x = edist$x,
-            y = edist$y,
-            type = "p",
-            main = "",
-            sub = "",
-            xlab = "",
-            ylab = "",
-            col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
-            axes = FALSE,
-            lwd = 1,
-            cex = plot.cex,
-            pch = plot.pch)
-
-          levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
-
-          contour(x = py[[i]],
-            y = py[[j]],
-            z = pdist,
-            levels = levels * zmax,
-            xlim = lim[, i],
-            ylim = lim[, j],
-            zlim = zlim * zmax,
-            labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
-            axes = FALSE, frame.plot = FALSE,
-            col = rgb(ramp(levels), maxColorValue = 255),
-            add = TRUE)
-
-          box(col = fg, lty = "solid", lwd = 1)
-
-          axis(side = 3,
-            outer = FALSE,
-            lty = "solid",
-            lwd = 1,
-            hadj = 0.5,
-            padj = 1.0)
-
-          axis(side = 2,
-            outer = FALSE,
-            lty = "solid",
-            lwd = 1,
-            hadj = 0.5,
-            padj = 1.0)
-
-          if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-          }
-          else {
-            text <- bquote(y[.(i)] - y[.(j)])
-          }
-
-          mtext(text = text,
-            side = 1,
-            line = 0,
-            outer = FALSE,
-            adj = 0.5,
-            padj = 0.2,
-            cex = cex)
-
-          figno <- figno + 1
-
-          if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-            for (l in 1:length(legend)) {
-              mtext(text = legend[[l]],
-                side = 1,
-                line = l - 1,
-                outer = TRUE,
-                adj = 0.5,
-                padj = 0.2,
-                cex = cex)
-            }
-
-            figno <- 0
-          }
-
-          opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-        }
-      }
-    }
+#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+#     N <- d * (d - 1) / 2
+#
+#     figno <- 0
+#
+#     ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
+#       space = "rgb",
+#       interpolate = "linear")
+#
+#     for (i in 1:(d - 1)) {
+#       for (j in (i + 1):d) {
+#         edist <- .dist.xy(ey[, i], ey[, j], n)
+#
+#         pdist <- outer(py[[i]], py[[j]], ".pfmvnorm.xy", w, Theta, i, j)
+#
+#         zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
+#
+#         zlim <- zlim / zmax
+#
+#         plot(x = edist$x,
+#           y = edist$y,
+#           type = "p",
+#           main = "",
+#           sub = "",
+#           xlab = "",
+#           ylab = "",
+#           col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
+#           axes = FALSE,
+#           lwd = 1,
+#           cex = plot.cex,
+#           pch = plot.pch)
+#
+#         levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
+#
+#         contour(x = py[[i]],
+#           y = py[[j]],
+#           z = pdist,
+#           levels = levels * zmax,
+#           xlim = lim[, i],
+#           ylim = lim[, j],
+#           zlim = zlim * zmax,
+#           labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
+#           axes = FALSE, frame.plot = FALSE,
+#           col = rgb(ramp(levels), maxColorValue = 255),
+#           add = TRUE)
+#
+#         box(col = fg, lty = "solid", lwd = 1)
+#
+#         axis(side = 3,
+#           outer = FALSE,
+#           lty = "solid",
+#           lwd = 1,
+#           hadj = 0.5,
+#           padj = 1.0)
+#
+#         axis(side = 2,
+#           outer = FALSE,
+#           lty = "solid",
+#           lwd = 1,
+#           hadj = 0.5,
+#           padj = 1.0)
+#
+#         if (.Device == "tikz output") {
+#           text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
+#         }
+#         else {
+#           text <- bquote(y[.(i)] - y[.(j)])
+#         }
+#
+#         mtext(text = text,
+#           side = 1,
+#           line = 0,
+#           outer = FALSE,
+#           adj = 0.5,
+#           padj = 0.2,
+#           cex = cex)
+#
+#         figno <- figno + 1
+#
+#         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
+#           for (l in 1:length(legend)) {
+#             mtext(text = legend[[l]],
+#               side = 1,
+#               line = l - 1,
+#               outer = TRUE,
+#               adj = 0.5,
+#               padj = 0.2,
+#               cex = cex)
+#           }
+#
+#           figno <- 0
+#         }
+#
+#         opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
+#       }
+#     }
+#   }
   }
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
@@ -1853,6 +1932,85 @@ function(x,
       }
       else {
         text <- bquote(y[.(i)] - f(y[.(i)]))
+      }
+
+      mtext(text = text,
+        side = 1,
+        line = 0,
+        outer = FALSE,
+        adj = 0.5,
+        padj = 0.2,
+        cex = cex)
+
+      if (m <= 0) {
+        for (l in 1:length(legend)) {
+          mtext(text = legend[[l]],
+            side = 1,
+            line = l - 1,
+            outer = TRUE,
+            adj = 0.5,
+            padj = 0.2,
+            cex = cex)
+        }
+
+        m <- nrow * ncol - 1
+      }
+      else {
+        m <- m - 1
+      }
+
+      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
+    }
+  }
+  
+  if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+    for (i in 1:d) {
+      edist <- .dist.x(ey[, i], n)
+
+      pdist <- .pfmvnorm.x(py[[i]], w, Theta, i)
+
+      ylim <- c(0.0, max(edist$y, pdist))
+      
+      plot(x = edist$x,
+        y = edist$y,
+        type = "p",
+        main = "",
+        sub = "",
+        xlab = "",
+        ylab = "",
+        ylim = ylim,
+        col = "black",
+        axes = FALSE,
+        lwd = 1,
+        cex = plot.cex,
+        pch = plot.pch)
+
+      points(x = py[[i]],
+        y = pdist,
+        type = "l",
+        col = "black")
+
+      box(col = fg, lty = "solid", lwd = 1)
+
+      axis(side = 3,
+        outer = FALSE,
+        lty = "solid",
+        lwd = 1,
+        hadj = 0.5,
+        padj = 1.0)
+
+      axis(side = 2,
+        outer = FALSE,
+        lty = "solid",
+        lwd = 1,
+        hadj = 0.5,
+        padj = 1.0)
+
+      if (.Device == "tikz output") {
+        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$F(y_{", i, "})$", sep = "")
+      }
+      else {
+        text <- bquote(y[.(i)] - F(y[.(i)]))
       }
 
       mtext(text = text,

@@ -1,6 +1,48 @@
 citHeader("To cite rebmix in publications use:")
 
 citEntry(entry = "Article",
+  title = "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation",
+  author  = personList(as.person("Branislav Panić"),
+                              as.person("Jernej Klemenc"),
+                              as.person("Marko Nagode")),
+  journal  = "Mathematics",
+  year = "2020",
+  volume = "8",
+  number = "3",
+  pages = "373",
+  doi = "10.3390/math8030373",
+  url = "https://www.mdpi.com/2227-7390/8/3/373/htm",
+
+  textVersion  =
+  paste("Branislav Panić, Jernej Klemenc, Marko Nagode (2020).",
+        "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation.",
+        "Mathematics, 8(3), 373.",
+        "doi: 10.3390/math8030373",
+        "url: https://www.mdpi.com/2227-7390/8/3/373/htm.")
+)
+
+citEntry(entry = "Article",
+  title = "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification",
+  author  = personList(as.person("Branislav Panić"),
+                              as.person("Jernej Klemenc"),
+                              as.person("Marko Nagode")),
+  journal  = "Journal of Mechanical Engineering",
+  year = "2020",
+  volume = "66",
+  number = "4",
+  pages = "215-226",
+  doi = "10.5545/sv-jme.2020.6563",
+  url = "https://www.sv-jme.eu/article/gaussian-mixture-model-based-classification-revisited-application-to-the-bearing-fault-classification/",
+
+  textVersion  =
+  paste("Branislav Panić, Jernej Klemenc, Marko Nagode (2020).",
+        "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification.",
+        "Journal of Mechanical Engineering, 66(4), 215-226.",
+        "doi: 10.5545/sv-jme.2020.6563",
+        "url: https://www.sv-jme.eu/article/gaussian-mixture-model-based-classification-revisited-application-to-the-bearing-fault-classification/.")
+)
+
+citEntry(entry = "Article",
   title = "The REBMIX Algorithm for the Univariate Finite Mixture Estimation",
   author  = personList(as.person("Marko Nagode"),
                               as.person("Matija Fajdiga")),
@@ -9,13 +51,15 @@ citEntry(entry = "Article",
   volume = "40",
   number = "5",
   pages = "876-892",
-  url = "http://www.informaworld.com/smpp/content~db=all~content=a931193825~frm=titlelink",
+  doi = "10.1080/03610920903480890",
+  url = "https://www.tandfonline.com/doi/abs/10.1080/03610920903480890",
 
   textVersion  =
   paste("Marko Nagode, Matija Fajdiga (2011).",
         "The REBMIX Algorithm for the Univariate Finite Mixture Estimation.",
         "Communications in Statistics - Theory and Methods, 40(5), 876-892.",
-        "URL http://www.informaworld.com/smpp/content~db=all~content=a931193825~frm=titlelink.")
+        "doi: 10.1080/03610920903480890",
+        "url: https://www.tandfonline.com/doi/abs/10.1080/03610920903480890.")
 )
 
 citEntry(entry = "Article",
@@ -27,13 +71,15 @@ citEntry(entry = "Article",
   volume = "40",
   number = "11",
   pages = "2022-2034",
-  url = "http://www.informaworld.com/smpp/content~db=all~content=a935984004~frm=titlelink",
+  doi = "10.1080/03610921003725788",
+  url = "https://www.tandfonline.com/doi/abs/10.1080/03610921003725788",
 
   textVersion  =
   paste("Marko Nagode, Matija Fajdiga (2011).",
         "The REBMIX Algorithm for the Multivariate Finite Mixture Estimation.",
         "Communications in Statistics - Theory and Methods, 40(11), 2022-2034.",
-        "URL http://www.informaworld.com/smpp/content~db=all~content=a935984004~frm=titlelink.")
+        "doi: 10.1080/03610921003725788",
+        "url: https://www.tandfonline.com/doi/abs/10.1080/03610921003725788.")
 )
 
 citEntry(entry = "Article",
@@ -44,11 +90,13 @@ citEntry(entry = "Article",
   volume = "3",
   number = "2",
   pages = "14-28",
-  url = "http://dx.doi.org/10.5963/JAO0302001",
+  doi = "10.5963/JAO0302001",
+  url = "http://paper.academicpub.org/PaperInIssue?IssueId=1677",
 
   textVersion  =
   paste("Marko Nagode (2015).",
         "Finite Mixture Modeling via REBMIX.",
         "Journal of Algorithms and Optimization, 3(2), 14-28.",
-        "URL http://dx.doi.org/10.5963/JAO0302001.")
+        "doi: 10.5963/JAO0302001 ",
+        "url: http://paper.academicpub.org/PaperInIssue?IssueId=1677.")
 )

@@ -104,7 +104,7 @@ Rebmix::Rebmix()
     save_ = NULL;
     Preprocessing_ = poHistogram;
     cmax_ = 15;
-    cmin_ = 2;
+    cmin_ = 1;
     Criterion_ = icAIC;
     Variables_ = NULL;
     IniTheta_ = NULL;

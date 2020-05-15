@@ -84,8 +84,7 @@ To illustrate the use of the REBMIX algorithm, univariate and multivariate datas
 <<rebmix-code, split = FALSE, echo = FALSE, keep.source = FALSE>>=
 ##############################################
 ## R sources for reproducing the results in ##
-##   Marko Nagode:                          ##
-##   rebmix: The Rebmix Package             ##
+##              rebmix package              ##
 ##############################################
 
 options(prompt = "R> ", continue = "+  ", width = 80,
@@ -364,7 +363,7 @@ ex4.1est.dens <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 10,
-  Criterion = "AIC",
+  Criterion = "BIC",
   EMcontrol = EM)
 @
 
@@ -459,12 +458,12 @@ ex4.1est.em.normal <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
-  Criterion = "AIC",
+  Criterion = "BIC",
   EMcontrol = EM.normal)
 
 cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.normal, pos=1, col.name = "total.iterations.nbr"),
-  ". Value of AIC: ", a.summary(ex4.1est.em.normal, pos = 1, col.name = "IC"))
+  ". Value of BIC: ", a.summary(ex4.1est.em.normal, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.5$:
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -480,12 +479,12 @@ ex4.1est.em.fixed1.5 <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
-  Criterion = "AIC",
+  Criterion = "BIC",
   EMcontrol = EM.fixed1.5)
 
 cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.fixed1.5, pos=1, col.name = "total.iterations.nbr"),
-  ". Value of AIC: ", a.summary(ex4.1est.em.fixed1.5, pos = 1, col.name = "IC"))
+  ". Value of BIC: ", a.summary(ex4.1est.em.fixed1.5, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with line search for optimal increment $a_{\texttt{EM}}$ in each iteration:
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -501,12 +500,12 @@ ex4.1est.em.line <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
-  Criterion = "AIC",
+  Criterion = "BIC",
   EMcontrol = EM.line)
 
 cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.line, pos=1, col.name = "total.iterations.nbr"),
-  ". Value of AIC: ", a.summary(ex4.1est.em.line, pos = 1, col.name = "IC"))
+  ". Value of BIC: ", a.summary(ex4.1est.em.line, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with golden search for optimal increment $a_{\texttt{EM}}$ in each iteration:
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
@@ -522,12 +521,12 @@ ex4.1est.em.golden <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
-  Criterion = "AIC",
+  Criterion = "BIC",
   EMcontrol = EM.golden)
 
 cat("Total number of EM algorithm iterations: ",
   a.summary.EM(ex4.1est.em.golden, pos=1, col.name = "total.iterations.nbr"),
-  ". Value of AIC: ", a.summary(ex4.1est.em.golden, pos = 1, col.name = "IC"))
+  ". Value of BIC: ", a.summary(ex4.1est.em.golden, pos = 1, col.name = "IC"))
 @
 
 \subsection{Multivariate \texttt{iris} dataset}

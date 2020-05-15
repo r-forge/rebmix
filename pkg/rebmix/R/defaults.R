@@ -14,7 +14,7 @@ EMAcceleration = c("fixed", "line", "golden")),
 .Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "EMStrategy", "EMVariant", "EMAcceleration"))
 
 .rebmix.plot <- structure(list(
-what = c("density", "marginal", "IC", "logL", "D", "distribution", "K")),
+what = c("pdf", "marginal pdf", "IC", "logL", "D", "marginal cdf", "K")),
 .Names = c("what"))
 
 .rebmix.boot <- structure(list(

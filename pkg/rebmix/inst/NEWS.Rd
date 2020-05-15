@@ -2,6 +2,9 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.12.0}{ 
 \itemize{
+\item Value \code{"density"} is replaced by \code{"pdf"} in \code{what} argument.
+\item Value \code{"marginal"} is replaced by \code{"marginal pdf"} in \code{what} argument.
+\item Value \code{"distribution"} is replaced by \code{"marginal cdf"} in \code{what} argument.
 \item Improved C++ functions regarding memory allocation and efficiency.
 \item Improved outlier detection.
 \item \code{"Knuth equal"} and \code{"Knuth unequal"} binning rules are added to the existing \code{"Sturges"}, \code{"Log10"} and \code{"RootN"} rules.
@@ -235,8 +238,8 @@
 \item Methods \code{MDL2} and \code{MDL5} are added. 
 \item Function \code{pemix} for empirical distribution function calculation is added. 
 \item Function \code{pfmix} for predictive distribution function calculation is added. 
-\item Function \code{plot.REBMIX} is extended. It enables besides \code{"density"} plots also \code{"marginal"}, 
-\code{"c"}, \code{"IC"}, \code{"logL"}, \code{"D"} and \code{"distribution"} plots.
+\item Function \code{plot.REBMIX} is extended. It enables besides \code{"pdf"} plots also \code{"marginal pdf"}, 
+\code{"c"}, \code{"IC"}, \code{"logL"}, \code{"D"} and \code{"marginal cdf"} plots.
 \item Additional arguments \code{what} enters method \code{plot.REBMIX}.
 \item Method \code{PRD} is added. 
 \item Methods \code{print.boot.REBMIX} and \code{summary.boot.REBMIX} are added.
