@@ -2,7 +2,7 @@ citHeader("To cite rebmix in publications use:")
 
 citEntry(entry = "Article",
   title = "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation",
-  author  = personList(as.person("Branislav Panić"),
+  author  = personList(as.person("Branislav Pani\'{c}"),
                               as.person("Jernej Klemenc"),
                               as.person("Marko Nagode")),
   journal  = "Mathematics",
@@ -14,7 +14,7 @@ citEntry(entry = "Article",
   url = "https://www.mdpi.com/2227-7390/8/3/373/htm",
 
   textVersion  =
-  paste("Branislav Panić, Jernej Klemenc, Marko Nagode (2020).",
+  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
         "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation.",
         "Mathematics, 8(3), 373.",
         "doi: 10.3390/math8030373",
@@ -23,7 +23,7 @@ citEntry(entry = "Article",
 
 citEntry(entry = "Article",
   title = "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification",
-  author  = personList(as.person("Branislav Panić"),
+  author  = personList(as.person("Branislav Pani\'{c}"),
                               as.person("Jernej Klemenc"),
                               as.person("Marko Nagode")),
   journal  = "Journal of Mechanical Engineering",
@@ -35,7 +35,7 @@ citEntry(entry = "Article",
   url = "https://www.sv-jme.eu/article/gaussian-mixture-model-based-classification-revisited-application-to-the-bearing-fault-classification/",
 
   textVersion  =
-  paste("Branislav Panić, Jernej Klemenc, Marko Nagode (2020).",
+  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
         "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification.",
         "Journal of Mechanical Engineering, 66(4), 215-226.",
         "doi: 10.5545/sv-jme.2020.6563",

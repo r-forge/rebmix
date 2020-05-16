@@ -65,9 +65,9 @@ irisest <- REBMIX(model = "REBMVNORM",
   Criterion = "ICL-BIC",
   pdf = rep("normal", 4))
 
-plot(irisest, pos = 1, nrow = 3, ncol = 2, what = c("den"))
-plot(irisest, pos = 2, nrow = 3, ncol = 2, what = c("den"))
-plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("den"))
+plot(irisest, pos = 1, nrow = 3, ncol = 2, what = c("pdf"))
+plot(irisest, pos = 2, nrow = 3, ncol = 2, what = c("pdf"))
+plot(irisest, pos = 3, nrow = 3, ncol = 2, what = c("pdf"))
 
 # Selected chunks.
 

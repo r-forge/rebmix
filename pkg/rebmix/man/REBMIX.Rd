@@ -164,7 +164,7 @@ logL(normalest)
 
 # Plot finite mixture.
 
-plot(normalest, nrow = 2, what = c("den", "dis"), npts = 1000)
+plot(normalest, nrow = 2, what = c("pdf", "marginal cdf"), npts = 1000)
 
 # EM algorithm utilization
 

@@ -82,7 +82,7 @@ f
 
 # Plot finite mixture.
 
-opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "dist")
+opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "marginal cdf")
 
 par(usr = opar[[1]]$usr, mfg = c(1, 1))
 

@@ -4009,17 +4009,11 @@ int Rebmix::EMRun(int                  c,          // Number of components.
 
     Error = c < 1; if (Error) goto E0;
 
-    if (c == 1) {
-        EM_->am_ = (FLOAT)1.0;
+    if (c > 1) {
+        Error = EM_->Run(c, W, MixTheta);
 
-        EM_->accel_ = acc_fixed;
-
-        EM_->variant_ = varEM;
+        if (Error) goto E0;
     }
-
-    Error = EM_->Run(c, W, MixTheta);
-
-    if (Error) goto E0;
 
 E0: return Error;
 } // EMRun

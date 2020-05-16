@@ -45,7 +45,7 @@ summary(galaxyest$gamma)
 
 #library("tikzDevice") # Uncomment to use tikzDevice package.
 #tikz("galaxy.tex", width = 4.5, height = 2.25) # Uncomment to use tikzDevice package.
-plot(galaxyest$lognormal, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+plot(galaxyest$lognormal, pos = 1, what = c("pdf", "marginal pdf"), ncol = 2, npts = 1000)
 #dev.off() # Uncomment to use tikzDevice package.
 
 a.theta1.all(galaxyest$lognormal, pos = 1)

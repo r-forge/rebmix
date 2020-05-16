@@ -195,7 +195,7 @@ gamma3est <- REBMIX(Dataset = a.Dataset(gamma3),
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<gamma3-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(gamma3est, pos = 1, what = c("den", "dis"), ncol = 2, npts = 1000)
+plot(gamma3est, pos = 1, what = c("pdf", "marginal cdf"), ncol = 2, npts = 1000)
 @
 \caption{Gamma 3 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
 \end{figure}
@@ -268,7 +268,7 @@ poissonest <- REBMIX(Dataset = a.Dataset(poisson),
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 6.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(poissonest, pos = 1, what = c("dens", "marg", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
+plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
 @
 \caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
 \end{figure}
@@ -370,7 +370,7 @@ ex4.1est.dens <- REBMIX(model = "REBMVNORM",
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<ex4_1_dens-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(ex4.1est.dens, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
+plot(ex4.1est.dens, pos = 1, what = c("pdf"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
@@ -419,7 +419,7 @@ ex4.1est <- REBMIX(model = "REBMVNORM",
 @
 \begin{figure}[htb]\centering
 <<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(ex4.1est, pos = 1, what = c("dens"), nrow = 1, ncol = 1)
+plot(ex4.1est, pos = 1, what = c("pdf"), nrow = 1, ncol = 1)
 @
 \caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}

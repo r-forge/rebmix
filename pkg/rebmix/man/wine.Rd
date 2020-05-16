@@ -100,9 +100,9 @@ wineest <- REBMIX(model = "REBMVNORM",
   K = K[1]:K[2],
   Restraints = "loose")
 
-plot(wineest, pos = 1, nrow = 7, ncol = 6, what = c("den"))
-plot(wineest, pos = 2, nrow = 7, ncol = 6, what = c("den"))
-plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("den"))
+plot(wineest, pos = 1, nrow = 7, ncol = 6, what = c("pdf"))
+plot(wineest, pos = 2, nrow = 7, ncol = 6, what = c("pdf"))
+plot(wineest, pos = 3, nrow = 7, ncol = 6, what = c("pdf"))
 
 # Selected chunks.
 

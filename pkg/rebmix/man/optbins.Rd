@@ -100,6 +100,6 @@ sim2dest <- REBMIX(model = "REBMVNORM",
 
 # Plot finite mixture.
 
-plot(sim2dest, pos = 3, nrow = 4, what = c("de", "ma", "IC"))
+plot(sim2dest, pos = 3, nrow = 4, what = c("pdf", "marginal pdf", "IC"))
 }
 \keyword{auxiliary}

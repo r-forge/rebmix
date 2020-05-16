@@ -88,7 +88,7 @@ f
 # Plot finite mixture.
 
 opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1,
-  what = "dist", contour.drawlabels = TRUE, contour.labcex = 0.6)
+  what = "pdf", contour.drawlabels = TRUE, contour.labcex = 0.6)
 
 par(usr = opar[[2]]$usr, mfg = c(2, 1))
 

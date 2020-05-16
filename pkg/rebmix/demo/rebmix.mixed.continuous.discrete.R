@@ -46,7 +46,7 @@ mixedest <- REBMIX(Dataset = a.Dataset(mixed), Preprocessing = "histogram", cmax
 
 #library("tikzDevice") # Uncomment to use tikzDevice package.
 #tikz("mixed.tex", width = 4.5, height = 4.5) # Uncomment to use tikzDevice package.
-plot(mixedest, what = c("dens", "marg", "IC", "logL"), nrow = 4, ncol = 3, npts = 200)
+plot(mixedest, what = c("pdf", "marginal pdf", "IC", "logL"), nrow = 4, ncol = 3, npts = 200)
 #dev.off() # Uncomment to use tikzDevice package.
 
 # Bootstrap finite mixture.
