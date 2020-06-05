@@ -50,7 +50,10 @@ currently not used.
 \references{
 K. K. Knuth. Optimal data-based binning for histograms and histogram-based probability density models. 
 Digital Signal Processing, 95:102581, 2019.
-\url{https://doi.org/10.1016/j.dsp.2019.102581}.
+\url{https://doi.org/10.1016/j.dsp.2019.102581}.\cr\cr
+B. Panic, J. Klemenc, M. Nagode. Improved initialization of the EM algorithm for mixture model parameter estimation.
+Mathematics, 8(3):373, 2020.
+\url{https://doi.org/10.3390/math8030373}.
 }
 \examples{
 # Generate multivariate normal datasets.
@@ -96,10 +99,36 @@ sim2dest <- REBMIX(model = "REBMVNORM",
   ymin = a.ymin(sim2d),
   ymax = a.ymax(sim2d),
   K = opt.k,
-  Criterion = "BIC")
+  Criterion = "BIC",
+  EMcontrol = EM)
 
 # Plot finite mixture.
 
 plot(sim2dest, pos = 3, nrow = 4, what = c("pdf", "marginal pdf", "IC"))
+
+# Estimate number of components, component weights and component parameters for well known Iris dataset.
+
+Dataset <- list(iris[, c(1:4)])
+
+# Calculate optimal numbers of bins using non-equal number of bins in each dimension.
+
+opt.k <- optbins(Dataset = Dataset,
+  Rule = "Knuth unequal",
+  kmin = 2, 
+  kmax = 20)
+
+opt.k
+
+# Estimate number of components, component weights and component parameters.
+
+irisest <- REBMIX(model = "REBMVNORM", 
+  Dataset = Dataset,
+  Preprocessing = "h",
+  cmax = 10,
+  K = opt.k,
+  Criterion = "BIC",
+  EMcontrol = EM)
+  
+irisest
 }
 \keyword{auxiliary}

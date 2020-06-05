@@ -2652,6 +2652,7 @@ void Roptbins(int    *d,           // Number of independent random variables.
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
     FLOAT  *h = NULL;
+    int    *opt_k_tmp = NULL;
     int    i, j, l;
 
     rebmix = new Rebmix;
@@ -2742,6 +2743,8 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
     *Error = NULL == h; if (*Error) goto E0;
 
+    rebmix->Initialize();
+
     if (!strcmp(Rule[0], "Sturges")) {
         opt_k[0] = (int)ceil((FLOAT)1.0 + (FLOAT)log2((FLOAT)rebmix->n_));
 
@@ -2785,6 +2788,10 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
             if (*Error) goto E0;
 
+            if (k > rebmix->kmax_) {
+                break;
+            }
+
             M = (FLOAT)1.0;
 
             for (j = 0; j < rebmix->length_pdf_; j++) {
@@ -2810,10 +2817,169 @@ void Roptbins(int    *d,           // Number of independent random variables.
     }
     else
     if (!strcmp(Rule[0], "Knuth unequal")) {
+        FLOAT logp, logpopt, M, M_broken;
+        int   k, num_e, lim_broken, div, inc, Converged = 1;
+        int   num_r, MAX_ITER_NUM = 131072;
 
+        logpopt = -FLOAT_MAX;
+
+        opt_k_tmp = (int*)malloc(rebmix->length_pdf_ * sizeof(int));
+
+        *Error = NULL == opt_k_tmp; if (*Error) goto E0;
+
+        for (j = 0; j < rebmix->length_pdf_; j++) {
+            opt_k_tmp[j] = 1;
+        }
+
+        while (Converged) {
+            for (j = 0; j < rebmix->length_pdf_; j++) {
+                for (i = 0; i < rebmix->length_pdf_; i++) {
+                    if (i != j) {
+                        h[i] = (rebmix->ymax_[i] - rebmix->ymin_[i]) / opt_k_tmp[i];
+
+                        if (*length_y0 == 0) {
+                            rebmix->y0_[i] = rebmix->ymin_[i] + (FLOAT)0.5 * h[i];
+                        }
+                    }
+                }
+
+                opt_k[j] = opt_k_tmp[j];
+
+                for (l = *kmin; l < *kmax + 1; l++) {
+                    h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
+
+                    if (*length_y0 == 0) {
+                        rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
+                    }
+
+                    *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
+
+                    if (*Error) goto E0;
+
+                    if (k > rebmix->kmax_ && opt_k_tmp[j] != 1) {
+                        break;
+                    }
+
+                    M = (FLOAT)1.0;
+
+                    for (i = 0; i < rebmix->length_pdf_; i++) {
+                        if (i != j) {
+                            M *= (FLOAT)opt_k_tmp[i];
+                        }
+                        else{
+                            M *= (FLOAT)l;
+                        }
+                    }
+
+                    logp = (FLOAT)rebmix->n_ * (FLOAT)log(M) + (FLOAT)Gammaln((FLOAT)0.5 * M) - M * (FLOAT)Gammaln((FLOAT)0.5) - (FLOAT)Gammaln((FLOAT)rebmix->n_ + (FLOAT)0.5 * M);
+
+                    for (i = 0; i < k; i++) {
+                        logp += Gammaln(Y[rebmix->length_pdf_][i] + (FLOAT)0.5);
+                    }
+
+                    logp += Max(M - (FLOAT)k, (FLOAT)0.0) * Gammaln((FLOAT)0.5);
+
+                    if (logp > logpopt || opt_k_tmp[j] == 1) {
+                        logpopt = logp; opt_k_tmp[j] = l;
+                    }
+                }
+
+                if (j == 0 && opt_k_tmp[j] == opt_k[j]) {
+                    for (i = 0; i < rebmix->length_pdf_; i++) opt_k[i] = opt_k_tmp[i];
+
+                    Converged = 0; break;
+                }
+            }
+        }
+
+        *kmin = *kmax = opt_k[0];
+
+        for (j = 1; j < rebmix->length_pdf_; j++) {
+            if (opt_k[j] < *kmin) {
+                *kmin = opt_k[j];
+            }
+            else
+            if (opt_k[j] > *kmax) {
+                *kmax = opt_k[j];
+            }
+        }
+
+        num_e = *kmax - *kmin + 1;
+
+        num_r = (int)floor(pow((FLOAT)num_e, rebmix->length_pdf_));
+
+        if (num_r > MAX_ITER_NUM || num_r == 0) {
+            for (j = *kmax - 1; j >= *kmin; j--) {
+                *kmax = j;
+
+                num_e = *kmax - *kmin + 1;
+
+                num_r = (int)floor(pow((FLOAT)num_e, rebmix->length_pdf_));
+
+                if (num_r <= MAX_ITER_NUM && num_r > 0) {
+                    break;
+                }
+            }
+        }
+
+        lim_broken = 0; M_broken = (FLOAT)0.0;
+
+        if (*kmax == *kmin) goto E0;
+
+        for (i = 0; i < num_r; i++) {
+            for (j = rebmix->length_pdf_ - 1; j >= 0; j--) {
+                div = (int)floor(pow((FLOAT)num_e, j));
+
+                inc = (i / div) % num_e;
+
+                opt_k_tmp[j] = *kmin + inc;
+            }
+
+            for (j = 0; j < rebmix->length_pdf_; j++) {
+                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / opt_k_tmp[j];
+
+                if (*length_y0 == 0) {
+                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
+                }
+            }
+
+            M = (FLOAT)1.0;
+
+            for (j = 0; j < rebmix->length_pdf_; j++) {
+                M *= (FLOAT)opt_k_tmp[j];
+            }
+
+            if (lim_broken) {
+                if (M > M_broken) continue;
+            }
+
+            *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
+
+            if (*Error) goto E0;
+
+            if (k > rebmix->kmax_) {
+                lim_broken = 1; M_broken = M; continue;
+            }
+
+            logp = (FLOAT)rebmix->n_ * (FLOAT)log(M) + (FLOAT)Gammaln((FLOAT)0.5 * M) - M * (FLOAT)Gammaln((FLOAT)0.5) - (FLOAT)Gammaln((FLOAT)rebmix->n_ + (FLOAT)0.5 * M);
+
+            for (j = 0; j < k; j++) {
+                logp += Gammaln(Y[rebmix->length_pdf_][j] + (FLOAT)0.5);
+            }
+
+            logp += Max(M - (FLOAT)k, (FLOAT)0.0) * Gammaln((FLOAT)0.5);
+
+            if (logp > logpopt) {
+                logpopt = logp;
+
+                for (j = 0; j < rebmix->length_pdf_; j++) opt_k[j] = opt_k_tmp[j];
+            }
+        }
     }
 
-E0: if (h) free(h);
+E0: if (opt_k_tmp) free(opt_k_tmp);
+    
+    if (h) free(h);
     
     if (Y) {
         for (i = 0; i < rebmix->length_pdf_ + 1; i++) {

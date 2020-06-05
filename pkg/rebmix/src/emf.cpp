@@ -38,7 +38,6 @@ Emmix::Emmix()
     n_iter_ = 0;
 
     dW_ = NULL;
-    
     dMixTheta_ = NULL;
     
     memset(&summary_, 0, sizeof(SummaryParameterType));
@@ -77,8 +76,7 @@ Emmix::~Emmix()
 
         delete[] MixTheta_;
     }
-
-    if (W_) free(W_);
+if (W_) free(W_);
 } // ~Emmix
 
 // Emmix initialize. Returns 0 on success, 1 otherwise.
