@@ -106,7 +106,8 @@ sim2dest <- REBMIX(model = "REBMVNORM",
 
 plot(sim2dest, pos = 3, nrow = 4, what = c("pdf", "marginal pdf", "IC"))
 
-# Estimate number of components, component weights and component parameters for well known Iris dataset.
+# Estimate number of components, component weights and component 
+# parameters for well known Iris dataset.
 
 Dataset <- list(iris[, c(1:4)])
 

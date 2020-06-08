@@ -3269,8 +3269,8 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
             EnhanTheta->Theta_[1][i] = T[0] / EnhanTheta->Theta_[0][i] / nl;
 
-            if ((EnhanTheta->Theta_[0][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] < (FLOAT)0.0) || (EnhanTheta->Theta_[1][i] > (FLOAT)1.0)) {
-                Error = 1; goto E0;
+            if (EnhanTheta->Theta_[1][i] > (FLOAT)1.0) {
+                EnhanTheta->Theta_[1][i] = (FLOAT)1.0;
             }
 
             TmpVar = EnhanTheta->Theta_[0][i] * EnhanTheta->Theta_[1][i] * ((FLOAT)1.0 - EnhanTheta->Theta_[1][i]);
@@ -3293,10 +3293,6 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             EnhanTheta->Theta_[0][i] = T[0] / nl;
 
             EnhanTheta->Theta_[1][i] = (FLOAT)0.0;
-
-            if (EnhanTheta->Theta_[0][i] < (FLOAT)0.0) {
-                Error = 1; goto E0;
-            }
 
             TmpVar = EnhanTheta->Theta_[0][i];
             MrgVar = RigidTheta->Theta_[0][i];

@@ -2908,7 +2908,7 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
         num_r = (int)floor(pow((FLOAT)num_e, rebmix->length_pdf_));
 
-        if (num_r > MAX_ITER_NUM || num_r == 0) {
+        if (num_r > MAX_ITER_NUM || num_r <= 0) {
             for (j = *kmax - 1; j >= *kmin; j--) {
                 *kmax = j;
 
