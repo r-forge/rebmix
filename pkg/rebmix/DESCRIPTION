@@ -1,5 +1,5 @@
 Package: rebmix
-Version: 2.12.0
+Version: 2.12.1
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si",
                      comment = c(ORCID = "0000-0003-0637-3812")),
@@ -17,6 +17,6 @@ License: GPL (>= 2)
 Author: Marko Nagode [aut, cre] (<https://orcid.org/0000-0003-0637-3812>),
   Branislav Panic [ctb] (<https://orcid.org/0000-0001-8349-8550>),
   Jernej Klemenc [ctb] (<https://orcid.org/0000-0002-6778-6728>),
-  Simon Oman [ctb] (<https://orcid.org/0000-0001-8213-0818>) 
+  Simon Oman [ctb] (<https://orcid.org/0000-0001-8213-0818>)
 Maintainer: Marko Nagode <marko.nagode@fs.uni-lj.si>
 

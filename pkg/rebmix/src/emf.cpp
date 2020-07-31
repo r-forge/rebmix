@@ -617,18 +617,111 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
                             CompnentDistribution *CmpTheta, // Component parameters.
                             FLOAT                *CmpDist)  // Component distribution value.
 {
-    FLOAT y;
-    int   i, Error = 0;
+    FLOAT y, ypb, p, Theta;
+    int   i, k, n;
+    int   Error = 0;
 
     *CmpDist = (FLOAT)0.0;
 
     for (i = 0; i < CmpTheta->length_pdf_; i++) {
-        y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
+        switch (CmpTheta->pdf_[i]) {
+        case pfNormal:
+            y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
-        *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
+            *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
+
+            break;
+        case pfLognormal:
+            if (Y[i][j] > FLOAT_MIN) {
+                y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
+
+                *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
+            }
+            else {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+
+            break;
+        case pfWeibull:
+            if (Y[i][j] > FLOAT_MIN) {
+                ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(Y[i][j] / CmpTheta->Theta_[0][i]));
+
+                *CmpDist += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - (FLOAT)log(Y[i][j]);
+            }
+            else {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+
+            break;
+        case pfGamma:
+            if (Y[i][j] > FLOAT_MIN) {
+                ypb = Y[i][j] / CmpTheta->Theta_[0][i];
+
+                *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
+            }
+            else {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+
+            break;
+        case pfGumbel:
+            break;
+        case pfvonMises:
+            if ((Y[i][j] < (FLOAT)0.0) || (Y[i][j] > Pi2)) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+            else {
+                *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)cos(Y[i][j] - CmpTheta->Theta_[0][i]) - LogPi2 - (FLOAT)log(BesselI0(CmpTheta->Theta_[1][i]));
+            }
+
+            break;
+        case pfBinomial:
+            k = (int)Y[i][j]; n = (int)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
+
+            if (k < 0) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+            else
+            if (k == 0)
+                *CmpDist += n * (FLOAT)log((FLOAT)1.0 - p);
+            else
+            if (k == n)
+                *CmpDist += n * (FLOAT)log(p);
+            else
+            if (k > n) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+            else
+                *CmpDist += Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
+                            k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
+
+            break;
+        case pfPoisson:
+            k = (int)Y[i][j]; Theta = CmpTheta->Theta_[0][i];
+
+            *CmpDist += k * (FLOAT)log(Theta) - Theta - Gammaln(k + (FLOAT)1.0);
+
+            break;
+        case pfDirac:
+            if ((FLOAT)fabs(Y[i][j] - CmpTheta->Theta_[0][i]) > FLOAT_MIN) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+            else {
+                *CmpDist += (FLOAT)0.0;
+            }
+
+            break;
+        case pfUniform:
+            if ((Y[i][j] > CmpTheta->Theta_[1][i]) || (Y[i][j] < CmpTheta->Theta_[0][i])) {
+                *CmpDist = -FLOAT_MAX; goto E0;
+            }
+            else {
+                *CmpDist -= (FLOAT)log(CmpTheta->Theta_[1][i] - CmpTheta->Theta_[0][i]);
+            }
+        }
     }
 
-    return Error;
+E0: return Error;
 } // LogComponentDist
 
 // Updates mixture model parameters with appropriate increment.
@@ -648,12 +741,45 @@ int Emmix::UpdateMixtureParameters(int                  c,           // Number o
         if (W[l] < (FLOAT)0.0) W[l] = (FLOAT)0.0;
 
         for (i = 0; i < length_pdf_; i++) {
-            MixTheta[l]->Theta_[0][i] += am * dMixTheta[l]->Theta_[0][i];
+            switch (MixTheta[l]->pdf_[i]) {
+            case pfNormal:
+                MixTheta[l]->Theta_[0][i] += am * dMixTheta[l]->Theta_[0][i];
 
-            MixTheta[l]->Theta_[1][i] += am * dMixTheta[l]->Theta_[1][i];
+                MixTheta[l]->Theta_[1][i] += am * dMixTheta[l]->Theta_[1][i];
 
-            if (MixTheta[l]->Theta_[1][i] < Eps) {
-                W[l] = (FLOAT)0.0; MixTheta[l]->Theta_[1][i] = Eps;
+                if (MixTheta[l]->Theta_[1][i] < Eps) {
+                    W[l] = (FLOAT)0.0; MixTheta[l]->Theta_[1][i] = Eps;
+                }
+
+                break;
+            case pfLognormal:
+                break;
+            case pfWeibull:
+                break;
+            case pfGamma:
+                break;
+            case pfGumbel:
+                break;
+            case pfvonMises:
+                break;
+            case pfBinomial:
+                MixTheta[l]->Theta_[1][i] += am * dMixTheta[l]->Theta_[1][i];
+
+                if (MixTheta[l]->Theta_[1][i] < (FLOAT)0.0) {
+                    MixTheta[l]->Theta_[1][i] = (FLOAT)0.0;
+                }
+                else
+                if (MixTheta[l]->Theta_[1][i] > (FLOAT)1.0) {
+                    MixTheta[l]->Theta_[1][i] = (FLOAT)1.0;
+                }
+
+                break;
+            case pfPoisson:
+                break;
+            case pfDirac:
+                break;
+            case pfUniform:
+                break;
             }
         }
     }
@@ -687,11 +813,40 @@ int Emmix::MaximizationStep()
         memset(M, 0, length_pdf_ * sizeof(FLOAT));
 
         for (i = 0; i < length_pdf_; i++) {
-            for (j = 0; j < n_; j++) {
-                M[i] += P_[l][j] * Y_[i][j];
-            }
+            switch (MixTheta_[l]->pdf_[i]) {
+            case pfNormal:
+                for (j = 0; j < n_; j++) {
+                    M[i] += P_[l][j] * Y_[i][j];
+                }
 
-            M[i] /= W + FLOAT_MIN;
+                M[i] = M[i] / (W + FLOAT_MIN);
+
+                break;
+            case pfLognormal:
+                break;
+            case pfWeibull:
+                break;
+            case pfGamma:
+                break;
+            case pfGumbel:
+                break;
+            case pfvonMises:
+                break;
+            case pfBinomial:
+                break;
+            case pfPoisson:
+                for (j = 0; j < n_; j++) {
+                    M[i] += P_[l][j] * Y_[i][j];
+                }
+
+                M[i] = M[i] / (W + FLOAT_MIN);
+
+                break;
+            case pfDirac:
+                break;
+            case pfUniform:
+                break;
+            }
 
             dMixTheta_[l]->Theta_[0][i] = M[i] - MixTheta_[l]->Theta_[0][i];
         }
@@ -699,11 +854,42 @@ int Emmix::MaximizationStep()
         memset(C, 0, length_pdf_ * sizeof(FLOAT));
 
         for (i = 0; i < length_pdf_; i++) {
-            for (j = 0; j < n_; j++) {
-                C[i] += P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+            switch (MixTheta_[l]->pdf_[i]) {
+            case pfNormal:
+                for (j = 0; j < n_; j++) {
+                    C[i] += P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+                }
+
+                C[i] = (FLOAT)sqrt(C[i] / (W + FLOAT_MIN));
+
+                break;
+            case pfLognormal:
+                break;
+            case pfWeibull:
+                break;
+            case pfGamma:
+                break;
+            case pfGumbel:
+                break;
+            case pfvonMises:
+                break;
+            case pfBinomial:
+                for (j = 0; j < n_; j++) {
+                    C[i] += P_[l][j] * Y_[i][j];
+                }
+
+                C[i] = C[i] / (W + FLOAT_MIN) / MixTheta_[l]->Theta_[0][i];
+
+                break;
+            case pfPoisson:
+                break;
+            case pfDirac:
+                break;
+            case pfUniform:
+                break;
             }
 
-            dMixTheta_[l]->Theta_[1][i] = (FLOAT)sqrt(C[i] / (W + FLOAT_MIN)) - MixTheta_[l]->Theta_[1][i];
+            dMixTheta_[l]->Theta_[1][i] = C[i] - MixTheta_[l]->Theta_[1][i];
         }
 
         dW_[l] = W / n_ - W_[l];
@@ -840,7 +1026,7 @@ int Emmvnorm::MaximizationStep()
                 M[i] += P_[l][j] * Y_[i][j];
             }
 
-            M[i] /= W + FLOAT_MIN;
+            M[i] = M[i] / (W + FLOAT_MIN);
 
             dMixTheta_[l]->Theta_[0][i] = M[i] - MixTheta_[l]->Theta_[0][i];
         }

@@ -1,8 +1,29 @@
 citHeader("To cite rebmix in publications use:")
 
 citEntry(entry = "Article",
+  title = "Optimizing the Estimation of a Histogram-Bin Width-Application to the Multivariate Mixture-Model Estimation",
+  author  = personList(as.person("Branislav Panic"),
+                              as.person("Jernej Klemenc"),
+                              as.person("Marko Nagode")),
+  journal  = "Mathematics",
+  year = "2020",
+  volume = "8",
+  number = "7",
+  pages = "1090",
+  doi = "10.3390/math8071090",
+  url = "https://www.mdpi.com/2227-7390/8/7/1090",
+
+  textVersion  =
+  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
+        "Optimizing the Estimation of a Histogram-Bin Width-Application to the Multivariate Mixture-Model Estimation.",
+        "Mathematics, 8(7), 1090.",
+        "doi: 10.3390/math8071090",
+        "url: https://www.mdpi.com/2227-7390/8/7/1090.")
+)
+
+citEntry(entry = "Article",
   title = "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation",
-  author  = personList(as.person("Branislav Pani\'{c}"),
+  author  = personList(as.person("Branislav Panic"),
                               as.person("Jernej Klemenc"),
                               as.person("Marko Nagode")),
   journal  = "Mathematics",
@@ -23,7 +44,7 @@ citEntry(entry = "Article",
 
 citEntry(entry = "Article",
   title = "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification",
-  author  = personList(as.person("Branislav Pani\'{c}"),
+  author  = personList(as.person("Branislav Panic"),
                               as.person("Jernej Klemenc"),
                               as.person("Marko Nagode")),
   journal  = "Journal of Mechanical Engineering",

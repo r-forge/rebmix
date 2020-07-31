@@ -488,78 +488,6 @@ S1:;
 E0: return Error;
 } // PreprocessingH
 
-/*
-// Global mode detection for k-nearest neighbour.
-
-int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
-                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,logV,R].
-                          FLOAT *h,  // Normalizing vector.
-                          int   *I)  // Pointer to the inlier observations.
-{
-    FLOAT Dc, R, cur, imax, omax, in, on;
-    int   i, im, om, j, l;
-    int   Error = 0, Stop = 0;
-
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
-
-    for (i = 0; i < n_; i++) {
-        cur = Y[length_pdf_][i] / (FLOAT)exp(Y[length_pdf_ + 1][i]);
-
-        if (I[i]) {
-            in += cur;
-
-            if (cur > imax) {
-                im = i; imax = cur;
-            }
-        }
-        else {
-            on += cur;
-
-            if (cur > omax) {
-                om = i; omax = cur;
-            }
-        }
-    }
-
-    if (im < 0) {
-        *m = om;
-    }
-    else
-    if (om < 0) {
-        *m = im;
-    }
-    else
-    if (omax > imax) {
-        *m = om;
-    }
-    else {
-        *m = om;
-
-        for (i = 0; i < n_; i++) if (I[i]) {
-            for (j = 0; j < n_; j++) if (!I[j]) {
-                Dc = (FLOAT)0.0;
-
-                for (l = 0; l < length_pdf_; l++) {
-                    R = (Y[l][i] - Y[l][j]) / h[l]; Dc += R * R;
-                }
-
-                R = (FLOAT)sqrt(Dc);
-
-                Stop = R < min_dist_mul_ * (FLOAT)0.5 * (Y[length_pdf_ + 2][i] + Y[length_pdf_ + 2][j]);
-
-                if (Stop) {
-                    *m = im; break;
-                }
-            }
-
-            if (Stop) break;
-        }
-    }
-
-    return Error;
-} // GlobalModeKNN
-*/
-
 // Global mode detection for k-nearest neighbour.
 
 int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
@@ -599,74 +527,6 @@ int Rebmix::GlobalModeKNN(int   *m,  // Global mode.
     return Error;
 } // GlobalModeKNN
 
-/*
-// Global mode detection for kernel density estimation.
-
-int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
-                          FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl,k].
-                          FLOAT *h,  // Sides of the hypersquare.
-                          int   *I)  // Pointer to the inlier observations.
-{
-    FLOAT cur, imax, omax, in, on;
-    int   i, im, om, j, l;
-    int   Error = 0, Stop = 0;
-
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
-
-    for (i = 0; i < n_; i++) {
-        cur = Y[length_pdf_][i] * Y[length_pdf_ + 1][i];
-
-        if (I[i]) {
-            in += cur;
-
-            if (cur > imax) {
-                im = i; imax = cur;
-            }
-        }
-        else {
-            on += cur;
-
-            if (cur > omax) {
-                om = i; omax = cur;
-            }
-        }
-    }
-
-    if (im < 0) {
-        *m = om;
-    }
-    else
-    if (om < 0) {
-        *m = im;
-    }
-    else
-    if (omax > imax) {
-        *m = om;
-    }
-    else {
-        *m = om;
-
-        for (i = 0; i < n_; i++) if (I[i]) {
-            for (j = 0; j < n_; j++) if (!I[j]) {
-                Stop = 1;
-
-                for (l = 0; l < length_pdf_; l++) {
-                    Stop &= (FLOAT)fabs(Y[l][i] - Y[l][j]) < min_dist_mul_ * h[l];
-                }
-
-                if (Stop) {
-                    *m = im; break;
-                }
-            }
-
-            if (Stop) break;
-        }
-    }
-
-    return Error;
-} // GlobalModeKDE
-*/
-
 // Global mode detection for kernel density estimation.
 
 int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
@@ -705,75 +565,6 @@ int Rebmix::GlobalModeKDE(int   *m,  // Global mode.
 
     return Error;
 } // GlobalModeKDE
-
-/*
-// Global mode detection for histogram.
-
-int Rebmix::GlobalModeH(int   *m,  // Global mode.
-                        int   k,   // Total number of bins.
-                        FLOAT **Y, // Pointer to the input array [y0,...,yd-1,kl].
-                        FLOAT *h,  // Sides of the hypersquare.
-                        int   *I)  // Pointer to the inlier observations.
-{
-    FLOAT cur, imax, omax, in, on;
-    int   i, im, om, j, l;
-    int   Error = 0, Stop = 0;
-
-    im = om = -1; imax = omax = in = on = (FLOAT)0.0;
-
-    for (i = 0; i < k; i++) {
-        cur = Y[length_pdf_][i];
-
-        if (I[i]) {
-            in += cur;
-
-            if (cur > imax) {
-                im = i; imax = cur;
-            }
-        }
-        else {
-            on += cur;
-
-            if (cur > omax) {
-                om = i; omax = cur;
-            }
-        }
-    }
-
-    if (im < 0) {
-        *m = om;
-    }
-    else
-    if (om < 0) {
-        *m = im;
-    }
-    else
-    if (omax > imax) {
-        *m = om;
-    }
-    else {
-        *m = om;
-
-        for (i = 0; i < k; i++) if (I[i]) {
-            for (j = 0; j < k; j++) if (!I[j]) {
-                Stop = 1;
-
-                for (l = 0; l < length_pdf_; l++) {
-                    Stop &= (FLOAT)fabs(Y[l][i] - Y[l][j]) < min_dist_mul_ * h[l];
-                }
-
-                if (Stop) {
-                    *m = im; break;
-                }
-            }
-
-            if (Stop) break;
-        }
-    }
-
-    return Error;
-} // GlobalModeH 
-*/
 
 // Global mode detection for histogram.
 
@@ -1040,11 +831,12 @@ E0: return Error;
 // Returns rough binomial parameters.
 
 int RoughBinomialParameters(FLOAT ym,
+                            FLOAT ymean,
                             FLOAT fm,
                             FLOAT n,
                             FLOAT *p)
 {
-    FLOAT dp, pmin, pmax;
+    FLOAT dp;
     FLOAT A;
     int   i;
     int   Error = 0;
@@ -1062,56 +854,30 @@ int RoughBinomialParameters(FLOAT ym,
         A = Gammaln(n + 1.0) - Gammaln(ym + 1.0) - Gammaln(n - ym + 1.0) - (FLOAT)log(fm);
 
         if (A + ym * (FLOAT)log(*p) + (n - ym) * (FLOAT)log((FLOAT)1.0 - *p) > (FLOAT)0.0) {
-            pmax = (FLOAT)1.0 - Eps;
+            if (ymean > ym) {
+                *p = (FLOAT)1.0 - Eps;
+            }
+            else {
+                *p = Eps;
+            }
 
-            if (A + ym * (FLOAT)log(pmax) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmax) < (FLOAT)0.0) {
-                i = 1; Error = 1;
-                while ((i <= ItMax) && Error) {
-                    dp = pmax * ((FLOAT)1.0 - pmax) * (A + ym * (FLOAT)log(pmax) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmax)) / (ym - pmax * n);
+            i = 1; Error = 1;
+            while ((i <= ItMax) && Error) {
+                dp = *p * ((FLOAT)1.0 - *p) * (A + ym * (FLOAT)log(*p) + (n - ym) * (FLOAT)log((FLOAT)1.0 - *p)) / (ym - *p * n);
 
-                    if (IsNan(dp) || IsInf(dp)) {
-                        break;
-                    }
-
-                    pmax -= dp;
-
-                    if ((FLOAT)fabs(dp) < Max(Eps * (FLOAT)fabs(pmax), Eps)) Error = 0;
-
-                    i++;
+                if (IsNan(dp) || IsInf(dp)) {
+                    break;
                 }
+
+                *p -= dp;
+
+                if ((FLOAT)fabs(dp) < Max(Eps * (FLOAT)fabs(*p), Eps)) Error = 0;
+
+                i++;
             }
-            else {
-                pmax = (FLOAT)1.0;
-            }
-
-            pmin = Eps;
-
-            if (A + ym * (FLOAT)log(pmin) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmin) < (FLOAT)0.0) {
-                i = 1; Error = 1;
-                while ((i <= ItMax) && Error) {
-                    dp = pmin * ((FLOAT)1.0 - pmin) * (A + ym * (FLOAT)log(pmin) + (n - ym) * (FLOAT)log((FLOAT)1.0 - pmin)) / (ym - pmin * n);
-
-                    if (IsNan(dp) || IsInf(dp)) {
-                        break;
-                    }
-
-                    pmin -= dp;
-
-                    if ((FLOAT)fabs(dp) < Max(Eps * (FLOAT)fabs(pmin), Eps)) Error = 0;
-
-                    i++;
-                }
-            }
-            else {
-                pmin = (FLOAT)0.0;
-            }
-
-            if ((FLOAT)fabs(pmax - (FLOAT)0.5) < (FLOAT)fabs(pmin - (FLOAT)0.5)) {
-                *p = pmax;
-            }
-            else {
-                *p = pmin;
-            }
+        }
+        else {
+            *p = ymean / n;
         }
     }
 
@@ -1121,6 +887,7 @@ int RoughBinomialParameters(FLOAT ym,
 // Returns rough Poisson parameters.
 
 int RoughPoissonParameters(FLOAT ym,
+                           FLOAT ymean,
                            FLOAT fm,
                            FLOAT *Theta)
 {
@@ -1135,18 +902,23 @@ int RoughPoissonParameters(FLOAT ym,
     else {
         *Theta = ym;
 
-        A = Gammaln(ym + 1.0) + (FLOAT)log(fm);
+        A = Gammaln(ym + (FLOAT)1.0) + (FLOAT)log(fm);
 
         if (ym * (FLOAT)log(*Theta) - *Theta - A > (FLOAT)0.0) {
-            *Theta = (FLOAT)2.0 * ym;
+            if (ymean > ym) {
+                *Theta = (FLOAT)2.0 * ym;
 
-            i = 1;
-            while (i <= ItMax) {
-                if (ym * (FLOAT)log(*Theta) - *Theta - A < (FLOAT)0.0) break;
+                i = 1;
+                while (i <= ItMax) {
+                    if (ym * (FLOAT)log(*Theta) - *Theta - A < (FLOAT)0.0) break;
 
-                *Theta += ym;
+                    *Theta += ym;
 
-                i++;
+                    i++;
+                }
+            }
+            else {
+                *Theta = Eps;
             }
 
             i = 1; Error = 1;
@@ -1163,6 +935,9 @@ int RoughPoissonParameters(FLOAT ym,
 
                 i++;
             }
+        }
+        else {
+            *Theta = ymean;
         }
     }
 
@@ -1337,6 +1112,31 @@ int Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
                 N[i] += 1;
 S0:;
             }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    Dc = (FLOAT)0.0;
+
+                    for (l = 0; l < length_pdf_; l++) if (i != l) {
+                        R = (Y[l][j] - Y[l][m]) / h[l]; Dc += R * R;
+                    }
+
+                    R = (FLOAT)sqrt(Dc);
+
+                    if (R <= Y[length_pdf_ + 2][m]) {
+                        Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+                    }
+                }
+
+                Mode[i].ymean /= Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
+            }
         }
         else {
             Mode[i].klm = nl;
@@ -1351,9 +1151,24 @@ S0:;
                 N[i] += 1;
 S1:;
             }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+                }
+
+                Mode[i].ymean /= Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
+            }
         }
 
-        Mode[i].h = (FLOAT)2.0 * Y[length_pdf_ + 2][m];  Mode[i].ym = Y[i][m]; Mode[i].flm = Y[length_pdf_][m] * k / (Mode[i].klm * (FLOAT)2.0 * Y[length_pdf_ + 2][m] * h[i]); logflm += (FLOAT)log(Mode[i].flm);
+        Mode[i].h = (FLOAT)2.0 * Y[length_pdf_ + 2][m]; Mode[i].ym = Y[i][m]; Mode[i].flm = Y[length_pdf_][m] * k / (Mode[i].klm * (FLOAT)2.0 * Y[length_pdf_ + 2][m] * h[i]); logflm += (FLOAT)log(Mode[i].flm);
     }
 
     epsilon = (FLOAT)exp(((FLOAT)log(Y[length_pdf_][m] * k / nl) - Y[length_pdf_ + 1][m] - logflm) / length_pdf_);
@@ -1395,13 +1210,13 @@ S1:;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, &RigidTheta->Theta_[0][i]);
 
             if (Error) goto E0;
 
@@ -1484,13 +1299,13 @@ S1:;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i]);
+                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
                 if (Error) goto E0;
 
@@ -1581,6 +1396,24 @@ int Rebmix::RoughEstimationKDE(FLOAT                **Y,         // Pointer to t
                 N[i] += 1;
 S0:;
             }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) > (FLOAT)0.5 * h[l])) goto S1;
+
+                    Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+S1:;
+                }
+
+                Mode[i].ymean /= Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
+            }
         }
         else {
             Mode[i].klm = nl;
@@ -1589,11 +1422,26 @@ S0:;
                 X_[i][N[i]] = Y[i][m] + (int)floor((Y[i][j] - Y[i][m]) / h[i] + (FLOAT)0.5) * h[i];
 
                 for (ii = 0; ii < N[i]; ii++) {
-                    if ((FLOAT)fabs(X_[i][N[i]] - X_[i][ii]) < (FLOAT)0.5 * h[i]) goto S1;
+                    if ((FLOAT)fabs(X_[i][N[i]] - X_[i][ii]) < (FLOAT)0.5 * h[i]) goto S2;
                 }
 
                 N[i] += 1;
-S1:;
+S2:;
+            }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+                }
+
+                Mode[i].ymean /= Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
             }
         }
 
@@ -1639,13 +1487,13 @@ S1:;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, &RigidTheta->Theta_[0][i]);
 
             if (Error) goto E0;
 
@@ -1728,13 +1576,13 @@ S1:;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i]);
+                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
                 if (Error) goto E0;
 
@@ -1816,12 +1664,45 @@ int Rebmix::RoughEstimationH(int                  k,           // Total number o
                 Mode[i].klm += Y[length_pdf_][j]; X_[i][N[i]] = Y[i][j]; N[i] += 1;
 S0:;
             }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < k; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    for (l = 0; l < length_pdf_; l++) if ((i != l) && (Y[l][j] != Y[l][m])) goto S1;
+
+                    Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+S1:;
+                }
+
+                Mode[i].ymean /=  Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
+            }
         }
         else {
             Mode[i].klm = nl;
 
             for (j = 0; j < k; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 X_[i][N[i]] = Y[i][j]; N[i] += 1;
+            }
+
+            switch (RigidTheta->pdf_[i]) {
+            case pfBinomial: case pfPoisson:
+                Mode[i].ymean = (FLOAT)0.0;
+
+                for (j = 0; j < k; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                    Mode[i].ymean += Y[length_pdf_][j] * Y[i][j];
+                }
+
+                Mode[i].ymean /= Mode[i].klm;
+
+                break;
+            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+                break;
             }
         }
 
@@ -1867,13 +1748,13 @@ S0:;
 
             break;
         case pfBinomial:
-            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+            Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
             if (Error) goto E0;
 
             break;
         case pfPoisson:
-            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i]);
+            Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, Mode[i].flm, &RigidTheta->Theta_[0][i]);
 
             if (Error) goto E0;
 
@@ -1956,13 +1837,13 @@ S0:;
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                 if (Error) goto E0;
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i]);
+                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
                 if (Error) goto E0;
 
@@ -7516,7 +7397,7 @@ int Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     int   Error = 0;
 
-    printf("REBMIX Version 2.12.0\n");
+    printf("REBMIX Version 2.12.1\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;
@@ -7610,7 +7491,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             if (!strcmp(pchar, "HISTOGRAM"))
                 Preprocessing_ = poHistogram;
             else
-            if (!strcmp(pchar, "KDE"))
+            if (!strcmp(pchar, "KERNELDENSITYESTIMATION"))
                 Preprocessing_ = poKDE;
             else
             if (!strcmp(pchar, "K-NEARESTNEIGHBOUR"))

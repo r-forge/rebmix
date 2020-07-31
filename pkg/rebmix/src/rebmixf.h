@@ -47,10 +47,11 @@ typedef enum {
 } InformationCriterionType_e;
 
 typedef struct roughparametertype {
-    FLOAT h;   // Mode class width;
-    FLOAT ym;  // Mode position.
-    FLOAT flm; // Component conditional empirical density.
-    FLOAT klm; // Component conditional total number of observations.
+    FLOAT h;     // Mode class width;
+    FLOAT ym;    // Mode position.
+    FLOAT ymean; // Mean position.
+    FLOAT flm;   // Component conditional empirical density.
+    FLOAT klm;   // Component conditional total number of observations.
 } RoughParameterType;
 
 class Rebmix : public Base {
