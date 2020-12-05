@@ -3,7 +3,9 @@
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4514)
+#pragma warning(disable: 4710)
 #pragma warning(disable: 4820)
+#pragma warning(disable: 5045)
 #endif
 
 #include <float.h>
@@ -13,7 +15,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
 
 #ifndef FLOAT

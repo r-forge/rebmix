@@ -1,9 +1,6 @@
 #ifndef REBMVNORM_H_INCLUDED
 #define REBMVNORM_H_INCLUDED
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "base.h"
 #include "rebmixf.h"
 

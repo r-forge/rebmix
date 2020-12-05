@@ -1,12 +1,11 @@
-#include <math.h>
-#include <float.h>
+#include "rngmvnormf.h"
 
+#include <math.h>
+
+#if (_MAINTAIN_SWITCH)
 #include <stdio.h>
 #include <ctype.h>
-#include <time.h>
-
-#include "base.h"
-#include "rngmvnormf.h"
+#endif
 
 static int   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;

@@ -1,13 +1,11 @@
-#include <math.h>
-#include <float.h>
-
-#include <stdio.h>
-#include <ctype.h>
-#include <time.h>
-
-#include "base.h"
 #include "rebmixf.h"
-#include "emf.h"
+
+#include <math.h>
+
+#if (_MAINTAIN_SWITCH)
+#include <ctype.h>
+#include <stdio.h>
+#endif
 
 // CompnentDistribution constructor.
 
@@ -4775,7 +4773,7 @@ int Rebmix::REBMIXKNN()
 
         all_I_[i] = 1;
 
-        Found = 0; Dmin = (FLOAT)1.0; J = 1;
+        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -5549,7 +5547,7 @@ int Rebmix::REBMIXKDE()
 
         all_I_[i] = 1;
 
-        Found = 0; Dmin = (FLOAT)1.0; J = 1;
+        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -6349,7 +6347,7 @@ int Rebmix::REBMIXH()
 
         for (j = 0; j < all_K_[i]; j++) K[j] = Y[length_pdf_][j];
 
-        Found = 0; Dmin = (FLOAT)1.0; J = 1;
+        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -7397,7 +7395,7 @@ int Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     int   Error = 0;
 
-    printf("REBMIX Version 2.12.1\n");
+    printf("REBMIX Version 2.13.0\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

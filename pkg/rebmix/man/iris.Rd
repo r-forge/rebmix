@@ -31,7 +31,7 @@ data("iris")
 }
 }
 \source{
-A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml}.
+A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml/}.
 }
 \references{
 R. A. Fisher. The use of multiple measurements in taxonomic problems. Annals of Eugenics,

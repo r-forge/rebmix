@@ -35,7 +35,7 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.12.1}}
+\section{What's new in version \texttt{2.13.0}}
 ?
 \section{Previous versions}
 Version \texttt{2.12.0} introduces the Knuth algorithm \citep{Knuth_2019} as an effective way of optimal number of bins search. This affects the time efficiency of the \texttt{REBMIX} method considerably. The user can now enter different numbers of bins for different random variables. Two accompanied methods are added \texttt{optbins} and \texttt{bins}. The C++ code is optimized regarding memory allocation and efficiency. The R code is debugged and further improved regarding wrong user input messaging. Further debugging has been done. Outlier detection has been simplified. The \texttt{REBMIX} method now delivers some more components, but identifies also components with very low probability of occurrence, which is important regarding our future plans. The \texttt{plot} method is improved. The \texttt{RCLRMIX} method has been debugged and improved. The same holds for the \texttt{REBMIX} method.

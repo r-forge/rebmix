@@ -56,6 +56,8 @@ function(x,
   N <- d * (d - 1) / 2
 
   opar <- list(); ipar <- 1
+  
+  opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
 
   par(mfrow = c(nrow, ncol),
     cex = cex,
@@ -304,6 +306,8 @@ function(x,
   N <- d * (d - 1) / 2
 
   opar <- list(); ipar <- 1
+  
+  opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
 
   par(mfrow = c(nrow, ncol),
     cex = cex,

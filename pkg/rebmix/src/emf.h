@@ -9,13 +9,6 @@
 #ifndef EMF_H_INCLUDED
 #define EMF_H_INCLUDED
 
-#ifdef _MSC_VER
-#pragma warning(disable: 4514)
-#pragma warning(disable: 4820)
-#endif
-
-#include <stdlib.h>
-#include <string.h>
 #include "base.h"
 
 class Emmix : public Base {

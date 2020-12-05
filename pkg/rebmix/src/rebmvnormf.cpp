@@ -1,13 +1,6 @@
-#include <math.h>
-#include <float.h>
-
-#include <stdio.h>
-#include <ctype.h>
-#include <time.h>
-
-#include "base.h"
 #include "rebmvnormf.h"
-#include "emf.h"
+
+#include <math.h>
 
 // Perform necessary initializations.
 

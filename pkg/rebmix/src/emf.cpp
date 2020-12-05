@@ -6,16 +6,9 @@
  *
 */
 
-#include <math.h>
-#include <float.h>
-
-#include <stdio.h>
-#include <ctype.h>
-#include <time.h>
-
-#include "base.h"
-#include "emf.h"
 #include "rebmixf.h"
+
+#include <math.h>
 
 // Emmix constructor.
 

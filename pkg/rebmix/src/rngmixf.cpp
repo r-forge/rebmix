@@ -1,9 +1,11 @@
+#include "rngmixf.h"
+
 #include <math.h>
+
+#if (_MAINTAIN_SWITCH)
 #include <stdio.h>
 #include <ctype.h>
-
-#include "base.h"
-#include "rngmixf.h"
+#endif
 
 static int   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;
@@ -406,7 +408,7 @@ int Rngmix::RunTemplateFile(char *file)
         Error = 1; goto E0;
     }
 
-    printf("RNGMIX Version 2.12.1\n");
+    printf("RNGMIX Version 2.13.0\n");
 
 S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(line, "\n");

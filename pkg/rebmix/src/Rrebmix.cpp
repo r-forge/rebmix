@@ -1,10 +1,6 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <float.h>
-#include <math.h>
-
 #include "rngmixf.h"
-#include "rebmixf.h"
+
+#include <math.h>
 
 extern "C" {
 

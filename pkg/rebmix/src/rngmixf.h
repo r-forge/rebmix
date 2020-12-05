@@ -1,11 +1,8 @@
 #ifndef RNGMIXF_H_INCLUDED
 #define RNGMIXF_H_INCLUDED
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "rebmixf.h"
 #include "base.h"
+#include "rebmixf.h"
 
 class Rngmix : public Base {
     // Methods.

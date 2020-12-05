@@ -1,10 +1,10 @@
-#include <stdio.h>
-
 #include "base.h"
 #include "rngmixf.h"
 #include "rebmixf.h"
 #include "rngmvnormf.h"
 #include "rebmvnormf.h"
+
+#include <stdio.h>
 
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC

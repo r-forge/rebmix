@@ -1,8 +1,8 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.12.1}{ 
+\section{Changes in version 2.13.0}{ 
 \itemize{
-\item ?.
+\item Method \code{plot} is debugged and improved.
 }
 }
 \section{Changes in version 2.12.0}{ 

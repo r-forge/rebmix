@@ -1,10 +1,7 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <float.h>
-#include <math.h>
-
 #include "rngmvnormf.h"
 #include "rebmvnormf.h"
+
+#include <math.h>
 
 extern "C" {
 

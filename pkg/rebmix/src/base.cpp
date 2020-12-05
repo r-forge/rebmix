@@ -1,18 +1,11 @@
-#ifdef _MSC_VER
-#pragma warning(disable: 4514)
-#endif
+#include "base.h"
 
 #include <math.h>
-#include <limits.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "base.h"
-
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
 #include <crtdbg.h>
 #endif
 

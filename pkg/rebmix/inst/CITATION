@@ -1,6 +1,25 @@
 citHeader("To cite rebmix in publications use:")
 
 citEntry(entry = "Article",
+  title = "Modelling of Load Spectra Containing Clusters of Less Probable Load Cycles",
+  author  = personList(as.person("Marko Nagode"),
+                       as.person("Jernej Klemenc")),
+  journal  = "International Journal of Fatigue",
+  year = "2021",
+  volume = "143",
+  pages = "106006",
+  doi = "10.1016/j.ijfatigue.2020.106006",
+  url = "https://doi.org/10.1016/j.ijfatigue.2020.106006",
+
+  textVersion  =
+  paste("Marko Nagode, Jernej Klemenc (2021).",
+        "Modelling of Load Spectra Containing Clusters of Less Probable Load Cycles.",
+        "International Journal of Fatigue, 143, 106006.",
+        "doi: 10.1016/j.ijfatigue.2020.106006",
+        "url: https://doi.org/10.1016/j.ijfatigue.2020.106006.")
+)
+
+citEntry(entry = "Article",
   title = "Optimizing the Estimation of a Histogram-Bin Width-Application to the Multivariate Mixture-Model Estimation",
   author  = personList(as.person("Branislav Panic"),
                               as.person("Jernej Klemenc"),
