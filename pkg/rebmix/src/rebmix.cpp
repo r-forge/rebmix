@@ -1,18 +1,14 @@
-#include "base.h"
-#include "rngmixf.h"
-#include "rebmixf.h"
 #include "rngmvnormf.h"
 #include "rebmvnormf.h"
 
-#include <stdio.h>
-
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
 #include <crtdbg.h>
 #endif
 
 #if (_MAINTAIN_SWITCH)
+#include <stdio.h>
+
 int main(int argc, char* argv[])
 {
     #if (_MEMORY_LEAK_SWITCH)

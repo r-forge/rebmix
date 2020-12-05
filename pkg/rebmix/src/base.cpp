@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if (_MEMORY_LEAK_SWITCH)
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
 // Base constructor.
 
 Base::Base()

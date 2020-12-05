@@ -3,8 +3,8 @@
 #include <math.h>
 
 #if (_MAINTAIN_SWITCH)
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
 #endif
 
 static int   NDevISet = 0;
