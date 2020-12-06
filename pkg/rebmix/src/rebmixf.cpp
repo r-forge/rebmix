@@ -4773,7 +4773,7 @@ int Rebmix::REBMIXKNN()
 
         all_I_[i] = 1;
 
-        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
+        Found = 0; Dmin = (FLOAT)0.5 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -4956,7 +4956,7 @@ int Rebmix::REBMIXKNN()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin *= c / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
@@ -5547,7 +5547,7 @@ int Rebmix::REBMIXKDE()
 
         all_I_[i] = 1;
 
-        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
+        Found = 0; Dmin = (FLOAT)0.5 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -5732,7 +5732,7 @@ int Rebmix::REBMIXKDE()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin *= c / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
@@ -6347,7 +6347,7 @@ int Rebmix::REBMIXH()
 
         for (j = 0; j < all_K_[i]; j++) K[j] = Y[length_pdf_][j];
 
-        Found = 0; Dmin = (FLOAT)1.0 / cmin_; J = 1;
+        Found = 0; Dmin = (FLOAT)0.5 / cmin_; J = 1;
 
         // Outer loop.
 
@@ -6536,7 +6536,7 @@ int Rebmix::REBMIXH()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin *= c / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }

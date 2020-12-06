@@ -694,7 +694,7 @@ function(model,
 
   model@pos <- which(as.numeric(model@summary[, "logL"]) == max(as.numeric(model@summary[, "logL"])))
 
-  if (model@cmax <= max(as.numeric(model@summary[, "c"]))) {
+  if ((model@cmax > model@cmin) && (model@cmax <= max(as.numeric(model@summary[, "c"])))) {
     message("Note: c = ", cmax, "! Consider increasing ", sQuote("cmax"), "!")
   }
 
