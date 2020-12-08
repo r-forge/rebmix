@@ -4785,6 +4785,8 @@ int Rebmix::REBMIXKNN()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
+                if (l >= cmax_) goto E2;
+
                 // Global mode detection.
 
                 Error = GlobalModeKNN(&m, Y, O);
@@ -4885,7 +4887,7 @@ int Rebmix::REBMIXKNN()
 
                 r -= nl; nl = r; for (j = 0; j < n_; j++) Y[length_pdf_][j] = R[j];
 
-                Stop = (c >= n_) || (c >= cmax_);
+                Stop = c >= n_;
 
                 if (Stop) break;
             }
@@ -4956,14 +4958,14 @@ int Rebmix::REBMIXKNN()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
+            Dmin = D / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0; EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
@@ -5559,6 +5561,8 @@ int Rebmix::REBMIXKDE()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
+                if (l >= cmax_) goto E2;
+
                 // Global mode detection.
 
                 Error = GlobalModeKDE(&m, Y, O);
@@ -5659,7 +5663,7 @@ int Rebmix::REBMIXKDE()
 
                 r -= nl; nl = r; for (j = 0; j < n_; j++) Y[length_pdf_][j] = R[j];
 
-                Stop = (c >= n_) || (c >= cmax_);
+                Stop = c >= n_;
 
                 if (Stop) break;
             }
@@ -5732,14 +5736,14 @@ int Rebmix::REBMIXKDE()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
+            Dmin = D / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0; EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
@@ -6359,6 +6363,8 @@ int Rebmix::REBMIXH()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
+                if (l >= cmax_) goto E2;
+
                 // Global mode detection.
 
                 Error = GlobalModeH(&m, all_K_[i], Y, O);
@@ -6459,7 +6465,7 @@ int Rebmix::REBMIXH()
 
                 r -= nl; nl = r; for (j = 0; j < all_K_[i]; j++) Y[length_pdf_][j] = R[j];
 
-                Stop = (c >= all_K_[i]) || (c >= cmax_);
+                Stop = c >= all_K_[i];
 
                 if (Stop) break;
             }
@@ -6536,14 +6542,14 @@ int Rebmix::REBMIXH()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
+            Dmin = D / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
 
 /// Panic Branislav.
 
-        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             Found = 0; EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
