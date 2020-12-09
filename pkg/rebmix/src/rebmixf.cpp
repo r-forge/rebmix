@@ -4958,7 +4958,7 @@ int Rebmix::REBMIXKNN()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = D / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
@@ -5736,7 +5736,7 @@ int Rebmix::REBMIXKDE()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = D / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }
@@ -6542,7 +6542,7 @@ int Rebmix::REBMIXH()
 
             j = J - 1; opt_c[j] = c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-            Dmin = D / (c + (FLOAT)1.0); J++;
+            Dmin = Min(D, Dmin * c) / (c + (FLOAT)1.0); J++;
 
             if (Stop) break;
         }

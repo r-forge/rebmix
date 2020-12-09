@@ -3,6 +3,7 @@
 \section{Changes in version 2.13.0}{ 
 \itemize{
 \item Method \code{plot} is debugged and improved.
+\item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXKDE()} and \code{REBMIXH()}.
 }
 }
 \section{Changes in version 2.12.0}{ 
