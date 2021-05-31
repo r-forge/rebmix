@@ -63,7 +63,7 @@ A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http:/
 }
 \references{
 S. J. Roberts, R. Everson, and I. Rezek. Maximum certainty data partitioning. Pattern Recognition,
-33(5):833-839, 2000. \url{https://doi.org/10.1016/S0031-3203(99)00086-2}.
+33(5):833-839, 2000. \doi{10.1016/S0031-3203(99)00086-2}.
 }
 \examples{
 \dontrun{

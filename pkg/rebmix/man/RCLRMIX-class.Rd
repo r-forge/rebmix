@@ -70,7 +70,7 @@ a vector of length \eqn{c - 1} containing decrease of entropies for combined clu
 \author{Marko Nagode}
 \references{
 J. P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo. Combining mixture components for clustering.
-Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \url{https://doi.org/10.1198/jcgs.2010.08111}
+Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \doi{10.1198/jcgs.2010.08111}
 }
 \examples{
 devAskNewPage(ask = TRUE)

@@ -48,6 +48,6 @@ Returns an optimized object of class \code{RCLSMIX} or \code{RCLSMVNORM}.
 \author{Marko Nagode}
 \references{
 R. Kohavi and G. H. John. Wrappers for feature subset selection, Artificial Intelligence, 97(1-2):273-324, 1997.
-\url{https://doi.org/10.1016/S0004-3702(97)00043-X}.
+\doi{10.1016/S0004-3702(97)00043-X}.
 }
 \keyword{classification}

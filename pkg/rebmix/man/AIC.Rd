@@ -57,7 +57,7 @@ H. Akaike. A new look at the statistical model identification. IEEE Transactions
 A. F. M. Smith and D. J. Spiegelhalter. Bayes factors and choice criteria for linear
 models. Journal of the Royal Statistical Society. Series B, 42(2):213-220, 1980. \url{https://www.jstor.org/stable/2984964}.\cr\cr
 H. Bozdogan. Model selection and akaike's information criterion (aic): The general theory and its
-analytical extensions. Psychometrika, 52(3):345-370, 1987. \url{https://doi.org/10.1007/BF02294361}.\cr\cr
+analytical extensions. Psychometrika, 52(3):345-370, 1987. \doi{10.1007/BF02294361}.\cr\cr
 C. M. Hurvich and C.-L. Tsai. Regression and time series model selection in small samples. Biometrika,
 76(2):297-307, 1989. \url{https://www.jstor.org/stable/2336663}.
 }

@@ -73,6 +73,7 @@ Returns an object of class \code{REBMIX.boot} or \code{REBMVNORM.boot}.
 G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 2000.
 }
 \examples{
+\dontrun{
 data("weibull")
 
 n <- nrow(weibull)
@@ -102,5 +103,6 @@ plot(weibullest, what = c("pdf", "marginal cdf", "IC", "logL", "D"),
 weibullboot <- boot(x = weibullest, Bootstrap = "nonparametric", B = 10)
 
 weibullboot
+}
 }
 \keyword{bootstrap}

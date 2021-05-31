@@ -50,10 +50,10 @@ currently not used.
 \references{
 K. K. Knuth. Optimal data-based binning for histograms and histogram-based probability density models. 
 Digital Signal Processing, 95:102581, 2019.
-\url{https://doi.org/10.1016/j.dsp.2019.102581}.\cr\cr
+\doi{10.1016/j.dsp.2019.102581}.\cr\cr
 B. Panic, J. Klemenc, M. Nagode. Improved initialization of the EM algorithm for mixture model parameter estimation.
 Mathematics, 8(3):373, 2020.
-\url{https://doi.org/10.3390/math8030373}.
+\doi{10.3390/math8030373}.
 }
 \examples{
 # Generate multivariate normal datasets.
