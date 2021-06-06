@@ -70,6 +70,10 @@
 #define Euler (FLOAT)0.5772156649015328606065120900824
 #endif
 
+#ifndef SqrPi6
+#define SqrPi6 (FLOAT)1.644934066848226436472415166646
+#endif
+
 #ifndef Phi
 #define Phi (FLOAT)1.6180339887498948482045868343656
 #endif
@@ -278,6 +282,10 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
 // Returns the inverse of the Weibull c.d.f. for the specified Theta and Beta.
 
 FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta);
+
+// Returns the inverse of the Gumbel c.d.f. for the specified Mean and Beta.
+
+FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Beta);
 
 // Returns the error function erf(y). See http://www.nr.com/.
 

@@ -406,6 +406,17 @@ FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta)
     return (y);
 } // WeibullInv
 
+// Returns the inverse of the Gumbel c.d.f. for the specified Theta and Beta.
+
+FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Beta)
+{
+	FLOAT y;
+
+	y = Mean - Beta * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Fy));
+
+	return (y);
+} // GumbelInv
+
 // Returns the error function erf(y). See http://www.nr.com/.
 
 int ErrorF(FLOAT y,     // Variable y.

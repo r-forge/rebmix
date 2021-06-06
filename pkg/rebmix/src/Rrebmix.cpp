@@ -2608,9 +2608,9 @@ void RGumbelPdf(int *n, double *y, double *Mean, double *Beta, double *f)
     int   i;
 
     for (i = 0; i < *n; i++) {
-		A = (y[i] - *Mean) / (*Beta);
+		A = -(y[i] - *Mean) / (*Beta);
 
-        f[i] = (FLOAT)exp(-(A + (FLOAT)exp(-A))) / (*Beta);
+        f[i] = (FLOAT)exp(A - (FLOAT)exp(A)) / (*Beta);
     }
 } // RvonMisesPdf
 
@@ -2620,9 +2620,9 @@ void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
 	int   i;
 
 	for (i = 0; i < *n; i++) {
-	    A = (y[i] - *Mean) / (*Beta);
+	    A = -(y[i] - *Mean) / (*Beta);
       
-		F[i] = (FLOAT)exp(-(FLOAT)exp(-A));
+		F[i] = (FLOAT)exp(-(FLOAT)exp(A));
     }
 } // RGumbelCdf
 

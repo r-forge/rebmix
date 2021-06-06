@@ -45,16 +45,6 @@ int main(int argc, char* argv[])
         if (Error) goto E0;
     }
     else
-    if (!strcmp(argv[2], "REBMIX")) {
-        rebmix = new Rebmix;
-
-        Error = NULL == rebmix; if (Error) goto E0;
-
-        Error = rebmix->RunTemplateFile(argv[1]);
-
-        if (Error) goto E0;
-    }
-    else
     if (!strcmp(argv[2], "REBMVNORM")) {
         rebmvnorm = new Rebmvnorm;
 

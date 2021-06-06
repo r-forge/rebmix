@@ -1,6 +1,6 @@
 useDynLib(rebmix, .registration = TRUE, .fixes = "C_")
 
-import("methods", "stats", "utils", "graphics", "grDevices", "mvtnorm")
+import("methods", "stats", "utils", "graphics", "grDevices")
 
 export("kseq")
 

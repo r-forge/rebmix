@@ -658,6 +658,10 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
 
             break;
         case pfGumbel:
+			y = -(Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
+
+			*CmpDist += y - (FLOAT)exp(y) - (FLOAT)log(CmpTheta->Theta_[1][i]);
+
             break;
         case pfvonMises:
             if ((Y[i][j] < (FLOAT)0.0) || (Y[i][j] > Pi2)) {

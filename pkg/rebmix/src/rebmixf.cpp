@@ -768,6 +768,20 @@ int RoughGammaParameters(FLOAT ym,
 E0: return Error;
 } // RoughGammaParameters
 
+// Returns rough Gumbel parameters.
+
+int RoughGumbelParameters(FLOAT ym,
+	FLOAT fm,
+	FLOAT *Mean,
+	FLOAT *Beta)
+{
+	int Error = 0;
+
+	*Mean = ym; *Beta = (FLOAT)1.0 / ((FLOAT)exp((FLOAT)1.0) * fm);
+
+	return Error;
+} // RoughGumbelParameters
+
 // Returns rough von Mises parameters.
 
 int RoughvonMisesParameters(FLOAT h,
@@ -995,6 +1009,10 @@ int ComponentMarginalDist(int                  i,           // Index of variable
 
         break;
     case pfGumbel:
+		y = -(Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
+
+		*CmpMrgDist = (FLOAT)exp(y - (FLOAT)exp(y)) / CmpTheta->Theta_[1][i];
+
         break;
     case pfvonMises:
         if ((Y[i][j] < (FLOAT)0.0) || (Y[i][j] > Pi2)) {
@@ -1200,6 +1218,8 @@ S1:;
 
             break;
         case pfGumbel:
+			Error = RoughGumbelParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+
             break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
@@ -1289,6 +1309,8 @@ S1:;
 
                 break;
             case pfGumbel:
+				Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1477,6 +1499,8 @@ S2:;
 
             break;
         case pfGumbel:
+			Error = RoughGumbelParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+
             break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
@@ -1566,6 +1590,8 @@ S2:;
 
                 break;
             case pfGumbel:
+				Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1738,6 +1764,10 @@ S1:;
 
             break;
         case pfGumbel:
+			Error = RoughGumbelParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+
+			if (Error) goto E0;
+
             break;
         case pfvonMises:
             Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
@@ -1827,6 +1857,10 @@ S1:;
 
                 break;
             case pfGumbel:
+				Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+
+				if (Error) goto E0;
+
                 break;
             case pfvonMises:
                 Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
@@ -1972,6 +2006,20 @@ int Rebmix::ComponentDist(int                  j,         // Indey of observatio
 
             break;
         case pfGumbel:
+			if (Outlier) {
+				y = GumbelInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+
+				*Outlier |= Y[i][j] > y;
+
+				y = GumbelInv(p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+
+				*Outlier |= Y[i][j] < y;
+			}
+
+			ypb = -(Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
+
+			*CmpDist *= (FLOAT)exp(ypb - (FLOAT)exp(ypb)) / CmpTheta->Theta_[1][i];
+
             break;
         case pfvonMises:
             if (Outlier) {
@@ -2149,6 +2197,20 @@ int Rebmix::LogComponentDist(int                  j,         // Indey of observa
 
             break;
         case pfGumbel:
+			if (Outlier) {
+				y = GumbelInv((FLOAT)1.0 - p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+
+				*Outlier |= Y[i][j] > y;
+
+				y = GumbelInv(p_value_, CmpTheta->Theta_[0][i], CmpTheta->Theta_[1][i]);
+
+				*Outlier |= Y[i][j] < y;
+			}
+
+			ypb = -(Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
+
+			*CmpDist += ypb - (FLOAT)exp(ypb) - (FLOAT)log(CmpTheta->Theta_[1][i]);
+
             break;
         case pfvonMises:
             if (Outlier) {
@@ -2429,6 +2491,51 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
             break;
         case pfGumbel:
+			EnhanTheta->pdf_[i] = pfGumbel;
+
+			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+
+			j = 1; Error = 1;
+			while ((j <= ItMax) && Error) {
+				memset(&A, 0, 4 * sizeof(FLOAT));
+
+				for (l = 0; l < n_; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
+					T[0] = (FLOAT)exp(-Y[i][l] / EnhanTheta->Theta_[1][i]);
+
+					A[0] += Y[length_pdf_][l] * Y[i][l];
+					A[1] += Y[length_pdf_][l] * T[0];
+					A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
+					A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+				}
+
+				A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+
+				dP = (A[0] - EnhanTheta->Theta_[1][i] - T[0]) / ((T[0] * T[0] - A[3] / A[1]) / T[1] - (FLOAT)1.0);
+
+				EnhanTheta->Theta_[1][i] -= dP;
+
+				if (IsNan(dP) || IsInf(dP)) {
+					Error = 1; goto E0;
+				}
+
+				if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
+
+				j++;
+			}
+
+			if (Error) goto E0;
+
+			A[1] /= nl;
+
+			EnhanTheta->Theta_[0][i] = -EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+
+			TmpVar = SqrPi6 * EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+			MrgVar = SqrPi6 * RigidTheta->Theta_[1][i] * RigidTheta->Theta_[1][i];
+
+			if (TmpVar < MrgVar * var_mul_) {
+				Error = 1; goto E0;
+			}
+
             break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
@@ -2751,6 +2858,51 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
             break;
         case pfGumbel:
+			EnhanTheta->pdf_[i] = pfGumbel;
+
+			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+
+			j = 1; Error = 1;
+			while ((j <= ItMax) && Error) {
+				memset(&A, 0, 4 * sizeof(FLOAT));
+
+				for (l = 0; l < n_; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
+					T[0] = (FLOAT)exp(-Y[i][l] / EnhanTheta->Theta_[1][i]);
+
+					A[0] += Y[length_pdf_][l] * Y[i][l];
+					A[1] += Y[length_pdf_][l] * T[0];
+					A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
+					A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+				}
+
+				A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+
+				dP = (A[0] - EnhanTheta->Theta_[1][i] - T[0]) / ((T[0] * T[0] - A[3] / A[1]) / T[1] - (FLOAT)1.0);
+
+				EnhanTheta->Theta_[1][i] -= dP;
+
+				if (IsNan(dP) || IsInf(dP)) {
+					Error = 1; goto E0;
+				}
+
+				if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
+
+				j++;
+			}
+
+			if (Error) goto E0;
+
+			A[1] /= nl;
+
+			EnhanTheta->Theta_[0][i] = -EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+
+			TmpVar = SqrPi6 * EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+			MrgVar = SqrPi6 * RigidTheta->Theta_[1][i] * RigidTheta->Theta_[1][i];
+
+			if (TmpVar < MrgVar * var_mul_) {
+				Error = 1; goto E0;
+			}
+
             break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
@@ -3074,6 +3226,51 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 
             break;
         case pfGumbel:
+			EnhanTheta->pdf_[i] = pfGumbel;
+
+			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+
+			j = 1; Error = 1;
+			while ((j <= ItMax) && Error) {
+				memset(&A, 0, 4 * sizeof(FLOAT));
+
+				for (l = 0; l < k; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
+					T[0] = (FLOAT)exp(-Y[i][l] / EnhanTheta->Theta_[1][i]);
+
+					A[0] += Y[length_pdf_][l] * Y[i][l];
+     				A[1] += Y[length_pdf_][l] * T[0];
+					A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
+					A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+				}
+
+				A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+
+				dP = (A[0] - EnhanTheta->Theta_[1][i] - T[0]) / ((T[0] * T[0] - A[3] / A[1]) / T[1] - (FLOAT)1.0);
+
+				EnhanTheta->Theta_[1][i] -= dP;
+
+				if (IsNan(dP) || IsInf(dP)) {
+					Error = 1; goto E0;
+				}
+
+				if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(EnhanTheta->Theta_[1][i]), Eps)) Error = 0;
+
+				j++;
+			}
+
+			if (Error) goto E0;
+
+			A[1] /= nl;
+
+			EnhanTheta->Theta_[0][i] = -EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+
+			TmpVar = SqrPi6 * EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+			MrgVar = SqrPi6 * RigidTheta->Theta_[1][i] * RigidTheta->Theta_[1][i];
+
+			if (TmpVar < MrgVar * var_mul_) {
+				Error = 1; goto E0;
+			}
+
             break;
         case pfvonMises:
             EnhanTheta->pdf_[i] = pfvonMises;
@@ -3238,6 +3435,10 @@ int Rebmix::MomentsCalculation(CompnentDistribution *CmpTheta, // Component para
 
             break;
         case pfGumbel:
+			FirstM[i] = CmpTheta->Theta_[0][i] + CmpTheta->Theta_[1][i] * Euler;
+
+			SecondM[i] = SqrPi6 * CmpTheta->Theta_[1][i] * CmpTheta->Theta_[1][i] + FirstM[i] * FirstM[i];
+
             break;
         case pfvonMises:
             R = BesselI1(CmpTheta->Theta_[1][i]) / BesselI0(CmpTheta->Theta_[1][i]);
@@ -3485,6 +3686,10 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
 
                 break;
             case pfGumbel:
+				MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((SecondM[i][j] - FirstM[i][j] * FirstM[i][j]) / SqrPi6);
+
+				MixTheta[i]->Theta_[0][j] = FirstM[i][j] - MixTheta[i]->Theta_[1][j] * Euler;
+
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -3597,6 +3802,10 @@ int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer t
 
                 break;
             case pfGumbel:
+				MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((SecondM[i][j] - FirstM[i][j] * FirstM[i][j]) / SqrPi6);
+
+				MixTheta[i]->Theta_[0][j] = FirstM[i][j] - MixTheta[i]->Theta_[1][j] * Euler;
+
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -3710,6 +3919,10 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
 
                 break;
             case pfGumbel:
+				MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt((SecondM[i][j] - FirstM[i][j] * FirstM[i][j]) / SqrPi6);
+
+				MixTheta[i]->Theta_[0][j] = FirstM[i][j] - MixTheta[i]->Theta_[1][j] * Euler;
+
                 break;
             case pfvonMises:
                 BayesvonMisesParameters(FirstM[i][j], SecondM[i][j], &MixTheta[i]->Theta_[0][j], &MixTheta[i]->Theta_[1][j]);
@@ -6862,7 +7075,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
         i = 0;
         while (pchar) {
-            Y_[i][n_] = (FLOAT)atof(pchar); pchar = strtok(NULL, "\t"); i++;
+			if (i < length_pdf_) Y_[i][n_] = (FLOAT)atof(pchar); 
+			
+			pchar = strtok(NULL, "\t"); i++;
         }
 
         n_++;

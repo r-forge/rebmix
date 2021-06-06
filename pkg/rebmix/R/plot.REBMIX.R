@@ -695,75 +695,75 @@ function(x,
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
 
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-      edist <- .dist.x(ey[, 1], n)
-
-      pdist <- .pfmix.x(py[[1]], w, Theta[1,])
-
-      ylim <- c(0.0, max(edist$y, pdist))
-
-      plot(x = edist$x,
-        y = edist$y,
-        type = "p",
-        main = "",
-        sub = "",
-        xlab = "",
-        ylab = "",
-        ylim = ylim,
-        col = "black",
-        axes = FALSE,
-        lwd = 1,
-        cex = plot.cex,
-        pch = plot.pch)
-
-      points(x = py[[1]],
-        y = pdist,
-        type = "l",
-        col = "black")
-
-      box(col = fg, lty = "solid", lwd = 1)
-
-      axis(side = 3,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      axis(side = 2,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      if (.Device == "tikz output") {
-        text <- paste("$y_{1}$", "$\\; - \\;$", "$F(y_{1})$", sep = "")
-      }
-      else {
-        text <- bquote(y[1] - F(y[1]))
-      }
-
-      mtext(text = text,
-        side = 1,
-        line = 0,
-        outer = FALSE,
-        adj = 0.5,
-        padj = 0.2,
-        cex = cex)
-
-      for (l in 1:length(legend)) {
-        mtext(text = legend[[l]],
-          side = 1,
-          line = l - 1,
-          outer = TRUE,
-          adj = 0.5,
-          padj = 0.2,
-          cex = cex)
-      }
-
-      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-    }
+#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+#     edist <- .dist.x(ey[, 1], n)
+#
+#     pdist <- .pfmix.x(py[[1]], w, Theta[1,])
+#
+#     ylim <- c(0.0, max(edist$y, pdist))
+#
+#     plot(x = edist$x,
+#       y = edist$y,
+#       type = "p",
+#       main = "",
+#       sub = "",
+#       xlab = "",
+#       ylab = "",
+#       ylim = ylim,
+#       col = "black",
+#       axes = FALSE,
+#       lwd = 1,
+#       cex = plot.cex,
+#       pch = plot.pch)
+#
+#     points(x = py[[1]],
+#       y = pdist,
+#       type = "l",
+#       col = "black")
+#
+#     box(col = fg, lty = "solid", lwd = 1)
+#
+#     axis(side = 3,
+#       outer = FALSE,
+#       lty = "solid",
+#       lwd = 1,
+#       hadj = 0.5,
+#       padj = 1.0)
+#
+#     axis(side = 2,
+#       outer = FALSE,
+#       lty = "solid",
+#       lwd = 1,
+#       hadj = 0.5,
+#       padj = 1.0)
+#
+#     if (.Device == "tikz output") {
+#       text <- paste("$y_{1}$", "$\\; - \\;$", "$F(y_{1})$", sep = "")
+#     }
+#     else {
+#       text <- bquote(y[1] - F(y[1]))
+#     }
+#
+#     mtext(text = text,
+#       side = 1,
+#       line = 0,
+#       outer = FALSE,
+#       adj = 0.5,
+#       padj = 0.2,
+#       cex = cex)
+#
+#     for (l in 1:length(legend)) {
+#       mtext(text = legend[[l]],
+#         side = 1,
+#         line = l - 1,
+#         outer = TRUE,
+#         adj = 0.5,
+#         padj = 0.2,
+#         cex = cex)
+#     }
+#
+#     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
+#   }
   }
 
   m <- nrow * ncol * ceiling(N / nrow / ncol) - N

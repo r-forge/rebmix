@@ -215,6 +215,8 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
 
             break;
         case pfGumbel:
+			Y[i][j] = CmpDist->Theta_[0][i] - CmpDist->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_)));
+
             break;
         case pfvonMises:
             CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
