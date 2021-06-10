@@ -166,7 +166,7 @@ int Digamma(FLOAT y, FLOAT *Psi)
                     Error = 1; goto E0;
                 }
 
-                aug = sgn * (cos(z) / sin(z) * (FLOAT)4.0);
+                aug = sgn * ((FLOAT)cos(z) / (FLOAT)sin(z) * (FLOAT)4.0);
             }
             else {
                 aug = sgn * ((FLOAT)sin(z) / (FLOAT)cos(z) * (FLOAT)4.0);
