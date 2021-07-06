@@ -76,22 +76,21 @@ G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 20
 \dontrun{
 data("weibull")
 
-n <- nrow(weibull)
+# Create object of class EM.Control.
 
-# Number of classes or nearest neighbours to be processed.
-
-K <- c(as.integer(1 + log2(n)), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(n))) # Maximum v follows log10 rule.
+EM <- new("EM.Control", strategy = "single", variant = "EM",
+  acceleration = "fixed", acceleration.multiplier = 1.0, tolerance = 1.0E-4,
+  maximum.iterations = 1000)
 
 # Estimate number of components, component weights and component parameters.
 
 weibullest <- REBMIX(Dataset = list(weibull),
   Preprocessing = "kernel density estimation",
+  cmin = 2,
   cmax = 4,
   Criterion = "BIC",
   pdf = "Weibull",
-  K = K[1]:K[2],
-  Restraints = "loose")
+  EMControl = EM)
 
 # Plot finite mixture.
 

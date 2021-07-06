@@ -4,9 +4,9 @@
 extern void RRNGMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RREBMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RdensKNearestNeighbourXY(void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RdensKDEXY(void *, void *, void *, void *, void *, void *, void *);
@@ -33,9 +33,9 @@ extern void RCombineComponentsMIX(void *, void *, void *, void *, void *, void *
 extern void RRNGMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RREBMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                       void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                       void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-                       void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RCLSMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
@@ -59,6 +59,9 @@ extern void RGumbelCdf(void *, void *, void *, void *, void *);
 
 extern void Roptbins(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void Rbins(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+
+extern void RTvtNormalPdf(void *, void *, void *, void *, void *, void *);
+extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
 
 static const R_CMethodDef CMethods[] = {
 	{"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
@@ -93,14 +96,16 @@ static const R_CMethodDef CMethods[] = {
 	{"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
 	{"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 5},
 	{"RGumbelCdf", (DL_FUNC) &RGumbelCdf, 5},
-    {"Roptbins", (DL_FUNC) &Roptbins, 14},
-    {"Rbins", (DL_FUNC) &Rbins, 13},
-    {NULL, NULL, 0}
+	{"Roptbins", (DL_FUNC) &Roptbins, 14},
+	{"Rbins", (DL_FUNC) &Rbins, 13},
+	{"RTvtNormalPdf", (DL_FUNC) &RTvtNormalPdf, 6},
+	{"RMvtNormalPdf", (DL_FUNC) &RMvtNormalPdf, 6},
+	{NULL, NULL, 0}
 };
 
 void R_init_rebmix(DllInfo *dll)
 {
 	R_registerRoutines(dll, CMethods, NULL, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
-    R_forceSymbols(dll, TRUE);
+	R_useDynamicSymbols(dll, FALSE);
+	R_forceSymbols(dll, TRUE);
 }

@@ -235,7 +235,16 @@ function(x,
 
       sigma <- sigma[variables, variables]
 
-      fi <- dmvnorm(as.matrix(Dataset[, variables]), mean = mean, sigma = sigma, ...)
+      output <- .C(C_RMvtNormalPdf,
+        n = as.integer(n),
+        X = as.double(unlist(Dataset[, variables])),
+        d = as.integer(length(mean)),
+        Mean = as.double(mean),
+        Sigma = as.double(sigma),
+        f = double(n),
+        PACKAGE = "rebmix")
+
+      fi <- output$f        
     }
 
     f <- f + as.numeric(w[i]) * fi

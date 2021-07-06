@@ -4,6 +4,7 @@
 \itemize{
 \item Method \code{plot} is debugged and improved.
 \item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXKDE()} and \code{REBMIXH()}.
+\item EM algorithm is added to the C++ code for the improved estimation of all mixture model parameters.
 }
 }
 \section{Changes in version 2.12.0}{ 

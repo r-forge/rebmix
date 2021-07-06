@@ -135,16 +135,17 @@
 #define IsInf(x) (!IsNan(x) && IsNan((x) - (x)))
 
 typedef enum {
-    pfNormal,    // Normal distribution.
-    pfLognormal, // Lognormal distribution.
-    pfWeibull,   // Weibull distribution.
-    pfGamma,     // Gamma distribution.
-    pfGumbel,    // Gumbel distribution.
-    pfvonMises,  // Von Mises distribution.
-    pfBinomial,  // Binomial distribution.
-    pfPoisson,   // Poisson distribution.
-    pfDirac,     // Dirac distribution.
-    pfUniform    // Uniform distribution.
+    pfNormal,          // Normal distribution.
+	pfTNormal,         // Truncated normal distribution.
+    pfLognormal,       // Lognormal distribution.
+    pfWeibull,         // Weibull distribution.
+    pfGamma,           // Gamma distribution.
+    pfGumbel,          // Gumbel distribution.
+    pfvonMises,        // Von Mises distribution.
+    pfBinomial,        // Binomial distribution.
+    pfPoisson,         // Poisson distribution.
+    pfDirac,           // Dirac distribution.
+    pfUniform,         // Uniform distribution.
 } ParametricFamilyType_e;
 
 typedef enum {

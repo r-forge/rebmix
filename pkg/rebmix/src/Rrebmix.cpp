@@ -819,7 +819,7 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         }
 
         switch (pdfx) {
-        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+        case pfNormal: case pfTNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
@@ -838,7 +838,7 @@ void RdensHistogramXY(int    *k,     // Total number of bins.
         }
 
         switch (pdfy) {
-        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+        case pfNormal: case pfTNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (y[*k] <= FLOAT_MIN) y[*k] += (*hy);
@@ -1014,7 +1014,7 @@ void RdensHistogramX(int    *k,     // Total number of bins.
         }
 
         switch (pdfx) {
-        case pfNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
+        case pfNormal: case pfTNormal: case pfvonMises: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform: case pfGumbel: default:
             break;
         case pfLognormal: case pfWeibull: case pfGamma:
             if (x[*k] <= FLOAT_MIN) x[*k] += (*hx);
@@ -2612,7 +2612,7 @@ void RGumbelPdf(int *n, double *y, double *Mean, double *Beta, double *f)
 
         f[i] = (FLOAT)exp(A - (FLOAT)exp(A)) / (*Beta);
     }
-} // RvonMisesPdf
+} // RGumbelPdf
 
 void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
 {

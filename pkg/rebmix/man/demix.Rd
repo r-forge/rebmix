@@ -54,20 +54,18 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
   n = n,
   Theta = a.Theta(Theta))
 
-# Number of classes or nearest neighbours to be processed.
+# Create object of class EM.Control.
 
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
+EM <- new("EM.Control", strategy = "best")
 
 # Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(model = "REBMVNORM",
   Dataset = a.Dataset(simulated),
   Preprocessing = "h",
-  cmax = 4,
+  cmax = 8,
   Criterion = "BIC",
-  pdf = c("n", "n", "n"),
-  K = K[1]:K[2])
+  EMControl = EM)
 
 # Preprocess simulated dataset.
 

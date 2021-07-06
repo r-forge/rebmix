@@ -180,6 +180,8 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
             Y[i][j] = CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i];
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             if (LDevISet == 0) {
                 do {

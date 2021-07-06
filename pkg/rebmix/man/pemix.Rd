@@ -60,34 +60,25 @@ simulated <- RNGMIX(Dataset.name = paste("simulated_", 1:4, sep = ""),
   n = n,
   Theta = a.Theta(Theta))
 
-# Number of classes or nearest neighbours to be processed.
+# Create object of class EM.Control.
 
-K <- c(as.integer(1 + log2(sum(n))), # Minimum v follows Sturges rule.
-  as.integer(10 * log10(sum(n)))) # Maximum v follows log10 rule.
+EM <- new("EM.Control", strategy = "exhaustive", variant = "ECM",
+  acceleration = "fixed", acceleration.multiplier = 1.0, tolerance = 1.0E-4,
+  maximum.iterations = 1000)
 
 # Estimate number of components, component weights and component parameters.
 
 simulatedest <- REBMIX(Dataset = a.Dataset(simulated),
   Preprocessing = "kernel density estimation",
   cmax = 4,
-  Criterion = "BIC",
   pdf = c("n", "n", "n"),
-  K = K[1]:K[2])
+  EMControl = EM)
 
 # Preprocess simulated dataset.
 
-f <- pemix(simulatedest, pos = 3, variables = c(1, 2))
+f <- pemix(simulatedest, pos = 3, variables = c(1))
 
 f
-
-# Plot finite mixture.
-
-opar <- plot(simulatedest, pos = 3, nrow = 3, ncol = 1, what = "marginal cdf")
-
-par(usr = opar[[1]]$usr, mfg = c(1, 1))
-
-text(x = f[20:25, 1], y = f[20:25, 2], labels = format(f[20:25, 3],
-  digits = 3), cex = 0.8, pos = 1)
 }
 \references{
 M. Nagode and M. Fajdiga. The rebmix algorithm for the univariate finite mixture estimation.

@@ -975,6 +975,8 @@ int ComponentMarginalDist(int                  i,           // Index of variable
         *CmpMrgDist = (FLOAT)exp(-(y * y)) / (SqrtPi2 * CmpTheta->Theta_[1][i]);
 
         break;
+	case pfTNormal:
+		break;
     case pfLognormal:
         if (Y[i][j] > FLOAT_MIN) {
             y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]);
@@ -1150,7 +1152,7 @@ S0:;
                 Mode[i].ymean /= Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1179,7 +1181,7 @@ S1:;
                 Mode[i].ymean /= Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1199,6 +1201,8 @@ S1:;
             if (Error) goto E0;
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1290,6 +1294,8 @@ S1:;
                 if (Error) goto E0;
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
@@ -1431,7 +1437,7 @@ S1:;
                 Mode[i].ymean /= Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1460,7 +1466,7 @@ S2:;
                 Mode[i].ymean /= Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1480,6 +1486,8 @@ S2:;
             if (Error) goto E0;
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1571,6 +1579,8 @@ S2:;
                 if (Error) goto E0;
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
@@ -1703,7 +1713,7 @@ S1:;
                 Mode[i].ymean /=  Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1725,7 +1735,7 @@ S1:;
                 Mode[i].ymean /= Mode[i].klm;
 
                 break;
-            case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
+            case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfvonMises: case pfDirac: case pfUniform:
                 break;
             }
         }
@@ -1745,6 +1755,8 @@ S1:;
             if (Error) goto E0;
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             Error = RoughLognormalParameters(Mode[i].ym, Mode[i].flm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
@@ -1838,6 +1850,8 @@ S1:;
                 if (Error) goto E0;
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
@@ -1944,6 +1958,8 @@ int Rebmix::ComponentDist(int                  j,         // Indey of observatio
             *CmpDist *= (FLOAT)exp(-y) / (SqrtPi2 * CmpTheta->Theta_[1][i]);
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             if (Y[i][j] > FLOAT_MIN) {
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
@@ -2135,6 +2151,8 @@ int Rebmix::LogComponentDist(int                  j,         // Indey of observa
             *CmpDist += -y - LogSqrtPi2  - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             if (Y[i][j] > FLOAT_MIN) {
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
@@ -2358,6 +2376,8 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
             }
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             EnhanTheta->pdf_[i] = pfLognormal;
 
@@ -2725,6 +2745,8 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
             }
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             EnhanTheta->pdf_[i] = pfLognormal;
 
@@ -3093,6 +3115,8 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
             }
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             EnhanTheta->pdf_[i] = pfLognormal;
 
@@ -3416,6 +3440,8 @@ int Rebmix::MomentsCalculation(CompnentDistribution *CmpTheta, // Component para
             SecondM[i] = CmpTheta->Theta_[1][i] * CmpTheta->Theta_[1][i] + CmpTheta->Theta_[0][i] * CmpTheta->Theta_[0][i];
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             FirstM[i] = (FLOAT)exp(CmpTheta->Theta_[0][i] + (FLOAT)0.5 * CmpTheta->Theta_[1][i] * CmpTheta->Theta_[1][i]);
 
@@ -3641,7 +3667,7 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
 
                  for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[j][i] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[j][i] * Y[j][i] - SecondM[l][j]) / W[l];
@@ -3668,6 +3694,8 @@ int Rebmix::BayesClassificationKNN(FLOAT                **Y,        // Pointer t
                 MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j]);
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
@@ -3757,7 +3785,7 @@ int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer t
 
                 for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[j][i] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[j][i] * Y[j][i] - SecondM[l][j]) / W[l];
@@ -3784,6 +3812,8 @@ int Rebmix::BayesClassificationKDE(FLOAT                **Y,        // Pointer t
                 MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j]);
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
@@ -3874,7 +3904,7 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
 
                 for (j = 0; j < length_pdf_; j++) {
                     switch (MixTheta[l]->pdf_[j]) {
-                    case pfNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
+                    case pfNormal: case pfTNormal: case pfLognormal: case pfWeibull: case pfGamma: case pfGumbel: case pfBinomial: case pfPoisson: case pfDirac: case pfUniform:
                         FirstM[l][j] += dW * (Y[j][i] - FirstM[l][j]) / W[l];
 
                         SecondM[l][j] += dW * (Y[j][i] * Y[j][i] - SecondM[l][j]) / W[l];
@@ -3901,6 +3931,8 @@ int Rebmix::BayesClassificationH(int                  k,          // Total numbe
                 MixTheta[i]->Theta_[1][j] = (FLOAT)sqrt(SecondM[i][j] - MixTheta[i]->Theta_[0][j] * MixTheta[i]->Theta_[0][j]);
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
                 MixTheta[i]->Theta_[0][j] = (FLOAT)2.0 * (FLOAT)log(FirstM[i][j]) - (FLOAT)0.5 * (FLOAT)log(SecondM[i][j]);
 
@@ -3962,7 +3994,11 @@ int Rebmix::DegreesOffreedom(int                  c,          // Number of compo
             case pfNormal:
                 *M += 2;
 
-            break;
+                break;
+			case pfTNormal:
+				*M += 2;
+
+				break;
             case pfLognormal:
                 *M += 2;
 
@@ -7492,6 +7528,10 @@ int Rebmix::WriteDataFile()
                 fprintf(fp1, "\t%s", "normal");
 
                 break;
+			case pfTNormal:
+				fprintf(fp1, "\t%s", "tnormal");
+
+				break;
             case pfLognormal:
                 fprintf(fp1, "\t%s", "lognormal");
 
@@ -7852,6 +7892,9 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (!strcmp(pchar, "NORMAL"))
                     IniTheta_->pdf_[i] = pfNormal;
                 else
+				if (!strcmp(pchar, "TNORMAL"))
+					IniTheta_->pdf_[i] = pfTNormal;
+				else
                 if (!strcmp(pchar, "LOGNORMAL"))
                     IniTheta_->pdf_[i] = pfLognormal;
                 else

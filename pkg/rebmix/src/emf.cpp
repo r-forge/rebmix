@@ -624,6 +624,8 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
             *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
             break;
+		case pfTNormal:
+			break;
         case pfLognormal:
             if (Y[i][j] > FLOAT_MIN) {
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
@@ -749,6 +751,8 @@ int Emmix::UpdateMixtureParameters(int                  c,           // Number o
                 }
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
 				MixTheta[l]->Theta_[0][i] += am * dMixTheta[l]->Theta_[0][i];
 
@@ -876,6 +880,8 @@ int Emmix::MaximizationStep()
 				dMixTheta_[l]->Theta_[0][i] = M[i] - MixTheta_[l]->Theta_[0][i];
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
 				for (j = 0; j < n_; j++)  if (Y_[i][j] > FLOAT_MIN) {
 					M[i] += P_[l][j] * (FLOAT)log(Y_[i][j]);
@@ -1070,6 +1076,8 @@ int Emmix::MaximizationStep()
 				dMixTheta_[l]->Theta_[1][i] = C[i] - MixTheta_[l]->Theta_[1][i];
 
                 break;
+			case pfTNormal:
+				break;
             case pfLognormal:
 				for (j = 0; j < n_; j++) if (Y_[i][j] > FLOAT_MIN)  {
 					C[i] += P_[l][j] * ((FLOAT)log(Y_[i][j]) - M[i]) * ((FLOAT)log(Y_[i][j]) - M[i]);

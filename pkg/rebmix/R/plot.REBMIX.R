@@ -1540,7 +1540,7 @@ function(x,
           if (C == .rebmix$Preprocessing[3]) {
             edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
           }
-
+          
           pdens <- outer(py[[i]], py[[j]], ".dfmvnorm.xy", w, Theta, i, j)
 
           zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)

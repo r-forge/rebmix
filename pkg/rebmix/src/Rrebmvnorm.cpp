@@ -1839,4 +1839,64 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
 E0: if (rebmvnorm) delete rebmvnorm;
 } // RCombineComponentsMVNORM
 
+void RTvtNormalPdf(int *n, double *x, double *y, double *Mean, double *Sigma, double *f)
+{
+	int   j;
+	FLOAT Adet, Ainv[4], xi, yi, z;
+
+	Adet = Sigma[0] * Sigma[3] - Sigma[1] * Sigma[2];
+
+	if (Adet > FLOAT_MIN) {
+		Ainv[0] = Sigma[3] / Adet; Ainv[1] = -Sigma[2] / Adet; Ainv[2] = -Sigma[1] / Adet; Ainv[3] = Sigma[0] / Adet;
+
+		for (j = 0; j < *n; j++) {
+			xi = x[j] - Mean[0]; yi = y[j] - Mean[1];
+
+			z = -(FLOAT)0.5 * (Ainv[0] * xi * xi + Ainv[3] * yi * yi) - Ainv[1] * xi * yi - (FLOAT)0.5 * (FLOAT)log(Adet) - LogPi2;
+
+			f[j] = (FLOAT)exp(z);
+		}
+	}
+	else {
+		for (j = 0; j < *n; j++) {
+			f[j] = (FLOAT)0.0;
+		}
+	}
+} // RTvtNormalPdf
+
+void RMvtNormalPdf(int *n, double *X, int *d, double *Mean, double *Sigma, double *f)
+{
+	int   i, j, k, Error;
+	FLOAT logAdet, *Ainv, y, yi, yk;
+
+	Ainv = (FLOAT*)malloc(*d * *d * sizeof(FLOAT));
+
+	Error = NULL == Ainv; if (Error) goto E0;
+
+	Error = Cholinvdet(*d, Sigma, Ainv, &logAdet);
+
+	if (Error) {
+		for (j = 0; j < *n; j++) {
+			f[j] = (FLOAT)0.0;
+		}
+	}
+	else {
+		for (j = 0; j < *n; j++) {
+			y = (FLOAT)0.0;
+
+			for (i = 0; i < *d; i++) {
+				yi = X[*n * i + j] - Mean[i]; y += (FLOAT)0.5 * Ainv[*d * i + i] * yi * yi;
+
+				for (k = i + 1; k < *d; k++) {
+					yk = X[*n * k + j] - Mean[k]; y += Ainv[*d * k + i] * yi * yk;
+				}
+			}
+
+			f[j] = (FLOAT)exp(-y - *d * LogSqrtPi2 - (FLOAT)0.5 * logAdet);
+		}
+	}
+
+E0: if (Ainv) free(Ainv);
+} // RMvtNormalPdf
+
 }

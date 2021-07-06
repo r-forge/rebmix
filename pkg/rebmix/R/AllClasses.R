@@ -659,8 +659,8 @@ function(.Object, ...,
     stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (cmin > cmax) {
-    stop(sQuote("cmin"), " must be less or equal than ", cmax, "!", call. = FALSE)
+  if (cmin >= cmax) {
+    stop(sQuote("cmax"), " must be greater than ", cmin, "!", call. = FALSE)
   }
 
   # Criterion.
