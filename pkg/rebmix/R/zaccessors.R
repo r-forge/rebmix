@@ -6,6 +6,7 @@ setMethod("a.acceleration", signature(x = "EM.Control"), function(x) x@accelerat
 setMethod("a.tolerance", signature(x = "EM.Control"), function(x) x@tolerance)
 setMethod("a.acceleration.multiplier", signature(x = "EM.Control"), function(x) x@acceleration.multiplier)
 setMethod("a.maximum.iterations", signature(x = "EM.Control"), function(x) x@maximum.iterations)
+setMethod("a.K.EM", signature(x = "EM.Control"), function(x) x@K.EM)
 
 setMethod("a.strategy<-",
           signature = (x = "EM.Control"),
@@ -150,6 +151,33 @@ function(x, value)
 
   x
 }) ## a.maximum.iterations<-
+
+setMethod("a.K.EM<-",
+          signature = (x = "EM.Control"),
+function(x, value)
+{
+  # value.
+  
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("K.EM"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(value)) {
+    stop(sQuote("K.EM"), " integer is requested!", call. = FALSE)
+  }
+
+  length(value) <- 1
+
+  if (value < 0) {
+    stop(sQuote("K.EM"), " must be greater than or equal 0!", call. = FALSE)
+  }  
+
+  x@K.EM <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.K.EM<-
 
 ### End
 

@@ -118,6 +118,7 @@ Rebmix::Rebmix()
     EM_TOL_ = (FLOAT)0.0;
     EM_am_ = (FLOAT)0.0;
     EM_max_iter_ = 0;
+	EM_K_ = 0;
     EM_strategy_ = strategy_none;
     EM_variant_ = varEM;
     EM_accel_ = acc_fixed;
@@ -4114,6 +4115,7 @@ int Rebmix::EMInitialize()
                             EM_TOL_, 
                             EM_am_, 
                             EM_max_iter_, 
+		                    EM_K_,
                             EM_strategy_,
                             EM_variant_, 
                             EM_accel_);
@@ -6803,6 +6805,12 @@ E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_sing
 
             for (j = 0; j < all_c; j++) {
                 if (OptMixTheta_[j].initialized) {
+					if (EM_K_ == 1) {
+						EM_->EM_K_ = OptMixTheta_[j].k;
+
+						EM_->Transform(Y_);
+					}
+
                     if (!EMRun(OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta)) {
                         n_iter_sum_ += EM_->n_iter_;
 
@@ -6896,6 +6904,12 @@ E1:     all_K_[i] = k;
                 if (Error) goto E0;
 
                 opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
+
+				if (EM_K_ == 1) {
+					EM_->EM_K_ = OptMixTheta_[j].k;
+
+					EM_->Transform(Y_);
+				}
 
                 if (!EMRun(OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta)) {
                     n_iter_sum_ += EM_->n_iter_;

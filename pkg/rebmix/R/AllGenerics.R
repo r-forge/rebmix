@@ -213,6 +213,8 @@ setGeneric("a.acceleration.multiplier", function(x = NULL) standardGeneric("a.ac
 setGeneric("a.acceleration.multiplier<-", function(x = NULL, value = numeric()) standardGeneric("a.acceleration.multiplier<-"))
 setGeneric("a.maximum.iterations", function(x = NULL) standardGeneric("a.maximum.iterations"))
 setGeneric("a.maximum.iterations<-", function(x = NULL, value = numeric()) standardGeneric("a.maximum.iterations<-"))
+setGeneric("a.K.EM", function(x = NULL) standardGeneric("a.K.EM"))
+setGeneric("a.K.EM<-", function(x = NULL, value = numeric()) standardGeneric("a.K.EM<-"))
 setGeneric("a.summary.EM", function(x = NULL, pos = 0, col.name = character()) standardGeneric("a.summary.EM"))
 
 ### End

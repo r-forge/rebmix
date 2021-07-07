@@ -140,6 +140,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *EMTolerance,       // Tolerance for EM algortihm.
                 double *EMAccelerationMul, // Acceleration rate for Em algorithm.
                 int    *EMMaxIter,         // Maximum number of iterations in EM algorithm.
+	            int    *EMK,               // Number of bins for histogram EM algorithm.
                 int    *n_iter,            // Number of iterations for optimal case.
                 int    *n_iter_sum,        // Number of iterations in whole run.
 /// End
@@ -408,6 +409,8 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
     rebmvnorm->EM_am_ = *EMAccelerationMul;
 
     rebmvnorm->EM_max_iter_ = *EMMaxIter;
+
+	rebmvnorm->EM_K_ = *EMK;
 
 /// End
 

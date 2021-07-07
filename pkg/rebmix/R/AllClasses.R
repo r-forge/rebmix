@@ -6,7 +6,8 @@ slots = c(strategy = "character",
   acceleration = "character",
   tolerance = "numeric",
   acceleration.multiplier = "numeric",
-  maximum.iterations = "numeric"))
+  maximum.iterations = "numeric",
+  K.EM = "numeric"))
 
 setMethod("initialize", "EM.Control",
 function(.Object, ...,
@@ -15,7 +16,8 @@ function(.Object, ...,
   acceleration,
   tolerance,
   acceleration.multiplier,
-  maximum.iterations)
+  maximum.iterations,
+  K.EM)
 {
   # strategy.
 
@@ -91,6 +93,22 @@ function(.Object, ...,
   if (maximum.iterations < 1) {
     stop(sQuote("maximum.iterations"), " must be greater than 0!", call. = FALSE)
   }  
+  
+  # K.EM.
+  
+  if (missing(K.EM) || (length(K.EM) == 0)) {
+    K.EM <- as.integer(0)
+  }
+
+  if (!is.wholenumber(K.EM)) {
+    stop(sQuote("K.EM"), " integer is requested!", call. = FALSE)
+  }
+
+  length(K.EM) <- 1
+
+  if (K.EM < 0) {
+    stop(sQuote("K.EM"), " must be greater than or equal 0!", call. = FALSE)
+  }    
 
   .Object@strategy <- strategy
   .Object@variant <- variant
@@ -98,6 +116,7 @@ function(.Object, ...,
   .Object@tolerance <- tolerance
   .Object@acceleration.multiplier <- acceleration.multiplier
   .Object@maximum.iterations <- maximum.iterations
+  .Object@K.EM <- K.EM
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 
@@ -137,6 +156,10 @@ function(object)
   cat("Slot \"maximum.iterations\":", "\n", sep = "")
 
   print(object@maximum.iterations, quote = FALSE)
+  
+  cat("Slot \"K.EM\":", "\n", sep = "")
+
+  print(object@K.EM, quote = FALSE)  
 
   rm(list = ls())
 }) ## show

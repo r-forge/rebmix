@@ -1456,6 +1456,7 @@ int Rebmvnorm::EMInitialize()
         EM_TOL_,
         EM_am_,
         EM_max_iter_,
+		EM_K_,
         EM_strategy_,
         EM_variant_,
         EM_accel_);

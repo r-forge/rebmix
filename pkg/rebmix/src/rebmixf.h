@@ -91,7 +91,8 @@ public:
     Emmix                      *EM_;           // Object of class Emmix.
     FLOAT                      EM_TOL_;        // Tolerance for EM algorithm.
     FLOAT                      EM_am_;         // Acceleration multiplier for EM algorithm.
-    int                        EM_max_iter_;   // Maximum number of iterations of EM algorithm.    
+    int                        EM_max_iter_;   // Maximum number of iterations of EM algorithm.
+	int                        EM_K_;          // Number of bins for histogram EM algorithm.
     EmStrategyType_e           EM_strategy_;   // EM strategy utilization.
     EmVariantType_e            EM_variant_;    // Type of EM variant algorithm.
     EmAccelerationType_e       EM_accel_;      // Type of acceleration of standard EM algorithm.
