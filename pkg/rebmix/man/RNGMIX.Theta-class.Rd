@@ -31,7 +31,7 @@ Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_
 }
 \author{Marko Nagode}
 \examples{
-Theta <- new("RNGMIX.Theta", c = 2, pdf = c("normal", "Weibull"))  
+Theta <- new("RNGMIX.Theta", c = 2, pdf = c("normal", "Gumbel"))  
 
 a.theta1(Theta, l = 1) <- c(2, 10)
 a.theta2(Theta, l = 1) <- c(0.5, 2.3)

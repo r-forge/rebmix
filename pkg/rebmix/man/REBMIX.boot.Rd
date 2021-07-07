@@ -90,7 +90,7 @@ weibullest <- REBMIX(Dataset = list(weibull),
   cmax = 4,
   Criterion = "BIC",
   pdf = "Weibull",
-  EMControl = EM)
+  EMcontrol = EM)
 
 # Plot finite mixture.
 

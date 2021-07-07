@@ -171,6 +171,7 @@ mu <- c(-100, 100); lambda <- c(1, 100)
 # Component means and variance-covariance matrices are calculated.
 
 Mu <- list(); Sigma <- list()
+
 for (l in 1:c) {
   Mu[[l]] <- runif(d, mu[1], mu[2])
   Lambda <- diag(runif(d, lambda[1], lambda[2]), nrow = d, ncol = d)
@@ -182,6 +183,7 @@ for (l in 1:c) {
 # variance-covariance matrices are stored.
 
 n <- round(w * n); Theta <- list()
+
 for (l in 1:c) {
   Theta[[paste0("pdf", l)]] <- rep("normal", d)
   Theta[[paste0("theta1.", l)]] <- Mu[[l]]

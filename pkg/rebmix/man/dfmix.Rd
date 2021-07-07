@@ -68,8 +68,7 @@ simulatedest <- REBMIX(model = "REBMVNORM",
   Dataset = a.Dataset(simulated),
   Preprocessing = "h",
   cmax = 4,
-  Criterion = "BIC",
-  pdf = c("n", "n", "n"))
+  Criterion = "BIC")
 
 # Preprocess simulated dataset.
 

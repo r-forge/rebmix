@@ -189,7 +189,7 @@ EM <- new("EM.Control",
 
 # Mixture parameter estimation using REBMIX and EM algorithm.
 
-irisest <- REBMIX(model="REBMVNORM", 
+irisest <- REBMIX(model = "REBMVNORM", 
   Dataset = Dataset, 
   Preprocessing = "histogram",
   cmax = 10,

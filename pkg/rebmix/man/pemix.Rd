@@ -72,7 +72,7 @@ simulatedest <- REBMIX(Dataset = a.Dataset(simulated),
   Preprocessing = "kernel density estimation",
   cmax = 4,
   pdf = c("n", "n", "n"),
-  EMControl = EM)
+  EMcontrol = EM)
 
 # Preprocess simulated dataset.
 

@@ -76,5 +76,16 @@ opt.k
 Y <- bins(Dataset = sim2d@Dataset, K = opt.k)
 
 Y
+
+opt.k <- optbins(Dataset = sim2d@Dataset,
+  Rule = "Knuth unequal",
+  kmin = 1, 
+  kmax = 20)
+
+opt.k
+
+Y <- bins(Dataset = sim2d@Dataset, K = opt.k)
+
+Y
 }
 \keyword{auxiliary}

@@ -96,8 +96,7 @@ normalest <- REBMIX(model = "REBMVNORM",
   Dataset = a.Dataset(normal),
   Preprocessing = "histogram",
   cmax = 6,
-  Criterion = "BIC",
-  pdf = rep("normal", 2))
+  Criterion = "BIC")
 
 summary(normalest)
 

@@ -75,12 +75,14 @@ poisson <- RNGMIX(Dataset.name = "Poisson_1", n = n, Theta = a.Theta(Theta))
 
 # Estimate number of components, component weights and component parameters.
 
+EM <- new("EM.Control", strategy = "exhaustive")
+
 poissonest <- REBMIX(Dataset = a.Dataset(poisson),
   Preprocessing = "histogram",
   cmax = 6,
   Criterion = "BIC",
   pdf = rep("Poisson", 1),
-  K = 1)
+  EMcontrol = EM)
 
 summary(poissonest)
 
