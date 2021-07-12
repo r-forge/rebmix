@@ -96,7 +96,7 @@ function(model, ...)
       EMTolerance = as.double(model@EMcontrol@tolerance),
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
-      EMK = as.integer(model@EMcontrol@K.EM),
+      EMK = as.integer(model@EMcontrol@K),
       n_iter = integer(1),
       n_iter_all = integer(1),
 ### End            
@@ -404,7 +404,7 @@ function(model, ...)
       EMTolerance = as.double(model@EMcontrol@tolerance),
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
-      EMK = as.integer(model@EMcontrol@K.EM),      
+      EMK = as.integer(model@EMcontrol@K),      
       n_iter = integer(1),
       n_iter_all = integer(1),
 ### End         

@@ -15,12 +15,13 @@ class Emmix : public Base {
 public:
     // Members.
     int                  n_;               // Number of observations.
+	int                  k_;               // Total number of bins.
     FLOAT                **Y_;             // Dataset.
     int                  cmax_;            // Maximum number of components.
     FLOAT                TOL_;             // Tolerance for EM algorithm.
     FLOAT                am_;              // Acceleration multiplier for EM algorithm.
     int                  max_iter_;        // Maximum number of iterations of EM algorithm.
-	int                  EM_K_;            // Number of bins for histogram EM algorithm.
+	int                  K_;               // Number of bins for histogram EM algorithm.
     EmStrategyType_e     strategy_;        // EM strategy utilization.
     EmVariantType_e      variant_;         // Type of EM variant algorithm.
     EmAccelerationType_e accel_;           // Type of acceleration of standard EM algorithm.

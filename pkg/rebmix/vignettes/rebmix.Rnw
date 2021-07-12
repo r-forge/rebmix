@@ -36,7 +36,19 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
 \section{What's new in version \texttt{2.13.0}}
-?
+
+Version \texttt{2.13.0} introduces several major improvements of the package. Gumbel distribution has beed added to the parametric familty types. Gumbel mixture models can now be estimated. Let $y$ be a random variable following the Gumbel distribution. The probability density function of $y$ has the following form:
+
+\begin{equation}
+f(y) = \frac{1}{\beta}\exp\left(-\frac{y-\mu}{\beta} - \exp\left(-\frac{x-\mu}{\beta}\right)\right).
+\end{equation}
+
+Therefore, in mixture model setting paremeters $\mu$ and $\beta$ are estimated for each component of the mixture model. For this the REBMIX and EM algorithm are derived.
+
+EM algorithm has been implemented for all of the parametric family types (normal, lognormal, Weibull, gamma, binomial, Poisson, Dirac or von Mises parametric families). Therefore, EM algorithm can now be used with all of the parametric family types. Additionally, histogram based EM algorithm has beed added to speed up the EM algorithm, when the dataset contains large numbers of discrete observations. 
+
+Finaly, the package was further debugged and some of the core functions are improved.   
+
 \section{Previous versions}
 Version \texttt{2.12.0} introduces the Knuth algorithm \citep{Knuth_2019} as an effective way of optimal number of bins search. This affects the time efficiency of the \texttt{REBMIX} method considerably. The user can now enter different numbers of bins for different random variables. Two accompanied methods are added \texttt{optbins} and \texttt{bins}. The C++ code is optimized regarding memory allocation and efficiency. The R code is debugged and further improved regarding wrong user input messaging. Further debugging has been done. Outlier detection has been simplified. The \texttt{REBMIX} method now delivers some more components, but identifies also components with very low probability of occurrence, which is important regarding our future plans. The \texttt{plot} method is improved. The \texttt{RCLRMIX} method has been debugged and improved. The same holds for the \texttt{REBMIX} method.
 
@@ -221,6 +233,49 @@ gamma3boot
 summary(gamma3boot)
 @
 
+\subsubsection{Estimation of the mixture parameters using the Best REBMIX\&EM strategy}
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+## EM.control object creation.
+
+EM <- new("EM.Control", 
+  strategy = "best",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000,
+  K = 0))
+
+gamma1est.em <- REBMIX(Dataset = a.Dataset(gamma1),
+  Preprocessing = "kernel density estimation",
+  cmax = 8,
+  Criterion = "BIC",
+  pdf = "gamma",
+  EMcontrol = EM)
+
+gamma2est.em <- REBMIX(Dataset = a.Dataset(gamma2),
+  Preprocessing = "histogram",
+  cmax = 8,
+  Criterion = "BIC",
+  pdf = "gamma",
+  EMcontrol = EM)
+
+gamma3est.em <- REBMIX(Dataset = a.Dataset(gamma3),
+  Preprocessing = "histogram",
+  cmax = 8,
+  Criterion = "BIC",
+  pdf = "gamma",
+  K = 23:27,
+  EMcontrol = EM)
+
+summary(gamma1est.em)
+
+summary(gamma2est.em)
+
+summary(gamma3est.em)
+@
+
 \subsection{Poisson dataset}
 Dataset consists of $n = 600$ two~dimensional observations obtained by generating data points separately from each of three Poisson distributions. The component~dataset sizes and parameters, which are those studied in \citet{Jinwen_2009}, are displayed below
 
@@ -295,18 +350,80 @@ a.theta1.all(poissonest, pos = 1)
 a.theta2.all(poissonest, pos = 1)
 @
 
-\subsection{Multivariate normal \texttt{wreath} dataset}
-A \texttt{wreath} dataset \citep{Fraley_2005} consist of $1000$ observations drawn from a $14$-component normal mixture in which the covariances of the components have the same size and shape but differ in orientation.
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-data("wreath", package = "mclust")
+\subsubsection{Estimation of the mixture parameters using the Exhaustive REBMIX\&EM strategy}
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+## EM.control object creation.
+
+EM <- new("EM.Control", 
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000,
+  K = 0)
+  
+poissonest.em <- REBMIX(Dataset = a.Dataset(poisson),
+  Preprocessing = "histogram",
+  cmax = 10,
+  Criterion = "MDL5",
+  pdf = rep("Poisson", 2),
+  K = 1,
+  EMcontrol  = EM)
+  
+summary(poissonest.em)
+@
+
+
+
+\subsection{Multivariate normal dataset}
+A \texttt{mvnorm} dataset from \citep{Panic_2020c} consist of $250$ observations drawn from a $5$-component normal mixture.
+
+\subsubsection{Finite mixture generation}
+######################
+##  Multivariate normal dataset  ##
+######################
+
+## Generate normal dataset.
+
+n <- c(50, 50, 50, 50, 50)
+
+Theta <- new("RNGMVNORM.Theta", c = 5, d = 2)
+
+a.theta1(Theta, 1) <- c(2.7, 3.7)
+
+a.theta1(Theta, 2) <- c(5.7, 9.1)
+
+a.theta1(Theta, 3) <- c(2.0, 9.0)
+
+a.theta1(Theta, 4) <- c(9.5, 6.6)
+
+a.theta1(Theta, 5) <- c(6.3, 0.6)
+
+a.theta2(Theta, 1) <- c(0.9, -0.1, -0.1, 0.4)
+
+a.theta2(Theta, 2) <- c(2.8, -1.3, -1.3, 1.5)
+
+a.theta2(Theta, 3) <- c(0.1, 0.0, 0.0, 0.3)
+
+a.theta2(Theta, 4) <- c(1.3, -0.4, -0.4, 0.4)
+
+a.theta2(Theta, 5) <- c(0.5, 0.3, 0.3, 2.5)
+
+mvnorm.simulated <- RNGMIX(model = "RNGMVNORM",
+  Dataset.name = "mvnormdataset",
+  rseed = -1,
+  n = n,
+  Theta = a.Theta(Theta))
 @
 
 \subsubsection{Finite mixture estimation}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
-wreathest <- REBMIX(model = "REBMVNORM",
-  Dataset = list(as.data.frame(wreath)),
+mvnormest <- REBMIX(model = "REBMVNORM",
+  Dataset = a.Dataset(mvnorm.simulated),
   Preprocessing = "histogram",
   cmax = 20,
   Criterion = "BIC")
@@ -314,93 +431,70 @@ wreathest <- REBMIX(model = "REBMVNORM",
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<wreath-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(wreathest)
+<<mvnorm-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(mvnormest)
 @
-\caption{Dataset \texttt{wreath}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
+\caption{Dataset \texttt{mvnorm}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
 
 \subsubsection{Clustering}
 \begin{figure}[htb]\centering
-<<wreath-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-wreathclu <- RCLRMIX(model = "RCLRMVNORM", x = wreathest)
+<<mvnorm-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+mvnormclu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest)
 
-plot(wreathclu, s = 14)
+plot(mvnormclu)
 @
-\caption{Dataset \texttt{wreath}. Predictive cluster membership (coloured circles).}
+\caption{Dataset \texttt{mvnorm}. Predictive cluster membership (coloured circles).}
 \end{figure}
 
-\subsubsection{Summary method}
+\subsubsection{Summary method of estimation}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(wreathest)
+summary(mvnormest)
 @
 
-\subsubsection{Summary method}
+\subsubsection{Summary method of clustering}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(wreathclu)
+summary(mvnormclu)
 @
 
-\subsection{Multivariate normal \texttt{ex4.1} dataset}
-A \texttt{ex4.1} dataset \citep{Baudry_2010, mclust_20__} consist of $600$ two~dimensional observations.
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-data("Baudry_etal_2010_JCGS_examples", package = "mclust")
-@
+\subsubsection{Estimation of the mixture parameters using the Single REBMIX\&EM strategy}
 
-\subsubsection{Finite mixture estimation using exhaustive REBMIX\&EM strategy}
-<<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-## Estimate number of components, component weights and component parameters.
+Single REBMIX\&EM strategy requires the preprocessing parameter \texttt{K} to be known. This parameter can be estimated using the \texttt{optbins} method. To estimate the optimal parameter \texttt{K} different rules are implemented. More information can be found in \citep{Panic_2020c}.
 
-## Create the EM.Control object to utilize one of the REBMIX&EM strategies
+ <<rebmix-code, split = FALSE, keep.source = FALSE>>=
+## EM.control object creation.
 
-EM <- new("EM.Control",
-  strategy = "exhaustive",
+EM <- new("EM.control", 
+  strategy = "single",
   variant = "EM",
   acceleration = "fixed",
   acceleration.multiplier = 1.0,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
+  
+## Optimal K estimation
 
-ex4.1est.dens <- REBMIX(model = "REBMVNORM",
-  Dataset = list(as.data.frame(ex4.1)),
-  Preprocessing = "histogram",
-  cmax = 10,
-  Criterion = "BIC",
-  EMcontrol = EM)
+K <- optbins(Dataset = a.Dataset(mvnorm.simulated), Rule = "Knuth equal", kmin = 2, kmax = 100)
+
+## Finite mixture estimation
+
+mvnormest.em <- REBMIX(model = "REBMVNORM",
+                    Dataset = a.Dataset(mvnorm.simulated),
+                    Preprocessing = "histogram",
+                    cmax = 20,
+                    K = K, 
+                    Criterion = "BIC",
+                    EMcontrol = EM)
+                    
+summary(mvnormest.em)
 @
 
-\subsubsection{Plot method}
-\begin{figure}[htb]\centering
-<<ex4_1_dens-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(ex4.1est.dens, pos = 1, what = c("pdf"), nrow = 1, ncol = 1)
-@
-\caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
-\end{figure}
-
-\subsubsection{Clustering}
-\begin{figure}[htb]\centering
-<<ex4_1_dens-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-ex4.1clu.dens <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est.dens)
-
-plot(ex4.1clu.dens)
-@
-\caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
-\end{figure}
-
-\subsubsection{Summary method}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(ex4.1est.dens)
-@
-
-\subsubsection{Summary method}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(ex4.1clu.dens)
-@
-
-\subsubsection{Clustering with exhaustive REBMIX\&ECM strategy and ICL criterion}
+\subsubsection{Clustering with Exhaustive REBMIX\&ECM strategy and ICL criterion}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
 
-## Create the EM.Control object to utilize one of the REBMIX&EM strategies
+## EM.control object creation
 
 CEM <- new("EM.Control",
   strategy = "exhaustive",
@@ -408,39 +502,25 @@ CEM <- new("EM.Control",
   acceleration = "fixed",
   acceleration.multiplier = 1.0,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
 
-ex4.1est <- REBMIX(model = "REBMVNORM",
+mvnormest.cem <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 10,
   Criterion = "ICL",
   EMcontrol = CEM)
 
+mvnorm.clu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest.cem)
 @
 \begin{figure}[htb]\centering
-<<ex4_1-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(ex4.1est, pos = 1, what = c("pdf"), nrow = 1, ncol = 1)
+<<mvnorm-clu-fig-cem, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+plot(mvnorm.clu)
 @
-\caption{Dataset \texttt{ex4.1}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
-\end{figure}
+\caption{Dataset \texttt{mvnorm}. Strategy used: exhaustive REBMIX\&ECM strategy. Criterion: ICL.  Predictive cluster membership (coloured circles).}
 
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(ex4.1est)
-@
-\begin{figure}[htb]\centering
-<<ex4_1-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-ex4.1clu <- RCLRMIX(model = "RCLRMVNORM", x = ex4.1est)
-
-plot(ex4.1clu)
-@
-\caption{Dataset \texttt{ex4.1}. Predictive cluster membership (coloured circles).}
-\end{figure}
-<<rebmix-code, split = FALSE, keep.source = FALSE>>=
-summary(ex4.1clu)
-@
-
-\subsubsection{Acceleration of EM algorithm}
+\subsubsection{Acceleration of the EM algorithm}
 Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.0$:
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
 ## Estimate number of components, component weights and component parameters.
@@ -453,9 +533,10 @@ EM.normal <- new("EM.Control",
   acceleration = "fixed",
   acceleration.multiplier = 1.0,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
 
-ex4.1est.em.normal <- REBMIX(model = "REBMVNORM",
+mvnormestest.em.normal <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
@@ -463,7 +544,7 @@ ex4.1est.em.normal <- REBMIX(model = "REBMVNORM",
   EMcontrol = EM.normal)
 
 cat("Total number of EM algorithm iterations: ",
-  a.summary.EM(ex4.1est.em.normal, pos=1, col.name = "total.iterations.nbr"),
+  a.summary.EM(mvnormestest.em.normal, pos=1, col.name = "total.iterations.nbr"),
   ". Value of BIC: ", a.summary(ex4.1est.em.normal, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with fixed acceleration.multiplier of $a_{\texttt{EM}} = 1.5$:
@@ -474,9 +555,10 @@ EM.fixed1.5 <- new("EM.Control",
   acceleration = "fixed",
   acceleration.multiplier = 1.5,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
 
-ex4.1est.em.fixed1.5 <- REBMIX(model = "REBMVNORM",
+mvnormest.em.fixed1.5 <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
@@ -484,7 +566,7 @@ ex4.1est.em.fixed1.5 <- REBMIX(model = "REBMVNORM",
   EMcontrol = EM.fixed1.5)
 
 cat("Total number of EM algorithm iterations: ",
-  a.summary.EM(ex4.1est.em.fixed1.5, pos=1, col.name = "total.iterations.nbr"),
+  a.summary.EM(mvnormest.em.fixed1.5, pos=1, col.name = "total.iterations.nbr"),
   ". Value of BIC: ", a.summary(ex4.1est.em.fixed1.5, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with line search for optimal increment $a_{\texttt{EM}}$ in each iteration:
@@ -495,9 +577,10 @@ EM.line <- new("EM.Control",
   acceleration = "line",
   acceleration.multiplier = 1.0,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
 
-ex4.1est.em.line <- REBMIX(model = "REBMVNORM",
+mvnormest.em.line <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
@@ -505,7 +588,7 @@ ex4.1est.em.line <- REBMIX(model = "REBMVNORM",
   EMcontrol = EM.line)
 
 cat("Total number of EM algorithm iterations: ",
-  a.summary.EM(ex4.1est.em.line, pos=1, col.name = "total.iterations.nbr"),
+  a.summary.EM(mvnormest.em.line, pos=1, col.name = "total.iterations.nbr"),
   ". Value of BIC: ", a.summary(ex4.1est.em.line, pos = 1, col.name = "IC"))
 @
 Standard EM algorithm with golden search for optimal increment $a_{\texttt{EM}}$ in each iteration:
@@ -516,9 +599,10 @@ EM.golden <- new("EM.Control",
   acceleration = "golden",
   acceleration.multiplier = 1.0,
   tolerance = 1e-4,
-  maximum.iterations = 1000)
+  maximum.iterations = 1000,
+  K = 0)
 
-ex4.1est.em.golden <- REBMIX(model = "REBMVNORM",
+mvnormest.em.golden <- REBMIX(model = "REBMVNORM",
   Dataset = list(as.data.frame(ex4.1)),
   Preprocessing = "histogram",
   cmax = 15,
@@ -526,24 +610,24 @@ ex4.1est.em.golden <- REBMIX(model = "REBMVNORM",
   EMcontrol = EM.golden)
 
 cat("Total number of EM algorithm iterations: ",
-  a.summary.EM(ex4.1est.em.golden, pos=1, col.name = "total.iterations.nbr"),
+  a.summary.EM(mvnormest.em.golden, pos=1, col.name = "total.iterations.nbr"),
   ". Value of BIC: ", a.summary(ex4.1est.em.golden, pos = 1, col.name = "IC"))
 @
 
-\subsection{Multivariate \texttt{iris} dataset}
-The well known set of iris data as collected originally by \citet{Anderson_1936} and first analysed by \citet{Fisher_1936} is considered here. It is available at \citet{Asuncion_Newman_2007} consisting of the measurements of the length and width of both sepals and petals of $50$ plants for each of the three types of iris species setosa, versicolor and virginica.  The iris dataset is loaded, split into three subsets for the three classes and the \texttt{Class} column is removed.
+\subsection{Multivariate \texttt{sensorless.drive} dataset}
+These data are the results of sensorless drive diagnosis procedure. Features are extracted from electric current drive signals \citep{sensorless_drive_citation}. Main objective is the sensorless fault detection and classification. 
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-data("iris")
+data("sensorless.drive")
 
 # Show level attributes discrete variables.
 
-levels(iris[["Class"]])
+levels(sensorless.drive[["Class"]])
 
 # Split dataset into train (75%) and test (25%) subsets.
 
 set.seed(5)
 
-Iris <- split(p = 0.75, Dataset = iris, class = 5)
+Drive <- split(p = 0.75, Dataset = sensorless.drive, class = 4)
 @
 
 \subsubsection{Finite mixture estimation}
@@ -551,39 +635,75 @@ Iris <- split(p = 0.75, Dataset = iris, class = 5)
 # Estimate number of components, component weights and component
 # parameters for train subsets.
 
-irisest <- REBMIX(model = "REBMVNORM",
-  Dataset = a.train(Iris),
-  Preprocessing = "kernel density estimation",
-  cmax = 10,
-  Criterion = "ICL-BIC")
+driveest <- REBMIX(model = "REBMVNORM",
+  Dataset = a.train(Drive),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "BIC")
 @
 
 \subsubsection{Classification}
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
 # Selected features.
 
-iriscla <- RCLSMIX(model = "RCLSMVNORM",
+drivecla <- RCLSMIX(model = "RCLSMVNORM",
   x = list(irisest),
-  Dataset = a.test(Iris),
-  Zt = a.Zt(Iris))
+  Dataset = a.test(Drive),
+  Zt = a.Zt(Drive))
 @
 
 \subsubsection{Show and summary methods}
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-iriscla
+drivecla
 
-summary(iriscla)
+summary(drivecla)
 @
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<iris-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<drive-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected features.
 
-plot(iriscla, nrow = 3, ncol = 2)
+plot(drivecla, nrow = 3, ncol = 2)
 @
 \caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (black circles).}
 \end{figure}
+
+\subsubsection{Estimation of using the histogram based EM}
+
+When dealing with large datasets it is useful to shrink datasets to reduce the computational overload with the EM algorithm. The histogram based EM algorithm can be used for this. The dataset is discretized and EM is computed with the histogram data. Integer parameter \texttt{K} from the \texttt{EM.Control} object is used to set the shrinkage level. Smaller value means less containers while larger implicates more containers.
+
+<<rebmix-code, split = FALSE, keep.source = FALSE>>=
+## EM.control object creation
+
+
+
+EM <- new("EM.Control",
+  strategy = "exhaustive",
+  variant = "EM",
+  acceleration = "fixed",
+  acceleration.multiplier = 1.0,
+  tolerance = 1e-4,
+  maximum.iterations = 1000,
+  K = 1000)
+
+# Estimate number of components, component weights and component
+# parameters for train subsets.
+
+driveest <- REBMIX(model = "REBMVNORM",
+  Dataset = a.train(Drive),
+  Preprocessing = "histogram",
+  cmax = 15,
+  Criterion = "BIC".
+  EMcontrol = EM)
+  
+drivecla <- RCLSMIX(model = "RCLSMVNORM",
+  x = list(irisest),
+  Dataset = a.test(Drive),
+  Zt = a.Zt(Drive))
+  
+sumary(drivecla)
+@
 
 \subsection{Multivariate \texttt{adult} dataset}
 The \texttt{adult} dataset containing $48842$ instances with $16$ continuous, binary and discrete variables was extracted from the census bureau database \citet{Asuncion_Newman_2007}. Extraction was done by Barry Becker from the 1994 census bureau database. The \texttt{adult} dataset is loaded, complete cases are extracted and levels are replaced with numbers.

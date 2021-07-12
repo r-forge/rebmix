@@ -126,6 +126,10 @@
 #define RNMX (FLOAT)(1.0 - 1.2E-7)
 #endif
 
+#ifndef INT_MAX
+#define INT_MAX 2147483647
+#endif
+
 #define Min(x, y) ((x < y) ? x : y)
 
 #define Max(x, y) ((x > y) ? x : y)

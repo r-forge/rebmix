@@ -56,7 +56,7 @@ Returns an object of class \code{RNGMIX} or \code{RNGMVNORM}.
 }
 \author{Marko Nagode}
 \references{
-W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P. Flannery. Numerical Recipes in C: The Art
+W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery. Numerical Recipes in C: The Art
 of Scientific Computing. Cambridge University Press, Cambridge, 1992.
 }
 \examples{

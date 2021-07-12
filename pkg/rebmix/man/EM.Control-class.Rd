@@ -27,7 +27,10 @@ tolerance value for the EM convergence criteria. The default value is 1.0E-4.
 acceleration.multiplier \eqn{a_{\mathrm{EM}}}, \eqn{1.0 \leq a_{\mathrm{EM}} \leq 2.0}. acceleration.multiplier for the EM step increment. The default value is 1.0.
 }
 \item{\code{maximum.iterations}:}{
-maximum.iterations is positive integer containing the maximum allowed number of iterations of the EM algorithm. The default value is 1000.
+is positive integer containing the maximum allowed number of iterations of the EM algorithm. The default value is 1000.
+}
+\item{\code{K}:}{
+is integer containing the number of bins for the histogram based EM algorithm. This option can reduce computational time drastically if the datasets contain a large number of observations \eqn{n} and \code{K} is set to the value \eqn{\ll n}. The default value of 0 means that the EM algorithm runs over all \eqn{n}.
 }
 }
 }
@@ -47,7 +50,7 @@ G. Celeux and G. Govaert. A classification EM algorithm for clustering and two s
 EM <- new("EM.Control", strategy = "exhaustive", 
   variant = "EM", acceleration = "fixed", 
   tolerance = 1e-4, acceleration.multiplier = 1.0, 
-  maximum.iterations = 1000)
+  maximum.iterations = 1000, K = 0)
 
 EM
 
@@ -61,6 +64,7 @@ a.acceleration(EM) <- "fixed"
 a.tolerance(EM) <- 1e-4
 a.acceleration.multiplier(EM) <- 1.0
 a.maximum.iterations(EM) <- 1000
+a.K(EM) <- 256
 
 EM
 }

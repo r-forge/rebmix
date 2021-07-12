@@ -118,7 +118,7 @@ rainflow ranges of stationary random processes. International Journal of Fatigue
 1998. \doi{10.1016/S0142-1123(97)00106-0}.\cr\cr
 M. Nagode and M. Fajdiga. An improved algorithm for parameter estimation suitable for mixed
 weibull distributions. International Journal of Fatigue, 22(1):75-80, 2000. \doi{10.1016/S0142-1123(99)00112-7}.\cr\cr
-M. Nagode, J. Klemenc, and M. Fajdiga. Parametric modelling and scatter prediction of rainflow
+M. Nagode, J. Klemenc and M. Fajdiga. Parametric modelling and scatter prediction of rainflow
 matrices. International Journal of Fatigue, 23(6):525-532, 2001. \doi{10.1016/S0142-1123(01)00007-X}.\cr\cr
 M. Nagode and M. Fajdiga. An alternative perspective on the mixture estimation problem. Reliability
 Engineering & System Safety, 91(4):388-397, 2006. \doi{10.1016/j.ress.2005.02.005}.\cr\cr

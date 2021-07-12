@@ -146,6 +146,7 @@ setGeneric("a.theta2", function(x = NULL) standardGeneric("a.theta2"))
 setGeneric("a.theta1.all", function(x = NULL, pos = 1) standardGeneric("a.theta1.all"))
 setGeneric("a.theta2.all", function(x = NULL, pos = 1) standardGeneric("a.theta2.all"))
 setGeneric("a.K", function(x = NULL) standardGeneric("a.K"))
+setGeneric("a.K<-", function(x = NULL, value = numeric()) standardGeneric("a.K"))
 setGeneric("a.y0", function(x = NULL) standardGeneric("a.y0"))
 setGeneric("a.ar", function(x = NULL) standardGeneric("a.ar"))
 setGeneric("a.Restraints", function(x = NULL) standardGeneric("a.Restraints"))
@@ -213,8 +214,6 @@ setGeneric("a.acceleration.multiplier", function(x = NULL) standardGeneric("a.ac
 setGeneric("a.acceleration.multiplier<-", function(x = NULL, value = numeric()) standardGeneric("a.acceleration.multiplier<-"))
 setGeneric("a.maximum.iterations", function(x = NULL) standardGeneric("a.maximum.iterations"))
 setGeneric("a.maximum.iterations<-", function(x = NULL, value = numeric()) standardGeneric("a.maximum.iterations<-"))
-setGeneric("a.K.EM", function(x = NULL) standardGeneric("a.K.EM"))
-setGeneric("a.K.EM<-", function(x = NULL, value = numeric()) standardGeneric("a.K.EM<-"))
 setGeneric("a.summary.EM", function(x = NULL, pos = 0, col.name = character()) standardGeneric("a.summary.EM"))
 
 ### End
