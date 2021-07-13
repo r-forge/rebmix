@@ -4,7 +4,8 @@
 
   for (i in 1:length(w)) {
     for (j in 1:length(x)) {
-      fi <- pmvnorm(upper = c(x[j], y[j]), mean = Theta[[i]]$theta1[c(xi, yi)], sigma = Theta[[i]]$theta2[c(xi, yi), c(xi, yi)], ...)
+#     fi <- pmvnorm(upper = c(x[j], y[j]), mean = Theta[[i]]$theta1[c(xi, yi)], sigma = Theta[[i]]$theta2[c(xi, yi), c(xi, yi)], ...)
+      fi <- 0.0
 
       f[j] <- f[j] + w[i] * fi
     }

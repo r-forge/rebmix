@@ -6,8 +6,8 @@
 \description{Object of class \code{EM.Control}.}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("EM.Control", ...)}. Accessor methods for the slots are \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
-\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)} and \code{a.maximum.iterations(x = NULL)} where \code{x} stands for an object of class \code{EM.Control}. Setter methods \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
-\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)} and \code{a.maximum.iterations(x = NULL)} are provided to write to \code{strategy}, \code{variant}, \code{acceleration}, \code{tolerance}, \code{acceleration.multiplier} and \code{maximum.iterations} slot respectively.
+\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, \code{a.maximum.iterations(x = NULL)} and \code{a.K(x = NULL)} where \code{x} stands for an object of class \code{EM.Control}. Setter methods \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
+\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, \code{a.maximum.iterations(x = NULL)} and \code{a.K(x = NULL)} are provided to write to \code{strategy}, \code{variant}, \code{acceleration}, \code{tolerance}, \code{acceleration.multiplier} and \code{maximum.iterations} slot respectively.
 }
 \section{Slots}{
 \describe{

@@ -256,7 +256,8 @@ function(x,
       sigma <- sigma[variables, variables]
 
       for (j in 1:n) {
-        fi[j] <- pmvnorm(upper = as.numeric(Dataset[j, variables]), mean = mean, sigma = sigma, ...)
+#       fi[j] <- pmvnorm(upper = as.numeric(Dataset[j, variables]), mean = mean, sigma = sigma, ...)
+        fi[j] <- 0.0
       }
     }
 

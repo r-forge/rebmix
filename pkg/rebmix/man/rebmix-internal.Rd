@@ -302,6 +302,7 @@
 \alias{a.tolerance,EM.Control-method}
 \alias{a.acceleration.multiplier,EM.Control-method}
 \alias{a.maximum.iterations,EM.Control-method}
+\alias{a.K,EM.Control-method}
 
 \alias{a.strategy<-}
 \alias{a.variant<-}
@@ -309,6 +310,7 @@
 \alias{a.tolerance<-}
 \alias{a.acceleration.multiplier<-}
 \alias{a.maximum.iterations<-}
+\alias{a.K<-}
 
 \alias{a.strategy<-,EM.Control-method}
 \alias{a.variant<-,EM.Control-method}
@@ -316,6 +318,7 @@
 \alias{a.tolerance<-,EM.Control-method}
 \alias{a.acceleration.multiplier<-,EM.Control-method}
 \alias{a.maximum.iterations<-,EM.Control-method}
+\alias{a.K<-,EM.Control-method}
 
 \alias{a.summary.EM}
 \alias{a.summary.EM,REBMIX-method}
