@@ -4,3 +4,4 @@ rebmix.mixed.continuous.discrete   Run mixed continuous-discrete dataset demo.
 rebmix.multivariate.normal         Run multivariate normal datasets demo.
 rebmix.weibullnormal               Run Weibull-normal dataset demo.
 rebmix.truck                       Run truck dataset demo.
+rebmix.fault.detection             Run fault detection dataset demo.
