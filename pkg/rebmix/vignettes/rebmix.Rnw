@@ -203,7 +203,7 @@ gamma3est <- REBMIX(Dataset = a.Dataset(gamma3),
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<gamma3-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 3.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<gamma3-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 3.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(gamma3est, pos = 1, what = c("pdf", "marginal cdf"), ncol = 2, npts = 1000)
 @
 \caption{Gamma 3 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
@@ -317,7 +317,7 @@ poissonest <- REBMIX(Dataset = a.Dataset(poisson),
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<poisson-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 6.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<poisson-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 6.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
 @
 \caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
@@ -325,7 +325,7 @@ plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nr
 
 \subsubsection{Clustering}
 \begin{figure}[htb]\centering
-<<poisson-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<poisson-clu-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 poissonclu <- RCLRMIX(x = poissonest, pos = 1, Zt = a.Zt(poisson))
 
 plot(poissonclu)
@@ -423,7 +423,7 @@ mvnormest <- REBMIX(model = "REBMVNORM",
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<mvnorm-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<mvnorm-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(mvnormest)
 @
 \caption{Dataset \texttt{mvnorm}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
@@ -431,7 +431,7 @@ plot(mvnormest)
 
 \subsubsection{Clustering}
 \begin{figure}[htb]\centering
-<<mvnorm-clu-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<mvnorm-clu-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 mvnormclu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest)
 
 plot(mvnormclu)
@@ -507,7 +507,7 @@ mvnorm.clu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest.cem)
 @
 
 \begin{figure}[htb]\centering
-<<mvnorm-clu-fig-cem, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<mvnorm-clu-fig-cem, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 plot(mvnorm.clu)
 @
 \caption{Dataset \texttt{mvnorm}. Predictive cluster membership (coloured circles) for exhaustive REBMIX\&ECM strategy and ICL criterion.}
@@ -674,7 +674,7 @@ summary(drivecla)
 
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
-<<drive-cla-fig, fig = TRUE, pdf = TRUE, png = FALSE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
+<<drive-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected features.
 
 plot(drivecla, nrow = 3, ncol = 2)
@@ -802,7 +802,7 @@ rm(list = ls())
 @
 
 \section{Summary}\label{sec:summary}
-The users of the \texttt{rebmix} package are kindly encouraged to inform the author about bugs and wishes.
+The users of the \texttt{rebmix} package are kindly encouraged to inform the authors about bugs and wishes.
 
 \bibliography{rebmix}
 \vspace{\baselineskip}\noindent\emph{Marko Nagode\\

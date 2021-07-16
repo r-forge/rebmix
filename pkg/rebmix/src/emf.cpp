@@ -88,7 +88,7 @@ Emmix::~Emmix()
 	if (W_) free(W_);
 
 	if (Y_) {
-		for (i = 0; i < length_pdf_; i++) {
+		for (i = 0; i < length_pdf_ + 1; i++) {
 			if (Y_[i]) free(Y_[i]);
 		}
 
@@ -296,14 +296,13 @@ int Emmix::Transform(FLOAT **Y)
 	S1:;
 	}
 
-E0:
-	if (y0) free(y0);
+E0:	if (h) free(h);
 
-	if (h) free(h);
+	if (ymax) free(ymax);
 
 	if (ymin) free(ymin);
 
-	if (ymax) free(ymax);
+	if (y0) free(y0);
 
 	return Error;
 } // Transform
@@ -1359,9 +1358,9 @@ int Emmix::MaximizationStep()
 
     Error = UpdateMixtureParameters(c_, W_, MixTheta_, dW_, dMixTheta_, am_opt);
 
-E0: if (M) free(M);
-
-    if (C) free(C);
+E0: if (C) free(C); 
+	
+	if (M) free(M);
 
     return Error;
 } // MaximizationStep
@@ -1524,9 +1523,9 @@ int Emmvnorm::MaximizationStep()
 
     Error = UpdateMixtureParameters(c_, W_, MixTheta_, dW_, dMixTheta_, am_opt); 
     
-E0: if (M) free(M);
-
-    if (C) free(C);
+E0: if (C) free(C); 
+	
+	if (M) free(M);
 
     return Error;
 } // MaximizationStep
