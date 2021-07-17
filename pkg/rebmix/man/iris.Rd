@@ -8,7 +8,7 @@ Fisher's paper is a classic in the field and is referenced frequently to this da
 where each class refers to a type of iris plant. One class is linearly separable from the other 2; the latter are NOT linearly separable from each other.
 }
 \usage{
-data("iris")
+data(iris)
 }
 \format{
 \code{iris} is a data frame with 150 cases (rows) and 5 variables (columns) named:
@@ -41,7 +41,7 @@ R. A. Fisher. The use of multiple measurements in taxonomic problems. Annals of 
 \dontrun{
 devAskNewPage(ask = TRUE)
 
-data("iris")
+data(iris)
 
 # Show level attributes.
 

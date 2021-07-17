@@ -13,11 +13,11 @@ options(prompt = "> ", continue = "+ ", width = 70,
 ## Truck dataset ##
 ###################
 
-data("truck", package = "rebmix")
+data(truck, package = "rebmix")
 
 ########## FlexMix ##########
 
-library("flexmix")
+library(flexmix)
 
 set.seed(8)
 
@@ -105,7 +105,7 @@ summary(truckestFlexMix)
 
 ########## REBMIX ##########
 
-library("rebmix")
+library(rebmix)
 
 # Estimate number of components, component weights and component parameters.
 

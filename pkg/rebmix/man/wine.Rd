@@ -9,7 +9,7 @@ magnesium, total phenols, flavanoids, nonflavanoid phenols, proanthocyanins, col
 and proline found in each of the three types of the wines. The number of instances in classes 1 to 3 is 59, 71 and 48, respectively.
 }
 \usage{
-data("wine")
+data(wine)
 }
 \format{
 \code{wine} is a data frame with 178 cases (rows) and 14 variables (columns) named:
@@ -69,7 +69,7 @@ S. J. Roberts, R. Everson and I. Rezek. Maximum certainty data partitioning. Pat
 \dontrun{
 devAskNewPage(ask = TRUE)
 
-data("wine")
+data(wine)
 
 # Show level attributes.
 

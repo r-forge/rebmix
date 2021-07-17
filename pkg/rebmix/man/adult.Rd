@@ -6,7 +6,7 @@
 The \code{adult} dataset containing 48842 instances with 16 continuous, binary and discrete variables was extracted from the census bureau database. Extraction was done by Barry Becker from the 1994 census bureau database.
 }
 \usage{
-data("adult")
+data(adult)
 }
 \format{
 \code{adult} is a data frame with 48842 cases (rows) and 16 variables (columns) named:
@@ -165,7 +165,7 @@ A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http:/
 A. Asuncion and D. J. Newman. Uci machine learning repository, 2007. \url{http://archive.ics.uci.edu/ml/}.
 }
 \examples{
-data("adult")
+data(adult)
 
 # Find complete cases.
 

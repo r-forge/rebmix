@@ -32,7 +32,7 @@ Returns an object of class \code{RCLS.chunk}.
 }
 \author{Marko Nagode}
 \examples{
-data("iris")
+data(iris)
 
 # Split dataset into train (75%) and test (25%) subsets.
 

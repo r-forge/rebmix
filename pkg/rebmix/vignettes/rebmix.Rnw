@@ -106,7 +106,7 @@ options(prompt = "R> ", continue = "+  ", width = 80,
 
 ## load package and set prompt before starting new page to TRUE.
 
-library("rebmix")
+library(rebmix)
 devAskNewPage(ask = TRUE)
 @
 
@@ -630,11 +630,7 @@ cat("Total number of EM algorithm iterations: ",
 These data are a result of the sensorless drive diagnosis procedure. The features are extracted from electric current drive signals \citep{sensorless_drive_citation}. The main objective is the sensorless fault detection and classification.
 
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-data("sensorless.drive")
-
-## Show classes.
-
-levels(sensorless.drive[["Class"]])
+data(sensorless.drive)
 
 ## Split dataset into train (75%) and test (25%) subsets.
 
@@ -719,7 +715,7 @@ summary(drivecla)
 The \texttt{adult} dataset containing $48842$ instances with $16$ continuous, binary and discrete variables was extracted from the census bureau database \citet{Asuncion_Newman_2007}. Extraction was done by Barry Becker from the 1994 census bureau database. The \texttt{adult} dataset is loaded, complete cases are extracted and levels are replaced with numbers.
 
 <<rebmix-code, split = FALSE, results = hide, keep.source = FALSE>>=
-data("adult")
+data(adult)
 
 ## Find complete cases.
 

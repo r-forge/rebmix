@@ -65,7 +65,7 @@ York, 1973.
 \dontrun{
 devAskNewPage(ask = TRUE)
 
-data("adult")
+data(adult)
 
 # Find complete cases.
 

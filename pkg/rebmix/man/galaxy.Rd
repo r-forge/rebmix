@@ -6,7 +6,7 @@
 The unfilled survey of the Corona Borealis region contains the velocities of 82 galaxies from 6 well separated conic sections of space.
 }
 \usage{
-data("galaxy")
+data(galaxy)
 }
 \format{
 \code{galaxy} is a data frame with 82 cases (rows) and 1 continuous variable (columns) called \code{Velocity}.

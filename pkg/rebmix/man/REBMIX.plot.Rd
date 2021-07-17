@@ -138,7 +138,7 @@ C. M. Bishop. Neural Networks for Pattern Recognition. Clarendon Press, Oxford, 
 \dontrun{
 devAskNewPage(ask = TRUE)
 
-data("wine")
+data(wine)
 
 colnames(wine)
 

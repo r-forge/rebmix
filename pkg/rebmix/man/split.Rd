@@ -41,7 +41,7 @@ The default value is \code{list()}.}
 }
 \author{Marko Nagode}
 \examples{
-data("iris")
+data(iris)
 
 # Split dataset into train (75%) and test (25%) subsets.
 

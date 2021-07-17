@@ -13,11 +13,11 @@ options(prompt = "> ", continue = "+ ", width = 70,
 ## Weibullnormal dataset ##
 ###########################
 
-data("weibullnormal", package = "rebmix")
+data(weibullnormal, package = "rebmix")
 
 ########## FlexMix ##########
 
-library("flexmix")
+library(flexmix)
 
 set.seed(8)
 
@@ -105,7 +105,7 @@ summary(weibullnormalestFlexMix)
 
 ########## REBMIX ##########
 
-library("rebmix")
+library(rebmix)
 
 # Estimate number of components, component weights and component parameters.
 

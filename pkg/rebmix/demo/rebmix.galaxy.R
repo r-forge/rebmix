@@ -13,7 +13,7 @@ options(prompt = "> ", continue = "+ ", width = 70,
 
 # Load package.
 
-library("rebmix")
+library(rebmix)
 
 ####################
 ## Galaxy dataset ##
@@ -21,7 +21,7 @@ library("rebmix")
 
 # Load galaxy dataset.
 
-data("galaxy")
+data(galaxy)
 
 galaxyest <- list(normal = NULL, lognormal = NULL, Weibull = NULL, gamma = NULL)
 
@@ -43,7 +43,7 @@ summary(galaxyest$lognormal)
 summary(galaxyest$Weibull)
 summary(galaxyest$gamma)
 
-#library("tikzDevice") # Uncomment to use tikzDevice package.
+#library(tikzDevice) # Uncomment to use tikzDevice package.
 #tikz("galaxy.tex", width = 4.5, height = 2.25) # Uncomment to use tikzDevice package.
 plot(galaxyest$lognormal, pos = 1, what = c("pdf", "marginal pdf"), ncol = 2, npts = 1000)
 #dev.off() # Uncomment to use tikzDevice package.

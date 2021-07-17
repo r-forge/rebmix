@@ -13,7 +13,7 @@ options(prompt = "> ", continue = "+ ", width = 70,
 
 # load package.
 
-library("rebmix")
+library(rebmix)
 
 ##################################
 ##  Univariate normal datasets  ##

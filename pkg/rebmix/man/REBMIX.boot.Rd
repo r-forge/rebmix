@@ -74,7 +74,7 @@ G. McLachlan and D. Peel. Finite Mixture Models. John Wiley & Sons, New York, 20
 }
 \examples{
 \dontrun{
-data("weibull")
+data(weibull)
 
 # Create object of class EM.Control.
 
