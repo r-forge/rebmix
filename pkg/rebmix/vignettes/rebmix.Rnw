@@ -626,17 +626,17 @@ cat("Total number of EM algorithm iterations: ",
   ". Value of BIC: ", a.summary(mvnormest.em.golden, pos = 1, col.name = "IC"))
 @
 
-\subsection{Multivariate \texttt{sensorless.drive} dataset}
+\subsection{Multivariate \texttt{sensorlessdrive} dataset}
 These data are a result of the sensorless drive diagnosis procedure. The features are extracted from electric current drive signals \citep{sensorless_drive_citation}. The main objective is the sensorless fault detection and classification.
 
 <<rebmix-code, split = FALSE, keep.source = FALSE>>=
-data(sensorless.drive)
+data(sensorlessdrive)
 
 ## Split dataset into train (75%) and test (25%) subsets.
 
 set.seed(5)
 
-Drive <- split(p = 0.75, Dataset = sensorless.drive, class = 4)
+Drive <- split(p = 0.75, Dataset = sensorlessdrive, class = 4)
 @
 
 \subsubsection{Finite mixture estimation}
