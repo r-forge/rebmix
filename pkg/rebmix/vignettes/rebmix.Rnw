@@ -35,9 +35,9 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.13.0}}
+\section{What's new in version \texttt{2.13.1}}
 
-Version \texttt{2.13.0} introduces several major improvements of the package. The Gumbel probability density
+Version \texttt{2.13.1} introduces several major improvements of the package. The Gumbel probability density
 
 \begin{equation}
 f(y) = \frac{1}{\beta}\exp\left(-\frac{y - \mu}{\beta} - \exp\left(-\frac{y - \mu}{\beta}\right)\right).

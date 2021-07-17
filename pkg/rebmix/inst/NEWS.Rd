@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.13.1}{ 
+\itemize{
+\item Reduced size of the vignette.
+\item Conditional jump or move depends on uninitialised value(s.
+}
+}
 \section{Changes in version 2.13.0}{ 
 \itemize{
 \item Method \code{plot} is debugged and improved.
