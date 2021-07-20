@@ -6862,7 +6862,7 @@ E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_sing
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
-                        Error = InformationCriterionH(OptMixTheta_[j].logV, OptMixTheta_[j].k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
+                        Error = InformationCriterionH(OptMixTheta_[j].logV, all_K_[i], Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                         if (Error) goto E0;
 
@@ -6945,7 +6945,11 @@ E1:     all_K_[i] = k;
 
         for (j = 0; j < all_c; j++) {
             if (OptMixTheta_[j].initialized) {
-                Error = InformationCriterionH(OptMixTheta_[j].logV, OptMixTheta_[j].k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
+				Error = PreprocessingH(OptMixTheta_[j].h, OptMixTheta_[j].y0, OptMixTheta_[j].ymin, OptMixTheta_[j].ymax, &k, Y);
+
+				if (Error) goto E0;
+
+                Error = InformationCriterionH(OptMixTheta_[j].logV, k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                 if (Error) goto E0;
 
@@ -6956,7 +6960,7 @@ E1:     all_K_[i] = k;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
-                    Error = InformationCriterionH(OptMixTheta_[j].logV, OptMixTheta_[j].k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
+                    Error = InformationCriterionH(OptMixTheta_[j].logV, k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                     if (Error) goto E0;
 
