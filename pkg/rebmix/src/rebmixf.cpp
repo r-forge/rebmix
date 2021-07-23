@@ -5020,15 +5020,35 @@ int Rebmix::REBMIXKNN()
 
         Error = OptMixTheta_[i].MixTheta == NULL; if (Error) goto E0;
 
+		for (j = 0; j < cmax_; j++) {
+			OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
+
+			Error = NULL == OptMixTheta_[i].MixTheta[j];
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
+
+			if (Error) goto E0;
+		}
+
         OptMixTheta_[i].c = i + cmin_;
 
         OptMixTheta_[i].logL = -FLOAT_MAX;
 
-        OptMixTheta_[i].initialized = 0;
+		OptMixTheta_[i].logV = (FLOAT)0.0;
+
+		OptMixTheta_[i].k = 0;
 
         OptMixTheta_[i].h = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
         Error = OptMixTheta_[i].h == NULL; if (Error) goto E0;
+
+		OptMixTheta_[i].y0 = NULL;
 
         OptMixTheta_[i].ymin = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
@@ -5038,23 +5058,9 @@ int Rebmix::REBMIXKNN()
 
         Error = OptMixTheta_[i].ymax == NULL; if (Error) goto E0;
 
-        OptMixTheta_[i].y0 = NULL;
+		OptMixTheta_[i].n_iter_em = 0;
 
-        for (j = 0; j < cmax_; j++) {
-            OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
-
-            Error = NULL == OptMixTheta_[i].MixTheta[j];
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
-
-            if (Error) goto E0;
-        }
+		OptMixTheta_[i].initialized = 0;
     }
 
     if (EM_strategy_ != strategy_none) {
@@ -5376,6 +5382,9 @@ E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_sing
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
+			else {
+				opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = (FLOAT)0.0; opt_logL[j] = (FLOAT)0.0; opt_D[j] = (FLOAT)0.0;
+			}
         }
 
 		if (emp > -1) {
@@ -5783,15 +5792,35 @@ int Rebmix::REBMIXKDE()
 
         Error = OptMixTheta_[i].MixTheta == NULL; if (Error) goto E0;
 
+		for (j = 0; j < cmax_; j++) {
+			OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
+
+			Error = NULL == OptMixTheta_[i].MixTheta[j];
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
+
+			if (Error) goto E0;
+		}
+
         OptMixTheta_[i].c = i + cmin_;
 
         OptMixTheta_[i].logL = -FLOAT_MAX;
 
-        OptMixTheta_[i].initialized = 0;
+		OptMixTheta_[i].logV = (FLOAT)0.0;
+
+		OptMixTheta_[i].k = 0;
 
         OptMixTheta_[i].h = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
         Error = OptMixTheta_[i].h == NULL; if (Error) goto E0;
+
+		OptMixTheta_[i].y0 = NULL;
 
         OptMixTheta_[i].ymin = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
@@ -5801,23 +5830,9 @@ int Rebmix::REBMIXKDE()
 
         Error = OptMixTheta_[i].ymax == NULL; if (Error) goto E0;
 
-        OptMixTheta_[i].y0 = NULL;
+		OptMixTheta_[i].n_iter_em = 0;
 
-        for (j = 0; j < cmax_; j++) {
-            OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
-
-            Error = NULL == OptMixTheta_[i].MixTheta[j];
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
-
-            if (Error) goto E0;
-        }
+		OptMixTheta_[i].initialized = 0;
     }
 
     if (EM_strategy_ != strategy_none) {
@@ -6156,6 +6171,9 @@ E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_sing
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
+			else {
+				opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = (FLOAT)0.0; opt_logL[j] = (FLOAT)0.0; opt_D[j] = (FLOAT)0.0;
+			}
         }
 
 		if (emp > -1) {
@@ -6555,6 +6573,10 @@ int Rebmix::REBMIXH()
 
     all_c = cmax_ - cmin_ + 1;
 
+	if (all_c <= 0) {
+		Error = 1; goto E0;
+	}
+
     OptMixTheta_ = (MixtureParameterType*)malloc(all_c * sizeof(MixtureParameterType));
 
     Error = OptMixTheta_ == NULL; if (Error) goto E0;
@@ -6568,11 +6590,29 @@ int Rebmix::REBMIXH()
 
         Error = OptMixTheta_[i].MixTheta == NULL; if (Error) goto E0;
 
+		for (j = 0; j < cmax_; j++) {
+			OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
+
+			Error = NULL == OptMixTheta_[i].MixTheta[j];
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+			if (Error) goto E0;
+
+			Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
+
+			if (Error) goto E0;
+		}
+
         OptMixTheta_[i].c = i + cmin_;
 
         OptMixTheta_[i].logL = -FLOAT_MAX;
 
-        OptMixTheta_[i].initialized = 0;
+		OptMixTheta_[i].logV = (FLOAT)0.0;
+
+		OptMixTheta_[i].k = 0;
 
         OptMixTheta_[i].h = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
@@ -6590,21 +6630,9 @@ int Rebmix::REBMIXH()
 
         Error = OptMixTheta_[i].ymax == NULL; if (Error) goto E0;
 
-        for (j = 0; j < cmax_; j++) {
-            OptMixTheta_[i].MixTheta[j] = new CompnentDistribution(this);
+		OptMixTheta_[i].n_iter_em = 0;
 
-            Error = NULL == OptMixTheta_[i].MixTheta[j];
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Realloc(length_pdf_, length_Theta_, length_theta_);
-
-            if (Error) goto E0;
-
-            Error = OptMixTheta_[i].MixTheta[j]->Memmove(IniTheta_);
-
-            if (Error) goto E0;
-        }
+		OptMixTheta_[i].initialized = 0;
     }
 
     if (EM_strategy_ != strategy_none) {
@@ -6972,6 +7000,9 @@ E1:     all_K_[i] = k;
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
+			else {
+				opt_c[j] = OptMixTheta_[j].c, opt_IC[j] = (FLOAT)0.0; opt_logL[j] = (FLOAT)0.0; opt_D[j] = (FLOAT)0.0;
+			}
         }
 
 		if (emp > -1) {
