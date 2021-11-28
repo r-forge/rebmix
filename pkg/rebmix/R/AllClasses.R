@@ -215,20 +215,24 @@ function(.Object, ...,
 
   Theta <- list()
 
-  length(Theta) <- 3 * c
+  length(Theta) <- 4 * c
 
-  names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
-  names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
-  names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+  names(Theta)[seq(1, 4 * c, 4)] <- paste("pdf", 1:c, sep = "")
+  names(Theta)[seq(2, 4 * c, 4)] <- paste("theta1.", 1:c, sep = "")
+  names(Theta)[seq(3, 4 * c, 4)] <- paste("theta2.", 1:c, sep = "")
+  names(Theta)[seq(4, 4 * c, 4)] <- paste("theta3.", 1:c, sep = "")  
 
-  M <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs == 1])
+  M1 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 2])
+  M2 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 3])
 
   for (i in 1:c) {
-    Theta[[1 + (i - 1) * 3]] <- pdf
-    Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
-    Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+    Theta[[1 + (i - 1) * 4]] <- pdf
+    Theta[[2 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
+    Theta[[3 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
+    Theta[[4 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
 
-    Theta[[3 + (i - 1) * 3]][M] <- NA
+    Theta[[3 + (i - 1) * 4]][M1] <- NA
+    Theta[[4 + (i - 1) * 4]][M2] <- NA
   }
 
   .Object@c <- c
@@ -426,6 +430,10 @@ function(.Object, ...,
   if (length(grep("theta2", Names)) == 0) {
     stop(sQuote("theta2.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
   }
+  
+  if (length(grep("theta3", Names)) == 0) {
+    stop(sQuote("theta3.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
+  }  
 
   length(grep("pdf", Names))
 
@@ -478,6 +486,22 @@ function(.Object, ...,
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("theta2.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   }
+  
+  j <- 0; length.theta3 <- length(Theta[[grep("theta3", Names)[1]]])
+
+  for (i in grep("theta3", Names)) {
+    theta3 <- as.numeric(Theta[[i]])
+
+    if (length(theta3) != length.theta3) {
+      stop("lengths of ", sQuote("theta3.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
+    }
+
+    j <- j + 1
+  }
+
+  if ((length.pdf > 1) && (j != c)) {
+    stop(sQuote("theta3.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
+  }  
 
   # Variables.
 
@@ -561,6 +585,7 @@ slots = c(Dataset = "list",
   pdf = "character",
   theta1 = "numeric",
   theta2 = "numeric",
+  theta3 = "numeric",  
   K = "ANY",
   y0 = "numeric",
   ymin = "numeric",
@@ -600,6 +625,7 @@ function(.Object, ...,
   pdf,
   theta1,
   theta2,
+  theta3,  
   K,
   y0,
   ymin,
@@ -759,6 +785,39 @@ function(.Object, ...,
 
     class(theta2) <- "numeric"
   }
+  
+  # theta3.
+
+  if (missing(theta3) || (length(theta3) == 0)) {
+    if (any(pdf == .rebmix$pdf[10])) {
+      stop(sQuote("theta3"), " must not be empty for ", dQuote(.rebmix$pdf[10]), "!", call. = FALSE)
+    }
+    else {
+      theta3 <- .Object@theta3
+    }
+  }
+  else {
+    if (length(theta3) != d) {
+      stop("lengths of ", sQuote("theta3"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
+    
+    for (i in 1:d) {
+      if (pdf[i] == .rebmix$pdf[10]) {
+        if (is.na(theta3[i])) {
+        }
+        else
+        if (is.character(theta3[i])) {
+          stop(sQuote("theta3"), " numeric is requested!", call. = FALSE)
+        }
+        else
+        if (abs(abs(theta3[i]) - 1.0) > .Machine$double.eps^0.5) {
+          stop(sQuote("theta3"), " for ", dQuote(.rebmix$pdf[10]), " must be -1.0, NA or 1.0!", call. = FALSE)
+        }
+      }
+    }
+
+    class(theta3) <- "numeric"
+  }
 
   # K.
 
@@ -900,6 +959,7 @@ function(.Object, ...,
   .Object@pdf <- pdf
   .Object@theta1 <- theta1
   .Object@theta2 <- theta2
+  .Object@theta3 <- theta3
   .Object@K <- K
   .Object@y0 <- y0
   .Object@ymin <- ymin

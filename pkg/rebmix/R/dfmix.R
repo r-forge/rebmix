@@ -73,6 +73,8 @@ function(x,
   theta1 <- Theta[grep("theta1", Names)]
 
   theta2 <- Theta[grep("theta2", Names)]
+  
+  theta3 <- Theta[grep("theta3", Names)]
 
   f <- array(data = 0.0, dim = n, dimnames = NULL)
 
@@ -125,7 +127,8 @@ function(x,
           n = as.integer(n),
           y = as.double(Dataset[, j]),
           Mean = as.double(theta1[[i]][j]),
-          Beta = as.double(theta2[[i]][j]),
+          Sigma = as.double(theta2[[i]][j]),
+          Xi = as.double(theta3[[i]][j]),
           f = double(n),
           PACKAGE = "rebmix")
 

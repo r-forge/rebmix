@@ -7,12 +7,11 @@
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)},
 \code{a.Preprocessing(x = NULL)}, \code{a.cmax(x = NULL)}, \code{a.cmin(x = NULL)}, \code{a.Criterion(x = NULL)}, \code{a.Variables(x = NULL)},
-\code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)},
-\code{a.ymax(x = NULL)}, \cr 
-\code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())},
+\code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.theta3(x = NULL)}, \code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)},
+\code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())},
 \code{a.summary.EM(x = NULL, pos = 0, col.name = character())}, \code{a.pos(x = NULL)},
 \code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
-\code{a.theta1.all(x = NULL, pos = 1)} and \code{a.theta2.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
+\code{a.theta1.all(x = NULL, pos = 1)}, \code{a.theta2.all(x = NULL, pos = 1)} and \code{a.theta3.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
 a desired slot item and a desired column name, respectively.
 }
 \section{Slots}{
@@ -45,10 +44,13 @@ a character vector of length \eqn{d} containing types of variables. One of \code
 a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"Gumbel"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or \code{"vonMises"}.
 }
 \item{\code{theta1}:}{
-a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise.
+a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{number of categories} - 1} for \code{"binomial"} distribution.
 }
 \item{\code{theta2}:}{
 a vector of length \eqn{d} containing initial component parameters. Currently not used.
+}
+\item{\code{theta3}:}{
+a vector of length \eqn{d} containing initial component parameters. One of \eqn{\xi_{il} \in \{-1, \textrm{NA}, 1\}} for \code{"Gumbel"} distribution.
 }
 \item{\code{K}:}{
 a character or a vector or a list of vectors containing numbers of bins \eqn{v} for the histogram and the kernel density estimation or numbers of nearest
@@ -80,7 +82,7 @@ a list of vectors of length \eqn{c} containing component weights \eqn{w_{l}} sum
 \item{\code{Theta}:}{
 a list of lists each containing \eqn{c} parametric family types \code{pdfl}. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"Gumbel"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or circular \code{"vonMises"} defined for \eqn{0 \leq y_{i} \leq 2 \pi}.
 Component parameters \code{theta1.l} follow the parametric family types. One of \eqn{\mu_{il}} for normal, lognormal, Gumbel and von Mises distributions and \eqn{\theta_{il}} for Weibull, gamma, binomial, Poisson and Dirac distributions.
-Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal and lognormal distributions, \eqn{\beta_{il}} for Weibull, gamma and Gumbel distributions, \eqn{p_{il}} for binomial distribution and \eqn{\kappa_{il}} for von Mises distribution.
+Component parameters \code{theta2.l} follow \code{theta1.l}. One of \eqn{\sigma_{il}} for normal, lognormal and Gumbel distributions, \eqn{\beta_{il}} for Weibull and gamma distributions, \eqn{p_{il}} for binomial distribution and \eqn{\kappa_{il}} for von Mises distribution. Component parameters \code{theta3.l} follow \code{theta2.l}. One of \eqn{\xi_{il}} for Gumbel distribution.
 }
 \item{\code{summary}:}{
 a data frame with additional information about dataset, preprocessing, \eqn{c_{\mathrm{max}}}, \eqn{c_{\mathrm{min}}}, information criterion type,

@@ -795,7 +795,7 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
 
             break;
         case pfGumbel:
-			y = -(Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
+			y = CmpTheta->Theta_[2][i] * (Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
 
 			*CmpDist += y - (FLOAT)exp(y) - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
@@ -1110,7 +1110,7 @@ int Emmix::MaximizationStep()
 					memset(&A, 0, 5 * sizeof(FLOAT));
 
 					for (k = 0; k < k_; k++) {
-						T[0] = (FLOAT)exp(-Y_[i][k] / M[i]);
+						T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][k] / M[i]);
 
 						A[1] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k];
 						A[2] += Y_[length_pdf_][k] * P_[l][k] * T[0];
@@ -1122,7 +1122,7 @@ int Emmix::MaximizationStep()
 
 					T[0] = A[0] / A[2]; T[1] = A[3] / A[2];
 
-					dM = (M[i] * A[0] + T[0] * A[3] - A[1]) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / M[i] / M[i]);
+					dM = (M[i] * A[0] + MixTheta_[l]->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / M[i] / M[i]);
 
 					M[i] -= dM;
 
@@ -1260,16 +1260,16 @@ int Emmix::MaximizationStep()
 				memset(&A, 0, 2 * sizeof(FLOAT));
 
 				for (j = 0; j < k_; j++) {
-					T[0] = (FLOAT)exp(-Y_[i][j] / M[i]);
+					T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][j] / M[i]);
 
 					A[1] += Y_[length_pdf_][j] * P_[l][j] * T[0];
 				}
 
 				A[0] = W + FLOAT_MIN;
 
-				T[0] = A[0] / A[1];
+				T[0] = A[1] / A[0];
 
-				C[i] = M[i] * (FLOAT)log(T[0]);
+				C[i] = MixTheta_[l]->Theta_[2][i] * M[i] * (FLOAT)log(T[0]);
 
 				dMixTheta_[l]->Theta_[0][i] = C[i] - MixTheta_[l]->Theta_[0][i];
 

@@ -197,6 +197,7 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              double *W,              // Component weights.
              double *theta1,         // Component parameters.
              double *theta2,         // Component parameters.
+	         double *theta3,         // Component parameters.
              int    *opt_length,     // Length of opt_c, opt_IC, opt_logL and opt_D.
              int    *opt_c,          // Numbers of components for optimal v or for optimal k.
              double *opt_IC,         // Information criteria for optimal v or for optimal k.
@@ -585,6 +586,16 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
             i++;
         }
     }
+
+	i = 0;
+
+	for (j = 0; j < rebmix->summary_.c; j++) {
+		for (l = 0; l < rebmix->length_theta_[2]; l++) {
+			theta3[i] = rebmix->MixTheta_[j]->Theta_[2][l];
+
+			i++;
+		}
+	}
 
     *opt_length = rebmix->opt_length_;
 
@@ -1045,6 +1056,7 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
              char   **pdf,   // Component parameters.
              double *theta1, // Component parameters.
              double *theta2, // Component parameters.
+	         double *theta3, // Component parameters.
              double *P,      // Prior probabilities.
              int    *Z,      // Pointer to the output array Z.
              int    *Error)  // Error code.
@@ -1161,6 +1173,7 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
 
                         Theta[j][k][l]->Theta_[0][m] = theta1[i];
                         Theta[j][k][l]->Theta_[1][m] = theta2[i];
+						Theta[j][k][l]->Theta_[2][m] = theta3[i];
                     }
                     else
                     if (!strcmp(pdf[i], "vonMises")) {
@@ -1305,6 +1318,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
              char   **pdf,   // Component parameters.
              double *theta1, // Component parameters.
              double *theta2, // Component parameters.
+	         double *theta3, // Component parameters.
              int    *Z,      // Pointer to the output array Z.
              int    *Error)  // Error code.
 {
@@ -1372,6 +1386,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
 
                 Theta[j]->Theta_[0][k] = theta1[i];
                 Theta[j]->Theta_[1][k] = theta2[i];
+				Theta[j]->Theta_[2][k] = theta3[i];
             }
             else
             if (!strcmp(pdf[i], "vonMises")) {
@@ -2605,27 +2620,34 @@ void RvonMisesCdf(int *n, double *y, double *Mean, double *Kappa, double *F)
     }
 } // RvonMisesCdf
 
-void RGumbelPdf(int *n, double *y, double *Mean, double *Beta, double *f)
+void RGumbelPdf(int *n, double *y, double *Mean, double *Sigma, double *Xi, double *f)
 {
     FLOAT A;
     int   i;
 
     for (i = 0; i < *n; i++) {
-		A = -(y[i] - *Mean) / (*Beta);
+		A = *Xi * (y[i] - *Mean) / (*Sigma);
 
-        f[i] = (FLOAT)exp(A - (FLOAT)exp(A)) / (*Beta);
+        f[i] = (FLOAT)exp(A - (FLOAT)exp(A)) / (*Sigma);
     }
 } // RGumbelPdf
 
-void RGumbelCdf(int *n, double *y, double *Mean, double *Beta, double *F)
+void RGumbelCdf(int *n, double *y, double *Mean, double *Sigma, double *Xi, double *F)
 {
     FLOAT A;
 	int   i;
 
 	for (i = 0; i < *n; i++) {
-	    A = -(y[i] - *Mean) / (*Beta);
-      
-		F[i] = (FLOAT)exp(-(FLOAT)exp(A));
+		if (*Xi > Eps) {
+			A = (y[i] - *Mean) / (*Sigma);
+
+			F[i] = (FLOAT)1.0 - (FLOAT)exp(-(FLOAT)exp(A));
+		}
+		else {
+			A = -(y[i] - *Mean) / (*Sigma);
+
+			F[i] = (FLOAT)exp(-(FLOAT)exp(A));
+		}
     }
 } // RGumbelCdf
 

@@ -19,7 +19,8 @@ function(x,
   contour.drawlabels = FALSE,
   contour.labcex = 0.8,
   contour.method = "flattest",
-  contour.nlevels = 12, ...)
+  contour.nlevels = 12, 
+  log = "", ...)
 {
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
@@ -348,7 +349,8 @@ function(x,
             axes = FALSE,
             lwd = 1,
             cex = plot.cex,
-            pch = plot.pch)
+            pch = plot.pch, 
+            log = log)
 
           if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[2])) {
             z <- as.vector(pdens); z <- z != 0.0
@@ -630,7 +632,7 @@ function(x,
 
       pdens <- .dfmix.x(py[[1]], w, Theta[1,])
 
-      ylim <- c(0.0, max(edens$y, pdens))
+      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
 
       plot(x = edens$x,
         y = edens$y,
@@ -644,7 +646,8 @@ function(x,
         axes = FALSE,
         lwd = 1,
         cex = plot.cex,
-        pch = plot.pch)
+        pch = plot.pch,
+        log = log)
 
       points(x = py[[1]],
         y = pdens,
@@ -784,7 +787,7 @@ function(x,
 
       pdens <- .dfmix.x(py[[i]], w, Theta[i,])
 
-      ylim <- c(0.0, max(edens$y, pdens))
+      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
 
       plot(x = edens$x,
         y = edens$y,
@@ -798,7 +801,8 @@ function(x,
         axes = FALSE,
         lwd = 1,
         cex = plot.cex,
-        pch = plot.pch)
+        pch = plot.pch,
+        log = log)
 
       points(x = py[[i]],
         y = pdens,
@@ -1234,7 +1238,8 @@ function(x,
   contour.drawlabels = FALSE,
   contour.labcex = 0.8,
   contour.method = "flattest",
-  contour.nlevels = 12, ...)
+  contour.nlevels = 12,
+  log = "", ...)
 {
   if (missing(x)) {
     stop(sQuote("x"), " object of class REBMIX is requested!", call. = FALSE)
@@ -1558,7 +1563,8 @@ function(x,
             axes = FALSE,
             lwd = 1,
             cex = plot.cex,
-            pch = plot.pch)
+            pch = plot.pch, 
+            log = log)
 
           levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
 
@@ -1740,7 +1746,7 @@ function(x,
 
       pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)
 
-      ylim <- c(0.0, max(edens$y, pdens))
+      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
 
       plot(x = edens$x,
         y = edens$y,
@@ -1754,7 +1760,8 @@ function(x,
         axes = FALSE,
         lwd = 1,
         cex = plot.cex,
-        pch = plot.pch)
+        pch = plot.pch,
+        log = log)
 
       points(x = py[[1]],
         y = pdens,
@@ -1894,7 +1901,7 @@ function(x,
 
       pdens <- .dfmvnorm.x(py[[i]], w, Theta, i)
 
-      ylim <- c(0.0, max(edens$y, pdens))
+      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
 
       plot(x = edens$x,
         y = edens$y,
@@ -1908,7 +1915,8 @@ function(x,
         axes = FALSE,
         lwd = 1,
         cex = plot.cex,
-        pch = plot.pch)
+        pch = plot.pch, 
+        log = log)
 
       points(x = py[[i]],
         y = pdens,

@@ -50,7 +50,8 @@
         n = as.integer(n),
         y = as.double(x),
         Mean = as.double(xTheta[[i]]$theta1),
-        Beta = as.double(xTheta[[i]]$theta2),
+        Sigma = as.double(xTheta[[i]]$theta2),
+        Xi = as.double(xTheta[[i]]$theta3),
         F = double(n),
         PACKAGE = "rebmix")
 
@@ -102,7 +103,8 @@
         n = as.integer(n),
         y = as.double(y),
         Mean = as.double(yTheta[[i]]$theta1),
-        Beta = as.double(yTheta[[i]]$theta2),
+        Sigma = as.double(yTheta[[i]]$theta2),
+        Xi = as.double(yTheta[[i]]$theta3),
         F = double(n),
         PACKAGE = "rebmix")
 

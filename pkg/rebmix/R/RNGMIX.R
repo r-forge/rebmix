@@ -13,6 +13,10 @@ function(model, ...)
   theta2 <- unlist(model@Theta[grep("theta2", Names)])
 
   theta2[is.na(theta2)] <- 0
+  
+  theta3 <- unlist(model@Theta[grep("theta3", Names)])
+
+  theta3[is.na(theta3)] <- 0  
 
   c <- length(model@n); d <- length(model@Variables)
 
@@ -34,10 +38,10 @@ function(model, ...)
       c = as.integer(c),
       N = as.integer(model@n),
       length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.Theta = as.integer(3),
+      length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
+      Theta = as.double(c(theta1, theta2, theta3)),
       n = integer(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
@@ -163,7 +167,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.13.1")
+  message("RNGMIX Version 2.13.2")
 
   flush.console()
 

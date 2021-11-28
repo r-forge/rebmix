@@ -11,6 +11,10 @@
   theta2 <- unlist(Theta[grep("theta2", Names)])
 
   theta2[is.na(theta2)] <- 0
+  
+  theta3 <- unlist(Theta[grep("theta3", Names)])
+
+  theta3[is.na(theta3)] <- 0  
 
   c <- length(w); d <- length(pdf) / c
 
@@ -21,6 +25,7 @@
       output[[i, j]]$pdf <- as.character(pdf[(j - 1) * d + i])
       output[[i, j]]$theta1 <- as.numeric(theta1[(j - 1) * d + i])
       output[[i, j]]$theta2 <- as.numeric(theta2[(j - 1) * d + i])
+      output[[i, j]]$theta3 <- as.numeric(theta3[(j - 1) * d + i])
     }
   }
 

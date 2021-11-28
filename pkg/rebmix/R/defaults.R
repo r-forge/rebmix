@@ -3,7 +3,7 @@ Preprocessing = c("histogram", "kernel density estimation", "k-nearest neighbour
 Criterion = c("AIC", "AIC3", "AIC4", "AICc", "BIC", "CAIC", "HQC", "MDL2", "MDL5", "AWE", "CLC", "ICL", "ICL-BIC", "PC", "D", "SSE"),
 Variables = c("continuous", "discrete"),
 pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma", "uniform", "vonMises", "Gumbel"),
-pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2, 2, 2),
+pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2, 2, 3),
 pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous", "continuous", "continuous", "continuous"),
 Restraints = c("rigid", "loose"),
 ### Panic Branislav.

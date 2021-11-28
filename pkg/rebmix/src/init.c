@@ -6,7 +6,7 @@ extern void RRNGMIX(void *, void *, void *, void *, void *, void *, void *, void
 extern void RREBMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
 	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
 	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+	void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RdensKNearestNeighbourXY(void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RdensKDEXY(void *, void *, void *, void *, void *, void *, void *);
@@ -16,9 +16,9 @@ extern void RdensKNearestNeighbourX(void *, void *, void *, void *, void *, void
 extern void RdensKDEX(void *, void *, void *, void *, void *);
 extern void RdensHistogramX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
-extern void RCLSMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RCLSMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
-extern void RCLRMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RCLRMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RPreprocessingKNNMIX(void *, void *, void *, void *, void *, void *, void *);
 extern void RPreprocessingKDEMIX(void *, void *, void *, void *, void *, void *);
@@ -54,8 +54,8 @@ extern void RCombineComponentsMVNORM(void *, void *, void *, void *, void *, voi
 extern void RvonMisesPdf(void *, void *, void *, void *, void *);
 extern void RvonMisesCdf(void *, void *, void *, void *, void *);
 
-extern void RGumbelPdf(void *, void *, void *, void *, void *);
-extern void RGumbelCdf(void *, void *, void *, void *, void *);
+extern void RGumbelPdf(void *, void *, void *, void *, void *, void *);
+extern void RGumbelCdf(void *, void *, void *, void *, void *, void *);
 
 extern void Roptbins(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void Rbins(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -65,15 +65,15 @@ extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
 
 static const R_CMethodDef CMethods[] = {
 	{"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
-	{"RREBMIX", (DL_FUNC) &RREBMIX, 53},
+	{"RREBMIX", (DL_FUNC) &RREBMIX, 54},
 	{"RdensKNearestNeighbourXY", (DL_FUNC) &RdensKNearestNeighbourXY, 8},
 	{"RdensKDEXY", (DL_FUNC) &RdensKDEXY, 7},
 	{"RdensHistogramXY", (DL_FUNC) &RdensHistogramXY, 16},
 	{"RdensKNearestNeighbourX", (DL_FUNC) &RdensKNearestNeighbourX, 6},
 	{"RdensKDEX", (DL_FUNC) &RdensKDEX, 5},
 	{"RdensHistogramX", (DL_FUNC) &RdensHistogramX, 10},
-	{"RCLSMIX", (DL_FUNC) &RCLSMIX, 13},
-	{"RCLRMIX", (DL_FUNC) &RCLRMIX, 10},
+	{"RCLSMIX", (DL_FUNC) &RCLSMIX, 14},
+	{"RCLRMIX", (DL_FUNC) &RCLRMIX, 11},
 	{"RPreprocessingKNNMIX", (DL_FUNC) &RPreprocessingKNNMIX, 7},
 	{"RPreprocessingKDEMIX", (DL_FUNC) &RPreprocessingKDEMIX, 6},
 	{"RPreprocessingHMIX", (DL_FUNC) &RPreprocessingHMIX, 10},
@@ -94,8 +94,8 @@ static const R_CMethodDef CMethods[] = {
 	{"RCombineComponentsMVNORM", (DL_FUNC) &RCombineComponentsMVNORM, 15},
 	{"RvonMisesPdf", (DL_FUNC) &RvonMisesPdf, 5},
 	{"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
-	{"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 5},
-	{"RGumbelCdf", (DL_FUNC) &RGumbelCdf, 5},
+	{"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 6},
+	{"RGumbelCdf", (DL_FUNC) &RGumbelCdf, 6},
 	{"Roptbins", (DL_FUNC) &Roptbins, 14},
 	{"Rbins", (DL_FUNC) &Rbins, 13},
 	{"RTvtNormalPdf", (DL_FUNC) &RTvtNormalPdf, 6},

@@ -17,9 +17,9 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
 \usage{
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(),
        cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
-       theta1 = numeric(),theta2 = numeric(), K = "auto", y0 = numeric(), 
-       ymin = numeric(), ymax = numeric(), ar = 0.1, Restraints = "loose", 
-       EMcontrol = NULL, ...)
+       theta1 = numeric(), theta2 = numeric(), theta3 = numeric(), K = "auto", 
+       y0 = numeric(), ymin = numeric(), ymax = numeric(), ar = 0.1, 
+       Restraints = "loose", EMcontrol = NULL, ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
 ## ... and for other signatures
@@ -53,10 +53,13 @@ total of positive relative deviations \code{"D"} or sum of squares error \code{"
 a character vector of length \eqn{d} containing continuous or discrete parametric family types. One of \code{"normal"}, \code{"lognormal"}, \code{"Weibull"}, \code{"gamma"}, \code{"Gumbel"}, \code{"binomial"}, \code{"Poisson"}, \code{"Dirac"} or \code{"vonMises"}.
 }
 \item{theta1}{
-a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{number of categories} - 1} for \code{"binomial"} distribution or \code{"NA"} otherwise.
+a vector of length \eqn{d} containing initial component parameters. One of \eqn{n_{il} = \textrm{number of categories} - 1} for \code{"binomial"} distribution.
 }
 \item{theta2}{
 a vector of length \eqn{d} containing initial component parameters. Currently not used.
+}
+\item{theta3}{
+a vector of length \eqn{d} containing initial component parameters. One of \eqn{\xi_{il} \in \{-1, \textrm{NA}, 1\}} for \code{"Gumbel"} distribution.
 }
 \item{K}{
 a character or a vector or a matrix of size \eqn{n_{\mathrm{D}} \times d} containing numbers of bins \eqn{v} or \eqn{v_{1}, \ldots, v_{d}} for the histogram and the kernel density estimation or numbers of nearest

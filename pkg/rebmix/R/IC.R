@@ -46,6 +46,10 @@ function(x, Criterion, pos, ...)
   theta2 <- unlist(x@Theta[[pos]][grep("theta2", Names)])
 
   theta2[is.na(theta2)] <- 0
+  
+  theta3 <- unlist(x@Theta[[pos]][grep("theta3", Names)])
+
+  theta3[is.na(theta3)] <- 0  
 
   length(pdf) <- d
 
@@ -66,10 +70,10 @@ function(x, Criterion, pos, ...)
       c = as.integer(c),
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.Theta = as.integer(3),
+      length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
+      Theta = as.double(c(theta1, theta2, theta3)),
       n = as.integer(n),
       x = as.double(X),
       IC = double(1),
@@ -91,10 +95,10 @@ function(x, Criterion, pos, ...)
       c = as.integer(c),
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.Theta = as.integer(3),
+      length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
+      Theta = as.double(c(theta1, theta2, theta3)),
       n = as.integer(n),
       x = as.double(X),
       IC = double(1),
@@ -119,10 +123,10 @@ function(x, Criterion, pos, ...)
       c = as.integer(c),
       w = as.double(x@w[[pos]]),
       length.pdf = as.integer(d),
-      length.Theta = as.integer(2),
-      length.theta = as.integer(c(d, d)),
+      length.Theta = as.integer(3),
+      length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
-      Theta = as.double(c(theta1, theta2)),
+      Theta = as.double(c(theta1, theta2, theta3)),
       n = as.integer(n),
       x = as.double(X),
       IC = double(1),

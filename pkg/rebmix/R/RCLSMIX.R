@@ -15,6 +15,8 @@ function(model, ...)
   theta1 <- array(data = list(NULL), dim = c(o, model@s), dimnames = NULL)
 
   theta2 <- array(data = list(NULL), dim = c(o, model@s), dimnames = NULL)
+  
+  theta3 <- array(data = list(NULL), dim = c(o, model@s), dimnames = NULL)
 
   for (io in 1:o) {
     for (is in 1:model@s) {
@@ -29,6 +31,10 @@ function(model, ...)
       theta2[[io, is]] <- unlist(model@x[[io]]@Theta[[is]][grep("theta2", Names)])
 
       theta2[[io, is]][is.na(theta2[[io, is]])] <- 0
+      
+      theta3[[io, is]] <- unlist(model@x[[io]]@Theta[[is]][grep("theta3", Names)])
+
+      theta3[[io, is]][is.na(theta3[[io, is]])] <- 0      
 
       c[[io, is]] <- length(model@x[[io]]@w[[is]])
 
@@ -49,6 +55,7 @@ function(model, ...)
     pdf = as.character(unlist(pdf)),
     theta1 = as.double(unlist(theta1)),
     theta2 = as.double(unlist(theta2)),
+    theta3 = as.double(unlist(theta3)),
     P = as.double(unlist(model@P)),
     Z = integer(model@ntest),
     error = integer(1),
@@ -141,7 +148,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RCLSMIX Version 2.13.1")
+  message("RCLSMIX Version 2.13.2")
 
   flush.console()
 
@@ -187,7 +194,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("BFSMIX Version 2.13.1")
+  message("BFSMIX Version 2.13.2")
 
   flush.console()
 

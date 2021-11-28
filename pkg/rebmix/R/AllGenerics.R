@@ -16,6 +16,7 @@ setGeneric("REBMIX",
     pdf = character(),
     theta1 = numeric(),
     theta2 = numeric(),
+    theta3 = numeric(),
     K = "auto",
     y0 = numeric(),
     ymin = numeric(),
@@ -124,6 +125,7 @@ setGeneric("BFSMIX",
 setGeneric("a.d", function(x = NULL) standardGeneric("a.d"))
 setGeneric("a.theta1<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta1<-"))
 setGeneric("a.theta2<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta2<-"))
+setGeneric("a.theta3<-", function(x = NULL, l = numeric(), value = numeric()) standardGeneric("a.theta3<-"))
 
 setGeneric("a.Dataset.name", function(x = NULL) standardGeneric("a.Dataset.name"))
 setGeneric("a.rseed", function(x = NULL) standardGeneric("a.rseed"))
@@ -143,8 +145,10 @@ setGeneric("a.Criterion", function(x = NULL) standardGeneric("a.Criterion"))
 setGeneric("a.pdf", function(x = NULL) standardGeneric("a.pdf"))
 setGeneric("a.theta1", function(x = NULL) standardGeneric("a.theta1"))
 setGeneric("a.theta2", function(x = NULL) standardGeneric("a.theta2"))
+setGeneric("a.theta3", function(x = NULL) standardGeneric("a.theta3"))
 setGeneric("a.theta1.all", function(x = NULL, pos = 1) standardGeneric("a.theta1.all"))
 setGeneric("a.theta2.all", function(x = NULL, pos = 1) standardGeneric("a.theta2.all"))
+setGeneric("a.theta3.all", function(x = NULL, pos = 1) standardGeneric("a.theta3.all"))
 setGeneric("a.K", function(x = NULL) standardGeneric("a.K"))
 setGeneric("a.K<-", function(x = NULL, value = numeric()) standardGeneric("a.K<-"))
 setGeneric("a.y0", function(x = NULL) standardGeneric("a.y0"))

@@ -13,6 +13,10 @@ function(model, ...)
   theta2 <- unlist(model@x@Theta[[model@pos]][grep("theta2", Names)])
 
   theta2[is.na(theta2)] <- 0
+  
+  theta3 <- unlist(model@x@Theta[[model@pos]][grep("theta3", Names)])
+
+  theta3[is.na(theta3)] <- 0  
 
   c <- length(model@x@w[[model@pos]])
 
@@ -118,10 +122,10 @@ function(model, ...)
     c = as.integer(c),
     w = as.double(model@x@w[[model@pos]]),
     length.pdf = as.integer(d),
-    length.Theta = as.integer(2),
-    length.theta = as.integer(c(d, d)),
+    length.Theta = as.integer(3),
+    length.theta = as.integer(c(d, d, d)),
     pdf = as.character(pdf),
-    Theta = as.double(c(theta1, theta2)),
+    Theta = as.double(c(theta1, theta2, theta3)),
     n = as.integer(n),
     x = as.double(dataset),
     tau = double(n * c),
@@ -157,6 +161,7 @@ function(model, ...)
     pdf = as.character(unlist(pdf)),
     theta1 = as.double(unlist(theta1)),
     theta2 = as.double(unlist(theta2)),
+    theta3 = as.double(unlist(theta3)),
     Z = integer(n),
     error = integer(1),
     PACKAGE = "rebmix")
@@ -349,7 +354,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RCLRMIX Version 2.13.1")
+  message("RCLRMIX Version 2.13.2")
 
   flush.console()
 

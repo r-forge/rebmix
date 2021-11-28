@@ -75,6 +75,15 @@ function(object, ...)
   colnames(theta2.cv) <- NULL
 
   print(theta2.cv, quote = FALSE, ...)
+  
+  Names <- names[grep("theta3", names, fixed = TRUE)]
+
+  theta3.cv <- matrix(unlist(object@Theta.cv[Names]), ncol = d, byrow = TRUE)
+
+  rownames(theta3.cv) <- Names
+  colnames(theta3.cv) <- NULL
+
+  print(theta3.cv, quote = FALSE, ...)  
 
   cat(paste("Mode probability = ", as.number(object@c.prob), " at c = ", object@c.mode, " components.\n", sep = "", collapse = ""))
 

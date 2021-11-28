@@ -288,9 +288,9 @@ int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
 
 FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta);
 
-// Returns the inverse of the Gumbel c.d.f. for the specified Mean and Beta.
+// Returns the inverse of the Gumbel c.d.f. for the specified Mean, Sigma and Xi.
 
-FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Beta);
+FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Sigma, FLOAT Xi);
 
 // Returns the error function erf(y). See http://www.nr.com/.
 

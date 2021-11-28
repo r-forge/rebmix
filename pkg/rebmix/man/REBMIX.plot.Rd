@@ -28,7 +28,7 @@ Plots predictive classes and wrongly classified observations if \code{x} equals 
      lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
      plot.cex = 0.8, plot.pch = 19, contour.drawlabels = FALSE,
      contour.labcex = 0.8, contour.method = "flattest",
-     contour.nlevels = 12, ...)
+     contour.nlevels = 12, log = "", ...)
 \S4method{plot}{RCLRMIX,missing}(x, y, s = expression(c), nrow = 1, ncol = 1, cex = 0.8,
      fg = "black", lty = "solid", lwd = 1, pty = "m", tcl = 0.5,
      plot.cex = 0.8, plot.pch = 19, ...)
@@ -110,6 +110,10 @@ are \code{"simple"}, \code{"edge"} and default \code{"flattest"}, see also \code
 }
 \item{contour.nlevels}{
 a number of desired contour levels. The default value is \code{12}.
+}
+\item{log}{
+a character which contains \code{"x"} if the x axis is to be logarithmic, \code{"y"} if the
+y axis is to be logarithmic and \code{"xy"} or \code{"yx"} if both axes are to be logarithmic. The default value is \code{""}.
 }
 \item{\dots}{
 further arguments to \code{\link[graphics]{par}}.

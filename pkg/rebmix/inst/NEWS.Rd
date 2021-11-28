@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.13.2}{ 
+\itemize{
+\item From now on three parameter parametric families can be build in the package.
+\item ?.
+}
+}
 \section{Changes in version 2.13.1}{ 
 \itemize{
 \item Reduced size of the vignette.

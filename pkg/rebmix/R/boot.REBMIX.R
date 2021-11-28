@@ -54,6 +54,13 @@ function(x,
   else {
     theta2 <- numeric()
   }
+  
+  if (length(model@x@theta3) > 0) {
+    theta3 <- model@x@theta3; theta3[is.na(theta3)] <- 0
+  }
+  else {
+    theta3 <- numeric()
+  }  
 
   d <- length(model@x@Variables)
   
@@ -98,6 +105,7 @@ function(x,
     pdf = model@x@pdf,
     theta1 = theta1,
     theta2 = theta2,
+    theta3 = theta3,
     K = eval(parse(text = as.character(model@x@summary[model@pos, "K"]))),
     y0 = model@x@y0,
     ymin = model@x@ymin,
@@ -169,6 +177,27 @@ function(x,
     model@Theta.se[[theta2.se]] <- as.vector(apply(model@Theta[[theta2]], 2, sd))
     model@Theta.cv[[theta2.cv]] <- as.vector(model@Theta.se[[theta2.se]] / apply(model@Theta[[theta2]], 2, mean))
   }
+  
+  for (i in 1:model@c.mode) {
+    theta3 <- paste("theta3.",  i, sep = "")
+
+    model@Theta[[theta3]] <- NULL
+
+    for (j in 1:length(Theta)) {
+      model@Theta[[theta3]] <- c(model@Theta[[theta3]], Theta[[j]][[theta3]])
+    }
+
+    model@Theta[[theta3]] <- matrix(model@Theta[[theta3]], ncol = d, byrow = TRUE)
+
+    colnames(model@Theta[[theta3]]) <- NULL
+    rownames(model@Theta[[theta3]]) <- paste(which(bsampleest@summary$c == c), sep = "")
+
+    theta3.se <- paste("theta3.",  i, ".se", sep = "")
+    theta3.cv <- paste("theta3.",  i, ".cv", sep = "")
+
+    model@Theta.se[[theta3.se]] <- as.vector(apply(model@Theta[[theta3]], 2, sd))
+    model@Theta.cv[[theta3.cv]] <- as.vector(model@Theta.se[[theta3.se]] / apply(model@Theta[[theta3]], 2, mean))
+  }  
 
   options(digits = digits)
 
