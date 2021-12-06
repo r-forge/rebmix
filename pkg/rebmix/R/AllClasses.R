@@ -423,18 +423,6 @@ function(.Object, ...,
     stop(sQuote("pdf1"), " in " , sQuote("Theta"), " character vector is requested!", call. = FALSE)
   }
 
-  if (length(grep("theta1", Names)) == 0) {
-    stop(sQuote("theta1.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(grep("theta2", Names)) == 0) {
-    stop(sQuote("theta2.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
-  }
-  
-  if (length(grep("theta3", Names)) == 0) {
-    stop(sQuote("theta3.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
-  }  
-
   length(grep("pdf", Names))
 
   j <- 0; length.pdf <- length(Theta[[grep("pdf", Names)[1]]])
@@ -450,9 +438,13 @@ function(.Object, ...,
 
     Theta[[i]] <- pdf; j <- j + 1
   }
-
+  
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("pdfi"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
+  }
+  
+  if (length(grep("theta1", Names)) == 0) {
+    stop(sQuote("theta1.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
   }
 
   j <- 0; length.theta1 <- length(Theta[[grep("theta1", Names)[1]]])
@@ -470,7 +462,11 @@ function(.Object, ...,
   if ((length.pdf > 1) && (j != c)) {
     stop(sQuote("theta1.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   }
-
+  
+  if (length(grep("theta2", Names)) == 0) {
+    stop(sQuote("theta2.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
+  }
+  
   j <- 0; length.theta2 <- length(Theta[[grep("theta2", Names)[1]]])
 
   for (i in grep("theta2", Names)) {
@@ -487,21 +483,27 @@ function(.Object, ...,
     stop(sQuote("theta2.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   }
   
-  j <- 0; length.theta3 <- length(Theta[[grep("theta3", Names)[1]]])
+  if (class(.Object) == "RNGMIX") {
+    if (length(grep("theta3", Names)) == 0) {
+      stop(sQuote("theta3.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
+    }   
+  
+    j <- 0; length.theta3 <- length(Theta[[grep("theta3", Names)[1]]])
 
-  for (i in grep("theta3", Names)) {
-    theta3 <- as.numeric(Theta[[i]])
+    for (i in grep("theta3", Names)) {
+      theta3 <- as.numeric(Theta[[i]])
 
-    if (length(theta3) != length.theta3) {
-      stop("lengths of ", sQuote("theta3.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
+      if (length(theta3) != length.theta3) {
+        stop("lengths of ", sQuote("theta3.l"), " in " , sQuote("Theta"), " must be equal!", call. = FALSE)
+      }
+
+      j <- j + 1
     }
 
-    j <- j + 1
+    if ((length.pdf > 1) && (j != c)) {
+      stop(sQuote("theta3.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
+    }
   }
-
-  if ((length.pdf > 1) && (j != c)) {
-    stop(sQuote("theta3.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
-  }  
 
   # Variables.
 
@@ -708,8 +710,8 @@ function(.Object, ...,
     stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (cmin >= cmax) {
-    stop(sQuote("cmax"), " must be greater than ", cmin, "!", call. = FALSE)
+  if (cmin > cmax) {
+    stop(sQuote("cmax"), " must be greater or equal than ", cmin, "!", call. = FALSE)
   }
 
   # Criterion.

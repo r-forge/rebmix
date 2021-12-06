@@ -1,8 +1,8 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.13.2}{ 
+\section{Changes in version 2.14.0}{ 
 \itemize{
-\item From now on three parameter parametric families can be build in the package.
+\item The package has been extended to three parametric family types.
 \item ?.
 }
 }

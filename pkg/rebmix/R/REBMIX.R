@@ -176,8 +176,8 @@ function(model, ...)
     names(model@Theta[[i]])[seq(3, 4 * c, 4)] <- paste("theta2.", 1:c, sep = "")
     names(model@Theta[[i]])[seq(4, 4 * c, 4)] <- paste("theta3.", 1:c, sep = "")
 
-    M1 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 2])
-    M2 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 3])
+    M1 <- which(model@pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 2])
+    M2 <- which(model@pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 3])
 
     for (j in 1:c) {
 	  model@Theta[[i]][[1 + (j - 1) * 4]] <- model@pdf
@@ -651,7 +651,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.13.2")
+  message("REBMIX Version 2.14.0")
 
   flush.console()
 

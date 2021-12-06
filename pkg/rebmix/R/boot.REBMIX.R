@@ -92,8 +92,8 @@ function(x,
     stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (cmin >= cmax) {
-    stop(sQuote("cmax"), " must be greater than ", cmin, "!", call. = FALSE)
+  if (cmin > cmax) {
+    stop(sQuote("cmax"), " must be greater or equal than ", cmin, "!", call. = FALSE)
   }  
 
   bsampleest <- REBMIX(Dataset = Dataset,
@@ -293,8 +293,8 @@ function(x,
     stop(sQuote("cmin"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (cmin >= cmax) {
-    stop(sQuote("cmax"), " must be greater than ", cmin, "!", call. = FALSE)
+  if (cmin > cmax) {
+    stop(sQuote("cmax"), " must be greater or equal than ", cmin, "!", call. = FALSE)
   }  
 
   bsampleest <- REBMIX(model = "REBMVNORM",
