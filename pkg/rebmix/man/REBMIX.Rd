@@ -203,6 +203,6 @@ irisest
 
 # Print total number of EM iterations used in Ehxaustive strategy from summary.EM slot.
 
-a.summary.EM(irisest, pos = 1, col.name = "total.iterations.nbr")
+a.summary.EM(irisest, col.name = "total.iterations.nbr", pos = 1)
 }
 \keyword{parameter estimation}

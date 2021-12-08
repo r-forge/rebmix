@@ -911,7 +911,7 @@ function(x, pos)
 
 setMethod("a.summary",
           signature(x = "REBMIX"),
-function(x, pos, col.name)
+function(x, col.name, pos)
 {
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)
@@ -949,7 +949,7 @@ function(x, pos, col.name)
 
 setMethod("a.summary.EM",
           signature(x = "REBMIX"),
-function(x, pos, col.name)
+function(x, col.name, pos)
 {
   if (!is.wholenumber(pos)) {
     stop(sQuote("pos"), " integer is requested!", call. = FALSE)

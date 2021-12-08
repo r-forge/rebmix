@@ -41,6 +41,7 @@ The default value is \code{list()}.}
 }
 \author{Marko Nagode}
 \examples{
+\dontrun{
 data(iris)
 
 # Split dataset into train (75%) and test (25%) subsets.
@@ -60,7 +61,7 @@ class <- c(rep("A", 0.4 * N), rep("B", 0.2 * N),
 
 type <- c(rep("train", 0.75 * N), rep("test", 0.25 * N))
 
-n <- 30
+n <- 300
 
 Dataset <- data.frame(1:n, sample(class, n))
 
@@ -84,6 +85,7 @@ simulated <- split(p = list(type = 3, train = "train",
   test = "test"), Dataset = Dataset, class = 2)
 
 simulated
+}
 }
 \keyword{classification}
 

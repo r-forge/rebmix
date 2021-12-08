@@ -44,10 +44,7 @@ mixedest <- REBMIX(Dataset = a.Dataset(mixed), Preprocessing = "histogram", cmax
   Criterion = "BIC", pdf = c("lognormal", "Poisson", "binomial", "Weibull"),
   theta1 = c(NA, NA, 10, NA), K = kseq(Sturges, Log10, 0.1))
 
-#library(tikzDevice) # Uncomment to use tikzDevice package.
-#tikz("mixed.tex", width = 4.5, height = 4.5) # Uncomment to use tikzDevice package.
 plot(mixedest, what = c("pdf", "marginal pdf", "IC", "logL"), nrow = 4, ncol = 3, npts = 200)
-#dev.off() # Uncomment to use tikzDevice package.
 
 # Bootstrap finite mixture.
 

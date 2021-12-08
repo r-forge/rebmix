@@ -888,6 +888,18 @@ int RoughBinomialParameters(FLOAT ym,
 
                 i++;
             }
+
+			if (Error) {
+				if (*p > (FLOAT)1.0 - Eps) {
+					*p = (FLOAT)1.0 - Eps;
+				}
+				else
+				if (*p < Eps) {
+					*p = Eps;
+				}
+
+				Error = 0;
+			}
         }
         else {
             *p = ymean / n;

@@ -8,8 +8,8 @@
 Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor methods for the slots are \code{a.Dataset(x = NULL, pos = 0)},
 \code{a.Preprocessing(x = NULL)}, \code{a.cmax(x = NULL)}, \code{a.cmin(x = NULL)}, \code{a.Criterion(x = NULL)}, \code{a.Variables(x = NULL)},
 \code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.theta3(x = NULL)}, \code{a.K(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.ymin(x = NULL)},
-\code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, pos = 0, col.name = character())},
-\code{a.summary.EM(x = NULL, pos = 0, col.name = character())}, \code{a.pos(x = NULL)},
+\code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, col.name = character(), pos = 0)},
+\code{a.summary.EM(x = NULL, col.name = character(), pos = 0)}, \code{a.pos(x = NULL)},
 \code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
 \code{a.theta1.all(x = NULL, pos = 1)}, \code{a.theta2.all(x = NULL, pos = 1)} and \code{a.theta3.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
 a desired slot item and a desired column name, respectively.

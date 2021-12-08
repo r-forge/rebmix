@@ -33,7 +33,7 @@ for (i in 1:4) {
   galaxyest[[i]] <- REBMIX(Dataset = list(galaxy = galaxy),
     Preprocessing = "histogram",
     cmax = 10,
-    Criterion = c("AIC", "BIC"),
+    Criterion = "AIC",
     pdf = pdf[i],
     K = 7:20)
 }
