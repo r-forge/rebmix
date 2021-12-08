@@ -33,33 +33,31 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \end{abstract}
 
 \section{Introduction}
-To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
+To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018, Panic_2020a, Panic_2020b, Panic_2020c}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.13.1}}
-
-Version \texttt{2.13.1} introduces several major improvements of the package. The Gumbel probability density
-
+\section{What's new in version \texttt{2.14.0}}
+Version \texttt{2.14.0} introduces several major improvements of the package. The package has been extended to three parameter parametric families. The Gumbel probability density
 \begin{equation}
-f(y) = \frac{1}{\beta}\exp\left(-\frac{y - \mu}{\beta} - \exp\left(-\frac{y - \mu}{\beta}\right)\right).
+f(y) = \frac{1}{\sigma}\exp\left(\frac{y - \mu}{\xi \sigma} - \exp\left(\frac{y - \mu}{\xi \sigma}\right)\right).
 \end{equation}
-
-has been added. The Gumbel mixture models can now be estimated. In the mixture model the parameters $\mu$ and $\beta$ are estimated for all components. The corresponding equations for the REBMIX and the EM algorithms have been derived. The EM algorithm has been implemented for all other parametric family types (normal, lognormal, Weibull, gamma, binomial, Poisson and von Mises parametric families), too. Therefore the EM algorithm can now be used with all parametric family types. Additionally, the histogram based EM algorithm has been added to speed up the calculations when the datasets contain large numbers of observations. Finally, the package has been debugged further and some core functions have been improved.
-
+has been added as the first three parameter family type. Here, $\xi \in \{-1, \textrm{NA}, 1\}$. If initially $\xi$ is set to $\textrm{NA}$, the package estimates $\xi$. Otherwise the  estimated $\xi$ equals initial $\xi$.
 \section{Previous versions}
+Version \texttt{2.13.1} introduces several major improvements of the package. The Gumbel probability density
+\begin{equation}
+f(y) = \frac{1}{\sigma}\exp\left(-\frac{y - \mu}{\sigma} - \exp\left(-\frac{y - \mu}{\sigma}\right)\right).
+\end{equation}
+has been added. The Gumbel mixture models can now be estimated. In the mixture model the parameters $\mu$ and $\sigma$ are estimated for all components. The corresponding equations for the REBMIX and the EM algorithms have been derived. The EM algorithm has been implemented for all other parametric family types (normal, lognormal, Weibull, gamma, binomial, Poisson and von Mises parametric families), too. Therefore the EM algorithm can now be used with all parametric family types. Additionally, the histogram based EM algorithm has been added to speed up the calculations when the datasets contain large numbers of observations. Finally, the package has been debugged further and some core functions have been improved.
+
 Version \texttt{2.12.0} introduces the Knuth algorithm \citep{Knuth_2019} as an effective way of optimal number of bins search. This affects the time efficiency of the \texttt{REBMIX} method considerably. The user can now enter different numbers of bins for different random variables. Two accompanied methods are added \texttt{optbins} and \texttt{bins}. The C++ code is optimized regarding memory allocation and efficiency. The R code is debugged and further improved regarding wrong user input messaging. Further debugging has been done. Outlier detection has been simplified. The \texttt{REBMIX} method now delivers some more components, but identifies also components with very low probability of occurrence, which is important regarding our future plans. The \texttt{plot} method is improved. The \texttt{RCLRMIX} method has been debugged and improved. The same holds for the \texttt{REBMIX} method.
 
 Version \texttt{2.11.0} introduces the Expectation-Maximization (EM) algorithm for the improved estimation of Gaussian mixture model parameters (with diagonal and unrestriced covariance matrices). Here the REBMIX algorithm is used to assess the initial parameters of the EM algorithm. Two different variants of the EM algorithm are implemented, namely the original EM algorithm from \citep{Dempster_1977} and a $k$-means like variant of the EM algorithm (Classification EM) as described in \citep{Celeux_1992}. As the REBMIX algorithm estimates a wide range of parameters for the Gaussian mixture model for different numbers of components, three different strategies, named \textbf{exhaustive}, \textbf{best} and \textbf{single}, have been implemented. The \textbf{exhaustive} strategy is used to run the EM algorithm (or variant) on each solution of Gaussian mixture model parameters provided by the REBMIX algorithm. The \textbf{best} strategy utilizes a voting scheme for the estimated parameters from the REBMIX algorithm and runs the EM algorithm only on selected optimal parameters. The best candidates are chosen based on the value of the likelihood function (the highest one) for each number of components $c$ from a minimum specified \texttt{cmin} to a maximum specified \texttt{cmax}. The \textbf{single} strategy is useful when the single value of, for example, the number of bins in histogram preprocessing is supplied as input for the REBMIX algorithm. Otherwise, when multiple numbers of bins $k$ are supplied, this strategy is the same as the \textbf{exhaustive} strategy. To tackle the slow linear convergence of the EM algorithm, simple acceleration methods are implemented, which can be controlled with parameter \texttt{acceleration} and \texttt{acceleration.multiplier}. The increment of the EM algorithm in each iteration can be written as
-
 \begin{equation}
 \varDelta\boldsymbol{\Theta} = \boldsymbol{\Theta}^{(i+1)} - \boldsymbol{\Theta}^{(i)}
 \end{equation}
-
 Instead of using a standard EM increment $\varDelta\boldsymbol{\Theta}$ to reduce the number of iterations needed for the EM algorithm, this increment can be multiplied with some multiplier $a_{\textmd{EM}}$, which is referred to as \texttt{acceleration.multiplier}. Therefore the update in each EM iteration now becomes
-
 \begin{equation}
 \boldsymbol{\Theta}^{i+1} = \boldsymbol{\Theta}^{(i)} + a_{\textmd{EM}}\varDelta\boldsymbol{\Theta}
 \end{equation}
-
 The safe range for the $a_{\textmd{EM}}$ multiplier lies between 1.0 and 2.0, where 1.0 gives a standard EM increment and 2.0 doubles the EM increment. However, this does not necessarily mean that multiplication by a value of 2.0 will double the speed of the EM algorithm (i.e. by reducing the required number of iterations by 2). Here, 1.5 is a safe value which mostly speeds up the EM algorithm whilst retaining good results for the estimated parameters. A value of 1.9 can significantly speed up the estimation process, yet it can also deteriorate the quality of the resulting estimated parameters. Therefore, the value of the multiplicator needs to be set carefully. This value is set with \texttt{acceleration.multiplier} parameter. The other parameter \texttt{acceleration} controls how the $a_{\textmd{EM}}$ multiplier is handled and can be one of \textbf{fixed}, \textbf{line} and \textbf{golden}. Selecting the \textbf{fixed} option means that the $a_{\textmd{EM}}$ multiplier is specified via the \texttt{acceleration.multiplier} parameter and for each iteration of the EM algorithm the increment is increased by a specified value of $a_{\textmd{EM}}$. The \textbf{line} and \textbf{golden} options perform a, line and golden search (respectively) for the optimal value of $a_{\textmd{EM}}$ for which the highest increase in the likelihood function of each EM iteration is achieved.
 
 EM handling is  carried out using the newly introduced class \texttt{"EM.Control"}. Classes \texttt{"REBMIX"} and \texttt{"REBMVNORM"} and its signature method \texttt{REBMIX} now accept the \texttt{"EM.Control"} object via the argument called \texttt{"EMcontrol"}. The class \texttt{EM.Control} has the same name convection for slots as the input argument \texttt{EMcontrol} (\texttt{strategy}, \texttt{variant}, \texttt{acceleration}, \texttt{tolerance}, \texttt{acceleration.multiplier} and \texttt{maximum.iterations}) as well as all accessor functions with the same name convention as \texttt{a.\textit{slot name}} and setter function \texttt{a.\textit{slot name}<-}.
@@ -69,23 +67,17 @@ Methods \texttt{Zp} and \texttt{coef} have been replaced by \texttt{a.Zp}, \text
 GCC 8.1 notes and warnings in C++ functions have been eliminated in version 2.10.2. Cholesky decomposition is now used to calculate the logarithm of the determinant and inverse of variance-covariance matrices instead of LU decomposition. Special attention has been paid to resolving numerical problems related to high dimensional datasets.
 
 Version 2.10.1 is the further debugged version of 2.10.0. Large \texttt{K} in combination with large dimension $d$ can lead to histograms with numerous nonempty bins $v$. In order to restrain $v$, the well known RootN rule \citep{Velleman_1976} may intuitively be extended to multidimensions
-
 \begin{equation}
 v_{\mathrm{max}} = \frac{1 + d}{d} n^\frac{d}{1 + d}.
 \end{equation}
-
 If $d = \infty$, then $v_{\mathrm{max}} = n$. If $d = 1$, then $v_{\mathrm{max}} = 2 \sqrt{n}$. Minor debugging and function improvements have also been carried out in version 2.10.0. The acceleration rate is now progressively increasing. Each time the inner loop starts, the counter $I_{2}$ \citep[see][for details]{Nagode_2015} is initiated and constant
-
 \begin{equation}
 A = \left. \frac{1 - a_{\mathrm{r}}}{a_{\mathrm{r}} (D_{l} w_{l} - D_{\mathrm{min}})} \right|_{I_{2} = 1}
 \end{equation}
-
 is calculated. The acceleration rate $a_{\mathrm{r}}$ at $I_{2} = 1$ always equals the value stored in the input argument \texttt{ar}. Otherwise
-
 \begin{equation}
 a_{\mathrm{r}} = \left. \frac{1}{A (D_{l} w_{l} - D_{\mathrm{min}}) + 1} \right|_{I_{2} > 1}.
 \end{equation}
-
 The Newton-Raphson root finding in C\texttt{++} functions was improved in version 2.9.3. This affects only Weibull, gamma and von Mises parametric families. A circular von Mises parametric family has been added and further debugging carried out in version 2.9.2. Version 2.9.1 is a further debugged version 2.8.4. The R code has been extended and rewritten in S4 class system. The background C code has also been extended and rewritten as object-oriented C\texttt{++} code. The package can now more easily be extended to other parametric families. Multivariate normal mixtures with unrestricted variance-covariance matrices have been added. Clustering has also been added and classification improved.
 
 \section{Examples}
