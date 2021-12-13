@@ -2589,6 +2589,7 @@ int Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 			EnhanTheta->pdf_[i] = pfGumbel;
 
 			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+			EnhanTheta->Theta_[2][i] = RigidTheta->Theta_[2][i];
 
 			j = 1; Error = 1;
 			while ((j <= ItMax) && Error) {
@@ -2974,6 +2975,7 @@ int Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 			EnhanTheta->pdf_[i] = pfGumbel;
 
 			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+			EnhanTheta->Theta_[2][i] = RigidTheta->Theta_[2][i];
 
 			j = 1; Error = 1;
 			while ((j <= ItMax) && Error) {
@@ -3360,6 +3362,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 			EnhanTheta->pdf_[i] = pfGumbel;
 
 			EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
+			EnhanTheta->Theta_[2][i] = RigidTheta->Theta_[2][i];
 
 			j = 1; Error = 1;
 			while ((j <= ItMax) && Error) {
@@ -3369,7 +3372,7 @@ int Rebmix::EnhancedEstimationH(int                  k,           // Total numbe
 					T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
 
 					A[0] += Y[length_pdf_][l] * Y[i][l];
-     				A[1] += Y[length_pdf_][l] * T[0];
+					A[1] += Y[length_pdf_][l] * T[0];
 					A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
 					A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
 				}
