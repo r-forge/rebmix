@@ -8,7 +8,7 @@
 Predicts Class Membership Based Upon the Best First Search Algorithm
 }
 \description{
-Returns as default the optimized RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities. If \code{model} equals \code{"RCLSMVNORM"} optimized output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
+Returns as default the optimized RCLSMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac, uniform or von Mises component densities. If \code{model} equals \code{"RCLSMVNORM"} optimized output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
 \S4method{BFSMIX}{RCLSMIX}(model = "RCLSMIX", x = list(), Dataset = data.frame(),
@@ -41,7 +41,7 @@ Returns an optimized object of class \code{RCLSMIX} or \code{RCLSMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(model = "RCLSMIX")}}{a character giving the default class name \code{"RCLSMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities.}
+\item{\code{signature(model = "RCLSMIX")}}{a character giving the default class name \code{"RCLSMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac, uniform or von Mises component densities.}
 \item{\code{signature(model = "RCLSMVNORM")}}{a character giving the class name \code{"RCLSMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
 }
 }
