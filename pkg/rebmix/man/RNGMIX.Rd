@@ -197,6 +197,26 @@ simulated <- RNGMIX(model = "RNGMVNORM", Dataset.name = "mvnorm_1",
   rseed = -1, n = n, Theta = Theta)
 
 plot(simulated)
+
+# Generate and print bivariate mixed uniform-Gumbel dataset.
+
+n <- c(100, 150)
+
+Theta <- new("RNGMIX.Theta", c = 2, pdf = c("uniform", "Gumbel"))
+
+a.theta1(Theta, l = 1) <- c(2, 10)
+a.theta2(Theta, l = 1) <- c(10, 2.3)
+a.theta3(Theta, l = 1) <- c(NA, 1.0)
+a.theta1(Theta, l = 2) <- c(10, 50)
+a.theta2(Theta, l = 2) <- c(30, 4.2)
+a.theta3(Theta, l = 2) <- c(NA, -1.0)
+
+simulated <- RNGMIX(Dataset.name = paste("simulated_", 1, sep = ""),
+  rseed = -1,
+  n = n,
+  Theta = a.Theta(Theta))
+  
+plot(simulated)  
 }
 \keyword{random number generation}
 

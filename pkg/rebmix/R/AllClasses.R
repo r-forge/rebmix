@@ -224,6 +224,7 @@ function(.Object, ...,
 
   M1 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 2])
   M2 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 3])
+  M3 <- which(pdf %in% .rebmix$pdf[8])
 
   for (i in 1:c) {
     Theta[[1 + (i - 1) * 4]] <- pdf
@@ -233,6 +234,9 @@ function(.Object, ...,
 
     Theta[[3 + (i - 1) * 4]][M1] <- NA
     Theta[[4 + (i - 1) * 4]][M2] <- NA
+
+    Theta[[2 + (i - 1) * 4]][M3] <- -Inf
+    Theta[[3 + (i - 1) * 4]][M3] <- Inf
   }
 
   .Object@c <- c

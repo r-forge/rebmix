@@ -234,6 +234,12 @@ function(x, value)
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
       }
     }
+    else
+    if (x@pdf == .rebmix$pdf[8]) {
+      if (value[l] >= x@Theta[[3 + (l - 1) * 4]]) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[8]), " must be less than ", x@Theta[[3 + (l - 1) * 4]], "!", call. = FALSE)        
+      }
+    }    
   }
 
   for (l in 1:x@c) {
@@ -310,6 +316,12 @@ function(x, l, value)
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
       }
     }
+    else
+    if (x@pdf[i] == .rebmix$pdf[8]) {
+      if (value[i] >= x@Theta[[3 + (l - 1) * 4]][i]) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[8]), " must be less than ", x@Theta[[3 + (l - 1) * 4]][i], "!", call. = FALSE)        
+      }
+    }    
   }
 
   x@Theta[[2 + (l - 1) * 4]] <- value
@@ -375,6 +387,12 @@ function(x, value)
     if (x@pdf == .rebmix$pdf[7]) {
       if (value[l] <= 0.0) {
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
+      }
+    }
+    else
+    if (x@pdf == .rebmix$pdf[8]) {
+      if (value[l] <= x@Theta[[2 + (l - 1) * 4]]) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[8]), " must be greater than ", x@Theta[[2 + (l - 1) * 4]], "!", call. = FALSE)        
       }
     }
     else
@@ -518,6 +536,12 @@ function(x, l, value)
         stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
       }
     }
+    else
+    if (x@pdf[i] == .rebmix$pdf[8]) {
+      if (value[i] <= x@Theta[[2 + (l - 1) * 4]][i]) {
+        stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[8]), " must be greater than ", x@Theta[[2 + (l - 1) * 4]][i], "!", call. = FALSE)
+      }
+    }    
     else
     if (x@pdf[i] == .rebmix$pdf[9]) {
       if (value[i] <= 0.0) {
