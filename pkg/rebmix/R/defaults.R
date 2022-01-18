@@ -25,6 +25,10 @@ Bootstrap = c("parametric", "nonparametric")),
 Rule = c("Sturges", "Log10", "RootN", "Knuth equal", "Knuth unequal")),
 .Names = c("Rule"))
 
+.rclrmix <- structure(list(
+Rule = c("Entropy", "Demp")),
+.Names = c("Rule"))
+
 
 
 

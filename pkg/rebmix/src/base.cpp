@@ -410,16 +410,16 @@ FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta)
 
 FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Sigma, FLOAT Xi)
 {
-	FLOAT y;
+    FLOAT y;
 
-	if (Xi > Eps) {
-		y = Mean + Sigma * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Fy)));
-	}
-	else {
-		y = Mean - Sigma * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Fy));
-	}
+    if (Xi > Eps) {
+        y = Mean + Sigma * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Fy)));
+    }
+    else {
+        y = Mean - Sigma * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Fy));
+    }
 
-	return (y);
+    return (y);
 } // GumbelInv
 
 // Returns the error function erf(y). See http://www.nr.com/.

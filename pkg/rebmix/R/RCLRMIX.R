@@ -128,6 +128,9 @@ function(model, ...)
     Theta = as.double(c(theta1, theta2, theta3)),
     n = as.integer(n),
     x = as.double(dataset),
+### Panic Branislav.
+    Rule = as.character(model@Rule),
+### End    
     tau = double(n * c),
     F = integer(c),
     T = integer(c),
@@ -258,6 +261,9 @@ function(model, ...)
     Theta = as.double(c(theta1, theta2)),
     n = as.integer(n),
     x = as.double(dataset),
+### Panic Branislav.
+    Rule = as.character(model@Rule),
+### End    
     tau = double(n * c),
     F = integer(c),
     T = integer(c),
@@ -350,7 +356,8 @@ function(model,
   x,
   Dataset,
   pos,
-  Zt, ...)
+  Zt,
+  Rule, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -362,7 +369,8 @@ function(model,
     x = x,
     Dataset = Dataset,
     pos = pos,
-    Zt = Zt)
+    Zt = Zt,
+    Rule = Rule)    
 
   model <- RCLRMIX(model = model, ...)
 

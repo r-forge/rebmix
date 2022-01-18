@@ -120,6 +120,10 @@ function(x,
         fi <- fi * pgamma(as.numeric(Dataset[, j]), scale = as.numeric(theta1[[i]][j]), shape = as.numeric(theta2[[i]][j]), ...)
       }
       else
+      if (pdf[[i]][j] == .rebmix$pdf[8]) {
+        fi <- fi * punif(as.numeric(Dataset[, j]), min = as.numeric(theta1[[i]][j]), max = as.numeric(theta2[[i]][j]), ...)
+      }
+      else      
       if (pdf[[i]][j] == .rebmix$pdf[9]) {
         output <- .C(C_RvonMisesCdf,
           n = as.integer(n),

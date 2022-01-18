@@ -1,5 +1,4 @@
 ### Panic Branislav & Marko Nagode.  
-
 setMethod("optbins",
           signature(Dataset = "list"),
 function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
@@ -177,5 +176,4 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
 
   invisible(output)  
 }) ## optbins
-
 ### End

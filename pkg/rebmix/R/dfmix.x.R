@@ -33,6 +33,10 @@
       fix <- dgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
     }
     else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[8]) {
+      fix <- dunif(as.numeric(x), min = as.numeric(xTheta[[i]]$theta1), max = as.numeric(xTheta[[i]]$theta2), ...)
+    }
+    else     
     if (xTheta[[i]]$pdf == .rebmix$pdf[9]) {
       output <- .C(C_RvonMisesPdf,
         n = as.integer(n),

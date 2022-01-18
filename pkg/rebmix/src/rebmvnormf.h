@@ -17,15 +17,15 @@ public:
     int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, int *Outlier);
     int EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     int EnhancedEstimationKDE(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
-    int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
+    int EnhancedEstimationH(int k, FLOAT **Y, FLOAT nl, FLOAT *h, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     int MomentsCalculation(CompnentDistribution *CmpTheta, FLOAT *FirstM, FLOAT *SecondM);
     int BayesClassificationKNN(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     int BayesClassificationKDE(FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     int BayesClassificationH(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT **FirstM, FLOAT **SecondM);
     int DegreesOffreedom(int c, CompnentDistribution **MixTheta, int *M);
-    /// Panic Branislav: Method for invoking EM algorithm. ///
+/// Panic Branislav
     int EMInitialize();
-    /// End                                                ///
+/// End
 }; // Rebmvnorm
 
 #endif

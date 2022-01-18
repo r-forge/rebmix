@@ -208,6 +208,7 @@
 \alias{a.pi}
 \alias{a.P}
 \alias{a.tau}
+\alias{a.Rule}
 \alias{a.from}
 \alias{a.to}
 \alias{a.EN}
@@ -222,6 +223,7 @@
 \alias{a.P,RCLRMIX-method}
 \alias{a.tau,RCLRMIX-method}
 \alias{a.prob,RCLRMIX-method}
+\alias{a.Rule,RCLRMIX-method}
 \alias{a.from,RCLRMIX-method}
 \alias{a.to,RCLRMIX-method}
 \alias{a.EN,RCLRMIX-method}
@@ -236,6 +238,7 @@
 \alias{a.P,RCLRMVNORM-method}
 \alias{a.tau,RCLRMVNORM-method}
 \alias{a.prob,RCLRMVNORM-method}
+\alias{a.Rule,RCLRMVNORM-method}
 \alias{a.from,RCLRMVNORM-method}
 \alias{a.to,RCLRMVNORM-method}
 \alias{a.EN,RCLRMVNORM-method}
@@ -302,6 +305,7 @@
 \alias{a.tolerance}
 \alias{a.acceleration.multiplier}
 \alias{a.maximum.iterations}
+\alias{a.eliminate.zero.components}
 
 \alias{a.strategy,EM.Control-method}
 \alias{a.variant,EM.Control-method}
@@ -309,6 +313,7 @@
 \alias{a.tolerance,EM.Control-method}
 \alias{a.acceleration.multiplier,EM.Control-method}
 \alias{a.maximum.iterations,EM.Control-method}
+\alias{a.eliminate.zero.components,EM.Control-method}
 \alias{a.K,EM.Control-method}
 
 \alias{a.strategy<-}
@@ -317,6 +322,7 @@
 \alias{a.tolerance<-}
 \alias{a.acceleration.multiplier<-}
 \alias{a.maximum.iterations<-}
+\alias{a.eliminate.zero.components<-}
 \alias{a.K<-}
 
 \alias{a.strategy<-,EM.Control-method}
@@ -325,11 +331,25 @@
 \alias{a.tolerance<-,EM.Control-method}
 \alias{a.acceleration.multiplier<-,EM.Control-method}
 \alias{a.maximum.iterations<-,EM.Control-method}
+\alias{a.eliminate.zero.components<-,EM.Control-method}
 \alias{a.K<-,EM.Control-method}
 
 \alias{a.summary.EM}
 \alias{a.summary.EM,REBMIX-method}
 \alias{a.summary.EM,REBMVNORM-method}
+
+\alias{a.theta1.all<-}
+\alias{a.theta2.all<-}
+\alias{a.theta3.all<-}
+\alias{a.theta1.all<-,EMMIX.Theta,ANY-method}
+\alias{a.theta2.all<-,EMMIX.Theta,ANY-method}
+\alias{a.theta3.all<-,EMMIX.Theta,ANY-method}
+\alias{a.theta1.all<-,EMMIX.Theta,missing-method}
+\alias{a.theta2.all<-,EMMIX.Theta,missing-method}
+\alias{a.theta3.all<-,EMMIX.Theta,missing-method}
+
+\alias{a.theta1.all<-,EMMVNORM.Theta,ANY-method}
+\alias{a.theta2.all<-,EMMVNORM.Theta,ANY-method}
 
 \title{Internal rebmix Functions}
 \description{

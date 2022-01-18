@@ -5,9 +5,13 @@
 \title{Class \code{"EM.Control"}}
 \description{Object of class \code{EM.Control}.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("EM.Control", ...)}. Accessor methods for the slots are \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
-\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, \code{a.maximum.iterations(x = NULL)} and \code{a.K(x = NULL)} where \code{x} stands for an object of class \code{EM.Control}. Setter methods \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
-\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, \code{a.maximum.iterations(x = NULL)} and \code{a.K(x = NULL)} are provided to write to \code{strategy}, \code{variant}, \code{acceleration}, \code{tolerance}, \code{acceleration.multiplier} and \code{maximum.iterations} slot respectively.
+Objects can be created by calls of the form \code{new("EM.Control", ...)}. Accessor methods for the slots are \code{a.strategy(x = NULL)},
+\code{a.variant(x = NULL)}, \code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, 
+\code{a.maximum.iterations(x = NULL)}, \code{a.K(x = NULL)} and \code{a. eliminate.zero.components (x = NULL)}, where \code{x} stands for an object of 
+class \code{EM.Control}. Setter methods \code{a.strategy(x = NULL)}, \code{a.variant(x = NULL)},
+\code{a.acceleration(x = NULL)}, \code{a.tolerance(x = NULL)}, \code{a.acceleration.multiplier(x = NULL)}, \code{a.maximum.iterations(x = NULL)}, 
+\code{a.K(x = NULL)} and \code{eliminate.zero.components} are provided to write to \code{strategy}, \code{variant}, \code{acceleration}, \code{tolerance}, 
+\code{acceleration.multiplier}, \code{maximum.iterations} and \code{eliminate.zero.components} slot respectively.
 }
 \section{Slots}{
 \describe{
@@ -31,6 +35,9 @@ is positive integer containing the maximum allowed number of iterations of the E
 }
 \item{\code{K}:}{
 is integer containing the number of bins for the histogram based EM algorithm. This option can reduce computational time drastically if the datasets contain a large number of observations \eqn{n} and \code{K} is set to the value \eqn{\ll n}. The default value of 0 means that the EM algorithm runs over all \eqn{n}.
+}
+\item{\code{eliminate.zero.components}:}{
+is boolean indicating if the componenets with \eqn{w_{l} = 0} should be eliminated from output. Only used with \code{EMMIX-methods}.
 }
 }
 }

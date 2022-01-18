@@ -180,8 +180,8 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
             Y[i][j] = CmpDist->Theta_[1][i] * y + CmpDist->Theta_[0][i];
 
             break;
-		case pfTNormal:
-			break;
+        case pfTNormal:
+            break;
         case pfLognormal:
             if (LDevISet == 0) {
                 do {
@@ -217,12 +217,12 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
 
             break;
         case pfGumbel:
-			if (CmpDist->Theta_[2][i] > Eps) {
-				Y[i][j] = CmpDist->Theta_[0][i] + CmpDist->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Ran1(&IDum_))));
-			}
-			else {
-				Y[i][j] = CmpDist->Theta_[0][i] - CmpDist->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_)));
-			}
+            if (CmpDist->Theta_[2][i] > Eps) {
+                Y[i][j] = CmpDist->Theta_[0][i] + CmpDist->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Ran1(&IDum_))));
+            }
+            else {
+                Y[i][j] = CmpDist->Theta_[0][i] - CmpDist->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_)));
+            }
 
             break;
         case pfvonMises:
@@ -352,6 +352,8 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
             break;
         case pfUniform:
             Y[i][j] = CmpDist->Theta_[0][i] + Ran1(&IDum_) * (CmpDist->Theta_[1][i] - CmpDist->Theta_[0][i]);
+
+            break;
         default:;
         }
     }

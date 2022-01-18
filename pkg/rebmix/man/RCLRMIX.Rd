@@ -16,7 +16,7 @@ Returns as default the RCLRMIX algorithm output for mixtures of conditionally in
 }
 \usage{
 \S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, Dataset = data.frame(), 
-        pos = 1, Zt = factor(), ...)
+        pos = 1, Zt = factor(), Rule = character(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLRMIX}(object, ...)
 ## ... and for other signatures
@@ -36,6 +36,9 @@ a desired row number in \code{x@summary} for which the clustering is performed. 
 }
 \item{Zt}{
 a factor of true cluster membership. The default value is \code{factor()}.
+}
+\item{Rule}{
+a character containing the merging rule. One of \code{"Entropy"} or \code{"Demp"}. The default value is \code{"Entropy"}.
 }
 \item{object}{
 see Methods section below.
@@ -108,7 +111,7 @@ Dataset <- as.data.frame(Dataset)
 
 # Cluster the dataset.
 
-poissonclu <- RCLRMIX(x = poissonest, Dataset = Dataset)
+poissonclu <- RCLRMIX(x = poissonest, Dataset = Dataset, Rule = "Demp")
 
 a.Dataset(poissonclu)
 }

@@ -1014,6 +1014,7 @@ E0: if (EnhanTheta) delete EnhanTheta;
 int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total number of bins.
                                    FLOAT                **Y,         // Pointer to the input points [y0,...,yd-1,kl,k].
                                    FLOAT                nl,          // Total number of observations in class l.
+                                   FLOAT                *h,          // Sides of the hypersquare.
                                    CompnentDistribution *RigidTheta, // Rigid parameters.
                                    CompnentDistribution *LooseTheta) // Loose parameters.
 {
@@ -1021,6 +1022,8 @@ int Rebmvnorm::EnhancedEstimationH(int                  k,           // Total nu
     FLOAT                Sum;
     int                  i, ii, j, o;
     int                  Error = 0;
+
+    (void)h;
 
     EnhanTheta = new CompnentDistribution(this);
 
@@ -1437,7 +1440,8 @@ int Rebmvnorm::DegreesOffreedom(int c,                  // Number of components.
     return Error;
 } // DegreesOffreedom
 
-/// Panic Branislav: Runs the EM algorithm or its variant for the initial parameters assesed by the REBMIX algorithm.
+/// Panic Branislav
+// Runs the EM algorithm or its variant for the initial parameters assesed by the REBMIX algorithm.
 
 int Rebmvnorm::EMInitialize()
 {
@@ -1456,7 +1460,7 @@ int Rebmvnorm::EMInitialize()
         EM_TOL_,
         EM_am_,
         EM_max_iter_,
-		EM_K_,
+        EM_K_,
         EM_strategy_,
         EM_variant_,
         EM_accel_);
@@ -1465,6 +1469,5 @@ int Rebmvnorm::EMInitialize()
 
 E0: return Error;
 } // EMInitialize
-
 /// End
 

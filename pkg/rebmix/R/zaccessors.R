@@ -1,5 +1,4 @@
 ### Panic Branislav.
-
 setMethod("a.strategy", signature(x = "EM.Control"), function(x) x@strategy)
 setMethod("a.variant", signature(x = "EM.Control"), function(x) x@variant)
 setMethod("a.acceleration", signature(x = "EM.Control"), function(x) x@acceleration)
@@ -7,6 +6,7 @@ setMethod("a.tolerance", signature(x = "EM.Control"), function(x) x@tolerance)
 setMethod("a.acceleration.multiplier", signature(x = "EM.Control"), function(x) x@acceleration.multiplier)
 setMethod("a.maximum.iterations", signature(x = "EM.Control"), function(x) x@maximum.iterations)
 setMethod("a.K", signature(x = "EM.Control"), function(x) x@K)
+setMethod("a.eliminate.zero.components", signature(x = "EM.Control"), function(x) x@eliminate.zero.components)
 
 setMethod("a.strategy<-",
           signature = (x = "EM.Control"),
@@ -179,12 +179,96 @@ function(x, value)
   x
 }) ## a.K<-
 
+setMethod("a.eliminate.zero.components<-",
+          signature = (x = "EM.Control"),
+function(x, value)
+{
+  # value.
+  
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.logical(value)) {
+    stop(sQuote("value"), " logical is requested!", call. = FALSE)
+  }
+
+  length(value) <- 1
+
+  x@eliminate.zero.components <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.eliminate.zero.components<-
 ### End
 
 setMethod("a.c", signature(x = "RNGMIX.Theta"), function(x) x@c)
 setMethod("a.d", signature(x = "RNGMIX.Theta"), function(x) x@d)
 setMethod("a.pdf", signature(x = "RNGMIX.Theta"), function(x) x@pdf)
 setMethod("a.Theta", signature(x = "RNGMIX.Theta"), function(x) x@Theta)
+
+### Panic Branislav.
+setMethod("a.w", signature(x = "EMMIX.Theta"), function(x) x@w)
+
+setMethod("a.w<-", 
+          signature(x = "EMMIX.Theta"), 
+function(x, value)
+{
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c) {
+    stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
+  }
+
+  if (abs(sum(value) - 1.0) > 1e-6){
+    stop(sQuote("value"), " must sum to 1.0!", call. = FALSE) 
+  }
+
+  value <- value/sum(value)
+
+  x@w <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.w<-
+
+setMethod("a.w<-", 
+          signature(x = "EMMVNORM.Theta"), 
+function(x, value)
+{
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c) {
+    stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
+  }
+
+  if (abs(sum(value) - 1.0) > 1e-6){
+    stop(sQuote("value"), " must sum to 1.0!", call. = FALSE) 
+  }
+
+  value <- value/sum(value)
+
+  x@w <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.w<-
+### End
 
 setMethod("a.theta1<-",
           signature(x = "RNGMIX.Theta", l = "missing"),
@@ -697,6 +781,334 @@ function(x, l, value)
   x
 }) ## a.theta2<-
 
+### Panic Branislav.
+setMethod("a.theta1<-",
+          signature(x = "EMMVNORM.Theta"),
+function(x, l, value)
+{
+  # l.
+
+  if (missing(l) || (length(l) == 0)) {
+    stop(sQuote("l"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(l)) {
+    stop(sQuote("l"), " integer is requested!", call. = FALSE)
+  }
+
+  length(l) <- 1
+
+  if ((l < 1) || (l > x@c)) {
+    stop(sQuote("l"), " must be greater than 0 and less or equal than ", x@c, "!", call. = FALSE)
+  }
+
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@d, "!", call. = FALSE)
+  }
+
+  x@Theta[[2 + (l - 1) * 3]] <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.theta1<-
+
+setMethod("a.theta2<-",
+          signature(x = "EMMVNORM.Theta"),
+function(x, l, value)
+{
+  # l.
+
+  if (missing(l) || (length(l) == 0)) {
+    stop(sQuote("l"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(l)) {
+    stop(sQuote("l"), " integer is requested!", call. = FALSE)
+  }
+
+  length(l) <- 1
+
+  if ((l < 1) || (l > x@c)) {
+    stop(sQuote("l"), " must be greater than 0 and less or equal than ", x@c, "!", call. = FALSE)
+  }
+
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@d * x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@d * x@d, "!", call. = FALSE)
+  }
+
+  x@Theta[[3 + (l - 1) * 3]] <- value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.theta2<-
+
+setMethod("a.theta1.all<-", 
+          signature(x = "EMMIX.Theta"),
+function(x, value)
+{
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c*x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
+  }
+  for (i in 1:x@d) {
+    for (l in 1:x@c) {
+      ll <- i + (l - 1) * x@d
+      if (x@pdf[i] == .rebmix$pdf[3]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[4]) {
+        if (!is.wholenumber(value[ll])) {
+          stop(sQuote("value"), " integer is requested for ", dQuote(.rebmix$pdf[4]), "!", call. = FALSE)
+        }
+
+        if (value[ll] < 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[5]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[5]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[7]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+    }
+  }
+
+  value <- array(value, dim = c(x@d, x@c))
+
+  for (l in 1:x@c){
+      x@Theta[[2 + (l - 1) * 4]] <- as.double(value[, l])
+  }
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+})## a.theta1.all
+
+setMethod("a.theta2.all<-", 
+          signature(x = "EMMIX.Theta"),
+function(x, value)
+{
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c*x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
+  }
+  for (i in 1:x@d) {
+    for (l in 1:x@c) {
+      ll <- i + (l - 1) * x@d
+      if (x@pdf[i] == .rebmix$pdf[1]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[1]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[2]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[2]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[3]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[4]) {
+        if ((value[ll] < 0.0) || (value[ll] > 1.0)) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[5]) {
+        value[ll] <- NA
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[6]) {
+        value[ll] <- NA
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[7]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[9]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[9]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }
+      else
+      if (x@pdf[i] == .rebmix$pdf[10]) {
+        if (value[ll] <= 0.0) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be greater than 0.0!", call. = FALSE)
+        }
+      }    
+    }
+  }
+
+  value <- array(value, dim = c(x@d, x@c))
+
+  for (l in 1:x@c){
+      x@Theta[[3 + (l - 1) * 4]] <- as.double(value[, l])
+  }
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+})
+
+setMethod("a.theta3.all<-", 
+          signature(x = "EMMIX.Theta"),
+function(x, value)
+{
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c*x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
+  }
+  for (i in 1:x@d) {
+    for (l in 1:x@c) {
+      ll <- i + (l - 1) * x@d
+      if (x@pdf[i] == .rebmix$pdf[10]) {
+        if (abs(abs(value[l]) - 1.0) > .Machine$double.eps^0.5) {
+          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be -1.0 or 1.0!", call. = FALSE)
+        }
+      }
+      else {
+        value[l] <- NA
+      }       
+    }
+  }
+
+  value <- array(value, dim = c(x@d, x@c))
+
+  for (l in 1:x@c){
+      x@Theta[[4 + (l - 1) * 4]] <- as.double(value[, l])
+  }
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.theta3.all<-
+
+setMethod("a.theta1.all<-", 
+          signature(x = "EMMVNORM.Theta"),
+function(x, value)
+{
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c*x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
+  }
+
+  value <- array(value, dim = c(x@d, x@c))
+
+  for (l in 1:x@c){
+      x@Theta[[2 + (l - 1) * 3]] <- as.double(value[, l])
+  }
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.theta1.all<-
+
+setMethod("a.theta2.all<-", 
+          signature(x = "EMMVNORM.Theta"),
+function(x, value)
+{
+  # value.
+
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.number(value)) {
+    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
+  }
+
+  if (length(value) != x@c*x@d*x@d) {
+    stop("length of ", sQuote("value"), " must equal " , x@c * x@d * x@d, "!", call. = FALSE)
+  }
+
+  value <- array(value, dim = c(x@d, x@d, x@c))
+
+  for (l in 1:x@c){
+      x@Theta[[3 + (l - 1) * 3]] <- as.double(value[,, l])
+  }
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.theta2.all<-
+### End
+
 setMethod("a.Dataset.name", signature(x = "RNGMIX"), function(x) x@Dataset.name)
 setMethod("a.rseed", signature(x = "RNGMIX"), function(x) x@rseed)
 setMethod("a.n", signature(x = "RNGMIX"), function(x) x@n)
@@ -970,7 +1382,6 @@ function(x, col.name, pos)
 }) ## a.summary
 
 ### Panic Branislav.
-
 setMethod("a.summary.EM",
           signature(x = "REBMIX"),
 function(x, col.name, pos)
@@ -1006,7 +1417,6 @@ function(x, col.name, pos)
 
   output
 }) ## a.summary.EM
-
 ### End
 
 setMethod("a.pos", signature(x = "REBMIX"), function(x) x@pos)
@@ -1261,6 +1671,7 @@ setMethod("a.from", signature(x = "RCLRMIX"), function(x) x@from)
 setMethod("a.to", signature(x = "RCLRMIX"), function(x) x@to)
 setMethod("a.EN", signature(x = "RCLRMIX"), function(x) x@EN)
 setMethod("a.ED", signature(x = "RCLRMIX"), function(x) x@ED)
+setMethod("a.Rule", signature(x = "RCLRMIX"), function(x) x@Rule)
 
 setMethod("a.s", signature(x = "RCLS.chunk"), function(x) x@s)
 setMethod("a.levels", signature(x = "RCLS.chunk"), function(x) x@levels)

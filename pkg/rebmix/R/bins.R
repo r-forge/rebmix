@@ -1,5 +1,4 @@
 ### Panic Branislav & Marko Nagode.  
-
 setMethod("bins",
           signature(Dataset = "list"),
 function(Dataset, K, y0, ymin, ymax, ...)
@@ -157,5 +156,4 @@ function(Dataset, K, y0, ymin, ymax, ...)
 
   invisible(output)  
 }) ## bins
-
 ### End

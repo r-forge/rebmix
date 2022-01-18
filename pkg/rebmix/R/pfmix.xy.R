@@ -33,6 +33,10 @@
       fix <- pgamma(as.numeric(x), scale = as.numeric(xTheta[[i]]$theta1), shape = as.numeric(xTheta[[i]]$theta2), ...)
     }
     else
+    if (xTheta[[i]]$pdf == .rebmix$pdf[8]) {
+      fix <- punif(as.numeric(x), min = as.numeric(xTheta[[i]]$theta1), max = as.numeric(xTheta[[i]]$theta2), ...)   
+    }
+    else    
     if (xTheta[[i]]$pdf == .rebmix$pdf[9]) {
       output <- .C(C_RvonMisesCdf,
         n = as.integer(n),
@@ -86,6 +90,10 @@
       fiy <- pgamma(as.numeric(y), scale = as.numeric(yTheta[[i]]$theta1), shape = as.numeric(yTheta[[i]]$theta2), ...)
     }
     else
+    if (yTheta[[i]]$pdf == .rebmix$pdf[8]) {
+      fiy <- punif(as.numeric(y), min = as.numeric(yTheta[[i]]$theta1), max = as.numeric(yTheta[[i]]$theta2), ...)
+    }
+    else    
     if (yTheta[[i]]$pdf == .rebmix$pdf[9]) {
       output <- .C(C_RvonMisesCdf,
         n = as.integer(n),

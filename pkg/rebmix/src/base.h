@@ -140,7 +140,7 @@
 
 typedef enum {
     pfNormal,          // Normal distribution.
-	pfTNormal,         // Truncated normal distribution.
+    pfTNormal,         // Truncated normal distribution.
     pfLognormal,       // Lognormal distribution.
     pfWeibull,         // Weibull distribution.
     pfGamma,           // Gamma distribution.
@@ -169,6 +169,11 @@ typedef enum {
     strategy_best,       // Best REBMIX + EM strategy.
     strategy_exhaustive  // Exhaustive REBMIX + EM strategy.
 } EmStrategyType_e;
+
+typedef enum {
+    merge_none,  // EM algorithm is not employed for estimation of mixture model parameters.
+    merge_naive  // Single REBMIX + EM strategy.
+} EmMergeCompsType_e;
 
 typedef struct summaryparametertype {
     int   c;     // Optimal number of components.

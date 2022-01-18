@@ -5,9 +5,7 @@ function(model, ...)
   summary <- list()
 
 ### Panic Branislav.
-
   summary.EM <- list()
-
 ### End  
 
   for (i in 1:length(model@Dataset)) {
@@ -253,7 +251,6 @@ function(model, ...)
     }
     
 ### Panic Branislav.
-
     summary.EM[[i]] <- c(Dataset.name,
       output$EMStrategy,
       output$EMVariant,
@@ -263,9 +260,7 @@ function(model, ...)
       output$EMMaxIter,
       output$n_iter,
       output$n_iter_all)
-
 ### End     
-
     model@opt.c[[i]] <- output$opt.c
     model@opt.IC[[i]] <- output$opt.IC
     model@opt.logL[[i]] <- output$opt.logL
@@ -277,9 +272,7 @@ function(model, ...)
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
   
 ### Panic Branislav.
-
   model@summary.EM <- as.data.frame(do.call("rbind", summary.EM), stringsAsFactors = FALSE)
-  
 ### End  
 
   colnames(model@summary) <- c("Dataset",
@@ -301,7 +294,6 @@ function(model, ...)
     "M")
     
 ### Panic Branislav.
-
   colnames(model@summary.EM) <- c("Dataset",
     "strategy",
     "variant",
@@ -311,7 +303,6 @@ function(model, ...)
     "maximum.iterations",
     "opt.iterations.nbr",
     "total.iterations.nbr")
-    
 ### End   
 
   rm(list = ls()[!(ls() %in% c("model"))])
@@ -326,9 +317,7 @@ function(model, ...)
   summary <- list()
   
 ### Panic Branislav.
-
   summary.EM <- list()
-  
 ### End  
 
   for (i in 1:length(model@Dataset)) {
@@ -561,7 +550,6 @@ function(model, ...)
     }
     
 ### Panic Branislav.
-
     summary.EM[[i]] <- c(Dataset.name,
         output$EMStrategy,
         output$EMVariant,
@@ -571,7 +559,6 @@ function(model, ...)
         output$EMMaxIter,
         output$n_iter,
         output$n_iter_all)
-        
 ### End    
 
     model@opt.c[[i]] <- output$opt.c
@@ -585,9 +572,7 @@ function(model, ...)
   model@summary <- as.data.frame(do.call("rbind", summary), stringsAsFactors = FALSE)
   
 ### Panic Branislav.
-
   model@summary.EM <- as.data.frame(do.call("rbind", summary.EM), stringsAsFactors = FALSE)
-  
 ### End  
 
   colnames(model@summary) <- c("Dataset",
@@ -609,7 +594,6 @@ function(model, ...)
     "M")
     
 ### Panic Branislav.
-
   colnames(model@summary.EM) <- c("Dataset",
     "strategy",
     "variant",
@@ -619,7 +603,6 @@ function(model, ...)
     "maximum.iterations",
     "opt.iterations.nbr",
     "total.iterations.nbr")
-    
 ### End       
 
   rm(list = ls()[!(ls() %in% c("model"))])
@@ -690,7 +673,6 @@ function(model,
   }
   
 ### Panic Branislav.  
-  
   if (is.null(model@summary.EM)) {
     model@summary.EM <- output@summary.EM 
   }
@@ -699,7 +681,6 @@ function(model,
   }
   
 ### End    
-
   for (k in (1:length(Dataset))) {
     model@opt.c[[length(model@opt.c) + 1]] <- output@opt.c[[k]]
     model@opt.IC[[length(model@opt.IC) + 1]] <- output@opt.IC[[k]]

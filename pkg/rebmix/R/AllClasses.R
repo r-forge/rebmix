@@ -1,5 +1,4 @@
 ### Panic Branislav.
-
 setClass(Class = "EM.Control",
 slots = c(strategy = "character",
   variant = "character",
@@ -7,7 +6,10 @@ slots = c(strategy = "character",
   tolerance = "numeric",
   acceleration.multiplier = "numeric",
   maximum.iterations = "numeric",
-  K = "numeric"))
+  K = "numeric",
+### Panic Branislav.
+  eliminate.zero.components = "logical"))
+### End  
 
 setMethod("initialize", "EM.Control",
 function(.Object, ...,
@@ -17,7 +19,10 @@ function(.Object, ...,
   tolerance,
   acceleration.multiplier,
   maximum.iterations,
-  K)
+  K,
+### Panic Branislav.
+  eliminate.zero.components)
+### End 
 {
   # strategy.
 
@@ -110,6 +115,18 @@ function(.Object, ...,
     stop(sQuote("K"), " must be greater or equal than 0!", call. = FALSE)
   }    
 
+  # eliminate.zero.components.
+
+  if (missing(eliminate.zero.components) || (length(eliminate.zero.components) == 0)){
+    eliminate.zero.components <- FALSE;
+  }
+
+  length(eliminate.zero.components) <- 1
+
+  if (!is.logical(eliminate.zero.components)){
+    stop(sQuote("eliminate.zero.components"), " logical is requested!", call. = FALSE)
+  } 
+
   .Object@strategy <- strategy
   .Object@variant <- variant
   .Object@acceleration <- acceleration
@@ -117,6 +134,7 @@ function(.Object, ...,
   .Object@acceleration.multiplier <- acceleration.multiplier
   .Object@maximum.iterations <- maximum.iterations
   .Object@K <- K
+  .Object@eliminate.zero.components <- eliminate.zero.components  
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 
@@ -163,7 +181,6 @@ function(object)
 
   rm(list = ls())
 }) ## show
-
 ### End
 
 # Class RNGMIX.Theta
@@ -348,6 +365,221 @@ function(.Object, ...,
 
   .Object
 }) ## initialize
+
+### Panic Branislav.
+# Class EMMIX.Theta
+
+setClass("EMMIX.Theta", 
+  slots = c(w = "numeric"),
+  contains = "RNGMIX.Theta")
+
+setMethod("initialize", "EMMIX.Theta",
+function(.Object, ...,
+  c,
+  d,
+  pdf)
+{
+  # c.
+
+  if (missing(c) || (length(c) == 0)) {
+    stop(sQuote("c"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(c)) {
+    stop(sQuote("c"), " integer is requested!", call. = FALSE)
+  }
+
+  length(c) <- 1
+
+  if (c < 1) {
+    stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
+  }
+
+  # pdf.
+
+  if (missing(pdf) || (length(pdf) == 0)) {
+    stop(sQuote("pdf"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.character(pdf)) {
+    stop(sQuote("pdf"), " character vector is requested!", call. = FALSE)
+  }
+
+  pdf <- match.arg(pdf, .rebmix$pdf, several.ok = TRUE)
+
+  # d.
+
+  if (missing(d) || (length(d) == 0)) {
+    d <- length(pdf)
+  }else {
+    if (!is.wholenumber(d)) {
+       stop(sQuote("d"), " integer is requested!", call. = FALSE)
+    }
+
+    if (d != length(pdf)){
+      stop(sQuote("d"), " must be equal to ", length(pdf), " !", call. = FALSE)
+    }
+  }
+
+  length(d) <- 1
+
+  # w.
+
+  w <- double(c)
+
+  # Theta.
+
+  Theta <- list()
+
+  length(Theta) <- 4 * c
+
+  names(Theta)[seq(1, 4 * c, 4)] <- paste("pdf", 1:c, sep = "")
+  names(Theta)[seq(2, 4 * c, 4)] <- paste("theta1.", 1:c, sep = "")
+  names(Theta)[seq(3, 4 * c, 4)] <- paste("theta2.", 1:c, sep = "")
+  names(Theta)[seq(4, 4 * c, 4)] <- paste("theta3.", 1:c, sep = "") 
+
+  M1 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 2])
+  M2 <- which(pdf %in% .rebmix$pdf[.rebmix$pdf.nargs < 3])
+
+  for (i in 1:c) {
+    Theta[[1 + (i - 1) * 4]] <- pdf
+    Theta[[2 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
+    Theta[[3 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
+    Theta[[4 + (i - 1) * 4]] <- array(data = 0.0, dim = d)
+
+    Theta[[3 + (i - 1) * 4]][M1] <- NA
+    Theta[[4 + (i - 1) * 4]][M2] <- NA
+  }
+
+  .Object@c <- c
+  .Object@d <- d
+  .Object@pdf <- pdf
+  .Object@w <- w
+  .Object@Theta <- Theta
+
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+
+  .Object
+}) ## initialize
+
+setMethod("show",
+          signature(object = "EMMIX.Theta"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+  }
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
+  cat("Slot \"c\":", "\n", sep = "")
+
+  print(object@c, quote = FALSE)
+
+  cat("Slot \"d\":", "\n", sep = "")
+
+  print(object@d, quote = FALSE)
+
+  cat("Slot \"pdf\":", "\n", sep = "")
+
+  print(object@pdf, quote = FALSE)
+
+  cat("Slot \"w\":", "\n", sep = "")
+
+  print(object@w, quote = FALSE)
+
+  cat("Slot \"Theta\":", "\n", sep = "")
+
+  print(object@Theta, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
+
+# Class EMMVNORM.Theta
+
+setClass("EMMVNORM.Theta", contains = "EMMIX.Theta")
+
+setMethod("initialize", "EMMVNORM.Theta",
+function(.Object, ...,
+  c,
+  d,
+  pdf)
+{
+  # c.
+
+  if (missing(c) || (length(c) == 0)) {
+    stop(sQuote("c"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(c)) {
+    stop(sQuote("c"), " integer is requested!", call. = FALSE)
+  }
+
+  length(c) <- 1
+
+  if (c < 1) {
+    stop(sQuote("c"), " must be greater than 0!", call. = FALSE)
+  }
+
+  # d.
+
+  if (missing(d) || (length(d) == 0)) {
+    stop(sQuote("d"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(d)) {
+    stop(sQuote("d"), " integer is requested!", call. = FALSE)
+  }
+
+  length(d) <- 1
+
+  if (d < 1) {
+    stop(sQuote("d"), " must be greater than 0!", call. = FALSE)
+  }
+
+  # pdf.
+
+  if (missing(pdf) || (length(pdf) == 0)) {
+    pdf <- rep(.rebmix$pdf[1], d)
+  }else {
+    pdf <- match.arg(pdf, .rebmix$pdf[1], several.ok = TRUE)
+
+    if (length(pdf) != d){
+      stop(sQuote("pdf"), " Length must be equal to the ", sQuote("d"), " parameter!", call. = FALSE)
+    }
+  }
+
+  # w.
+
+  w <- double(c)
+
+  # Theta.
+
+  Theta <- list()
+
+  length(Theta) <- 3 * c
+
+  names(Theta)[seq(1, 3 * c, 3)] <- paste("pdf", 1:c, sep = "")
+  names(Theta)[seq(2, 3 * c, 3)] <- paste("theta1.", 1:c, sep = "")
+  names(Theta)[seq(3, 3 * c, 3)] <- paste("theta2.", 1:c, sep = "")
+
+  for (i in 1:c) {
+    Theta[[1 + (i - 1) * 3]] <- pdf
+    Theta[[2 + (i - 1) * 3]] <- array(data = 0.0, dim = d)
+    Theta[[3 + (i - 1) * 3]] <- array(data = 0.0, dim = d * d)
+  }
+
+  .Object@c <- c
+  .Object@d <- d
+  .Object@pdf <- pdf
+  .Object@w <- w
+  .Object@Theta <- Theta
+
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+
+  .Object
+}) ## initialize
+### End
 
 # Class RNGMIX
 
@@ -946,7 +1178,6 @@ function(.Object, ...,
   }
  
 ### Panic Branislav.
-
   if (missing(EMcontrol) || length(EMcontrol) == 0) {
     EMcontrol <- new("EM.Control")
   }
@@ -954,7 +1185,6 @@ function(.Object, ...,
   if (class(EMcontrol) != "EM.Control") {
     stop(sQuote("EMcontrol"), " object of class ", "EM.Control", " is requested!", call. = FALSE)
   }
-
 ### End  
 
   .Object@Dataset <- Dataset
@@ -1310,6 +1540,9 @@ slots = c(x = "ANY",
   P = "data.frame",
   tau = "matrix",
   prob = "numeric",
+### Panic Branislav.
+  Rule = "character",
+### End
   from = "numeric",
   to = "numeric",
   EN = "numeric",
@@ -1321,7 +1554,8 @@ function(.Object, ...,
   x,
   Dataset,
   pos,
-  Zt)
+  Zt,
+  Rule)  
 {
   model <- gsub("RCLR", "REB", .Object@class[1])
 
@@ -1390,11 +1624,25 @@ function(.Object, ...,
   }
 
   levels(Zt) <- 1:length(levels(Zt))
+  
+  # Rule
+
+  if (missing(Rule) || (length(Rule) == 0)) {
+    Rule <- .rclrmix$Rule[[1]]
+  }
+  else {
+    if (!is.character(Rule)) {
+      stop(sQuote("Rule"), " character is requested!", call. = FALSE)
+    }
+  }
+
+  Rule <- match.arg(Rule, .rclrmix$Rule, several.ok = FALSE)  
 
   .Object@x <- x
   .Object@Dataset <- Dataset
   .Object@pos <- pos
   .Object@Zt <- Zt
+  .Object@Rule <- Rule  
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 
@@ -1434,6 +1682,10 @@ function(object)
   cat("Slot \"ED\":", "\n", sep = "")
 
   print(object@ED, quote = FALSE)
+  
+  cat("Slot \"Rule\":", "\n", sep = "")
+
+  print(object@Rule, quote = FALSE)  
 
   rm(list = ls())
 }) ## show
@@ -1475,6 +1727,10 @@ function(object)
   cat("Slot \"ED\":", "\n", sep = "")
 
   print(object@ED, quote = FALSE)
+  
+  cat("Slot \"Rule\":", "\n", sep = "")
+
+  print(object@Rule, quote = FALSE)  
 
   rm(list = ls())
 }) ## show
