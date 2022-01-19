@@ -42,7 +42,7 @@ a factor of true class membership \eqn{\bm{\Omega}_{g}} for the test dataset. Th
 see Methods section below.
 }
 \item{\dots}{
-currently not used; additional arguments affecting the summary produced.
+currently not used.
 }
 }
 \value{

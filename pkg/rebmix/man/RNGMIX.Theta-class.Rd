@@ -9,7 +9,9 @@
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("RNGMIX.Theta", ...)}. Accessor methods for the slots are \code{a.c(x = NULL)}, \code{a.d(x = NULL)},
 \code{a.pdf(x = NULL)} and \code{a.Theta(x = NULL)}, where \code{x} stands for an object of class \code{RNGMIX.Theta}. Setter methods
-\code{a.theta1(x = NULL, l = numeric())}, \code{a.theta2(x = NULL, l = numeric())} and \code{a.theta3(x = NULL, l = numeric())} are provided to write to \code{Theta} slot, where \eqn{l = 1, \ldots, c}.
+\code{a.theta1(x = NULL, l = numeric())}, \code{a.theta2(x = NULL, l = numeric())} and \code{a.theta3(x = NULL, l = numeric())}, 
+\code{a.theta1.all(x = NULL)}, \code{a.theta2.all(x = NULL)} and \code{a.theta3.all(x = NULL)} 
+are provided to write to \code{Theta} slot, where \eqn{l = 1, \ldots, c}.
 }
 \section{Slots}{
 \describe{
@@ -40,6 +42,14 @@ a.theta3(Theta, l = 1) <- c(NA, 1.0)
 a.theta1(Theta, l = 2) <- c(20, 50)
 a.theta2(Theta, l = 2) <- c(3, 4.2)
 a.theta3(Theta, l = 2) <- c(NA, -1.0)
+
+Theta
+
+Theta <- new("RNGMIX.Theta", c = 2, pdf = c("normal", "Gumbel"))  
+
+a.theta1.all(Theta) <- c(2, 10, 20, 50)
+a.theta2.all(Theta) <- c(0.5, 2.3, 3, 4.2)
+a.theta3.all(Theta) <- c(NA, 1.0, NA, -1.0)
 
 Theta
 

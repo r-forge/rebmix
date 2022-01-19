@@ -240,6 +240,8 @@ function(x, value)
   x
 }) ## a.w<-
 
+setMethod("a.w", signature(x = "EMMVNORM.Theta"), function(x) x@w)
+
 setMethod("a.w<-", 
           signature(x = "EMMVNORM.Theta"), 
 function(x, value)
@@ -782,142 +784,16 @@ function(x, l, value)
 }) ## a.theta2<-
 
 ### Panic Branislav.
-setMethod("a.theta1<-",
-          signature(x = "EMMVNORM.Theta"),
-function(x, l, value)
-{
-  # l.
-
-  if (missing(l) || (length(l) == 0)) {
-    stop(sQuote("l"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.wholenumber(l)) {
-    stop(sQuote("l"), " integer is requested!", call. = FALSE)
-  }
-
-  length(l) <- 1
-
-  if ((l < 1) || (l > x@c)) {
-    stop(sQuote("l"), " must be greater than 0 and less or equal than ", x@c, "!", call. = FALSE)
-  }
-
-  # value.
-
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@d, "!", call. = FALSE)
-  }
-
-  x@Theta[[2 + (l - 1) * 3]] <- value
-
-  rm(list = ls()[!(ls() %in% c("x"))])
-
-  x
-}) ## a.theta1<-
-
-setMethod("a.theta2<-",
-          signature(x = "EMMVNORM.Theta"),
-function(x, l, value)
-{
-  # l.
-
-  if (missing(l) || (length(l) == 0)) {
-    stop(sQuote("l"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.wholenumber(l)) {
-    stop(sQuote("l"), " integer is requested!", call. = FALSE)
-  }
-
-  length(l) <- 1
-
-  if ((l < 1) || (l > x@c)) {
-    stop(sQuote("l"), " must be greater than 0 and less or equal than ", x@c, "!", call. = FALSE)
-  }
-
-  # value.
-
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@d * x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@d * x@d, "!", call. = FALSE)
-  }
-
-  x@Theta[[3 + (l - 1) * 3]] <- value
-
-  rm(list = ls()[!(ls() %in% c("x"))])
-
-  x
-}) ## a.theta2<-
-
 setMethod("a.theta1.all<-", 
-          signature(x = "EMMIX.Theta"),
+          signature(x = "RNGMIX.Theta"),
 function(x, value)
 {
-  # value.
+  i = 1
 
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@c*x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
-  }
-  for (i in 1:x@d) {
-    for (l in 1:x@c) {
-      ll <- i + (l - 1) * x@d
-      if (x@pdf[i] == .rebmix$pdf[3]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[4]) {
-        if (!is.wholenumber(value[ll])) {
-          stop(sQuote("value"), " integer is requested for ", dQuote(.rebmix$pdf[4]), "!", call. = FALSE)
-        }
-
-        if (value[ll] < 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[5]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[5]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[7]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-    }
-  }
-
-  value <- array(value, dim = c(x@d, x@c))
-
-  for (l in 1:x@c){
-      x@Theta[[2 + (l - 1) * 4]] <- as.double(value[, l])
+  for (j in 1:x@c) {
+    a.theta1(x, j) <- value[i:(i + x@d - 1)]
+    
+    i = i + x@d
   }
 
   rm(list = ls()[!(ls() %in% c("x"))])
@@ -926,81 +802,15 @@ function(x, value)
 })## a.theta1.all
 
 setMethod("a.theta2.all<-", 
-          signature(x = "EMMIX.Theta"),
+          signature(x = "RNGMIX.Theta"),
 function(x, value)
 {
-  # value.
+  i = 1
 
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@c*x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
-  }
-  for (i in 1:x@d) {
-    for (l in 1:x@c) {
-      ll <- i + (l - 1) * x@d
-      if (x@pdf[i] == .rebmix$pdf[1]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[1]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[2]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[2]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[3]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[3]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[4]) {
-        if ((value[ll] < 0.0) || (value[ll] > 1.0)) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[4]), " must be greater or equal than 0.0 and less or equal than 1.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[5]) {
-        value[ll] <- NA
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[6]) {
-        value[ll] <- NA
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[7]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[7]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[9]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[9]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }
-      else
-      if (x@pdf[i] == .rebmix$pdf[10]) {
-        if (value[ll] <= 0.0) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be greater than 0.0!", call. = FALSE)
-        }
-      }    
-    }
-  }
-
-  value <- array(value, dim = c(x@d, x@c))
-
-  for (l in 1:x@c){
-      x@Theta[[3 + (l - 1) * 4]] <- as.double(value[, l])
+  for (j in 1:x@c) {
+    a.theta2(x, j) <- value[i:(i + x@d - 1)]
+    
+    i = i + x@d
   }
 
   rm(list = ls()[!(ls() %in% c("x"))])
@@ -1009,40 +819,15 @@ function(x, value)
 })
 
 setMethod("a.theta3.all<-", 
-          signature(x = "EMMIX.Theta"),
+          signature(x = "RNGMIX.Theta"),
 function(x, value)
 {
-  # value.
+  i = 1
 
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@c*x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
-  }
-  for (i in 1:x@d) {
-    for (l in 1:x@c) {
-      ll <- i + (l - 1) * x@d
-      if (x@pdf[i] == .rebmix$pdf[10]) {
-        if (abs(abs(value[l]) - 1.0) > .Machine$double.eps^0.5) {
-          stop(sQuote("value"), " for ", dQuote(.rebmix$pdf[10]), " must be -1.0 or 1.0!", call. = FALSE)
-        }
-      }
-      else {
-        value[l] <- NA
-      }       
-    }
-  }
-
-  value <- array(value, dim = c(x@d, x@c))
-
-  for (l in 1:x@c){
-      x@Theta[[4 + (l - 1) * 4]] <- as.double(value[, l])
+  for (j in 1:x@c) {
+    a.theta3(x, j) <- value[i:(i + x@d - 1)]
+    
+    i = i + x@d
   }
 
   rm(list = ls()[!(ls() %in% c("x"))])
@@ -1051,27 +836,15 @@ function(x, value)
 }) ## a.theta3.all<-
 
 setMethod("a.theta1.all<-", 
-          signature(x = "EMMVNORM.Theta"),
+          signature(x = "RNGMVNORM.Theta"),
 function(x, value)
 {
-  # value.
+  i = 1
 
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@c*x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@c * x@d, "!", call. = FALSE)
-  }
-
-  value <- array(value, dim = c(x@d, x@c))
-
-  for (l in 1:x@c){
-      x@Theta[[2 + (l - 1) * 3]] <- as.double(value[, l])
+  for (j in 1:x@c) {
+    a.theta1(x, j) <- value[i:(i + x@d - 1)]
+    
+    i = i + x@d
   }
 
   rm(list = ls()[!(ls() %in% c("x"))])
@@ -1080,27 +853,15 @@ function(x, value)
 }) ## a.theta1.all<-
 
 setMethod("a.theta2.all<-", 
-          signature(x = "EMMVNORM.Theta"),
+          signature(x = "RNGMVNORM.Theta"),
 function(x, value)
 {
-  # value.
+  i = 1
 
-  if (missing(value) || (length(value) == 0)) {
-    stop(sQuote("value"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.number(value)) {
-    stop(sQuote("value"), " numeric vector is requested!", call. = FALSE)
-  }
-
-  if (length(value) != x@c*x@d*x@d) {
-    stop("length of ", sQuote("value"), " must equal " , x@c * x@d * x@d, "!", call. = FALSE)
-  }
-
-  value <- array(value, dim = c(x@d, x@d, x@c))
-
-  for (l in 1:x@c){
-      x@Theta[[3 + (l - 1) * 3]] <- as.double(value[,, l])
+  for (j in 1:x@c) {
+    a.theta2(x, j) <- value[i:(i + x@d * x@d - 1)]
+    
+    i = i + x@d * x@d
   }
 
   rm(list = ls()[!(ls() %in% c("x"))])

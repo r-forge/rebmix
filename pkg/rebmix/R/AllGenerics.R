@@ -32,22 +32,6 @@ setGeneric("REBMIX",
   setGeneric("EMMIX",
   function(model = "REBMIX",
     Dataset = list(),
-    Preprocessing = character(),
-    cmax = 15,
-    cmin = 1,
-    Criterion = "AIC",
-    pdf = character(),
-    theta1 = numeric(),
-    theta2 = numeric(),
-    theta3 = numeric(),
-    K = "auto",
-    y0 = numeric(),
-    ymin = numeric(),
-    ymax = numeric(),
-    ar = 0.1,
-    Restraints = "loose",    
-    EMcontrol = NULL,
-    w = numeric(),
     Theta = list(), ...)
   standardGeneric("EMMIX"))
 ### End
@@ -129,7 +113,8 @@ setGeneric("RCLRMIX",
     x = NULL,
     Dataset = data.frame(),
     pos = 1,
-    Zt = factor(), ...)
+    Zt = factor(), 
+    Rule = character(), ...)
   standardGeneric("RCLRMIX"))
 
 setGeneric("RCLSMIX",

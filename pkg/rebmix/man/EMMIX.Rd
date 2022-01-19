@@ -2,22 +2,18 @@
 \docType{methods}
 \alias{EMMIX}
 \alias{EMMIX-methods}
-\alias{EMMIX,EMMIX-method}
-\alias{EMMIX,EMMVNORM-method}
-\alias{show,EMMIX-method}
-\alias{show,EMMIX-method}
-\alias{summary,EMMIX-method}
-\alias{summary,EMMVNORM-method}
+\alias{EMMIX,REBMIX-method}
+\alias{EMMIX,REBMVNORM-method}
 \title{
 EM Algorithm for Univariate or Multivariate Finite Mixture Estimation
 }
 \description{
-Returns as default the EM algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities. If \code{model} equals \code{"REBMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
+Returns as default the EM algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, 
+Gumbel, binomial, Poisson, Dirac or von Mises component densities. If \code{model} equals \code{"REBMVNORM"} output 
+for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{EMMIX}{EMMIX}(model = "REBMIX", Dataset = list(), Theta = list(), ...)
-## ... and for other signatures
-\S4method{summary}{REBMIX}(object, ...)
+\S4method{EMMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Theta = list(), ...)
 ## ... and for other signatures
 }
 \arguments{
@@ -29,10 +25,10 @@ a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} co
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{Theta}{
-a list of objects of \code{"EMMIX.Theta"} or \code{"EMMVNORM.object"}. See \code{set.parameters} method for further details.
+a list of objects of \code{"EMMIX.Theta"} or \code{"EMMVNORM.Theta"}.
 }
 \item{\dots}{
-Additional arguments for the initialization of \code{"REBMIX"} object. Currently not used.  
+Currently not used.  
 }
 }
 \value{
@@ -40,8 +36,10 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 }
 \section{Methods}{
 \describe{
-\item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities.}
-\item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices.}
+\item{\code{signature(model = "REBMIX")}}{a character giving the default class name \code{"REBMIX"} for mixtures of conditionally 
+independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac or von Mises component densities.}
+\item{\code{signature(model = "REBMVNORM")}}{a character giving the class name \code{"REBMVNORM"} for mixtures 
+of multivariate normal component densities with unrestricted variance-covariance matrices.}
 }
 }
 \author{Branislav Panic}
@@ -51,6 +49,7 @@ Mathematics, 8(3):373, 2020.
 \doi{10.3390/math8030373}.
 }
 \examples{
+\dontrun{
 devAskNewPage(ask = TRUE)
 
 # Load faithful dataset.
@@ -150,5 +149,6 @@ a.theta2.all(Theta) <- theta2
 model <- EMMIX(model = "REBMVNORM", Dataset = list(faithful), Theta = Theta, EMcontrol = EM)
 
 summary(model)
+}
 }
 \keyword{parameter estimation}

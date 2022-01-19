@@ -21,6 +21,7 @@
 \alias{RCLRMIX,ANY-method}
 \alias{RCLSMIX,ANY-method}
 \alias{BFSMIX,ANY-method}
+\alias{EMMIX,ANY-method}
 
 \alias{a.d}
 \alias{a.theta1<-}
@@ -42,6 +43,11 @@
 \alias{a.Theta,RNGMVNORM.Theta-method}
 \alias{a.theta1<-,RNGMVNORM.Theta,ANY-method}
 \alias{a.theta2<-,RNGMVNORM.Theta,ANY-method}
+\alias{a.theta1.all<-,RNGMIX.Theta-method}
+\alias{a.theta2.all<-,RNGMIX.Theta-method}
+\alias{a.theta3.all<-,RNGMIX.Theta-method}
+\alias{a.theta1.all<-,RNGMVNORM.Theta-method}
+\alias{a.theta2.all<-,RNGMVNORM.Theta-method}
 
 \alias{a.Dataset.name}
 \alias{a.rseed}
@@ -85,6 +91,9 @@
 \alias{a.theta1.all}
 \alias{a.theta2.all}
 \alias{a.theta3.all}
+\alias{a.theta1.all<-}
+\alias{a.theta2.all<-}
+\alias{a.theta3.all<-}
 \alias{a.K}
 \alias{a.y0}
 \alias{a.ar}
@@ -338,18 +347,11 @@
 \alias{a.summary.EM,REBMIX-method}
 \alias{a.summary.EM,REBMVNORM-method}
 
-\alias{a.theta1.all<-}
-\alias{a.theta2.all<-}
-\alias{a.theta3.all<-}
-\alias{a.theta1.all<-,EMMIX.Theta,ANY-method}
-\alias{a.theta2.all<-,EMMIX.Theta,ANY-method}
-\alias{a.theta3.all<-,EMMIX.Theta,ANY-method}
-\alias{a.theta1.all<-,EMMIX.Theta,missing-method}
-\alias{a.theta2.all<-,EMMIX.Theta,missing-method}
-\alias{a.theta3.all<-,EMMIX.Theta,missing-method}
-
-\alias{a.theta1.all<-,EMMVNORM.Theta,ANY-method}
-\alias{a.theta2.all<-,EMMVNORM.Theta,ANY-method}
+\alias{a.w,EMMIX.Theta-method}
+\alias{a.w,EMMVNORM.Theta-method}
+\alias{a.w<-}
+\alias{a.w<-,EMMIX.Theta-method}
+\alias{a.w<-,EMMVNORM.Theta-method}
 
 \title{Internal rebmix Functions}
 \description{

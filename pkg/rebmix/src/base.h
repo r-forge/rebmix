@@ -15,7 +15,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
 
 #ifndef FLOAT

@@ -44,7 +44,7 @@ a character containing the merging rule. One of \code{"Entropy"} or \code{"Demp"
 see Methods section below.
 }
 \item{\dots}{
-currently not used; additional arguments affecting the summary produced.
+currently not used.
 }
 }
 \value{

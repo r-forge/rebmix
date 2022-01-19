@@ -497,7 +497,9 @@ function(object)
 
 # Class EMMVNORM.Theta
 
-setClass("EMMVNORM.Theta", contains = "EMMIX.Theta")
+setClass("EMMVNORM.Theta", 
+  slots = c(w = "numeric"),
+  contains = "RNGMVNORM.Theta")
 
 setMethod("initialize", "EMMVNORM.Theta",
 function(.Object, ...,
@@ -541,7 +543,8 @@ function(.Object, ...,
 
   if (missing(pdf) || (length(pdf) == 0)) {
     pdf <- rep(.rebmix$pdf[1], d)
-  }else {
+  }
+  else {
     pdf <- match.arg(pdf, .rebmix$pdf[1], several.ok = TRUE)
 
     if (length(pdf) != d){
@@ -579,6 +582,39 @@ function(.Object, ...,
 
   .Object
 }) ## initialize
+
+setMethod("show",
+          signature(object = "EMMVNORM.Theta"),
+function(object)
+{
+  if (missing(object)) {
+    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+  }
+
+  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+
+  cat("Slot \"c\":", "\n", sep = "")
+
+  print(object@c, quote = FALSE)
+
+  cat("Slot \"d\":", "\n", sep = "")
+
+  print(object@d, quote = FALSE)
+
+  cat("Slot \"pdf\":", "\n", sep = "")
+
+  print(object@pdf, quote = FALSE)
+
+  cat("Slot \"w\":", "\n", sep = "")
+
+  print(object@w, quote = FALSE)
+
+  cat("Slot \"Theta\":", "\n", sep = "")
+
+  print(object@Theta, quote = FALSE)
+
+  rm(list = ls())
+}) ## show
 ### End
 
 # Class RNGMIX
