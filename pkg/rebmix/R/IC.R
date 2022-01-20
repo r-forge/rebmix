@@ -54,6 +54,8 @@ function(x, Criterion, pos, ...)
   length(pdf) <- d
 
   C <- x@summary[pos, "Preprocessing"]
+  
+  if (is.na(C)) C <- "NA" 
 
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
@@ -198,6 +200,8 @@ function(x, Criterion, pos, ...)
   length(pdf) <- d
 
   C <- x@summary[pos, "Preprocessing"]
+  
+  if (is.na(C)) C <- "NA" 
 
   if (C == .rebmix$Preprocessing[1]) {
     y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])

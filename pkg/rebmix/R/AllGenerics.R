@@ -32,7 +32,8 @@ setGeneric("REBMIX",
   setGeneric("EMMIX",
   function(model = "REBMIX",
     Dataset = list(),
-    Theta = list(), ...)
+    Theta = NULL,
+    EMcontrol = NULL, ...)
   standardGeneric("EMMIX"))
 ### End
 

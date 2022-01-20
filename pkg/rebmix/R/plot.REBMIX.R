@@ -102,152 +102,85 @@ function(x,
 
   C <- x@summary[pos, "Preprocessing"]
 
-  if (.Device == "tikz output") {
-    item <- list()
-
-    item[[1]] <- "$\\textrm{Dataset}$"
-    item[[2]] <- "$\\; = \\;$"
-    item[[3]] <- paste("$\\textrm{", x@summary[pos, "Dataset"], "}$, ", sep = "")
-
-    item[[4]] <- "$\\textrm{Preprocessing}$"
-    item[[5]] <- "$\\; = \\;$"
-    item[[6]] <- paste("$\\textrm{", x@summary[pos, "Preprocessing"], "}$, ", sep = "")
-
-    item[[7]] <- "$\\textrm{Restraints}$"
-    item[[8]] <- "$\\; = \\;$"
-    item[[9]] <- paste("$\\textrm{", x@summary[pos, "Restraints"], "}$, ", sep = "")
-
-    item[[10]] <- "$D$"
-    item[[11]] <- ""
-    item[[12]] <- ""
-
-    item[[13]] <- "$c_{\\mathrm{max}}$"
-    item[[14]] <- "$\\; = \\;$"
-    item[[15]] <- paste("$", x@summary[pos, "cmax"], "$, ", sep = "")
-
-    item[[16]] <- "$a_{\\mathrm{r}}$"
-    item[[17]] <- "$\\; = \\;$"
-    item[[18]] <- paste("$", as.number(x@summary[pos, "ar"]), "$, ", sep = "")
-
-    item[[19]] <- "$c$"
-    item[[20]] <- "$\\; = \\;$"
-    item[[21]] <- paste("$", x@summary[pos, "c"], "$, ", sep = "")
-
-    item[[22]] <- ""
-    item[[23]] <- ""
-    item[[24]] <- ""
-
-    if (C == .rebmix$Preprocessing[1]) {
-      item[[25]] <- "$v$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[2]) {
-      item[[25]] <- "$v$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      item[[25]] <- "$k$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-
-    item[[28]] <- paste("$\\mathrm{", x@summary[pos, "Criterion"], "}$", sep = "")
-    item[[29]] <- "$\\; = \\;$"
-    item[[30]] <- paste("$", as.number(x@summary[pos, "IC"]), "$, ", sep = "")
-
-    item[[31]] <- "$\\mathrm{log}\\, L$"
-    item[[32]] <- "$\\; = \\;$"
-    item[[33]] <- paste("$", as.number(x@summary[pos, "logL"]), "$.", sep = "")
-
-    i <- 1; legend <- list(); legend[[i]] <- item[[1]]
-
-    for (j in c(2:9, 13:21, 25:33)) {
-      legendwidth <- strwidth(paste(legend[[i]], item[[j]], sep = ""), units = "figure", cex = 1.0)
-
-      if (legendwidth > ncol) {
-        i <- i + 1; legend[[i]] <- item[[j]]
-      }
-      else {
-        legend[[i]] <- paste(legend[[i]], item[[j]], sep = "")
-      }
-    }
+  if (is.na(C)) {
+    C <- "NA"
+    
+    items <- c(2:3, 19:21, 31:33)
   }
   else {
-    item <- list()
+    items <- c(2:6, 13:21, 25:33)
+  }
 
-    item[[1]] <- "Dataset"
-    item[[2]] <- " = "
-    item[[3]] <- paste(x@summary[pos, "Dataset"], ", ", sep = "")
+  item <- list()
 
-    item[[4]] <- "Preprocessing"
-    item[[5]] <- " = "
-    item[[6]] <- paste(x@summary[pos, "Preprocessing"], ", ", sep = "")
+  item[[1]] <- "Dataset"
+  item[[2]] <- " = "
+  item[[3]] <- paste(x@summary[pos, "Dataset"], ", ", sep = "")
 
-    item[[7]] <- "Restraints"
-    item[[8]] <- " = "
-    item[[9]] <- paste(x@summary[pos, "Restraints"], ", ", sep = "")
+  item[[4]] <- "Preprocessing"
+  item[[5]] <- " = "
+  item[[6]] <- paste(x@summary[pos, "Preprocessing"], ", ", sep = "")
 
-    item[[10]] <- "D"
-    item[[11]] <- ""
-    item[[12]] <- ""
+  item[[7]] <- ""
+  item[[8]] <- ""
+  item[[9]] <- ""
 
-    item[[13]] <- bquote(c[max])
-    item[[14]] <- " = "
-    item[[15]] <- paste(x@summary[pos, "cmax"], ", ", sep = "")
+  item[[10]] <- ""
+  item[[11]] <- ""
+  item[[12]] <- ""
 
-    item[[16]] <- bquote(a[r])
-    item[[17]] <- " = "
-    item[[18]] <- paste(as.number(x@summary[pos, "ar"]), ", ", sep = "")
+  item[[13]] <- bquote(c[max])
+  item[[14]] <- " = "
+  item[[15]] <- paste(x@summary[pos, "cmax"], ", ", sep = "")
 
-    item[[19]] <- "c"
-    item[[20]] <- " = "
-    item[[21]] <- paste(x@summary[pos, "c"], ", ", sep = "")
+  item[[16]] <- bquote(a[r])
+  item[[17]] <- " = "
+  item[[18]] <- paste(as.number(x@summary[pos, "ar"]), ", ", sep = "")
 
-    item[[22]] <- ""
-    item[[23]] <- ""
-    item[[24]] <- ""
+  item[[19]] <- "c"
+  item[[20]] <- " = "
+  item[[21]] <- paste(x@summary[pos, "c"], ", ", sep = "")
 
-    if (C == .rebmix$Preprocessing[1]) {
-      item[[25]] <- "v"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  item[[22]] <- ""
+  item[[23]] <- ""
+  item[[24]] <- ""
+
+  if (C == .rebmix$Preprocessing[1]) {
+    item[[25]] <- "v"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
+  else
+  if (C == .rebmix$Preprocessing[2]) {
+    item[[25]] <- "v"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
+  else
+  if (C == .rebmix$Preprocessing[3]) {
+    item[[25]] <- "k"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
+
+  item[[28]] <- as.character(x@summary[pos, "Criterion"])
+  item[[29]] <- " = "
+  item[[30]] <- paste(as.number(x@summary[pos, "IC"]), ", ", sep = "")
+
+  item[[31]] <- "log L"
+  item[[32]] <- " = "
+  item[[33]] <- paste(as.number(x@summary[pos, "logL"]), ".", sep = "")
+
+  i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
+
+  for (j in items) {
+    legendwidth <- strwidth(bquote(paste(.(legend[[i]]), .(item[[j]]), sep = "")), units = "figure", cex = 1.0)
+
+    if (legendwidth > ncol) {
+      i <- i + 1; legend[[i]] <- item[[j]]
     }
-    else
-    if (C == .rebmix$Preprocessing[2]) {
-      item[[25]] <- "v"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      item[[25]] <- "k"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
-    }
-
-    item[[28]] <- as.character(x@summary[pos, "Criterion"])
-    item[[29]] <- " = "
-    item[[30]] <- paste(as.number(x@summary[pos, "IC"]), ", ", sep = "")
-
-    item[[31]] <- "log L"
-    item[[32]] <- " = "
-    item[[33]] <- paste(as.number(x@summary[pos, "logL"]), ".", sep = "")
-
-    i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
-
-    for (j in c(2:9, 13:21, 25:33)) {
-      legendwidth <- strwidth(bquote(paste(.(legend[[i]]), .(item[[j]]), sep = "")), units = "figure", cex = 1.0)
-
-      if (legendwidth > ncol) {
-        i <- i + 1; legend[[i]] <- item[[j]]
-      }
-      else {
-        legend[[i]] <- bquote(paste(.(legend[[i]]), .(item[[j]]), sep = ""))
-      }
+    else {
+      legend[[i]] <- bquote(paste(.(legend[[i]]), .(item[[j]]), sep = ""))
     }
   }
 
@@ -291,7 +224,7 @@ function(x,
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
     else {
-      lim[, i] <- c(0.0, 1.0)
+      lim[, i] <- range(ey[, i], finite = TRUE)
     }
 
     if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
@@ -320,6 +253,10 @@ function(x,
 
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
+          pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i,], Theta[j,])
+          
+          zlim <- range(pdens, finite = TRUE)
+          
           if (C == .rebmix$Preprocessing[1]) {
             edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
           }
@@ -331,12 +268,11 @@ function(x,
           if (C == .rebmix$Preprocessing[3]) {
             edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
           }
+          else {
+            edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+          }
 
-          pdens <- outer(py[[i]], py[[j]], ".dfmix.xy", w, Theta[i,], Theta[j,])
-
-          zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)
-
-          zlim <- zlim / zmax
+          zlim <- range(zlim, edens$z, finite = TRUE)
 
           plot(x = edens$x,
             y = edens$y,
@@ -345,7 +281,7 @@ function(x,
             sub = "",
             xlab = "",
             ylab = "",
-            col = rgb(ramp(edens$z / zmax), maxColorValue = 255),
+            col = rgb(ramp((edens$z - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
             axes = FALSE,
             lwd = 1,
             cex = plot.cex,
@@ -360,7 +296,7 @@ function(x,
               type = "p",
               xlab = "",
               ylab = "",
-              col = rgb(ramp(pdens[z] / zmax), maxColorValue = 255),
+              col = rgb(ramp((pdens[z] - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
               lwd = 1,
               cex = plot.cex * 0.5,
               pch = plot.pch)
@@ -379,7 +315,7 @@ function(x,
                 y1 = ty[s + 1],
                 xlab = "",
                 ylab = "",
-                col = rgb(ramp((pdens[l, s] + pdens[l, s + 1]) / zmax / 2.0), maxColorValue = 255),
+                col = rgb(ramp(((pdens[l, s] + pdens[l, s + 1]) / 2.0 - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
                 cex = plot.cex)
             }
           }
@@ -397,23 +333,23 @@ function(x,
                 y1 = ty[s + 1],
                 xlab = "",
                 ylab = "",
-                col = rgb(ramp((pdens[s, l] + pdens[s + 1, l]) / zmax / 2.0), maxColorValue = 255),
+                col = rgb(ramp(((pdens[s, l] + pdens[s + 1, l]) / 2.0 - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
                 cex = plot.cex)
             }
           }
           else {
-            levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
+            levels <- seq(from = zlim[1], to = zlim[2], length.out = contour.nlevels)
 
             contour(x = py[[i]],
               y = py[[j]],
               z = pdens,
-              levels = levels * zmax,
+              levels = levels,
               xlim = lim[, i],
               ylim = lim[, j],
-              zlim = zlim * zmax,
+              zlim = zlim,
               labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
               axes = FALSE, frame.plot = FALSE,
-              col = rgb(ramp(levels), maxColorValue = 255),
+              col = rgb(ramp((levels - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
               add = TRUE)
           }
 
@@ -433,12 +369,7 @@ function(x,
             hadj = 0.5,
             padj = 1.0)
 
-          if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-          }
-          else {
-            text <- bquote(y[.(i)] - y[.(j)])
-          }
+          text <- bquote(y[.(i)] - y[.(j)])
 
           mtext(text = text,
             side = 1,
@@ -468,156 +399,13 @@ function(x,
         }
       }
     }
-
-#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-#     N <- d * (d - 1) / 2
-#
-#     figno <- 0
-#
-#     ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
-#       space = "rgb",
-#       interpolate = "linear")
-#
-#     for (i in 1:(d - 1)) {
-#       for (j in (i + 1):d) {
-#         edist <- .dist.xy(ey[, i], ey[, j], n)
-#
-#         pdist <- outer(py[[i]], py[[j]], ".pfmix.xy", w, Theta[i,], Theta[j,])
-#
-#         zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
-#
-#         zlim <- zlim / zmax
-#
-#         plot(x = edist$x,
-#           y = edist$y,
-#           type = "p",
-#           main = "",
-#           sub = "",
-#           xlab = "",
-#           ylab = "",
-#           col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
-#           axes = FALSE,
-#           lwd = 1,
-#           cex = plot.cex,
-#           pch = plot.pch)
-#
-#         if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[2])) {
-#           points(x = rep(py[[i]], length(py[[j]])),
-#             y = rep(py[[j]], each = length(py[[i]])),
-#             type = "p",
-#             xlab = "",
-#             ylab = "",
-#             col = rgb(ramp(pdist / zmax), maxColorValue = 255),
-#             lwd = 1,
-#             cex = plot.cex * 0.5,
-#             pch = plot.pch)
-#         }
-#         else
-#         if ((Variables[i] == .rebmix$Variables[2]) && (Variables[j] == .rebmix$Variables[1])) {
-#           for (l in 1:length(py[[i]])) {
-#             tx <- rep(py[[i]][l], length(py[[j]]))
-#             ty <- py[[j]]
-#
-#             s <- 1:(length(tx) - 1)
-#
-#             segments(x0 = tx[s],
-#               y0 = ty[s],
-#               x1 = tx[s + 1],
-#               y1 = ty[s + 1],
-#               xlab = "",
-#               ylab = "",
-#               col = rgb(ramp((pdist[l, s] + pdist[l, s + 1]) / zmax / 2.0), maxColorValue = 255),
-#               cex = plot.cex)
-#           }
-#         }
-#         else
-#         if ((Variables[i] == .rebmix$Variables[1]) && (Variables[j] == .rebmix$Variables[2])) {
-#           for (l in 1:length(py[[j]])) {
-#             tx <- py[[i]]
-#             ty <- rep(py[[j]][l], length(py[[i]]))
-#
-#             s <- 1:(length(tx) - 1)
-#
-#             segments(x0 = tx[s],
-#               y0 = ty[s],
-#               x1 = tx[s + 1],
-#               y1 = ty[s + 1],
-#               xlab = "",
-#               ylab = "",
-#               col = rgb(ramp((pdist[s, l] + pdist[s + 1, l]) / zmax / 2.0), maxColorValue = 255),
-#               cex = plot.cex)
-#           }
-#         }
-#         else {
-#           levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
-#
-#           contour(x = py[[i]],
-#             y = py[[j]],
-#             z = pdist,
-#             levels = levels * zmax,
-#             xlim = lim[, i],
-#             ylim = lim[, j],
-#             zlim = zlim * zmax,
-#             labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
-#             axes = FALSE, frame.plot = FALSE,
-#             col = rgb(ramp(levels), maxColorValue = 255),
-#             add = TRUE)
-#         }
-#
-#         box(col = fg, lty = "solid", lwd = 1)
-#
-#         axis(side = 3,
-#           outer = FALSE,
-#           lty = "solid",
-#           lwd = 1,
-#           hadj = 0.5,
-#           padj = 1.0)
-#
-#         axis(side = 2,
-#           outer = FALSE,
-#           lty = "solid",
-#           lwd = 1,
-#           hadj = 0.5,
-#           padj = 1.0)
-#
-#         if (.Device == "tikz output") {
-#           text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-#         }
-#         else {
-#           text <- bquote(y[.(i)] - y[.(j)])
-#         }
-#
-#         mtext(text = text,
-#           side = 1,
-#           line = 0,
-#           outer = FALSE,
-#           adj = 0.5,
-#           padj = 0.2,
-#           cex = cex)
-#
-#         figno <- figno + 1
-#
-#         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-#           for (l in 1:length(legend)) {
-#             mtext(text = legend[[l]],
-#               side = 1,
-#               line = l - 1,
-#               outer = TRUE,
-#               adj = 0.5,
-#               padj = 0.2,
-#               cex = cex)
-#           }
-#
-#           figno <- 0
-#         }
-#
-#         opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-#       }
-#     }
-#   }
   }
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
+      pdens <- .dfmix.x(py[[1]], w, Theta[1,])
+      
+      ylim <- range(pdens, finite = TRUE)
+          
       if (C == .rebmix$Preprocessing[1]) {
         edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
       }
@@ -629,10 +417,11 @@ function(x,
       if (C == .rebmix$Preprocessing[3]) {
         edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
       }
+      else {
+        edens <- .densSample.x(ey[, 1], ylim[1], n)
+      }
 
-      pdens <- .dfmix.x(py[[1]], w, Theta[1,])
-
-      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
+      ylim <- range(ylim, edens$y, finite = TRUE)
 
       plot(x = edens$x,
         y = edens$y,
@@ -670,12 +459,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{1}$", "$\\; - \\;$", "$f(y_{1})$", sep = "")
-      }
-      else {
-        text <- bquote(y[1] - f(y[1]))
-      }
+      text <- bquote(y[1] - f(y[1]))
 
       mtext(text = text,
         side = 1,
@@ -697,81 +481,15 @@ function(x,
 
       opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
     }
-
-#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-#     edist <- .dist.x(ey[, 1], n)
-#
-#     pdist <- .pfmix.x(py[[1]], w, Theta[1,])
-#
-#     ylim <- c(0.0, max(edist$y, pdist))
-#
-#     plot(x = edist$x,
-#       y = edist$y,
-#       type = "p",
-#       main = "",
-#       sub = "",
-#       xlab = "",
-#       ylab = "",
-#       ylim = ylim,
-#       col = "black",
-#       axes = FALSE,
-#       lwd = 1,
-#       cex = plot.cex,
-#       pch = plot.pch)
-#
-#     points(x = py[[1]],
-#       y = pdist,
-#       type = "l",
-#       col = "black")
-#
-#     box(col = fg, lty = "solid", lwd = 1)
-#
-#     axis(side = 3,
-#       outer = FALSE,
-#       lty = "solid",
-#       lwd = 1,
-#       hadj = 0.5,
-#       padj = 1.0)
-#
-#     axis(side = 2,
-#       outer = FALSE,
-#       lty = "solid",
-#       lwd = 1,
-#       hadj = 0.5,
-#       padj = 1.0)
-#
-#     if (.Device == "tikz output") {
-#       text <- paste("$y_{1}$", "$\\; - \\;$", "$F(y_{1})$", sep = "")
-#     }
-#     else {
-#       text <- bquote(y[1] - F(y[1]))
-#     }
-#
-#     mtext(text = text,
-#       side = 1,
-#       line = 0,
-#       outer = FALSE,
-#       adj = 0.5,
-#       padj = 0.2,
-#       cex = cex)
-#
-#     for (l in 1:length(legend)) {
-#       mtext(text = legend[[l]],
-#         side = 1,
-#         line = l - 1,
-#         outer = TRUE,
-#         adj = 0.5,
-#         padj = 0.2,
-#         cex = cex)
-#     }
-#
-#     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-#   }
   }
 
   m <- nrow * ncol * ceiling(N / nrow / ncol) - N
 
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
+    pdens <- .dfmix.x(py[[i]], w, Theta[i,])
+    
+    ylim <- range(pdens, finite = TRUE)
+    
     for (i in 1:d) {
       if (C == .rebmix$Preprocessing[1]) {
         edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
@@ -784,10 +502,11 @@ function(x,
       if (C == .rebmix$Preprocessing[3]) {
         edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
       }
+      else {
+        edens <- .densSample.x(ey[, i], ylim[1], n)
+      }
 
-      pdens <- .dfmix.x(py[[i]], w, Theta[i,])
-
-      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
+      ylim <- range(ylim, edens$y, finite = TRUE)
 
       plot(x = edens$x,
         y = edens$y,
@@ -825,12 +544,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$f(y_{", i, "})$", sep = "")
-      }
-      else {
-        text <- bquote(y[.(i)] - f(y[.(i)]))
-      }
+      text <- bquote(y[.(i)] - f(y[.(i)]))
 
       mtext(text = text,
         side = 1,
@@ -904,12 +618,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$F(y_{", i, "})$", sep = "")
-      }
-      else {
-        text <- bquote(y[.(i)] - F(y[.(i)]))
-      }
+      text <- bquote(y[.(i)] - F(y[.(i)]))
 
       mtext(text = text,
         side = 1,
@@ -973,12 +682,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[28]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[28]]))
-    }
+    text <- bquote(c - .(item[[28]]))
 
     mtext(text = text,
       side = 1,
@@ -1041,12 +745,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[31]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[31]]))
-    }
+    text <- bquote(c - .(item[[31]]))
 
     mtext(text = text,
       side = 1,
@@ -1109,12 +808,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[10]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[10]]))
-    }
+    text <- bquote(c - .(item[[10]]))
 
     mtext(text = text,
       side = 1,
@@ -1177,12 +871,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$K$", "$\\; - \\;$", item[[28]], sep = "")
-    }
-    else {
-      text <- bquote(K - .(item[[28]]))
-    }
+    text <- bquote(K - .(item[[28]]))
 
     mtext(text = text,
       side = 1,
@@ -1320,153 +1009,86 @@ function(x,
     tcl = tcl, ...)
 
   C <- x@summary[pos, "Preprocessing"]
-
-  if (.Device == "tikz output") {
-    item <- list()
-
-    item[[1]] <- "$\\textrm{Dataset}$"
-    item[[2]] <- "$\\; = \\;$"
-    item[[3]] <- paste("$\\textrm{", x@summary[pos, "Dataset"], "}$, ", sep = "")
-
-    item[[4]] <- "$\\textrm{Preprocessing}$"
-    item[[5]] <- "$\\; = \\;$"
-    item[[6]] <- paste("$\\textrm{", x@summary[pos, "Preprocessing"], "}$, ", sep = "")
-
-    item[[7]] <- "$\\textrm{Restraints}$"
-    item[[8]] <- "$\\; = \\;$"
-    item[[9]] <- paste("$\\textrm{", x@summary[pos, "Restraints"], "}$, ", sep = "")
-
-    item[[10]] <- "$D$"
-    item[[11]] <- ""
-    item[[12]] <- ""
-
-    item[[13]] <- "$c_{\\mathrm{max}}$"
-    item[[14]] <- "$\\; = \\;$"
-    item[[15]] <- paste("$", x@summary[pos, "cmax"], "$, ", sep = "")
-
-    item[[16]] <- "$a_{\\mathrm{r}}$"
-    item[[17]] <- "$\\; = \\;$"
-    item[[18]] <- paste("$", as.number(x@summary[pos, "ar"]), "$, ", sep = "")
-
-    item[[19]] <- "$c$"
-    item[[20]] <- "$\\; = \\;$"
-    item[[21]] <- paste("$", x@summary[pos, "c"], "$, ", sep = "")
-
-    item[[22]] <- ""
-    item[[23]] <- ""
-    item[[24]] <- ""
-
-    if (C == .rebmix$Preprocessing[1]) {
-      item[[25]] <- "$v$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[2]) {
-      item[[25]] <- "$v$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      item[[25]] <- "$k$"
-      item[[26]] <- "$\\; = \\;$"
-      item[[27]] <- paste("$", x@summary[pos, "v/k"], "$, ", sep = "")
-    }
-
-    item[[28]] <- paste("$\\mathrm{", x@summary[pos, "Criterion"], "}$", sep = "")
-    item[[29]] <- "$\\; = \\;$"
-    item[[30]] <- paste("$", as.number(x@summary[pos, "IC"]), "$, ", sep = "")
-
-    item[[31]] <- "$\\mathrm{log}\\, L$"
-    item[[32]] <- "$\\; = \\;$"
-    item[[33]] <- paste("$", as.number(x@summary[pos, "logL"]), "$.", sep = "")
-
-    i <- 1; legend <- list(); legend[[i]] <- item[[1]]
-
-    for (j in c(2:9, 13:21, 25:33)) {
-      legendwidth <- strwidth(paste(legend[[i]], item[[j]], sep = ""), units = "figure", cex = 1.0)
-
-      if (legendwidth > ncol) {
-        i <- i + 1; legend[[i]] <- item[[j]]
-      }
-      else {
-        legend[[i]] <- paste(legend[[i]], item[[j]], sep = "")
-      }
-    }
+  
+  if (is.na(C)) {
+    C <- "NA"
+    
+    items <- c(2:3, 19:21, 31:33)
   }
   else {
-    item <- list()
+    items <- c(2:6, 13:21, 25:33)
+  }
 
-    item[[1]] <- "Dataset"
-    item[[2]] <- " = "
-    item[[3]] <- paste(x@summary[pos, "Dataset"], ", ", sep = "")
+  item <- list()
+  
+  item[[1]] <- "Dataset"
+  item[[2]] <- " = "
+  item[[3]] <- paste(x@summary[pos, "Dataset"], ", ", sep = "")
 
-    item[[4]] <- "Preprocessing"
-    item[[5]] <- " = "
-    item[[6]] <- paste(x@summary[pos, "Preprocessing"], ", ", sep = "")
+  item[[4]] <- "Preprocessing"
+  item[[5]] <- " = "
+  item[[6]] <- paste(x@summary[pos, "Preprocessing"], ", ", sep = "")
+  
+  item[[7]] <- ""
+  item[[8]] <- ""
+  item[[9]] <- ""
 
-    item[[7]] <- "Restraints"
-    item[[8]] <- " = "
-    item[[9]] <- paste(x@summary[pos, "Restraints"], ", ", sep = "")
+  item[[10]] <- ""
+  item[[11]] <- ""
+  item[[12]] <- ""
 
-    item[[10]] <- "D"
-    item[[11]] <- ""
-    item[[12]] <- ""
+  item[[13]] <- bquote(c[max])
+  item[[14]] <- " = "
+  item[[15]] <- paste(x@summary[pos, "cmax"], ", ", sep = "")
 
-    item[[13]] <- bquote(c[max])
-    item[[14]] <- " = "
-    item[[15]] <- paste(x@summary[pos, "cmax"], ", ", sep = "")
+  item[[16]] <- bquote(a[r])
+  item[[17]] <- " = "
+  item[[18]] <- paste(as.number(x@summary[pos, "ar"]), ", ", sep = "")
 
-    item[[16]] <- bquote(a[r])
-    item[[17]] <- " = "
-    item[[18]] <- paste(as.number(x@summary[pos, "ar"]), ", ", sep = "")
+  item[[19]] <- "c"
+  item[[20]] <- " = "
+  item[[21]] <- paste(x@summary[pos, "c"], ", ", sep = "")
 
-    item[[19]] <- "c"
-    item[[20]] <- " = "
-    item[[21]] <- paste(x@summary[pos, "c"], ", ", sep = "")
+  item[[22]] <- ""
+  item[[23]] <- ""
+  item[[24]] <- ""
 
-    item[[22]] <- ""
-    item[[23]] <- ""
-    item[[24]] <- ""
+  if (C == .rebmix$Preprocessing[1]) {
+    item[[25]] <- "v"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
+  else
+  if (C == .rebmix$Preprocessing[2]) {
+    item[[25]] <- "v"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
+  else
+  if (C == .rebmix$Preprocessing[3]) {
+    item[[25]] <- "k"
+    item[[26]] <- " = "
+    item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  }
 
-    if (C == .rebmix$Preprocessing[1]) {
-      item[[25]] <- "v"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
+  item[[28]] <- as.character(x@summary[pos, "Criterion"])
+  item[[29]] <- " = "
+  item[[30]] <- paste(as.number(x@summary[pos, "IC"]), ", ", sep = "")
+
+  item[[31]] <- "log L"
+  item[[32]] <- " = "
+  item[[33]] <- paste(as.number(x@summary[pos, "logL"]), ".", sep = "")
+
+  i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
+
+  for (j in items) {
+    legendwidth <- strwidth(bquote(paste(.(legend[[i]]), .(item[[j]]), sep = "")), units = "figure", cex = 1.0)
+
+    if (legendwidth > ncol) {
+      i <- i + 1; legend[[i]] <- item[[j]]
     }
-    else
-    if (C == .rebmix$Preprocessing[2]) {
-      item[[25]] <- "v"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      item[[25]] <- "k"
-      item[[26]] <- " = "
-      item[[27]] <- paste(x@summary[pos, "v/k"], ", ", sep = "")
-    }
-
-    item[[28]] <- as.character(x@summary[pos, "Criterion"])
-    item[[29]] <- " = "
-    item[[30]] <- paste(as.number(x@summary[pos, "IC"]), ", ", sep = "")
-
-    item[[31]] <- "log L"
-    item[[32]] <- " = "
-    item[[33]] <- paste(as.number(x@summary[pos, "logL"]), ".", sep = "")
-
-    i <- 1; legend <- list(); legend[[i]] <- bquote(.(item[[1]]))
-
-    for (j in c(2:9, 13:21, 25:33)) {
-      legendwidth <- strwidth(bquote(paste(.(legend[[i]]), .(item[[j]]), sep = "")), units = "figure", cex = 1.0)
-
-      if (legendwidth > ncol) {
-        i <- i + 1; legend[[i]] <- item[[j]]
-      }
-      else {
-        legend[[i]] <- bquote(paste(.(legend[[i]]), .(item[[j]]), sep = ""))
-      }
+    else {
+      legend[[i]] <- bquote(paste(.(legend[[i]]), .(item[[j]]), sep = ""))
     }
   }
 
@@ -1510,7 +1132,7 @@ function(x,
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
     else {
-      lim[, i] <- c(0.0, 1.0)
+      lim[, i] <- range(ey[, i], finite = TRUE)
     }
 
     if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
@@ -1534,6 +1156,10 @@ function(x,
 
       for (i in 1:(d - 1)) {
         for (j in (i + 1):d) {
+          pdens <- outer(py[[i]], py[[j]], ".dfmvnorm.xy", w, Theta, i, j)
+          
+          zlim <- range(pdens, finite = TRUE);       
+        
           if (C == .rebmix$Preprocessing[1]) {
             edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
           }
@@ -1545,12 +1171,11 @@ function(x,
           if (C == .rebmix$Preprocessing[3]) {
             edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
           }
+          else {
+            edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+          }
           
-          pdens <- outer(py[[i]], py[[j]], ".dfmvnorm.xy", w, Theta, i, j)
-
-          zlim <- range(edens$z, finite = TRUE); zmax <- max(zlim[2], pdens)
-
-          zlim <- zlim / zmax
+          zlim <- range(zlim, edens$z, finite = TRUE)
 
           plot(x = edens$x,
             y = edens$y,
@@ -1559,25 +1184,25 @@ function(x,
             sub = "",
             xlab = "",
             ylab = "",
-            col = rgb(ramp(edens$z / zmax), maxColorValue = 255),
+            col = rgb(ramp((edens$z - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
             axes = FALSE,
             lwd = 1,
             cex = plot.cex,
             pch = plot.pch, 
             log = log)
 
-          levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
-
+          levels <- seq(from = zlim[1], to = zlim[2], length.out = contour.nlevels)
+          
           contour(x = py[[i]],
             y = py[[j]],
             z = pdens,
-            levels = levels * zmax,
+            levels = levels,
             xlim = lim[, i],
             ylim = lim[, j],
-            zlim = zlim * zmax,
+            zlim = zlim,
             labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
             axes = FALSE, frame.plot = FALSE,
-            col = rgb(ramp(levels), maxColorValue = 255),
+            col = rgb(ramp((levels - zlim[1]) / (zlim[2] - zlim[1])), maxColorValue = 255),
             add = TRUE)
 
           box(col = fg, lty = "solid", lwd = 1)
@@ -1596,12 +1221,7 @@ function(x,
             hadj = 0.5,
             padj = 1.0)
 
-          if (.Device == "tikz output") {
-            text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-          }
-          else {
-            text <- bquote(y[.(i)] - y[.(j)])
-          }
+          text <- bquote(y[.(i)] - y[.(j)])
 
           mtext(text = text,
             side = 1,
@@ -1631,107 +1251,13 @@ function(x,
         }
       }
     }
-
-#   if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-#     N <- d * (d - 1) / 2
-#
-#     figno <- 0
-#
-#     ramp <- colorRamp(colors = c("magenta", "blue", "cyan", "green", "yellow", "red"),
-#       space = "rgb",
-#       interpolate = "linear")
-#
-#     for (i in 1:(d - 1)) {
-#       for (j in (i + 1):d) {
-#         edist <- .dist.xy(ey[, i], ey[, j], n)
-#
-#         pdist <- outer(py[[i]], py[[j]], ".pfmvnorm.xy", w, Theta, i, j)
-#
-#         zlim <- range(edist$z, finite = TRUE); zmax <- max(zlim[2], pdist)
-#
-#         zlim <- zlim / zmax
-#
-#         plot(x = edist$x,
-#           y = edist$y,
-#           type = "p",
-#           main = "",
-#           sub = "",
-#           xlab = "",
-#           ylab = "",
-#           col = rgb(ramp(edist$z / zmax), maxColorValue = 255),
-#           axes = FALSE,
-#           lwd = 1,
-#           cex = plot.cex,
-#           pch = plot.pch)
-#
-#         levels <- 10^seq(from = log(zlim[1]), to = log(zlim[2]), length.out = contour.nlevels)
-#
-#         contour(x = py[[i]],
-#           y = py[[j]],
-#           z = pdist,
-#           levels = levels * zmax,
-#           xlim = lim[, i],
-#           ylim = lim[, j],
-#           zlim = zlim * zmax,
-#           labcex = contour.labcex, drawlabels = contour.drawlabels, method = contour.method,
-#           axes = FALSE, frame.plot = FALSE,
-#           col = rgb(ramp(levels), maxColorValue = 255),
-#           add = TRUE)
-#
-#         box(col = fg, lty = "solid", lwd = 1)
-#
-#         axis(side = 3,
-#           outer = FALSE,
-#           lty = "solid",
-#           lwd = 1,
-#           hadj = 0.5,
-#           padj = 1.0)
-#
-#         axis(side = 2,
-#           outer = FALSE,
-#           lty = "solid",
-#           lwd = 1,
-#           hadj = 0.5,
-#           padj = 1.0)
-#
-#         if (.Device == "tikz output") {
-#           text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-#         }
-#         else {
-#           text <- bquote(y[.(i)] - y[.(j)])
-#         }
-#
-#         mtext(text = text,
-#           side = 1,
-#           line = 0,
-#           outer = FALSE,
-#           adj = 0.5,
-#           padj = 0.2,
-#           cex = cex)
-#
-#         figno <- figno + 1
-#
-#         if ((figno == nrow * ncol) || ((i == d - 1) && (j == d))) {
-#           for (l in 1:length(legend)) {
-#             mtext(text = legend[[l]],
-#               side = 1,
-#               line = l - 1,
-#               outer = TRUE,
-#               adj = 0.5,
-#               padj = 0.2,
-#               cex = cex)
-#           }
-#
-#           figno <- 0
-#         }
-#
-#         opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-#       }
-#     }
-#   }
   }
   else {
     if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
+      pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)
+      
+      ylim <- range(pdens, finite = TRUE)
+      
       if (C == .rebmix$Preprocessing[1]) {
         edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
       }
@@ -1743,10 +1269,11 @@ function(x,
       if (C == .rebmix$Preprocessing[3]) {
         edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
       }
+      else {
+        edens <- .densSample.x(ey[, 1], ylim[1], n)
+      }
 
-      pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)
-
-      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
+      ylim <- range(ylim, edens$y, finite = TRUE)
 
       plot(x = edens$x,
         y = edens$y,
@@ -1784,12 +1311,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{1}$", "$\\; - \\;$", "$f(y_{1})$", sep = "")
-      }
-      else {
-        text <- bquote(y[1] - f(y[1]))
-      }
+      text <- bquote(y[1] - f(y[1]))
 
       mtext(text = text,
         side = 1,
@@ -1854,12 +1376,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{1}$", "$\\; - \\;$", "$F(y_{1})$", sep = "")
-      }
-      else {
-        text <- bquote(y[1] - F(y[1]))
-      }
+      text <- bquote(y[1] - F(y[1]))
 
       mtext(text = text,
         side = 1,
@@ -1887,6 +1404,10 @@ function(x,
 
   if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
     for (i in 1:d) {
+      pdens <- .dfmvnorm.x(py[[i]], w, Theta, i)
+      
+      ylim <- range(pdens, finite = TRUE)
+      
       if (C == .rebmix$Preprocessing[1]) {
         edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
       }
@@ -1898,10 +1419,11 @@ function(x,
       if (C == .rebmix$Preprocessing[3]) {
         edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
       }
-
-      pdens <- .dfmvnorm.x(py[[i]], w, Theta, i)
-
-      ylim <- c(min(edens$y, pdens), max(edens$y, pdens))
+      else {
+        edens <- .densSample.x(ey[, i], ylim[1], n)
+      }
+      
+      ylim <- range(ylim, edens$y, finite = TRUE)
 
       plot(x = edens$x,
         y = edens$y,
@@ -1939,12 +1461,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$f(y_{", i, "})$", sep = "")
-      }
-      else {
-        text <- bquote(y[.(i)] - f(y[.(i)]))
-      }
+      text <- bquote(y[.(i)] - f(y[.(i)]))
 
       mtext(text = text,
         side = 1,
@@ -2018,12 +1535,7 @@ function(x,
         hadj = 0.5,
         padj = 1.0)
 
-      if (.Device == "tikz output") {
-        text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$F(y_{", i, "})$", sep = "")
-      }
-      else {
-        text <- bquote(y[.(i)] - F(y[.(i)]))
-      }
+      text <- bquote(y[.(i)] - F(y[.(i)]))
 
       mtext(text = text,
         side = 1,
@@ -2087,12 +1599,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[28]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[28]]))
-    }
+    text <- bquote(c - .(item[[28]]))
 
     mtext(text = text,
       side = 1,
@@ -2155,12 +1662,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[31]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[31]]))
-    }
+    text <- bquote(c - .(item[[31]]))
 
     mtext(text = text,
       side = 1,
@@ -2223,12 +1725,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$c$", "$\\; - \\;$", item[[10]], sep = "")
-    }
-    else {
-      text <- bquote(c - .(item[[10]]))
-    }
+    text <- bquote(c - .(item[[10]]))
 
     mtext(text = text,
       side = 1,
@@ -2291,12 +1788,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$K$", "$\\; - \\;$", item[[28]], sep = "")
-    }
-    else {
-      text <- bquote(K - .(item[[28]]))
-    }
+    text <- bquote(K - .(item[[28]]))
 
     mtext(text = text,
       side = 1,

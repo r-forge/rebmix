@@ -1,27 +1,14 @@
 .legendA <- function(s, text, col, pch, error)
 {
   for (i in s:1) {
-    if (.Device == "tikz output") {
-      legend <- paste("$", text[1:i], "$", sep = ""); j <- i
+    legend <- paste(bquote(.(text[1:i])), sep = ""); j <- i
 
-      if (i < s) {
-        legend <- c(legend, "$\\mathrm{...}$"); j <- i + 1
-      }
-
-      if (error) {
-        legend <- c(legend, "$\\mathrm{Error}$")
-      }
+    if (i < s) {
+      legend <- c(legend, "..."); j <- i + 1
     }
-    else {
-      legend <- paste(bquote(.(text[1:i])), sep = ""); j <- i
 
-      if (i < s) {
-        legend <- c(legend, "..."); j <- i + 1
-      }
-
-      if (error) {
-        legend <- c(legend, "Error")
-      }
+    if (error) {
+      legend <- c(legend, "Error")
     }
 
     w <- legend("bottom",

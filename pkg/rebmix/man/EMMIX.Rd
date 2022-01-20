@@ -13,7 +13,8 @@ Gumbel, binomial, Poisson, Dirac or von Mises component densities. If \code{mode
 for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{EMMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Theta = list(), ...)
+\S4method{EMMIX}{REBMIX}(model = "REBMIX", Dataset = list(), 
+       Theta = NULL, EMcontrol = NULL, ...)
 ## ... and for other signatures
 }
 \arguments{
@@ -25,7 +26,10 @@ a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} co
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{Theta}{
-a list of objects of \code{"EMMIX.Theta"} or \code{"EMMVNORM.Theta"}.
+an object of class \code{"EMMIX.Theta"} or \code{"EMMVNORM.Theta"}.
+}
+\item{EMcontrol}{
+an object of class \code{EM.Control}.
 }
 \item{\dots}{
 Currently not used.  

@@ -354,22 +354,8 @@ setMethod("EMMIX",
           signature(model = "ANY"),
 function(model,
   Dataset,
-  Preprocessing,
-  cmax,
-  cmin,
-  Criterion,
-  pdf,
-  theta1,
-  theta2,
-  theta3,
-  K,
-  y0,
-  ymin,
-  ymax,
-  ar,
-  Restraints,
-  EMcontrol,
-  Theta, ...)  
+  Theta, 
+  EMcontrol, ...)  
 {
   digits <- getOption("digits"); options(digits = 15)
 
@@ -383,18 +369,6 @@ function(model,
     stop(sQuote("Theta"), " object of class ", Theta.model, " is requested!", call. = FALSE)
   }
 
-  if (missing(Preprocessing) || (length(Preprocessing) == 0)) {
-    Preprocessing <- "histogram"
-  }
-
-  if (missing(pdf) || length(pdf) == 0) {
-    pdf <- Theta@pdf
-  }
-
-  if (missing(K) || (length(K) == 0)) {
-    K <- "auto"
-  }
-
   if (missing(EMcontrol) || length(EMcontrol) == 0) {
     EMcontrol <- new("EM.Control", strategy = "single")
   }
@@ -402,46 +376,22 @@ function(model,
     EMcontrol@strategy <- "single"
   }
 
-  if (any(pdf == .rebmix$pdf[4])) {
-    theta1 <- unlist(Theta@Theta[grep("theta1", names(Theta@Theta))])
-
-    theta1[is.na(theta1)] <- 0
-
-    theta1 <- theta1[1:length(pdf)]
-  }
-  else
-  if (any(pdf == .rebmix$pdf[5])) {
-
-  }
-  else
-  if (any(pdf == .rebmix$pdf[6])) {
-    
-  }
-  else
-  if (any(pdf == .rebmix$pdf[10])) {
-    theta3 <- unlist(Theta@Theta[grep("theta3", names(Theta@Theta))])
-
-    theta3[is.na(theta3)] <- 0
-
-    theta3 <- theta3[1:length(pdf)]
-  }
-
   model <- new(model,
      Dataset = Dataset,
-     Preprocessing = Preprocessing,
-     cmax = cmax,
-     cmin = cmin,
-     Criterion = Criterion,
-     pdf = pdf,
-     theta1 = theta1,
-     theta2 = theta2,
-     theta3 = theta3,
-     K = K,
-     y0 = y0,
-     ymin = ymin,
-     ymax = ymax,
-     ar = ar,
-     Restraints = Restraints,
+     Preprocessing = "histogram",
+     cmax = Theta@c,
+     cmin = Theta@c,
+     Criterion = "AIC",
+     pdf = Theta@pdf,
+     theta1 = numeric(),
+     theta2 = numeric(),
+     theta3 = numeric(),
+     K = "auto",
+     y0 = numeric(),
+     ymin = numeric(),
+     ymax = numeric(),
+     ar = 0.1,
+     Restraints = "loose",
      EMcontrol = EMcontrol)
 
   output <- EMMIX(model = model, Theta = Theta, ...)

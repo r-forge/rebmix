@@ -170,12 +170,7 @@ function(x,
           hadj = 0.5,
           padj = 1.0)
 
-        if (.Device == "tikz output") {
-          text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-        }
-        else {
-          text <- bquote(y[.(i)] - y[.(j)])
-        }
+        text <- bquote(y[.(i)] - y[.(j)])
 
         mtext(text = text,
           side = 1,
@@ -261,12 +256,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{p}(y_{1})$", sep = "")
-    }
-    else {
-      text <- bquote(y[1] - Z[p](y[1]))
-    }
+    text <- bquote(y[1] - Z[p](y[1]))
 
     mtext(text = text,
       side = 1,
@@ -478,12 +468,7 @@ function(x,
           hadj = 0.5,
           padj = 1.0)
 
-        if (.Device == "tikz output") {
-          text <- paste("$y_{", i, "}$", "$\\; - \\;$", "$y_{", j, "}$", sep = "")
-        }
-        else {
-          text <- bquote(y[.(i)] - y[.(j)])
-        }
+        text <- bquote(y[.(i)] - y[.(j)])
 
         mtext(text = text,
           side = 1,
@@ -569,12 +554,7 @@ function(x,
       hadj = 0.5,
       padj = 1.0)
 
-    if (.Device == "tikz output") {
-      text <- paste("$y_{1}$", "$\\; - \\;$", "$Z_{p}(y_{1})$", sep = "")
-    }
-    else {
-      text <- bquote(y[1] - Z[p](y[1]))
-    }
+    text <- bquote(y[1] - Z[p](y[1]))
 
     mtext(text = text,
       side = 1,
