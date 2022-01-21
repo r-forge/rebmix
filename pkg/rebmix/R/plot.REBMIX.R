@@ -567,7 +567,7 @@ function(x,
     }
   }  
 
-  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]])) {
+  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]][1])) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -630,7 +630,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]])) {
+  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]][1])) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -693,7 +693,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]])) {
+  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]][1])) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -756,7 +756,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]])) {
+  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]][1])) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
 
     plot(x = x@all.K[[pos]],
@@ -1337,7 +1337,7 @@ function(x,
     }
   }
 
-  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]])) {
+  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]][1])) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1400,7 +1400,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]])) {
+  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]][1])) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1463,7 +1463,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]])) {
+  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]][1])) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1526,7 +1526,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]])) {
+  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]][1])) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
 
     plot(x = x@all.K[[pos]],

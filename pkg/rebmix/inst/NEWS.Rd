@@ -5,6 +5,7 @@
 \item The package has been extended to three parametric family types.
 \item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXKDE()} and \code{REBMIXH()}.
 \item Method \code{plot} is debugged and improved.
+\item Value \code{"cdf"} is added to \code{what} argument.
 \item Class \code{"EMMIX.Theta"} is added.
 \item Method \code{EMMIX} is added.
 }
