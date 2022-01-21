@@ -57,8 +57,11 @@ Mathematics, 8(3):373, 2020.
 devAskNewPage(ask = TRUE)
 
 # Load faithful dataset.
+
 data(faithful)
+
 # Plot faithfull dataset.
+
 plot(faithful)
 
 # Number of dimensions.
@@ -69,19 +72,6 @@ d <- ncol(faithful)
 
 c <- 2
 
-# Set some initial parameter guesses.
-# Weights.
-
-w <- c(0.5, 0.5)
-
-# Means.
-
-theta1 <- c(2.0, 55.0, 4.5, 80.0)
-
-# Covariances.
-
-theta2 <- c(1, 0, 0, 1, 1, 0, 0, 1)
-
 # Create EMMVNORM.Theta object with new call.
 
 Theta <- new("EMMVNORM.Theta", d = d, c = c)
@@ -89,70 +79,64 @@ Theta <- new("EMMVNORM.Theta", d = d, c = c)
 # Set parameters of Theta.
 # Weights.
 
-a.w(Theta) <- w
+a.w(Theta) <- c(0.5, 0.5)
 
 # Means.
 
-a.theta1.all(Theta) <- theta1
+a.theta1.all(Theta) <- c(2.0, 55.0, 4.5, 80.0)
 
-# Covariances
+# Covariances.
 
-a.theta2.all(Theta) <- theta2
+a.theta2.all(Theta) <- c(1, 0, 0, 1, 1, 0, 0, 1)
 
 # Run EMMIX method.
 
 model <- EMMIX(model = "REBMVNORM", Dataset = list(faithful), Theta = Theta)
 
-# show
+# show.
 
 model
 
-# summary
+# summary.
 
 summary(model)
 
-# plot
+# plot.
 
-plot(model)
+plot(model, nrow = 3, ncol = 2, what = c("pdf", "marginal pdf", "marginal cdf"))
 
-# customize EM.control object
-# strategy argument should be always set to single
-# changing other arguments can have effect
-# for example remove components with zero weight
+# Create EMMIX.Theta object with new call.
 
-EM <- new("EM.Control", strategy = "single", eliminate.zero.components = TRUE)
-
-c <- 4
-
-w <- c(0.25, 0.25, 0.25, 0.25)
-
-theta1 <- c(0, 0, 2, 50, 3.5, 65, 5, 100)
-
-theta2 <- c(1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1)
-
-# Create EMMVNORM.Theta object with new call.
-
-Theta <- new("EMMVNORM.Theta", d = d, c = c)
+Theta <- new("EMMIX.Theta", c = c, pdf = c("normal", "normal"))
 
 # Set parameters of Theta.
 # Weights.
 
-a.w(Theta) <- w
+a.w(Theta) <- c(0.5, 0.5)
 
 # Means.
 
-a.theta1.all(Theta) <- theta1
+a.theta1.all(Theta) <- c(2.0, 55.0, 4.5, 80.0)
 
-# Covariances
+# Covariances.
 
-a.theta2.all(Theta) <- theta2
-
+a.theta2.all(Theta) <- c(1, 1, 1, 1)
 
 # Run EMMIX method.
 
-model <- EMMIX(model = "REBMVNORM", Dataset = list(faithful), Theta = Theta, EMcontrol = EM)
+model <- EMMIX(Dataset = list(faithful), Theta = Theta)
+
+# show.
+
+model
+
+# summary.
 
 summary(model)
+
+# plot.
+
+plot(model, nrow = 3, ncol = 2, what = c("pdf", "marginal pdf", "marginal cdf"))
 }
 }
 \keyword{parameter estimation}

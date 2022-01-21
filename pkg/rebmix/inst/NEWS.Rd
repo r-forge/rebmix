@@ -3,7 +3,10 @@
 \section{Changes in version 2.14.0}{ 
 \itemize{
 \item The package has been extended to three parametric family types.
-\item ?.
+\item Improved C++ functions \code{REBMIXKNN()}, \code{REBMIXKDE()} and \code{REBMIXH()}.
+\item Method \code{plot} is debugged and improved.
+\item Class \code{"EMMIX.Theta"} is added.
+\item Method \code{EMMIX} is added.
 }
 }
 \section{Changes in version 2.13.1}{ 

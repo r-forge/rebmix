@@ -400,97 +400,15 @@ function(x,
       }
     }
   }
-  else {
-    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
-      pdens <- .dfmix.x(py[[1]], w, Theta[1,])
-      
-      ylim <- range(pdens, finite = TRUE)
-          
-      if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
-      }
-      else
-      if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densKDE.x(ey[, 1], h[1], n)
-      }
-      else
-      if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
-      }
-      else {
-        edens <- .densSample.x(ey[, 1], ylim[1], n)
-      }
-
-      ylim <- range(ylim, edens$y, finite = TRUE)
-
-      plot(x = edens$x,
-        y = edens$y,
-        type = "p",
-        main = "",
-        sub = "",
-        xlab = "",
-        ylab = "",
-        ylim = ylim,
-        col = "black",
-        axes = FALSE,
-        lwd = 1,
-        cex = plot.cex,
-        pch = plot.pch,
-        log = log)
-
-      points(x = py[[1]],
-        y = pdens,
-        type = "l",
-        col = "black")
-
-      box(col = fg, lty = "solid", lwd = 1)
-
-      axis(side = 3,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      axis(side = 2,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      text <- bquote(y[1] - f(y[1]))
-
-      mtext(text = text,
-        side = 1,
-        line = 0,
-        outer = FALSE,
-        adj = 0.5,
-        padj = 0.2,
-        cex = cex)
-
-      for (l in 1:length(legend)) {
-        mtext(text = legend[[l]],
-          side = 1,
-          line = l - 1,
-          outer = TRUE,
-          adj = 0.5,
-          padj = 0.2,
-          cex = cex)
-      }
-
-      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-    }
-  }
 
   m <- nrow * ncol * ceiling(N / nrow / ncol) - N
 
-  if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
-    pdens <- .dfmix.x(py[[i]], w, Theta[i,])
-    
-    ylim <- range(pdens, finite = TRUE)
-    
+  if (any(match(.rebmix.plot$what[2], what, nomatch = 0)) || ((d == 1) && any(match(.rebmix.plot$what[1], what, nomatch = 0)))) {
     for (i in 1:d) {
+      pdens <- .dfmix.x(py[[i]], w, Theta[i,])
+    
+      ylim <- range(pdens, finite = TRUE)
+    
       if (C == .rebmix$Preprocessing[1]) {
         edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
       }
@@ -575,13 +493,13 @@ function(x,
     }
   }
   
-  if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[6], what, nomatch = 0)) || ((d == 1) && any(match(.rebmix.plot$what[8], what, nomatch = 0)))) {
     for (i in 1:d) {
+      pdist <- .pfmix.x(py[[i]], w, Theta[i,])
+          
       edist <- .dist.x(ey[, i], n)
 
-      pdist <- .pfmix.x(py[[i]], w, Theta[i,])
-
-      ylim <- c(0.0, max(edist$y, pdist))  
+      ylim <- range(pdist, edist$y, finite = TRUE)
 
       plot(x = edist$x,
         y = edist$y,
@@ -649,7 +567,7 @@ function(x,
     }
   }  
 
-  if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]])) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -712,7 +630,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]])) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -775,7 +693,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]])) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -838,7 +756,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]])) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
 
     plot(x = x@all.K[[pos]],
@@ -1252,157 +1170,10 @@ function(x,
       }
     }
   }
-  else {
-    if (any(match(.rebmix.plot$what[1], what, nomatch = 0))) {
-      pdens <- .dfmvnorm.x(py[[1]], w, Theta, 1)
-      
-      ylim <- range(pdens, finite = TRUE)
-      
-      if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, 1], y0[1], lim[, 1][1], lim[, 1][2], h[1], Variables[1], pdf[1])
-      }
-      else
-      if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densKDE.x(ey[, 1], h[1], n)
-      }
-      else
-      if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, 1], k, h[1], n)
-      }
-      else {
-        edens <- .densSample.x(ey[, 1], ylim[1], n)
-      }
-
-      ylim <- range(ylim, edens$y, finite = TRUE)
-
-      plot(x = edens$x,
-        y = edens$y,
-        type = "p",
-        main = "",
-        sub = "",
-        xlab = "",
-        ylab = "",
-        ylim = ylim,
-        col = "black",
-        axes = FALSE,
-        lwd = 1,
-        cex = plot.cex,
-        pch = plot.pch,
-        log = log)
-
-      points(x = py[[1]],
-        y = pdens,
-        type = "l",
-        col = "black")
-
-      box(col = fg, lty = "solid", lwd = 1)
-
-      axis(side = 3,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      axis(side = 2,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      text <- bquote(y[1] - f(y[1]))
-
-      mtext(text = text,
-        side = 1,
-        line = 0,
-        outer = FALSE,
-        adj = 0.5,
-        padj = 0.2,
-        cex = cex)
-
-      for (l in 1:length(legend)) {
-        mtext(text = legend[[l]],
-          side = 1,
-          line = l - 1,
-          outer = TRUE,
-          adj = 0.5,
-          padj = 0.2,
-          cex = cex)
-      }
-
-      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-    }
-
-    if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
-      edist <- .dist.x(ey[, 1], n)
-
-      pdist <- .pfmvnorm.x(py[[1]], w, Theta, 1)
-
-      ylim <- c(0.0, max(edist$y, pdist))
-
-      plot(x = edist$x,
-        y = edist$y,
-        type = "p",
-        main = "",
-        sub = "",
-        xlab = "",
-        ylab = "",
-        ylim = ylim,
-        col = "black",
-        axes = FALSE,
-        lwd = 1,
-        cex = plot.cex,
-        pch = plot.pch)
-
-      points(x = py[[1]],
-        y = pdist,
-        type = "l",
-        col = "black")
-
-      box(col = fg, lty = "solid", lwd = 1)
-
-      axis(side = 3,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      axis(side = 2,
-        outer = FALSE,
-        lty = "solid",
-        lwd = 1,
-        hadj = 0.5,
-        padj = 1.0)
-
-      text <- bquote(y[1] - F(y[1]))
-
-      mtext(text = text,
-        side = 1,
-        line = 0,
-        outer = FALSE,
-        adj = 0.5,
-        padj = 0.2,
-        cex = cex)
-
-      for (l in 1:length(legend)) {
-        mtext(text = legend[[l]],
-          side = 1,
-          line = l - 1,
-          outer = TRUE,
-          adj = 0.5,
-          padj = 0.2,
-          cex = cex)
-      }
-
-      opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
-    }
-  }
 
   m <- nrow * ncol * ceiling(N / nrow / ncol) - N
 
-  if (any(match(.rebmix.plot$what[2], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[2], what, nomatch = 0)) || ((d == 1) && any(match(.rebmix.plot$what[1], what, nomatch = 0)))) {
     for (i in 1:d) {
       pdens <- .dfmvnorm.x(py[[i]], w, Theta, i)
       
@@ -1492,13 +1263,13 @@ function(x,
     }
   }
   
-  if (any(match(.rebmix.plot$what[6], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[6], what, nomatch = 0)) || ((d == 1) && any(match(.rebmix.plot$what[8], what, nomatch = 0)))) {
     for (i in 1:d) {
+      pdist <- .pfmvnorm.x(py[[i]], w, Theta, i)
+    
       edist <- .dist.x(ey[, i], n)
 
-      pdist <- .pfmvnorm.x(py[[i]], w, Theta, i)
-
-      ylim <- c(0.0, max(edist$y, pdist))
+      ylim <- range(pdist, edist$y, finite = TRUE)    
       
       plot(x = edist$x,
         y = edist$y,
@@ -1566,7 +1337,7 @@ function(x,
     }
   }
 
-  if (any(match(.rebmix.plot$what[3], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[3], what, nomatch = 0)) && !is.na(x@opt.IC[[pos]])) {
     ylim <- range(x@opt.IC[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1629,7 +1400,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[4], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[4], what, nomatch = 0)) && !is.na(x@opt.logL[[pos]])) {
     ylim <- range(x@opt.logL[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1692,7 +1463,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[5], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[5], what, nomatch = 0)) && !is.na(x@opt.D[[pos]])) {
     ylim <- range(x@opt.D[[pos]], finite = TRUE)
 
     plot(x = x@opt.c[[pos]],
@@ -1755,7 +1526,7 @@ function(x,
     opar[[ipar]] <- par(no.readonly = TRUE); ipar <- ipar + 1
   }
 
-  if (any(match(.rebmix.plot$what[7], what, nomatch = 0))) {
+  if (any(match(.rebmix.plot$what[7], what, nomatch = 0)) && !is.na(x@all.IC[[pos]])) {
     ylim <- range(x@all.IC[[pos]], finite = TRUE)
 
     plot(x = x@all.K[[pos]],

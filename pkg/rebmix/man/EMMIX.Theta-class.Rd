@@ -37,7 +37,6 @@ a vector of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1
 }
 \author{Branislav Panic}
 \examples{
-\dontrun{
 Theta <- new("EMMIX.Theta", c = 2, pdf = c("normal", "Gumbel"))  
 
 a.w(Theta) <- c(0.4, 0.6)
@@ -82,6 +81,5 @@ a.theta2.all(Theta) <- c(9, 0, 0, 0, 4, 0, 0, 0, 1,
   4, -3.2, -0.2, -3.2, 4, 0, -0.2, 0, 1)
 
 Theta
-}
 }
 \keyword{classes}
