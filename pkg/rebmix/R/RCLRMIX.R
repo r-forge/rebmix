@@ -212,6 +212,10 @@ function(model, ...)
   }
 
   model@Zp <- as.factor(output$Z)
+  
+  if (model@c < c) {
+    message("Note: Number of clusters ", model@c, " is less than number of components ", c, "!")
+  }  
 
   rm(list = ls()[!(ls() %in% c("model"))])
 
@@ -344,6 +348,10 @@ function(model, ...)
   }
 
   model@Zp <- as.factor(output$Z)
+  
+  if (model@c < c) {
+    message("Note: Number of clusters ", model@c, " is less than number of components ", c, "!")
+  }  
 
   rm(list = ls()[!(ls() %in% c("model"))])
 

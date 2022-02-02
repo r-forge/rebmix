@@ -726,7 +726,7 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
 {
     Rebmix               *rebmix = NULL;
     int                  **C = NULL;
-    int                  A[2];
+    int                  A[3];
     FLOAT                ***Q = NULL;
     FLOAT                **Y = NULL;
     CompnentDistribution ****Theta = NULL;
@@ -796,9 +796,9 @@ void RCLSMIX(int    *n,      // Total number of independent observations.
 
                 *Error = NULL == Theta[j][k][l]; if (*Error) goto E0;
 
-                A[0] = A[1] = d[k];
+                A[0] = A[1] = A[2] = d[k];
 
-                *Error = Theta[j][k][l]->Realloc(d[k], 2, A);
+                *Error = Theta[j][k][l]->Realloc(d[k], 3, A);
 
                 if (*Error) goto E0;
 
@@ -987,7 +987,7 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
 {
     Rebmix               *rebmix = NULL;
     FLOAT                **Y = NULL;
-    int                  A[2];
+    int                  A[3];
     CompnentDistribution **Theta = NULL;
     FLOAT                CmpDist, MaxCmpDist;
     int                  i, j, k;
@@ -1009,9 +1009,9 @@ void RCLRMIX(int    *n,      // Total number of independent observations.
 
         *Error = NULL == Theta[j]; if (*Error) goto E0;
 
-        A[0] = A[1] = *d;
+        A[0] = A[1] = A[2] = *d;
 
-        *Error = Theta[j]->Realloc(*d, 2, A);
+        *Error = Theta[j]->Realloc(*d, 3, A);
 
         if (*Error) goto E0;
 
