@@ -59,7 +59,7 @@ data(bearings)
 }
 }
 \source{
-Case Western Reserve University Bearing Data Center Website \url{https://csegroups.case.edu/bearingdatacenter/pages/welcome-case-western-reserve-university-bearing-data-center-website}.
+Case Western Reserve University Bearing Data Center Website \url{https://engineering.case.edu/bearingdatacenter/welcome}.
 }
 \references{
 B. Panic, J. Klemenc and M. Nagode. Gaussian mixture model based classification revisited: Application to the bearing fault classification. Journal of Mechanical Engineering,

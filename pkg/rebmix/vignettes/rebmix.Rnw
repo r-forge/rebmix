@@ -41,6 +41,8 @@ Version \texttt{2.14.0} introduces several major improvements of the package. Th
 f(y) = \frac{1}{\sigma}\exp\left(\frac{y - \mu}{\xi \sigma} - \exp\left(\frac{y - \mu}{\xi \sigma}\right)\right).
 \end{equation}
 has been added as the first three parameter family type. Here, $\xi \in \{-1, \textrm{NA}, 1\}$. If initially $\xi$ is set to $\textrm{NA}$, the package estimates $\xi$. Otherwise the  estimated $\xi$ equals initial $\xi$.
+
+Class \texttt{"EMMIX.Theta"} and method \texttt{EMMIX} are added. They enable parameter assessment for all parametric families available in the package by using the EM algorithm only.  
 \section{Previous versions}
 Version \texttt{2.13.1} introduces several major improvements of the package. The Gumbel probability density
 \begin{equation}
