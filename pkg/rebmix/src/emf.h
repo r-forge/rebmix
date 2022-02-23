@@ -15,7 +15,8 @@ class Emmix : public Base {
 public:
     // Members.
     int                  n_;               // Number of observations.
-    int                  k_;               // Total number of bins.
+    int                  nr_;              // Total number of bins.
+    int                  nc_;              // Number of columns.
     FLOAT                **Y_;             // Dataset.
     int                  cmax_;            // Maximum number of components.
     FLOAT                TOL_;             // Tolerance for EM algorithm.
@@ -40,7 +41,7 @@ public:
     Emmix();
     // Destructor.
     virtual ~Emmix();
-    int Initialize(int n, FLOAT **Y, int cmax, int length_pdf, int length_Theta, int *length_theta, FLOAT TOL, FLOAT am, int max_iter, int EM_K, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
+    int Initialize(int n, int nr, int nc, FLOAT **Y, int cmax, int length_pdf, int length_Theta, int *length_theta, FLOAT TOL, FLOAT am, int max_iter, int EM_K, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
     int Transform(FLOAT **Y);
     int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
     int LogLikelihood(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);

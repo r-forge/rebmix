@@ -61,6 +61,7 @@ class Rebmix : public Base {
     int REBMIXKNN();
     int REBMIXKDE();
     int REBMIXH();
+    int REBMIXK();
     #if (_MAINTAIN_SWITCH)
     int ReadDataFile();
     int WriteDataFile();
@@ -87,6 +88,7 @@ public:
     FLOAT                      *y0_;           // Origins.
     FLOAT                      *ymin_;         // Minimum observations.
     FLOAT                      *ymax_;         // Maximum observations.
+    FLOAT                      *h_;            // Bin widths.
     FLOAT                      ar_;            // Acceleration rate.
     PestraintsType_e           Restraints_;    // Restraints type.
 /// Panic Branislav
@@ -102,7 +104,10 @@ public:
 /// End
     // Input members.
     int                        n_;             // Number of observations.
+    int                        nr_;            // Number of rows.
+    int                        nc_;            // Number of columns.
     FLOAT                      **Y_;           // Dataset.
+    int                        Y_type_;        // Dataset type.
     FLOAT                      **X_;           // Temporary dataset.
     // Output members.
     FLOAT                      *W_;            // Component weights.
@@ -178,10 +183,13 @@ public:
             FLOAT *ymin,              // Minimum observations.
             int   *length_ymax,       // Length of ymax.
             FLOAT *ymax,              // Maximum observations.
+            int   *length_h,          // Length of h.
+            FLOAT *h,                 // Bin widths.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
             int   *n,                 // Number of observations.
             FLOAT *Y,                 // Dataset.
+            int   *Y_type,            // Dataset type. 
             char  **EMStrategy,       // Strategy for EM algorithm.
             char  **EMVariant,        // EM algorithm variant.
             char  **EMAcceleration,   // Acceleration for the standard EM algorithm.

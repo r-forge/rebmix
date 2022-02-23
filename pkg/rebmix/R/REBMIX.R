@@ -9,44 +9,69 @@ function(model, ...)
 ### End  
 
   for (i in 1:length(model@Dataset)) {
-    Dataset.name <- names(model@Dataset)[i]
-
-    X <- as.matrix(model@Dataset[[i]])
+    if (class(model@Dataset[[i]]) == "data.frame") {
+      Y.type <- 0
+      
+      Dataset.name <- names(model@Dataset)[i]
+      
+      h <- NULL
+      
+      X <- as.matrix(model@Dataset[[i]])
+      
+      d <- ncol(X)  
+    }
+    else
+    if (class(model@Dataset[[i]]) == "Histogram") {
+      Y.type <- 1
+      
+      Dataset.name <- model@Dataset[[i]]@Dataset.name[i]
+      
+      h <- model@Dataset[[i]]@h
+      
+      X <- as.matrix(model@Dataset[[i]]@Dataset)
+      
+      d <- ncol(X) - 1
+    }
 
     message("Dataset = ", Dataset.name)
 
     flush.console()
 
     n <- nrow(X)
-    d <- ncol(X)
     
     length.pdf <- d
-
-    if (is.character(model@K)) {
-      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
-      }
-      else {
-        Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
-
-        K <- kseq(Sturges, RootN, f = 0.25)
-      }
-      
-      K <- unique(K) 
-      
-      dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
-    }
-    else {
-      if (is.matrix(model@K)) {
-        K <- model@K[i, ]
-        
-        dK <- 1; length.K <- 1
-      }
-      else {
-        K <- sort(unique(model@K))
-        
+    
+    if (Y.type == 0) {
+      if (is.character(model@K)) {
+        if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+          K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
+        }
+        else {
+          Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
+    
+          K <- kseq(Sturges, RootN, f = 0.25)
+        }
+          
+        K <- unique(K) 
+          
         dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
       }
+      else {
+        if (is.matrix(model@K)) {
+          K <- model@K[i, ]
+            
+          dK <- 1; length.K <- 1
+        }
+        else {
+          K <- sort(unique(model@K))
+            
+          dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
+        }
+      }
+    }
+    else
+    if (Y.type == 1) {
+      dK <- 1; length.K <- 0; K <- NULL
     }
 
     if (length(model@theta1) > 0) {
@@ -70,7 +95,7 @@ function(model, ...)
       length.theta3 <- -d; theta3 <- numeric()
     }    
 
-    output <- .C(C_RREBMIX,
+    output <- .C(C_RREBMIX,      
       Preprocessing = as.character(model@Preprocessing),
       cmax = as.integer(model@cmax),
       cmin = as.integer(model@cmin),
@@ -90,10 +115,13 @@ function(model, ...)
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
+      length.h = as.integer(length(h)),
+      h = as.double(h),
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
       Y = as.double(X),
+      Y.type = as.integer(Y.type),
 ### Panic Branislav.      
       EMStrategy = as.character(model@EMcontrol@strategy),
       EMVariant = as.character(model@EMcontrol@variant),
@@ -189,65 +217,87 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
-      length(output$summary.y0) <- d
+    if (Y.type == 0) {
+      if (model@Preprocessing == .rebmix$Preprocessing[1]) {
+        length(output$summary.y0) <- d
 
-      summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
-        output$cmax,
-        output$cmin,
-        output$Criterion,
-        output$ar,
-        output$Restraints,
-        output$summary.c,
-        output$summary.k,
-        output$K,
-        output$summary.y0,
-        output$summary.ymin,
-        output$summary.ymax,
-        output$summary.h,
-        output$summary.IC,
-        output$summary.logL,
-        output$summary.M)
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          output$summary.y0,
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
+      else
+      if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          rep(NA, d),
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          rep(NA, d),
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
     }
     else
-    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+    if (Y.type == 1) {
       summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
+        NA,
         output$cmax,
         output$cmin,
         output$Criterion,
         output$ar,
         output$Restraints,
         output$summary.c,
-        output$summary.k,
-        output$K,
+        NA,
+        NA,
         rep(NA, d),
-        output$summary.ymin,
-        output$summary.ymax,
+        rep(NA, d),
+        rep(NA, d),
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
-    }
-    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-      summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
-        output$cmax,
-        output$cmin,
-        output$Criterion,
-        output$ar,
-        output$Restraints,
-        output$summary.c,
-        output$summary.k,
-        output$K,
-        rep(NA, d),
-        output$summary.ymin,
-        output$summary.ymax,
-        output$summary.h,
-        output$summary.IC,
-        output$summary.logL,
-        output$summary.M)
+        output$summary.M)  
     }
     
 ### Panic Branislav.
@@ -321,44 +371,69 @@ function(model, ...)
 ### End  
 
   for (i in 1:length(model@Dataset)) {
-    Dataset.name <- names(model@Dataset)[i]
-
-    X <- as.matrix(model@Dataset[[i]])
+    if (class(model@Dataset[[i]]) == "data.frame") {
+      Y.type <- 0
+      
+      Dataset.name <- names(model@Dataset)[i]
+      
+      h <- NULL
+      
+      X <- as.matrix(model@Dataset[[i]])  
+      
+      d <- ncol(X)
+    }
+    else
+    if (class(model@Dataset[[i]]) == "Histogram") {
+      Y.type <- 1
+      
+      Dataset.name <- model@Dataset[[i]]@Dataset.name[i]
+      
+      h <- model@Dataset[[i]]@h
+      
+      X <- as.matrix(model@Dataset[[i]]@Dataset)
+      
+      d <- ncol(X) - 1
+    }
 
     message("Dataset = ", Dataset.name)
 
     flush.console()
 
     n <- nrow(X)
-    d <- ncol(X)
     
     length.pdf <- d
 
-    if (is.character(model@K)) {
-      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-        K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
-      }
-      else {
-        Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
-
-        K <- kseq(Sturges, RootN, f = 0.25)
-      }
-      
-      K <- unique(K) 
-      
-      dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
-    }
-    else {
-      if (is.matrix(model@K)) {
-        K <- model@K[i, ]
-        
-        dK <- 1; length.K <- 1
-      }
-      else {
-        K <- sort(unique(model@K))
-        
+    if (Y.type == 0) {
+      if (is.character(model@K)) {
+        if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+          K <- as.integer(sqrt(n) * 0.75):as.integer(sqrt(n) * 1.25)
+        }
+        else {
+          Sturges <- ceiling(1.0 + log2(n)); RootN <- ceiling(2.0 * n^0.5)
+    
+          K <- kseq(Sturges, RootN, f = 0.25)
+        }
+          
+        K <- unique(K) 
+          
         dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
       }
+      else {
+        if (is.matrix(model@K)) {
+          K <- model@K[i, ]
+            
+          dK <- 1; length.K <- 1
+        }
+        else {
+          K <- sort(unique(model@K))
+            
+          dK <- max(K) - min(K) + 1; length.K <- length(K); K <- rep(K, d)
+        }
+      }
+    }
+    else
+    if (Y.type == 1) {
+      dK <- 1; length.K <- 0; K <- NULL
     }
 
     if (length(model@theta1) > 0) {
@@ -395,10 +470,13 @@ function(model, ...)
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
+      length.h = as.integer(length(h)),
+      h = as.double(h),      
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
       Y = as.double(X),
+      Y.type = as.integer(Y.type),
 ### Panic Branislav.      
       EMStrategy = as.character(model@EMcontrol@strategy),
       EMVariant = as.character(model@EMcontrol@variant),
@@ -488,65 +566,87 @@ function(model, ...)
 
     output$K <- paste("c(", paste(K, collapse = ","), ")", sep = "")
 
-    if (model@Preprocessing == .rebmix$Preprocessing[1]) {
-      length(output$summary.y0) <- d
+    if (Y.type == 0) {
+      if (model@Preprocessing == .rebmix$Preprocessing[1]) {
+        length(output$summary.y0) <- d
 
-      summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
-        output$cmax,
-        output$cmin,
-        output$Criterion,
-        output$ar,
-        output$Restraints,
-        output$summary.c,
-        output$summary.k,
-        output$K,
-        output$summary.y0,
-        output$summary.ymin,
-        output$summary.ymax,
-        output$summary.h,
-        output$summary.IC,
-        output$summary.logL,
-        output$summary.M)
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          output$summary.y0,
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
+      else
+      if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          rep(NA, d),
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
+      if (model@Preprocessing == .rebmix$Preprocessing[3]) {
+        summary[[i]] <- c(Dataset.name,
+          output$Preprocessing,
+          output$cmax,
+          output$cmin,
+          output$Criterion,
+          output$ar,
+          output$Restraints,
+          output$summary.c,
+          output$summary.k,
+          output$K,
+          rep(NA, d),
+          output$summary.ymin,
+          output$summary.ymax,
+          output$summary.h,
+          output$summary.IC,
+          output$summary.logL,
+          output$summary.M)
+      }
     }
     else
-    if (model@Preprocessing == .rebmix$Preprocessing[2]) {
+    if (Y.type == 1) {
       summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
+        NA,
         output$cmax,
         output$cmin,
         output$Criterion,
         output$ar,
         output$Restraints,
         output$summary.c,
-        output$summary.k,
-        output$K,
+        NA,
+        NA,
         rep(NA, d),
-        output$summary.ymin,
-        output$summary.ymax,
+        rep(NA, d),
+        rep(NA, d),
         output$summary.h,
         output$summary.IC,
         output$summary.logL,
-        output$summary.M)
-    }
-    if (model@Preprocessing == .rebmix$Preprocessing[3]) {
-      summary[[i]] <- c(Dataset.name,
-        output$Preprocessing,
-        output$cmax,
-        output$cmin,
-        output$Criterion,
-        output$ar,
-        output$Restraints,
-        output$summary.c,
-        output$summary.k,
-        output$K,
-        rep(NA, d),
-        output$summary.ymin,
-        output$summary.ymax,
-        output$summary.h,
-        output$summary.IC,
-        output$summary.logL,
-        output$summary.M)
+        output$summary.M)  
     }
     
 ### Panic Branislav.
@@ -634,7 +734,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.14.0")
+  message("REBMIX Version 2.14.1")
 
   flush.console()
 

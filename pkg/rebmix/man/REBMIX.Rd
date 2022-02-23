@@ -29,8 +29,9 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
 see Methods section below.
 }
 \item{Dataset}{
-a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
-represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
+a list of length \eqn{n_{\mathrm{D}}} of data frames or objects of class \code{Histogram}. 
+Data frames should have size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d}
+columns represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{Preprocessing}{
 a character giving the preprocessing type. One of \code{"histogram"}, \cr

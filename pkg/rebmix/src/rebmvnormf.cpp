@@ -81,7 +81,7 @@ int Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
         if (length_pdf_ > 1) {
             Mode[i].klm = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 Dc = (FLOAT)0.0;
 
                 for (l = 0; l < length_pdf_; l++) if (i != l) {
@@ -107,7 +107,7 @@ S0:;
         else {
             Mode[i].klm = nl;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 X_[i][N[i]] = Y[i][m] + (int)floor((Y[i][j] - Y[i][m]) / D[i] + (FLOAT)0.5) * D[i];
 
                 for (ii = 0; ii < N[i]; ii++) {
@@ -138,7 +138,7 @@ S1:;
         for (i = 0; i < length_pdf_; i++) {
             Sum = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 Sum += Y[length_pdf_][j] * (Y[i][j] - Mode[i].ym) * (Y[i][j] - Mode[i].ym);
             }
 
@@ -147,7 +147,7 @@ S1:;
             for (ii = 0; ii < i; ii++) {
                 Sum = (FLOAT)0.0;
 
-                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                     Sum += Y[length_pdf_][j] * (Y[i][j] - Mode[i].ym) * (Y[ii][j] - Mode[ii].ym);
                 }
 
@@ -364,7 +364,7 @@ int Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
         if (length_pdf_ > 1) {
             Mode[i].klm = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 for (l = 0; l < length_pdf_; l++) if ((i != l) && ((FLOAT)fabs(Y[l][j] - Y[l][m]) > (FLOAT)0.5 * h[l])) goto S0;
 
                 Mode[i].klm += Y[length_pdf_][j];
@@ -382,7 +382,7 @@ S0:;
         else {
             Mode[i].klm = nl;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 X_[i][N[i]] = Y[i][m] + (int)floor((Y[i][j] - Y[i][m]) / h[i] + (FLOAT)0.5) * h[i];
 
                 for (ii = 0; ii < N[i]; ii++) {
@@ -413,7 +413,7 @@ S1:;
         for (i = 0; i < length_pdf_; i++) {
             Sum = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 Sum += Y[length_pdf_][j] * (Y[i][j] - Mode[i].ym) * (Y[i][j] - Mode[i].ym);
             }
 
@@ -422,7 +422,7 @@ S1:;
             for (ii = 0; ii < i; ii++) {
                 Sum = (FLOAT)0.0;
 
-                for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                     Sum += Y[length_pdf_][j] * (Y[i][j] - Mode[i].ym) * (Y[ii][j] - Mode[ii].ym);
                 }
 
@@ -892,7 +892,7 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
         Sum = (FLOAT)0.0;
 
-        for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+        for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
             Sum += Y[length_pdf_][j] * Y[i][j];
         }
 
@@ -902,7 +902,7 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
         Sum = (FLOAT)0.0;
 
-        for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+        for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
             Sum += Y[length_pdf_][j] * (Y[i][j] - EnhanTheta->Theta_[0][i]) * (Y[i][j] - EnhanTheta->Theta_[0][i]);
         }
 
@@ -911,7 +911,7 @@ int Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
         for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 Sum += Y[length_pdf_][j] * (Y[i][j] - EnhanTheta->Theta_[0][i]) * (Y[ii][j] - EnhanTheta->Theta_[0][ii]);
             }
 
@@ -965,7 +965,7 @@ int Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
 
         Sum = (FLOAT)0.0;
 
-        for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+        for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
             Sum += Y[length_pdf_][j] * Y[i][j];
         }
 
@@ -975,7 +975,7 @@ int Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
 
         Sum = (FLOAT)0.0;
 
-        for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+        for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
             Sum += Y[length_pdf_][j] * (Y[i][j] - EnhanTheta->Theta_[0][i]) * (Y[i][j] - EnhanTheta->Theta_[0][i]);
         }
 
@@ -984,7 +984,7 @@ int Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
         for (ii = 0; ii < i; ii++) {
             Sum = (FLOAT)0.0;
 
-            for (j = 0; j < n_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
+            for (j = 0; j < nr_; j++) if (Y[length_pdf_][j] > FLOAT_MIN) {
                 Sum += Y[length_pdf_][j] * (Y[i][j] - EnhanTheta->Theta_[0][i]) * (Y[ii][j] - EnhanTheta->Theta_[0][ii]);
             }
 
@@ -1125,7 +1125,7 @@ int Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
     int   Error = 0;
 
-    for (i = 0; i < n_; i++) {
+    for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
             l = 0;
 
@@ -1208,7 +1208,7 @@ int Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
     int   Error = 0;
 
-    for (i = 0; i < n_; i++) {
+    for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
             l = 0;
 
@@ -1452,6 +1452,8 @@ int Rebmvnorm::EMInitialize()
     Error = EM_ == NULL; if (Error) goto E0;
 
     Error = EM_->Initialize(n_,
+        nr_,
+        nc_,
         Y_,
         cmax_,
         length_pdf_,

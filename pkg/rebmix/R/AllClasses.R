@@ -924,27 +924,40 @@ function(.Object, ...,
     names(Dataset) <- paste("dataset", 1:length(Dataset), sep = "")
   }
 
-  if (!all(unlist(lapply(Dataset, is.data.frame)))) {
-    stop(sQuote("Dataset"), " list of data frames is requested!", call. = FALSE)
+  if (!all(unlist(lapply(Dataset, function(x) class(x) == "Histogram" || class(x) == "data.frame")))) {
+    stop(sQuote("Dataset"), " list of data frames or objects of class ", "Histogram", " is requested!", call. = FALSE)
   }
 
-  d <- unique(unlist(lapply(Dataset, ncol)))
+  d <- NULL
+  
+  for (i in 1:length(Dataset)) {
+    if (class(Dataset[[i]]) == "data.frame") {
+      di <- ncol(Dataset[[i]])
+    
+      d <- c(d, di)
+    
+      if (di < 1) {
+        stop(sQuote("Dataset"), " numbers of columns in data frames must be greater than 0!", call. = FALSE)
+      }
+
+      Dataset[[i]] <- as.data.frame(Dataset[[i]][complete.cases(Dataset[[i]]), ])
+
+      if (nrow(Dataset[[i]]) < 2) {
+        stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
+      }
+    }
+    else {
+      di <- ncol(Dataset[[i]]@Dataset) - 1
+      
+      d <- c(d, di)
+    }
+  }
+  
+  d <- unique(d)
 
   if (length(d) != 1) {
-    stop(sQuote("Dataset"), " numbers of columns in data frames must be equal!", call. = FALSE)
-  }
-
-  if (!all(unlist(lapply(Dataset, ncol)) > 0)) {
-    stop(sQuote("Dataset"), " numbers of columns in data frames must be greater than 0!", call. = FALSE)
-  }
-
-  for (j in 1:length(Dataset)) {
-    Dataset[[j]] <- as.data.frame(Dataset[[j]][complete.cases(Dataset[[j]]), ])
-  }
-
-  if (!all(unlist(lapply(Dataset, nrow)) > 1)) {
-    stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
-  }
+    stop(sQuote("Dataset"), " numbers of variables in data frames must be equal!", call. = FALSE)
+  }  
 
   # Preprocessing.
 
@@ -2017,3 +2030,68 @@ function(object)
 
   rm(list = ls())
 }) ## show
+
+# Class Histogram
+
+setClass(Class = "Histogram",
+slots = c(Dataset.name = "character",
+  Dataset = "data.frame",
+  h = "numeric"))
+
+setMethod("initialize", "Histogram",
+function(.Object, ...,
+  Dataset.name,
+  Dataset,
+  h)
+{
+  # Dataset.name.
+
+  if (missing(Dataset.name) || (length(Dataset.name) == 0)) {
+    stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.character(Dataset.name)) {
+    stop(sQuote("Dataset.name"), " character vector is requested!", call. = FALSE)
+  }
+  
+  # Dataset.
+
+  if (missing(Dataset) || (length(Dataset) == 0)) {
+    stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.data.frame(Dataset)) {
+    stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
+  }
+
+  d <- ncol(Dataset) - 1
+
+  if (d < 1) {
+    stop(sQuote("Dataset"), " number of columns in data frame must be greater than 1!", call. = FALSE)
+  }
+
+  Dataset <- as.data.frame(Dataset[complete.cases(Dataset), ])
+
+  if (nrow(Dataset) < 1) {
+    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
+  }
+  
+  # h.
+
+  if (missing(h) || (length(h) == 0)) {
+    stop(sQuote("h"), " must not be empty!", call. = FALSE)
+  }
+  else {
+    if (length(h) != d) {
+      stop("lengths of ", sQuote("h"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
+  }
+  
+  .Object@Dataset.name <- Dataset.name
+  .Object@Dataset <- Dataset
+  .Object@h <- h
+
+  rm(list = ls()[!(ls() %in% c(".Object"))])
+
+  .Object
+}) ## initialize

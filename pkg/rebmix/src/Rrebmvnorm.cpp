@@ -129,10 +129,13 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *ymin,           // Minimum observations.
                 int    *length_ymax,    // Length of ymax.
                 double *ymax,           // Maximum observations.
+                int    *length_h,       // Length of h.
+                double *h,              // Bin widths.
                 double *ar,             // Acceleration rate.
                 char   **Restraints,    // Restraints type.
                 int    *n,              // Number of observations.
                 double *Y,              // Dataset.
+                int    *Y_type,         // Dataset type.
 /// Panic Branislav
                 char   **EMStrategy,       // Strategy for EM algorithm.
                 char   **EMVariant,        // EM algorithm variant.
@@ -191,10 +194,13 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                             ymin,              // Minimum observations.
                             length_ymax,       // Length of ymax.
                             ymax,              // Maximum observations.
+                            length_h,          // Length of h.
+                            h,                 // Bin widths.
                             ar,                // Acceleration rate.
                             Restraints,        // Restraints type.
                             n,                 // Number of observations.
                             Y,                 // Dataset.
+                            Y_type,            // Dataset type. 
                             EMStrategy,        // Strategy for EM algorithm.
                             EMVariant,         // EM algorithm variant.
                             EMAcceleration,    // Acceleration for the standard EM algorithm.
@@ -613,7 +619,7 @@ void RPreprocessingKNNMVNORM(int    *k,     // k-nearest neighbours.
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
     rebmvnorm->length_pdf_ = *d;
 
     Y = (FLOAT**)malloc((rebmvnorm->length_pdf_ + 3) * sizeof(FLOAT*));
@@ -621,7 +627,7 @@ void RPreprocessingKNNMVNORM(int    *k,     // k-nearest neighbours.
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 3; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
@@ -629,7 +635,7 @@ void RPreprocessingKNNMVNORM(int    *k,     // k-nearest neighbours.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             Y[j][l] = x[i]; i++;
         }
     }
@@ -641,7 +647,7 @@ void RPreprocessingKNNMVNORM(int    *k,     // k-nearest neighbours.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_ + 3; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             y[i] = Y[j][l]; i++;
         }
     }
@@ -672,7 +678,7 @@ void RPreprocessingKDEMVNORM(double *h,     // Sides of the hypersquare.
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
     rebmvnorm->length_pdf_ = *d;
 
     Y = (FLOAT**)malloc((rebmvnorm->length_pdf_ + 2) * sizeof(FLOAT*));
@@ -680,7 +686,7 @@ void RPreprocessingKDEMVNORM(double *h,     // Sides of the hypersquare.
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 2; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
@@ -688,7 +694,7 @@ void RPreprocessingKDEMVNORM(double *h,     // Sides of the hypersquare.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             Y[j][l] = x[i]; i++;
         }
     }
@@ -700,7 +706,7 @@ void RPreprocessingKDEMVNORM(double *h,     // Sides of the hypersquare.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_ + 2; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             y[i] = Y[j][l]; i++;
         }
     }
@@ -735,7 +741,7 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
     rebmvnorm->length_pdf_ = *d;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
@@ -743,7 +749,7 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
@@ -751,7 +757,7 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             rebmvnorm->Y_[j][l] = x[i]; i++;
         }
     }
@@ -761,7 +767,7 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 1; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
@@ -929,14 +935,14 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
         }
     }
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
@@ -944,7 +950,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             rebmvnorm->Y_[j][l] = x[i]; i++;
         }
     }
@@ -954,12 +960,12 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 3; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
 
         if (i < rebmvnorm->length_pdf_) {
-            for (j = 0; j < rebmvnorm->n_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+            for (j = 0; j < rebmvnorm->nr_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
         }
     }
 
@@ -1138,14 +1144,14 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
         }
     }
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
@@ -1153,7 +1159,7 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             rebmvnorm->Y_[j][l] = x[i]; i++;
         }
     }
@@ -1163,12 +1169,12 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 2; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
 
         if (i < rebmvnorm->length_pdf_) {
-            for (j = 0; j < rebmvnorm->n_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
+            for (j = 0; j < rebmvnorm->nr_; j++) Y[i][j] = rebmvnorm->Y_[i][j];
         }
     }
 
@@ -1357,14 +1363,14 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
         }
     }
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
@@ -1372,7 +1378,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             rebmvnorm->Y_[j][l] = x[i]; i++;
         }
     }
@@ -1382,7 +1388,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
     *Error = NULL == Y; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_ + 1; i++) {
-        Y[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        Y[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
@@ -1518,14 +1524,14 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
         }
     }
 
-    rebmvnorm->n_ = *n;
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->n_ * sizeof(FLOAT));
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
 
         *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
     }
@@ -1533,7 +1539,7 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
     i = 0;
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->n_; l++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
             rebmvnorm->Y_[j][l] = x[i]; i++;
         }
     }
@@ -1644,6 +1650,7 @@ E0: if (Ainv) free(Ainv);
 void REMMVNORM(int    *d,                 // Number of independent random variables.
                int    *n,                 // Number of observations.
                double *Y,                 // Dataset.
+               int    *Y_type,            // Dataset type.
                char   **pdf,              // Parametric family types.
                int    *c,                 // Input number of components.
                double *W,                 // Input weights of components.
@@ -1695,10 +1702,13 @@ void REMMVNORM(int    *d,                 // Number of independent random variab
                            NULL,              // Minimum observations.
                            NULL,              // Length of ymax.
                            NULL,              // Maximum observations.
+                           NULL,              // Length of h.
+                           NULL,              // Bin widths.
                            NULL,              // Acceleration rate.
                            NULL,              // Restraints type.
                            n,                 // Number of observations.
                            Y,                 // Dataset.
+                           Y_type,            // Dataset type.
                            NULL,              // Strategy for EM algorithm.
                            EMVariant,         // EM algorithm variant.
                            EMAcceleration,    // Acceleration for the standard EM algorithm.

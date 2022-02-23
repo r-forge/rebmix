@@ -16,7 +16,9 @@ Emmix::Emmix()
 {
     n_ = 0;
 
-    k_ = 0;
+    nr_ = 0;
+
+    nc_ = 0;
 
     Y_ = NULL;
 
@@ -103,6 +105,8 @@ Emmix::~Emmix()
 // Emmix initialize. Returns 0 on success, 1 otherwise.
 
 int Emmix::Initialize(int                  n,             // Number of observations.
+                      int                  nr,            // Number of rows.
+                      int                  nc,            // Number of columns.
                       FLOAT                **Y,           // Dataset.
                       int                  cmax,          // Maximum number of components. 
                       int                  length_pdf,    // Length of pdf.
@@ -120,7 +124,9 @@ int Emmix::Initialize(int                  n,             // Number of observati
     
     n_ = n;
 
-    Y_ = Y;
+    nr_ = nr;
+
+    nc_ = nc;
 
     cmax_ = cmax;
 
@@ -154,19 +160,30 @@ int Emmix::Initialize(int                  n,             // Number of observati
 
     K_ = K;
 
-    if (K_ > 0) {
-        Error = Transform(Y);
+    if (nc_ == length_pdf_) {
+        if (K_ > 0) {
+            Error = Transform(Y);
+        }
+        else {
+            for (i = 0; i < n_; i++) {
+                for (j = 0; j < length_pdf_; j++) {
+                    Y_[j][i] = Y[j][i];
+                }
+
+                Y_[length_pdf_][i] = (FLOAT)1.0;
+            }
+        }
     }
-    else {
-        for (i = 0; i < n_; i++) {
-            for (j = 0; j < length_pdf_; j++) {
+    else
+    if (nc_ == length_pdf_ + 1) {
+        for (i = 0; i < nr_; i++) {
+            for (j = 0; j < nc_; j++) {
                 Y_[j][i] = Y[j][i];
             }
-
-            Y_[length_pdf_][i] = (FLOAT)1.0;
         }
-
-        k_ = n_;
+    }
+    else {
+        Error = 1; goto E0;
     }
 
     strategy_ = strategy;
@@ -272,35 +289,35 @@ int Emmix::Transform(FLOAT **Y)
         y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
     }
 
-    k_ = 0;
+    nr_ = 0;
 
     for (i = 0; i < n_; i++) {
         for (j = 0; j < length_pdf_; j++) {
             l = (int)floor((Y[j][i] - y0[j]) / h[j] + (FLOAT)0.5);
 
-            Y_[j][k_] = y0[j] + l * h[j];
+            Y_[j][nr_] = y0[j] + l * h[j];
 
-            if (Y_[j][k_] < ymin[j]) {
-                Y_[j][k_] += h[j];
+            if (Y_[j][nr_] < ymin[j]) {
+                Y_[j][nr_] += h[j];
             }
             else
-                if (Y_[j][k_] > ymax[j]) {
-                    Y_[j][k_] -= h[j];
-                }
+            if (Y_[j][nr_] > ymax[j]) {
+                Y_[j][nr_] -= h[j];
+            }
         }
 
-        for (j = 0; j < k_; j++) {
-            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y_[l][j] - Y_[l][k_]) > (FLOAT)0.5 * h[l]) goto S0;
+        for (j = 0; j < nr_; j++) {
+            for (l = 0; l < length_pdf_; l++) if ((FLOAT)fabs(Y_[l][j] - Y_[l][nr_]) > (FLOAT)0.5 * h[l]) goto S0;
 
             Y_[length_pdf_][j] += (FLOAT)1.0; goto S1;
         S0:;
         }
 
-        Y_[length_pdf_][k_] = (FLOAT)1.0; k_++;
+        Y_[length_pdf_][nr_] = (FLOAT)1.0; nr_++;
     S1:;
     }
 
-E0:    if (h) free(h);
+E0: if (h) free(h);
 
     if (ymax) free(ymax);
 
@@ -349,7 +366,7 @@ int Emmix::LogLikelihood(int                  c,          // Number of component
 
     *LogL = (FLOAT)0.0;
 
-    for (i = 0; i < k_; i++) {
+    for (i = 0; i < nr_; i++) {
         Error = MixtureDist(i, Y_, c, W, MixTheta, &MixDist);
 
         if (Error) goto E0;
@@ -377,7 +394,7 @@ int Emmix::ExpectationStep()
 
     Error = CmpDistArr == NULL; if (Error) goto E0;
 
-    for (i = 0; i < k_; i++) {
+    for (i = 0; i < nr_; i++) {
         PostProb = (FLOAT)0.0;
 
         for (j = 0; j < c_; j++) {
@@ -409,7 +426,7 @@ int Emmix::ConditionalStep()
     int   i, j, MaxPos, Error = 0;
     FLOAT TmpVal;
 
-    for (i = 0; i < k_; i++) {
+    for (i = 0; i < nr_; i++) {
         MaxPos = 0; TmpVal = P_[MaxPos][i]; P_[MaxPos][i] = (FLOAT)0.0;
 
         for (j = 1; j < c_; j++) {
@@ -1031,7 +1048,7 @@ int Emmix::MaximizationStep()
     for (l = 0; l < c_; l++) {
         W = (FLOAT)0.0;
 
-        for (j = 0; j < k_; j++) {
+        for (j = 0; j < nr_; j++) {
             W += Y_[length_pdf_][j] * P_[l][j];
         }
 
@@ -1040,7 +1057,7 @@ int Emmix::MaximizationStep()
         for (i = 0; i < length_pdf_; i++) {
             switch (MixTheta_[l]->pdf_[i]) {
             case pfNormal:
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
                 }
 
@@ -1052,7 +1069,7 @@ int Emmix::MaximizationStep()
             case pfTNormal:
                 break;
             case pfLognormal:
-                for (j = 0; j < k_; j++)  if (Y_[i][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++)  if (Y_[i][j] > FLOAT_MIN) {
                     M[i] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
                 }
 
@@ -1068,7 +1085,7 @@ int Emmix::MaximizationStep()
                 while ((j <= ItMax) && Error) {
                     memset(&A, 0, 5 * sizeof(FLOAT));
 
-                    for (k = 0; k < k_; k++) if (Y_[i][k] > FLOAT_MIN) {
+                    for (k = 0; k < nr_; k++) if (Y_[i][k] > FLOAT_MIN) {
                         T[0] = (FLOAT)log(Y_[i][k]);
                         T[1] = (FLOAT)exp(T[0] * M[i]);
 
@@ -1105,7 +1122,7 @@ int Emmix::MaximizationStep()
 
                 memset(&A, 0, 4 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) if (Y_[i][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
                     A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
                     A[2] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
                 }
@@ -1143,7 +1160,7 @@ int Emmix::MaximizationStep()
                 while ((j <= ItMax) && Error) {
                     memset(&A, 0, 5 * sizeof(FLOAT));
 
-                    for (k = 0; k < k_; k++) {
+                    for (k = 0; k < nr_; k++) {
                         T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][k] / M[i]);
 
                         A[1] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k];
@@ -1177,7 +1194,7 @@ int Emmix::MaximizationStep()
             case pfvonMises:
                 memset(&A, 0, 3 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     A[0] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)cos(Y_[i][j]);
                     A[1] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)sin(Y_[i][j]);
                 }
@@ -1211,7 +1228,7 @@ int Emmix::MaximizationStep()
 
                 break;
             case pfPoisson:
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
                 }
 
@@ -1234,7 +1251,7 @@ int Emmix::MaximizationStep()
         for (i = 0; i < length_pdf_; i++) {
             switch (MixTheta_[l]->pdf_[i]) {
             case pfNormal:
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     C[i] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
                 }
 
@@ -1246,7 +1263,7 @@ int Emmix::MaximizationStep()
             case pfTNormal:
                 break;
             case pfLognormal:
-                for (j = 0; j < k_; j++) if (Y_[i][j] > FLOAT_MIN)  {
+                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN)  {
                     C[i] += Y_[length_pdf_][j] * P_[l][j] * ((FLOAT)log(Y_[i][j]) - M[i]) * ((FLOAT)log(Y_[i][j]) - M[i]);
                 }
 
@@ -1258,7 +1275,7 @@ int Emmix::MaximizationStep()
             case pfWeibull:
                 memset(&A, 0, 2 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) if (Y_[i][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
                     T[0] = (FLOAT)log(Y_[i][j]);
                     T[1] = (FLOAT)exp(T[0] * M[i]);
 
@@ -1277,7 +1294,7 @@ int Emmix::MaximizationStep()
             case pfGamma:
                 memset(&A, 0, 2 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) if (Y_[i][j] > FLOAT_MIN) {
+                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
                     A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
                 }
 
@@ -1291,7 +1308,7 @@ int Emmix::MaximizationStep()
             case pfGumbel:
                 memset(&A, 0, 2 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][j] / M[i]);
 
                     A[1] += Y_[length_pdf_][j] * P_[l][j] * T[0];
@@ -1309,7 +1326,7 @@ int Emmix::MaximizationStep()
             case pfvonMises:
                 memset(&A, 0, 3 * sizeof(FLOAT));
 
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     A[1] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)cos(Y_[i][j] - M[i]);
                 }
 
@@ -1338,7 +1355,7 @@ int Emmix::MaximizationStep()
 
                 break;
             case pfBinomial:
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     C[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
                 }
 
@@ -1527,14 +1544,14 @@ int Emmvnorm::MaximizationStep()
     for (l = 0; l < c_; l++) {
         W = (FLOAT)0.0;
 
-        for (j = 0; j < k_; j++) {
+        for (j = 0; j < nr_; j++) {
             W += Y_[length_pdf_][j] * P_[l][j];
         }
 
         memset(M, 0, length_pdf_ * sizeof(FLOAT));
 
         for (i = 0; i < length_pdf_; i++) {
-            for (j = 0; j < k_; j++) {
+            for (j = 0; j < nr_; j++) {
                 M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
             }
 
@@ -1548,7 +1565,7 @@ int Emmvnorm::MaximizationStep()
         for (i = 0; i < length_pdf_; i++) {
             p = i * length_pdf_ + i;
 
-            for (j = 0; j < k_; j++) {
+            for (j = 0; j < nr_; j++) {
                 C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
             }
 
@@ -1557,7 +1574,7 @@ int Emmvnorm::MaximizationStep()
             for (ii = 0; ii < i; ii++) {
                 p = i * length_pdf_ + ii;
 
-                for (j = 0; j < k_; j++) {
+                for (j = 0; j < nr_; j++) {
                     C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[ii][j] - M[ii]);
                 }
 

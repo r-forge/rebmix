@@ -17,8 +17,9 @@ a desired slot item and a desired column name, respectively.
 \section{Slots}{
 \describe{
 \item{\code{Dataset}:}{
-a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
-represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
+a list of length \eqn{n_{\mathrm{D}}} of data frames or objects of class \code{Histogram}. 
+Data frames should have size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d}
+columns represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{\code{Preprocessing}:}{
 a character vector giving the preprocessing types. One of \code{"histogram"}, \cr

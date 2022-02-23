@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.14.1}{ 
+\itemize{
+\item Class \code{"Histogram"} is added.
+}
+}
 \section{Changes in version 2.14.0}{ 
 \itemize{
 \item The package has been extended to three parametric family types.
