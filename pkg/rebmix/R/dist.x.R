@@ -1,21 +1,24 @@
-.dist.x <- function(x, npts)
+.dist.x <- function(x, k, npts)
 {
-  n <- length(x)
+  set <- order(x)
+  
+  x <- x[set]
+  k <- k[set]
 
-  y <- array(data = 0.0, dim = n, dimnames = NULL)
-
-  for (i in 1:n) {
-    y[i] <- sum(x <= x[i])
+  n <- length(x); y <- array()
+  
+  if (is.null(k)) {
+    y <- seq(from = 1 / n, to = 1.0, length = n)
   }
-
-  y <- y / n
-
-  i <- !duplicated(x)
-
-  x <- x[i]
-  y <- y[i]
-
-  n <- length(y)
+  else {
+    y[1] <- k[1]
+    
+    for (i in 2:n) {
+      y[i] <- y[i - 1] + k[i]
+    }
+    
+    y <- y / y[n]
+  }
 
   if (n > npts) {
     i <- sample.int(n, npts, replace = FALSE, prob = NULL)

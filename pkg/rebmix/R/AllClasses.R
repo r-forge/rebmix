@@ -947,7 +947,7 @@ function(.Object, ...,
       }
     }
     else {
-      di <- ncol(Dataset[[i]]@Dataset) - 1
+      di <- ncol(Dataset[[i]]@Y) - 1
       
       d <- c(d, di)
     }
@@ -2034,46 +2034,34 @@ function(object)
 # Class Histogram
 
 setClass(Class = "Histogram",
-slots = c(Dataset.name = "character",
-  Dataset = "data.frame",
+slots = c(Y = "data.frame",
   h = "numeric"))
 
 setMethod("initialize", "Histogram",
 function(.Object, ...,
-  Dataset.name,
-  Dataset,
+  Y,
   h)
 {
-  # Dataset.name.
+  # Y.
 
-  if (missing(Dataset.name) || (length(Dataset.name) == 0)) {
-    stop(sQuote("Dataset.name"), " must not be empty!", call. = FALSE)
+  if (missing(Y) || (length(Y) == 0)) {
+    stop(sQuote("Y"), " must not be empty!", call. = FALSE)
   }
 
-  if (!is.character(Dataset.name)) {
-    stop(sQuote("Dataset.name"), " character vector is requested!", call. = FALSE)
-  }
-  
-  # Dataset.
-
-  if (missing(Dataset) || (length(Dataset) == 0)) {
-    stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+  if (!is.data.frame(Y)) {
+    stop(sQuote("Y"), " data frame is requested!", call. = FALSE)
   }
 
-  if (!is.data.frame(Dataset)) {
-    stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
-  }
-
-  d <- ncol(Dataset) - 1
+  d <- ncol(Y) - 1
 
   if (d < 1) {
-    stop(sQuote("Dataset"), " number of columns in data frame must be greater than 1!", call. = FALSE)
+    stop(sQuote("Y"), " number of columns in data frame must be greater than 1!", call. = FALSE)
   }
 
-  Dataset <- as.data.frame(Dataset[complete.cases(Dataset), ])
+  Y <- as.data.frame(Y[complete.cases(Y), ])
 
-  if (nrow(Dataset) < 1) {
-    stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
+  if (nrow(Y) < 1) {
+    stop(sQuote("Y"), " number of rows in data frame must be greater than 0!", call. = FALSE)
   }
   
   # h.
@@ -2087,8 +2075,7 @@ function(.Object, ...,
     }
   }
   
-  .Object@Dataset.name <- Dataset.name
-  .Object@Dataset <- Dataset
+  .Object@Y <- Y
   .Object@h <- h
 
   rm(list = ls()[!(ls() %in% c(".Object"))])

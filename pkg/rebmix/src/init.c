@@ -11,10 +11,12 @@ extern void RREBMIX(void *, void *, void *, void *, void *, void *, void *, void
 extern void RdensKNearestNeighbourXY(void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RdensKDEXY(void *, void *, void *, void *, void *, void *, void *);
 extern void RdensHistogramXY(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RdensKXY(void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RdensKNearestNeighbourX(void *, void *, void *, void *, void *, void *);
 extern void RdensKDEX(void *, void *, void *, void *, void *);
 extern void RdensHistogramX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RdensKX(void *, void *, void *, void *, void *, void *);
 
 extern void RCLSMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
@@ -79,9 +81,11 @@ static const R_CMethodDef CMethods[] = {
     {"RdensKNearestNeighbourXY", (DL_FUNC) &RdensKNearestNeighbourXY, 8},
     {"RdensKDEXY", (DL_FUNC) &RdensKDEXY, 7},
     {"RdensHistogramXY", (DL_FUNC) &RdensHistogramXY, 16},
+    {"RdensKXY", (DL_FUNC)&RdensKXY, 8},
     {"RdensKNearestNeighbourX", (DL_FUNC) &RdensKNearestNeighbourX, 6},
     {"RdensKDEX", (DL_FUNC) &RdensKDEX, 5},
     {"RdensHistogramX", (DL_FUNC) &RdensHistogramX, 10},
+    {"RdensKX", (DL_FUNC)&RdensKX, 6},
     {"RCLSMIX", (DL_FUNC) &RCLSMIX, 14},
     {"RCLRMIX", (DL_FUNC) &RCLRMIX, 11},
     {"RPreprocessingKNNMIX", (DL_FUNC) &RPreprocessingKNNMIX, 7},

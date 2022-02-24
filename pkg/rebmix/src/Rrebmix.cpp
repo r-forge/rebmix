@@ -538,6 +538,51 @@ S0:;    }
 S1:;}
 } // RdensHistogramXY
 
+// Returns histogram input empirical densities in R.
+
+void RdensKXY(int    *v,     // Total number of bins.
+              double *x,     // Pointer to the input array x.
+              double *y,     // Pointer to the input array y.
+              int    *k,     // Pointer to the input array k.
+              double *p,     // Pointer to the output array p.
+              double *hx,    // Side of the hypersquare.
+              double *hy,    // Side of the hypersquare.
+              int    *Error) // Error code.
+{
+    int   i, j, l, n;
+    FLOAT C, rx, ry;
+
+    *Error = *v < 1; if (*Error) return;
+
+    rx = (FLOAT)0.5 * (*hx); ry = (FLOAT)0.5 * (*hy);
+
+    i = 0; n = 0;
+
+    do {
+        p[i] = k[i];
+
+        for (j = i + 1; j < *v; j++) {
+            if ((x[j] < x[i] + rx) && (x[j] > x[i] - rx) && (y[j] < y[i] + ry) && (y[j] > y[i] - ry)) {
+                p[i] += k[j]; (*v)--; 
+                
+                for (l = j; l < *v; l++) {
+                    x[l] = x[l + 1]; y[l] = y[l + 1]; k[l] = k[l + 1];
+                }
+            }
+        }
+
+        n += (int)p[i];
+
+        i++;
+    } 
+    while (i < *v);
+
+    C = (FLOAT)1.0 / (*hx) / (*hy) / (n);
+
+    for (i = 0; i < *v; i++) p[i] *= C;
+
+} // RdensKXY
+
 // Returns k-nearest neighbour empirical densities in R.
 
 void RdensKNearestNeighbourX(int    *n,     // Total number of independent observations.
@@ -713,6 +758,48 @@ S0:;    }
         p[*k] = C; (*k)++;
 S1:;}
 } // RdensHistogramX
+
+// Returns histogram input empirical densities in R.
+
+void RdensKX(int    *v,     // Total number of bins.
+             double *x,     // Pointer to the input array x.
+             int    *k,     // Pointer to the input array k.
+             double *p,     // Pointer to the output array p.
+             double *hx,    // Side of the hypersquare.
+             int    *Error) // Error code.
+{
+    int   i, j, l, n;
+    FLOAT C, rx;
+
+    *Error = *v < 1; if (*Error) return;
+
+    rx = (FLOAT)0.5 * (*hx);
+
+    i = 0; n = 0;
+
+    do {
+        p[i] = k[i];
+
+        for (j = i + 1; j < *v; j++) {
+            if ((x[j] < x[i] + rx) && (x[j] > x[i] - rx)) {
+                p[i] += k[j]; (*v)--;
+
+                for (l = j; l < *v; l++) {
+                    x[l] = x[l + 1]; k[l] = k[l + 1];
+                }
+            }
+        }
+
+        n += (int)p[i];
+
+        i++;
+    } while (i < *v);
+
+    C = (FLOAT)1.0 / (*hx) / (n);
+
+    for (i = 0; i < *v; i++) p[i] *= C;
+
+} // RdensKX
 
 // Returns classified observations in R.
 

@@ -24,11 +24,11 @@ function(model, ...)
     if (class(model@Dataset[[i]]) == "Histogram") {
       Y.type <- 1
       
-      Dataset.name <- model@Dataset[[i]]@Dataset.name[i]
+      Dataset.name <- names(model@Dataset)[i]
       
       h <- model@Dataset[[i]]@h
       
-      X <- as.matrix(model@Dataset[[i]]@Dataset)
+      X <- as.matrix(model@Dataset[[i]]@Y)
       
       d <- ncol(X) - 1
     }
@@ -378,19 +378,19 @@ function(model, ...)
       
       h <- NULL
       
-      X <- as.matrix(model@Dataset[[i]])  
+      X <- as.matrix(model@Dataset[[i]])
       
-      d <- ncol(X)
+      d <- ncol(X)  
     }
     else
     if (class(model@Dataset[[i]]) == "Histogram") {
       Y.type <- 1
       
-      Dataset.name <- model@Dataset[[i]]@Dataset.name[i]
+      Dataset.name <- names(model@Dataset)[i]
       
       h <- model@Dataset[[i]]@h
       
-      X <- as.matrix(model@Dataset[[i]]@Dataset)
+      X <- as.matrix(model@Dataset[[i]]@Y)
       
       d <- ncol(X) - 1
     }

@@ -31,7 +31,7 @@ exportMethods("RNGMIX",
               "RCLSMIX",
 ### Panic Branislav.
               "EMMIX",
-### End              
+### End            
               "logL",
               "AIC",
               "AIC3",

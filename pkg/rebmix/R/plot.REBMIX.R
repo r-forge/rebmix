@@ -186,9 +186,23 @@ function(x,
 
   par(oma = c(length(legend) + 0.2, 0.2, 0.2, 0.2))
 
-  Dataset <- as.character(x@summary[pos, "Dataset"])
-
-  ey <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
+# Dataset <- as.character(x@summary[pos, "Dataset"])
+  
+  Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
+  
+  if (class(Dataset) == "data.frame") {
+    Y.type <- 0
+    
+    ey <- as.matrix(Dataset)
+  }
+  else
+  if (class(Dataset) == "Histogram") {
+    Y.type <- 1
+    
+    ey <- as.matrix(Dataset@Y)
+  }
+  
+# ey <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
 
   y0 <- array(data = 0.0, dim = d, dimnames = NULL)
   h <- array(data = 0.0, dim = d, dimnames = NULL)
@@ -202,29 +216,40 @@ function(x,
   pdf <- match.arg(x@pdf, .rebmix$pdf, several.ok = TRUE)
 
   for (i in 1:d) {
-    if (C == .rebmix$Preprocessing[1]) {
-      k <- as.numeric(x@summary[pos, "v/k"])
-      y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+    if (Y.type == 0) {
+      if (C == .rebmix$Preprocessing[1]) {
+        k <- as.numeric(x@summary[pos, "v/k"])
+        y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
-      lim[, i] <- range(ey[, i], finite = TRUE)
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else
+      if (C == .rebmix$Preprocessing[2]) {
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else
+      if (C == .rebmix$Preprocessing[3]) {
+        k <- as.numeric(x@summary[pos, "v/k"])
+
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else {
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
     }
     else
-    if (C == .rebmix$Preprocessing[2]) {
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
-
+    if (Y.type == 1) {
+      v <- nrow(ey)
+      
+      h[i] <- Dataset@h[i]
+    
       lim[, i] <- range(ey[, i], finite = TRUE)
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      k <- as.numeric(x@summary[pos, "v/k"])
-
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
-
-      lim[, i] <- range(ey[, i], finite = TRUE)
-    }
-    else {
-      lim[, i] <- range(ey[, i], finite = TRUE)
+    
     }
 
     if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
@@ -257,19 +282,25 @@ function(x,
           
           zlim <- range(pdens, finite = TRUE)
           
-          if (C == .rebmix$Preprocessing[1]) {
-            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+          if (Y.type == 0) {
+            if (C == .rebmix$Preprocessing[1]) {
+              edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+            }
+            else
+            if (C == .rebmix$Preprocessing[2]) {
+              edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
+            }
+            else
+            if (C == .rebmix$Preprocessing[3]) {
+              edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
+            }
+            else {
+              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+            }
           }
           else
-          if (C == .rebmix$Preprocessing[2]) {
-            edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
-          }
-          else
-          if (C == .rebmix$Preprocessing[3]) {
-            edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
-          }
-          else {
-            edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+          if (Y.type == 1) {
+            edens <- .densK.xy(v, ey[, i], ey[, j], ey[, d + 1], h[i], h[j])
           }
 
           zlim <- range(zlim, edens$z, finite = TRUE)
@@ -409,19 +440,25 @@ function(x,
     
       ylim <- range(pdens, finite = TRUE)
     
-      if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
+      if (Y.type == 0) {    
+        if (C == .rebmix$Preprocessing[1]) {
+          edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
+        }
+        else
+        if (C == .rebmix$Preprocessing[2]) {
+          edens <- .densKDE.x(ey[, i], h[i], n)
+        }
+        else
+        if (C == .rebmix$Preprocessing[3]) {
+          edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
+        }
+        else {
+          edens <- .densSample.x(ey[, i], ylim[1], n)
+        }
       }
       else
-      if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densKDE.x(ey[, i], h[i], n)
-      }
-      else
-      if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
-      }
-      else {
-        edens <- .densSample.x(ey[, i], ylim[1], n)
+      if (Y.type == 1) {
+        edens <- .densK.x(v, ey[, i], ey[, d + 1], h[i])      
       }
 
       ylim <- range(ylim, edens$y, finite = TRUE)
@@ -497,7 +534,13 @@ function(x,
     for (i in 1:d) {
       pdist <- .pfmix.x(py[[i]], w, Theta[i,])
           
-      edist <- .dist.x(ey[, i], n)
+      if (Y.type == 0) {
+        edist <- .dist.x(ey[, i], NULL, n)
+      }
+      else
+      if (Y.type == 1) {
+        edist <- .dist.x(ey[, i], ey[, d + 1], n)
+      }  
 
       ylim <- range(pdist, edist$y, finite = TRUE)
 
@@ -1012,9 +1055,23 @@ function(x,
 
   par(oma = c(length(legend) + 0.2, 0.2, 0.2, 0.2))
 
-  Dataset <- as.character(x@summary[pos, "Dataset"])
+# Dataset <- as.character(x@summary[pos, "Dataset"])
 
-  ey <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
+  Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
+  
+  if (class(Dataset) == "data.frame") {
+    Y.type <- 0
+    
+    ey <- as.matrix(Dataset)
+  }
+  else
+  if (class(Dataset) == "Histogram") {
+    Y.type <- 1
+    
+    ey <- as.matrix(Dataset@Y)
+  }
+
+# ey <- as.matrix(x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]])
 
   y0 <- array(data = 0.0, dim = d, dimnames = NULL)
   h <- array(data = 0.0, dim = d, dimnames = NULL)
@@ -1028,28 +1085,38 @@ function(x,
   pdf <- match.arg(x@pdf, .rebmix$pdf, several.ok = TRUE)
 
   for (i in 1:d) {
-    if (C == .rebmix$Preprocessing[1]) {
-      k <- as.numeric(x@summary[pos, "v/k"])
-      y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+    if (Y.type == 0) {
+      if (C == .rebmix$Preprocessing[1]) {
+        k <- as.numeric(x@summary[pos, "v/k"])
+        y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
-      lim[, i] <- range(ey[, i], finite = TRUE)
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else
+      if (C == .rebmix$Preprocessing[2]) {
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else
+      if (C == .rebmix$Preprocessing[3]) {
+        k <- as.numeric(x@summary[pos, "v/k"])
+
+        h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
+
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else {
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
     }
     else
-    if (C == .rebmix$Preprocessing[2]) {
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
-
-      lim[, i] <- range(ey[, i], finite = TRUE)
-    }
-    else
-    if (C == .rebmix$Preprocessing[3]) {
-      k <- as.numeric(x@summary[pos, "v/k"])
-
-      h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
-
-      lim[, i] <- range(ey[, i], finite = TRUE)
-    }
-    else {
+    if (Y.type == 1) {
+      v <- nrow(ey)
+      
+      h[i] <- Dataset@h[i]
+    
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
 
@@ -1076,22 +1143,28 @@ function(x,
         for (j in (i + 1):d) {
           pdens <- outer(py[[i]], py[[j]], ".dfmvnorm.xy", w, Theta, i, j)
           
-          zlim <- range(pdens, finite = TRUE);       
-        
-          if (C == .rebmix$Preprocessing[1]) {
-            edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+          zlim <- range(pdens, finite = TRUE);
+          
+          if (Y.type == 0) {      
+            if (C == .rebmix$Preprocessing[1]) {
+              edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
+            }
+            else
+            if (C == .rebmix$Preprocessing[2]) {
+              edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
+            }
+            else
+            if (C == .rebmix$Preprocessing[3]) {
+              edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
+            }
+            else {
+              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+            }
           }
           else
-          if (C == .rebmix$Preprocessing[2]) {
-            edens <- .densKDE.xy(ey[, i], ey[, j], h[i], h[j], n)
-          }
-          else
-          if (C == .rebmix$Preprocessing[3]) {
-            edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
-          }
-          else {
-            edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
-          }
+          if (Y.type == 1) {
+            edens <- .densK.xy(v, ey[, i], ey[, j], ey[, d + 1], h[i], h[j])
+          }        
           
           zlim <- range(zlim, edens$z, finite = TRUE)
 
@@ -1179,20 +1252,26 @@ function(x,
       
       ylim <- range(pdens, finite = TRUE)
       
-      if (C == .rebmix$Preprocessing[1]) {
-        edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
+      if (Y.type == 0) {      
+        if (C == .rebmix$Preprocessing[1]) {
+          edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
+        }
+        else
+        if (C == .rebmix$Preprocessing[2]) {
+          edens <- .densKDE.x(ey[, i], h[i], n)
+        }
+        else
+        if (C == .rebmix$Preprocessing[3]) {
+          edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
+        }
+        else {
+          edens <- .densSample.x(ey[, i], ylim[1], n)
+        }
       }
       else
-      if (C == .rebmix$Preprocessing[2]) {
-        edens <- .densKDE.x(ey[, i], h[i], n)
-      }
-      else
-      if (C == .rebmix$Preprocessing[3]) {
-        edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
-      }
-      else {
-        edens <- .densSample.x(ey[, i], ylim[1], n)
-      }
+      if (Y.type == 1) {
+        edens <- .densK.x(v, ey[, i], ey[, d + 1], h[i])      
+      }      
       
       ylim <- range(ylim, edens$y, finite = TRUE)
 
@@ -1267,7 +1346,13 @@ function(x,
     for (i in 1:d) {
       pdist <- .pfmvnorm.x(py[[i]], w, Theta, i)
     
-      edist <- .dist.x(ey[, i], n)
+      if (Y.type == 0) {
+        edist <- .dist.x(ey[, i], NULL, n)
+      }
+      else
+      if (Y.type == 1) {
+        edist <- .dist.x(ey[, i], ey[, d + 1], n)
+      }
 
       ylim <- range(pdist, edist$y, finite = TRUE)    
       
