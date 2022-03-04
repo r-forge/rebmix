@@ -88,7 +88,7 @@ public:
     FLOAT                      *y0_;           // Origins.
     FLOAT                      *ymin_;         // Minimum observations.
     FLOAT                      *ymax_;         // Maximum observations.
-    FLOAT                      *h_;            // Bin widths.
+    FLOAT                      *h_;            // Sides of the hypersquare.
     FLOAT                      ar_;            // Acceleration rate.
     PestraintsType_e           Restraints_;    // Restraints type.
 /// Panic Branislav
@@ -184,7 +184,7 @@ public:
             int   *length_ymax,       // Length of ymax.
             FLOAT *ymax,              // Maximum observations.
             int   *length_h,          // Length of h.
-            FLOAT *h,                 // Bin widths.
+            FLOAT *h,                 // Sides of the hypersquare.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
             int   *n,                 // Number of observations.

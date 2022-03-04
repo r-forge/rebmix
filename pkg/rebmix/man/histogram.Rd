@@ -1,42 +1,36 @@
-\name{optbins-methods}
-\alias{optbins}
-\alias{optbins-methods}
-\alias{optbins,REBMIX-method}
-\alias{optbins,REBMVNORM-method}
+\name{histogram-methods}
+\alias{histogram}
+\alias{histogram-methods}
+\alias{histogram,REBMIX-method}
+\alias{histogram,REBMVNORM-method}
 \title{
-Optimal Numbers of Bins Calculation
+Histogram Calculation
 }
 \description{
-Returns the matrix of size \eqn{n_{\mathrm{D}} \times d} containing optimal numbers of bins \eqn{v_{1}, \ldots, v_{d}} for all processed datasets.
+Returns an object of class \code{Histogram}. The method can be called recursively. This way more than one dataset can be
+binned into one histogram.  
 }
 \usage{
-\S4method{optbins}{REBMIX}(Dataset = list(), Rule = "Knuth equal", y0 = numeric(), 
-        ymin = numeric(), ymax = numeric(), kmin = numeric(),
-        kmax = numeric(), ...)
+\S4method{histogram}{REBMIX}(x = NULL, Dataset = data.frame(),
+          K = numeric(), ymin = numeric(), ymax = numeric(), ...)
 ## ... and for other signatures
 }
 \arguments{
+\item{x}{
+an object of class \code{Histogram}.
+}
 \item{Dataset}{
-a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} containing \emph{d}-dimensional datasets. Each of the \eqn{d} columns
-represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
+a data frame of size \eqn{n \times d} containing \emph{d}-dimensional dataset. Each of the \eqn{d} columns
+represents one random variable. Number of observations \eqn{n} equals the number of rows in the dataset.
 }
-\item{Rule}{
-a character giving the histogram binning rule. One of \code{"Sturges"}, \code{"Log10"}, \code{"RootN"}, default \code{"Knuth equal"} or \code{"Knuth unequal"}.
-}
-\item{y0}{
-a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.
+\item{K}{
+an integer or a vector of length \eqn{d} containing numbers of bins \eqn{v}.
 }
 \item{ymin}{
-a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric()}.
+a vector of length \eqn{d} containing minimum observations.
 }
 \item{ymax}{
-a vector of length \eqn{d} containing maximum observations. The default value is \code{numeric()}.
-}
-\item{kmin}{
-lower limit of the number of bins. The default value is \code{numeric()}.
-}
-\item{kmax}{
-upper limit of the number of bins. The default value is \code{numeric()}.
+a vector of length \eqn{d} containing maximum observations.
 }
 \item{\dots}{
 currently not used.
@@ -48,15 +42,7 @@ currently not used.
 \item{\code{signature(x = "REBMVNORM")}}{an object of class \code{REBMVNORM}.}
 }
 }
-\author{Branislav Panic, Marko Nagode}
-\references{
-K. K. Knuth. Optimal data-based binning for histograms and histogram-based probability density models. 
-Digital Signal Processing, 95:102581, 2019.
-\doi{10.1016/j.dsp.2019.102581}.\cr\cr
-B. Panic, J. Klemenc, M. Nagode. Improved initialization of the EM algorithm for mixture model parameter estimation.
-Mathematics, 8(3):373, 2020.
-\doi{10.3390/math8030373}.
-}
+\author{Marko Nagode}
 \examples{
 # Generate multivariate normal datasets.
 

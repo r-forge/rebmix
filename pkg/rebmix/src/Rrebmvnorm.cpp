@@ -130,7 +130,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 int    *length_ymax,    // Length of ymax.
                 double *ymax,           // Maximum observations.
                 int    *length_h,       // Length of h.
-                double *h,              // Bin widths.
+                double *h,              // Sides of the hypersquare.
                 double *ar,             // Acceleration rate.
                 char   **Restraints,    // Restraints type.
                 int    *n,              // Number of observations.
@@ -195,7 +195,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                             length_ymax,       // Length of ymax.
                             ymax,              // Maximum observations.
                             length_h,          // Length of h.
-                            h,                 // Bin widths.
+                            h,                 // Sides of the hypersquare.
                             ar,                // Acceleration rate.
                             Restraints,        // Restraints type.
                             n,                 // Number of observations.
@@ -1703,7 +1703,7 @@ void REMMVNORM(int    *d,                 // Number of independent random variab
                            NULL,              // Length of ymax.
                            NULL,              // Maximum observations.
                            NULL,              // Length of h.
-                           NULL,              // Bin widths.
+                           NULL,              // Sides of the hypersquare.
                            NULL,              // Acceleration rate.
                            NULL,              // Restraints type.
                            n,                 // Number of observations.

@@ -31,13 +31,13 @@ tolerance value for the EM convergence criteria. The default value is 1.0E-4.
 acceleration.multiplier \eqn{a_{\mathrm{EM}}}, \eqn{1.0 \leq a_{\mathrm{EM}} \leq 2.0}. acceleration.multiplier for the EM step increment. The default value is 1.0.
 }
 \item{\code{maximum.iterations}:}{
-is positive integer containing the maximum allowed number of iterations of the EM algorithm. The default value is 1000.
+a positive integer containing the maximum allowed number of iterations of the EM algorithm. The default value is 1000.
 }
 \item{\code{K}:}{
-is integer containing the number of bins for the histogram based EM algorithm. This option can reduce computational time drastically if the datasets contain a large number of observations \eqn{n} and \code{K} is set to the value \eqn{\ll n}. The default value of 0 means that the EM algorithm runs over all \eqn{n}.
+an integer containing the number of bins for the histogram based EM algorithm. This option can reduce computational time drastically if the datasets contain a large number of observations \eqn{n} and \code{K} is set to the value \eqn{\ll n}. The default value of 0 means that the EM algorithm runs over all \eqn{n}.
 }
 \item{\code{eliminate.zero.components}:}{
-is boolean indicating if the componenets with \eqn{w_{l} = 0} should be eliminated from output. Only used with \code{EMMIX-methods}.
+a boolean indicating if the componenets with \eqn{w_{l} = 0} should be eliminated from output. Only used with \code{EMMIX-methods}.
 }
 }
 }

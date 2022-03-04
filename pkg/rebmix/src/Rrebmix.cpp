@@ -171,7 +171,7 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              int    *length_ymax,    // Length of ymax.
              double *ymax,           // Maximum observations.
              int    *length_h,       // Length of h.
-             double *h,              // Bin widths.
+             double *h,              // Sides of the hypersquare.
              double *ar,             // Acceleration rate.
              char   **Restraints,    // Restraints type.
              int    *n,              // Number of observations.
@@ -237,7 +237,7 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
                          length_ymax,       // Length of ymax.
                          ymax,              // Maximum observations.
                          length_h,          // Length of h.
-                         h,                 // Bin widths.
+                         h,                 // Sides of the hypersquare.
                          ar,                // Acceleration rate.
                          Restraints,        // Restraints type.
                          n,                 // Number of observations.
@@ -580,7 +580,6 @@ void RdensKXY(int    *v,     // Total number of bins.
     C = (FLOAT)1.0 / (*hx) / (*hy) / (n);
 
     for (i = 0; i < *v; i++) p[i] *= C;
-
 } // RdensKXY
 
 // Returns k-nearest neighbour empirical densities in R.
@@ -798,7 +797,6 @@ void RdensKX(int    *v,     // Total number of bins.
     C = (FLOAT)1.0 / (*hx) / (n);
 
     for (i = 0; i < *v; i++) p[i] *= C;
-
 } // RdensKX
 
 // Returns classified observations in R.
@@ -2989,7 +2987,7 @@ void REMMIX(int    *d,                 // Number of independent random variables
                         NULL,              // Length of ymax.
                         NULL,              // Maximum observations.
                         NULL,              // Length of h.
-                        NULL,              // Bin widths.
+                        NULL,              // Sides of the hypersquare.
                         NULL,              // Acceleration rate.
                         NULL,              // Restraints type.
                         n,                 // Number of observations.
@@ -3103,5 +3101,132 @@ E0:
     *Error = error;
 }
 /// End
+
+// Histogram calculation.
+
+void Rhistogram(int    *K,      // Numbers of bins.
+                double *y0,     // Origins.
+                double *h,      // Sides of the hypersquare.
+                int    *d,      // Number of independent random variables.
+                int    *nx,     // Length of x.
+                double *x,      // Pointer to the input array x.
+                int    *ny,     // Length of y.
+                double *y,      // Pointer to the output array y.
+                int    *Error)  // Error code.
+{
+    int i, j, k, *l = NULL, *m = NULL, dny;
+
+    *Error = *nx < 1;
+
+    if (*Error) goto E0;
+
+    l = (int*)malloc(*d * sizeof(int));
+
+    *Error = NULL == l; if (*Error) goto E0;
+
+    m = (int*)malloc(*d * sizeof(int));
+
+    *Error = NULL == m; if (*Error) goto E0;
+
+    dny = (*d) * (*ny); m[*d - 1] = 1;
+
+    for (i = *d - 1; i > 0; i--) {
+        m[i - 1] = K[i] * m[i];
+    }
+
+    for (i = 0; i < *nx; i++) {
+        j = 0;
+
+        for (k = 0; k < *d; k++) {
+            l[k] = (int)floor((x[i + k * (*nx)] - y0[k]) / h[k] + (FLOAT)0.5);
+
+            if (l[k] < 0) l[k] = 0; else if (l[k] >= K[k]) l[k] = K[k] - 1;
+
+            j += l[k] * m[k];
+        }
+
+        for (k = 0; k < *d; k++) {
+            y[j + k * (*ny)] = y0[k] + l[k] * h[k];
+        }
+
+        y[j + dny] += (FLOAT)1.0;
+    }
+
+E0: if (m) free(m);
+
+    if (l) free(l);
+} // Rhistogram
+
+void Rhistogramold(double *h,      // Sides of the hypersquare.
+                double *y0,     // Origins.
+                int    *d,      // Number of independent random variables.
+                int    *v,      // Total number of bins.
+                int    *nx,     // Length of x.
+                double *x,      // Pointer to the input array x.
+                int    *ny,     // Length of y.
+                double *y,      // Pointer to the output array y.
+                int    *Error)  // Error code.
+{
+    int i, j, k, dny, kny;
+    
+    *Error = *nx < 1;
+
+    if (*Error) goto E0;
+
+    dny = (*d) * (*ny);
+
+    for (i = 0; i < *nx; i++) {
+        for (j = 0; j < *d; j++) {
+            k = (int)floor((x[i + j * (*nx)] - y0[j]) / h[j] + (FLOAT)0.5);
+
+            y[*v + j * (*ny)] = y0[j] + k * h[j];
+        }
+
+        for (j = 0; j < *v; j++) {
+            for (k = 0; k < *d; k++) {
+                kny = k * (*ny);
+
+                if ((FLOAT)fabs(y[j + kny] - y[*v + kny]) > (FLOAT)0.5 * h[k]) goto S0;
+            }
+
+            y[j + dny] += (FLOAT)1.0; goto S1;
+S0:;
+        }
+
+        y[*v + dny] = (FLOAT)1.0;
+        
+        (*v)++;
+S1:;
+    }
+E0:;
+} // Rhistogram
+
+// Grey histogram calculation.
+
+void RhistogramG(int    *nx, // Length of x.
+                 double *x,  // Pointer to the input array x.
+                 int    *ny, // Length of y.
+                 int    *y)  // Pointer to the output array y.
+{
+    int i, j;
+
+    for (i = 0; i < *nx; i++) {
+        j = (int)round(x[i]); y[j + *ny] += 1;
+    }
+} // RhistogramG
+
+// RGB histogram calculation.
+
+void RhistogramRGB(int    *nx, // Length of x.
+                   double *x,  // Pointer to the input array x.
+                   int    *ny, // Length of y.
+                   int    *y)  // Pointer to the output array y.
+{
+    int i, j;
+
+    for (i = 0; i < *nx; i++) {
+        j = (int)round(x[i]); y[j + *ny] += 1;
+    }
+} // RhistogramRGB
 
 }

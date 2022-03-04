@@ -75,6 +75,8 @@ extern void Rbins(void *, void *, void *, void *, void *, void *, void *, void *
 extern void RTvtNormalPdf(void *, void *, void *, void *, void *, void *);
 extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
 
+extern void Rhistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *);
+
 static const R_CMethodDef CMethods[] = {
     {"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
     {"RREBMIX", (DL_FUNC) &RREBMIX, 57},
@@ -118,6 +120,7 @@ static const R_CMethodDef CMethods[] = {
     {"REMMIX", (DL_FUNC)&REMMIX, 21},
     {"REMMVNORM", (DL_FUNC)&REMMVNORM, 20},
 /// End
+    {"Rhistogram", (DL_FUNC)&Rhistogram, 9},
     {NULL, NULL, 0}
 };
 

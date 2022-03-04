@@ -229,8 +229,8 @@ typedef struct mixtureparametertype {
     int                  c;           // Number of components in mixture.
     FLOAT                logL;        // Estimated value of log likelihood.
     FLOAT                logV;        // Logaritmic value of V.
-    int                  k;           // Bin number for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
-    FLOAT                *h;          // Bin widths for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    int                  k;           // Number of bins for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    FLOAT                *h;          // Sides of the hypersquare for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
     FLOAT                *y0;         // Bin origins for histogram preprocessing or NULL for kernel density estimation and k-nearest neighbour preprocessing.
     FLOAT                *ymin;       // Minimum values from data.
     FLOAT                *ymax;       // Maximum values from data.

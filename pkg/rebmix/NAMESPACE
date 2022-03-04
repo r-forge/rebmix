@@ -160,5 +160,6 @@ exportMethods("RNGMIX",
               "a.eliminate.zero.components",
               "a.eliminate.zero.components<-",              
               "optbins",
-              "bins")
+              "bins",
 ### End 
+              "histogram")

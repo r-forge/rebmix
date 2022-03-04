@@ -2035,11 +2035,19 @@ function(object)
 
 setClass(Class = "Histogram",
 slots = c(Y = "data.frame",
+  K = "numeric",
+  ymin = "numeric",
+  ymax = "numeric",
+  y0 = "numeric",  
   h = "numeric"))
 
 setMethod("initialize", "Histogram",
 function(.Object, ...,
   Y,
+  K,
+  ymin,
+  ymax,
+  y0,
   h)
 {
   # Y.
@@ -2064,18 +2072,63 @@ function(.Object, ...,
     stop(sQuote("Y"), " number of rows in data frame must be greater than 0!", call. = FALSE)
   }
   
-  # h.
+  colnames(Y) <- c(paste("y", if (d > 1) 1:d else "", sep = ""), "k")
+  
+  # K.
 
-  if (missing(h) || (length(h) == 0)) {
-    stop(sQuote("h"), " must not be empty!", call. = FALSE)
+  if (missing(K) || (length(K) == 0)) {
+    stop(sQuote("K"), " must not be empty!", call. = FALSE)
+  }
+
+  if (!is.wholenumber(K)) {
+    stop(sQuote("K"), " integer or integer vector is requested!", call. = FALSE)
+  }
+
+  if (!all(K > 0)) {
+    stop("all ", sQuote("K"), " must be greater than 0!", call. = FALSE)
+  }
+  
+  if (length(K) == 1) {
+    K <- rep(K, d)
+  }
+  else
+  if (length(K) != d) {
+    stop("lengths of ", sQuote("K"), " and ", sQuote("d"), " must match!", call. = FALSE)
+  }  
+  
+  # ymin.
+
+  if (missing(ymin) || (length(ymin) == 0)) {
+    stop(sQuote("ymin"), " must not be empty!", call. = FALSE)
   }
   else {
-    if (length(h) != d) {
-      stop("lengths of ", sQuote("h"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    if (length(ymin) != d) {
+      stop("lengths of ", sQuote("ymin"), " and ", sQuote("d"), " must match!", call. = FALSE)
     }
   }
   
+  # ymax.
+
+  if (missing(ymax) || (length(ymax) == 0)) {
+    stop(sQuote("ymax"), " must not be empty!", call. = FALSE)
+  }
+  else {
+    if (length(ymax) != d) {
+      stop("lengths of ", sQuote("ymax"), " and ", sQuote("d"), " must match!", call. = FALSE)
+    }
+  }
+  
+  h <- numeric(); y0 <- numeric()
+  
+  for (i in 1:d) {
+    h[i] <- (ymax[i] - ymin[i]) / K[i]; y0[i] <- ymin[i] + 0.5 * h[i]
+  }
+  
   .Object@Y <- Y
+  .Object@K <- K
+  .Object@ymin <- ymin
+  .Object@ymax <- ymax
+  .Object@y0 <- y0
   .Object@h <- h
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
