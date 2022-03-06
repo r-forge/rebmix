@@ -861,7 +861,6 @@ slots = c(Dataset = "list",
   theta2 = "numeric",
   theta3 = "numeric",  
   K = "ANY",
-  y0 = "numeric",
   ymin = "numeric",
   ymax = "numeric",
   ar = "numeric",
@@ -901,7 +900,6 @@ function(.Object, ...,
   theta2,
   theta3,  
   K,
-  y0,
   ymin,
   ymax,
   ar,
@@ -1143,17 +1141,6 @@ function(.Object, ...,
     K <- "auto"
   }
 
-  # y0.
-
-  if (missing(y0) || (length(y0) == 0)) {
-    y0 <- .Object@y0
-  }
-  else {
-    if (length(y0) != d) {
-      stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }
-  }
-
   # ymin.
 
   if (missing(ymin) || (length(ymin) == 0)) {
@@ -1246,7 +1233,6 @@ function(.Object, ...,
   .Object@theta2 <- theta2
   .Object@theta3 <- theta3
   .Object@K <- K
-  .Object@y0 <- y0
   .Object@ymin <- ymin
   .Object@ymax <- ymax
   .Object@ar <- ar
@@ -2118,11 +2104,7 @@ function(.Object, ...,
     }
   }
   
-  h <- numeric(); y0 <- numeric()
-  
-  for (i in 1:d) {
-    h[i] <- (ymax[i] - ymin[i]) / K[i]; y0[i] <- ymin[i] + 0.5 * h[i]
-  }
+  h <- (ymax - ymin) / K; y0 <- ymin + 0.5 * h
   
   .Object@Y <- Y
   .Object@K <- K

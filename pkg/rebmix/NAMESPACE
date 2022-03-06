@@ -162,4 +162,6 @@ exportMethods("RNGMIX",
               "optbins",
               "bins",
 ### End 
+              "a.Y",
+              "a.h",
               "histogram")

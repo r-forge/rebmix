@@ -41,11 +41,14 @@ function(model, Theta, ...)
     n <- nrow(X)
 
     d <- ncol(X)
+    
+    Y.type <- 0
 
     output <- .C(C_REMMIX,
       d = as.integer(d),
       n = as.integer(n),
       Y = as.double(X),
+      Y.type = as.integer(Y.type),
       pdf = as.character(model@pdf),
       c = as.integer(c),
       W = as.double(w),
@@ -218,11 +221,14 @@ function(model, Theta, ...)
     n <- nrow(X)
 
     d <- ncol(X)
+    
+    Y.type <- 0
 
     output <- .C(C_REMMVNORM,
       d = as.integer(d),
       n = as.integer(n),
       Y = as.double(X),
+      Y.type = as.integer(Y.type),
       pdf = as.character(model@pdf),
       c = as.integer(c),
       W = as.double(w),

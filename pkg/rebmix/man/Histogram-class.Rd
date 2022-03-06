@@ -33,5 +33,15 @@ a vector of length \eqn{d} containing bin widths.
 }
 \author{Marko Nagode}
 \examples{
+Y <- as.data.frame(matrix(0.0, nrow = 8, ncol = 3))
+
+hist <- new("Histogram", Y = Y, K = c(4, 2), ymin = c(2, 1), ymax = c(10, 8))
+
+a.Y(hist)
+a.K(hist)
+a.ymin(hist)
+a.ymax(hist)
+a.y0(hist)
+a.h(hist)
 }
 \keyword{classes}

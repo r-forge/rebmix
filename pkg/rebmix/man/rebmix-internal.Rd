@@ -121,7 +121,6 @@
 \alias{a.theta3.all,REBMIX-method}
 \alias{a.theta2.all,REBMVNORM-method}
 \alias{a.K,REBMIX-method}
-\alias{a.y0,REBMIX-method}
 \alias{a.ymin,REBMIX-method}
 \alias{a.ymax,REBMIX-method}
 \alias{a.ar,REBMIX-method}
@@ -146,7 +145,6 @@
 \alias{a.theta1,REBMVNORM-method}
 \alias{a.theta2,REBMVNORM-method}
 \alias{a.K,REBMVNORM-method}
-\alias{a.y0,REBMVNORM-method}
 \alias{a.ymin,REBMVNORM-method}
 \alias{a.ymax,REBMVNORM-method}
 \alias{a.ar,REBMVNORM-method}
@@ -352,6 +350,16 @@
 \alias{a.w<-}
 \alias{a.w<-,EMMIX.Theta-method}
 \alias{a.w<-,EMMVNORM.Theta-method}
+
+\alias{a.h}
+\alias{a.Y}
+\alias{a.Y,Histogram-method}
+\alias{a.K,Histogram-method}
+\alias{a.ymin,Histogram-method}
+\alias{a.ymax,Histogram-method}
+\alias{a.y0,Histogram-method}
+\alias{a.h,Histogram-method}
+
 
 \title{Internal rebmix Functions}
 \description{

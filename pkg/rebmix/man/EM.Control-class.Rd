@@ -37,7 +37,7 @@ a positive integer containing the maximum allowed number of iterations of the EM
 an integer containing the number of bins for the histogram based EM algorithm. This option can reduce computational time drastically if the datasets contain a large number of observations \eqn{n} and \code{K} is set to the value \eqn{\ll n}. The default value of 0 means that the EM algorithm runs over all \eqn{n}.
 }
 \item{\code{eliminate.zero.components}:}{
-a boolean indicating if the componenets with \eqn{w_{l} = 0} should be eliminated from output. Only used with \code{EMMIX-methods}.
+a logical indicating if the componenets with \eqn{w_{l} = 0} should be eliminated from output. Only used with \code{EMMIX-methods}.
 }
 }
 }

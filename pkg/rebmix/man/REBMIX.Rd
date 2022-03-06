@@ -18,7 +18,7 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
 \S4method{REBMIX}{REBMIX}(model = "REBMIX", Dataset = list(), Preprocessing = character(),
        cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
        theta1 = numeric(), theta2 = numeric(), theta3 = numeric(), K = "auto", 
-       y0 = numeric(), ymin = numeric(), ymax = numeric(), ar = 0.1, 
+       ymin = numeric(), ymax = numeric(), ar = 0.1, 
        Restraints = "loose", EMcontrol = NULL, ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
@@ -71,9 +71,6 @@ rule \eqn{v = 2 \sqrt{n}} can be applied to estimate the limiting numbers of bin
 or the rule of thumb \eqn{k = \sqrt{n}} to guess the intermediate number of nearest neighbours. If, e.g., \code{K = c(10, 20, 40, 60)} and minimum \code{IC} coincides, e.g., \code{40}, brackets are set to \code{20} and \code{60} and the golden section is applied to refine the minimum search. 
 If, e.g., \code{K = matrix(c(10, 15, 18, 5, 7, 9), byrow = TRUE, ncol = 3)} than \eqn{d = 3} and the list \code{Dataset} contains \eqn{n_{\mathrm{D}} = 2} frames. Hence, different numbers of bins can be assigned to \eqn{y_{1}, \ldots, y_{d}}.
 See also \code{\link[rebmix]{kseq}} for sequence of bins or nearest neighbours generation. The default value is \code{"auto"}.
-}
-\item{y0}{
-a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.
 }
 \item{ymin}{
 a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric()}.

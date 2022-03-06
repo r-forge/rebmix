@@ -1,6 +1,6 @@
 setMethod("histogram",
           signature(Dataset = "data.frame"),
-function(x, Dataset, K, ymin, ymax, ...)
+function(x, Dataset, K, ymin, ymax, shrink, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -28,14 +28,20 @@ function(x, Dataset, K, ymin, ymax, ...)
   
   # x
   
-  if (missing(x)) {
-    nz <- prod(K)
- 
+  if (missing(x) || is.null(x)) {
     x <- new("Histogram", 
-      Y = as.data.frame(matrix(0.0, nrow = nz, ncol = d + 1)), 
+      Y = as.data.frame(matrix(0.0, nrow = 1, ncol = d + 1)), 
       K = K, 
       ymin = ymin, 
       ymax = ymax)
+      
+    nz <- prod(x@K)
+    
+    names <- names(x@Y)
+    
+    x@Y <- as.data.frame(matrix(0.0, nrow = nz, ncol = d + 1))
+
+    colnames(x@Y) <- names    
   }
   else {
     if (class(x) != "Histogram") {
@@ -47,6 +53,10 @@ function(x, Dataset, K, ymin, ymax, ...)
     }
     
     nz <- prod(x@K)
+    
+    if (nrow(x@Y) != nz) {
+      stop(sQuote("x"), " has allready bin shrunk!", call. = FALSE)
+    }    
   }     
   
   y <- as.matrix(Dataset)
@@ -60,6 +70,7 @@ function(x, Dataset, K, ymin, ymax, ...)
     y = as.double(y),
     nz = as.integer(nz),
     z = as.double(unlist(x@Y)),
+    shrink = as.integer(shrink),    
     error = integer(1),
     PACKAGE = "rebmix")
 
@@ -68,6 +79,8 @@ function(x, Dataset, K, ymin, ymax, ...)
   }
   
   dim(output$z) <- c(nz, d + 1)
+  
+  if (shrink) output$z <- output$z[1:output$nz, ]
   
   colnames(output$z) <- colnames(x@Y)
   

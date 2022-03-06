@@ -177,14 +177,10 @@ public:
             FLOAT *Theta,             // Component parameters.
             int   *length_K,          // Length of K.
             int   *K,                 // Numbers of bins v or numbers of nearest neighbours k.
-            int   *length_y0,         // Length of y0.
-            FLOAT *y0,                // Origins.
             int   *length_ymin,       // Length of ymin.
             FLOAT *ymin,              // Minimum observations.
             int   *length_ymax,       // Length of ymax.
             FLOAT *ymax,              // Maximum observations.
-            int   *length_h,          // Length of h.
-            FLOAT *h,                 // Sides of the hypersquare.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
             int   *n,                 // Number of observations.

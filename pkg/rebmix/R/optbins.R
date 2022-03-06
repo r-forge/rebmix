@@ -1,7 +1,7 @@
 ### Panic Branislav & Marko Nagode.  
 setMethod("optbins",
           signature(Dataset = "list"),
-function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
+function(Dataset, Rule = "Knuth equal", ymin, ymax, kmin, kmax, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -87,21 +87,6 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
     }
   }    
     
-  # y0.
-
-  if (missing(y0) || (length(y0) == 0)) {
-    y0 <- numeric()
-  }
-  else {
-    if (!is.numeric(y0)) {
-      stop(sQuote("y0"), " numeric is requested!", call. = FALSE)
-    }
-
-    if (length(y0) != d) {
-      stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }
-  }
-    
   # ymin.
 
   if (missing(ymin) || (length(ymin) == 0)) {
@@ -149,8 +134,6 @@ function(Dataset, Rule = "Knuth equal", y0, ymin, ymax, kmin, kmax, ...)
       n = as.integer(n),
       x = as.double(x),
       Rule = as.character(Rule),
-      length.y0 = as.integer(length(y0)),
-      y0 = as.double(y0),
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),

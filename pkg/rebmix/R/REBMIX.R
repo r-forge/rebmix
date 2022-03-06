@@ -14,8 +14,6 @@ function(model, ...)
       
       Dataset.name <- names(model@Dataset)[i]
       
-      h <- NULL
-      
       X <- as.matrix(model@Dataset[[i]])
       
       d <- ncol(X)  
@@ -25,8 +23,6 @@ function(model, ...)
       Y.type <- 1
       
       Dataset.name <- names(model@Dataset)[i]
-      
-      h <- model@Dataset[[i]]@h
       
       X <- as.matrix(model@Dataset[[i]]@Y)
       
@@ -109,14 +105,10 @@ function(model, ...)
       Theta = as.double(c(theta1, theta2, theta3)),
       length.K = as.integer(length.K),
       K = as.integer(K),
-      length.y0 = as.integer(length(model@y0)),
-      y0 = as.double(model@y0),
       length.ymin = as.integer(length(model@ymin)),
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
-      length.h = as.integer(length(h)),
-      h = as.double(h),
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
@@ -376,8 +368,6 @@ function(model, ...)
       
       Dataset.name <- names(model@Dataset)[i]
       
-      h <- NULL
-      
       X <- as.matrix(model@Dataset[[i]])
       
       d <- ncol(X)  
@@ -387,8 +377,6 @@ function(model, ...)
       Y.type <- 1
       
       Dataset.name <- names(model@Dataset)[i]
-      
-      h <- model@Dataset[[i]]@h
       
       X <- as.matrix(model@Dataset[[i]]@Y)
       
@@ -464,14 +452,10 @@ function(model, ...)
       Theta = as.double(c(theta1, theta2)),
       length.K = as.integer(length.K),
       K = as.integer(K),
-      length.y0 = as.integer(length(model@y0)),
-      y0 = as.double(model@y0),
       length.ymin = as.integer(length(model@ymin)),
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
-      length.h = as.integer(length(h)),
-      h = as.double(h),      
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
@@ -723,7 +707,6 @@ function(model,
   theta2,
   theta3,  
   K,
-  y0,
   ymin,
   ymax,
   ar,
@@ -749,7 +732,6 @@ function(model,
      theta2 = theta2,
      theta3 = theta3,
      K = K,
-     y0 = y0,
      ymin = ymin,
      ymax = ymax,
      ar = ar,

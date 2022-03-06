@@ -9,7 +9,7 @@ Binning of Data
 Returns the list of data frames containing bin means \eqn{\bar{\bm{y}}_{1}, \ldots, \bar{\bm{y}}_{v}} and frequencies \eqn{k_{1}, \ldots, k_{v}} for the histogram preprocessing.
 }
 \usage{
-\S4method{bins}{list}(Dataset = list(), K = matrix(), y0 = numeric(),
+\S4method{bins}{list}(Dataset = list(), K = matrix(),
      ymin = numeric(), ymax = numeric(), ...)
 ## ... and for other signatures
 }
@@ -22,9 +22,6 @@ represents one random variable. Numbers of observations \eqn{n} equal the number
 a matrix of size \eqn{n_{\mathrm{D}} \times d} containing numbers of bins \eqn{v_{1}, \ldots, v_{d}} for the histogram. 
 If, e.g., \code{K = matrix(c(10, 15, 18, 5, 7, 9), byrow = TRUE, ncol = 3)} than \eqn{d = 3} and the list \code{Dataset} contains \eqn{n_{\mathrm{D}} = 2} data frames. Hence, different numbers of bins can be assigned to \eqn{y_{1}, \ldots, y_{d}}.
 The default value is \code{matrix()}.
-}
-\item{y0}{
-a vector of length \eqn{d} containing origins. The default value is \code{numeric()}.
 }
 \item{ymin}{
 a vector of length \eqn{d} containing minimum observations. The default value is \code{numeric()}.

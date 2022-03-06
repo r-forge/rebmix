@@ -7065,12 +7065,7 @@ int Rebmix::REBMIXH()
             case vtContinuous:
                 h[j] = (ymax[j] - ymin[j]) / all_K_[j * all_length_ + i];
 
-                if (y0_ == NULL) {
-                    y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
-                }
-                else {
-                    y0[j] = y0_[j];
-                }
+                y0[j] = ymin[j] + (FLOAT)0.5 * h[j];
 
                 logV += (FLOAT)log(h[j]);
 
@@ -9522,14 +9517,10 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *Theta,             // Component parameters.
                 int   *length_K,          // Length of K.
                 int   *K,                 // Numbers of bins v or numbers of nearest neighbours k.
-                int   *length_y0,         // Length of y0.
-                FLOAT *y0,                // Origins.
                 int   *length_ymin,       // Length of ymin.
                 FLOAT *ymin,              // Minimum observations.
                 int   *length_ymax,       // Length of ymax.
                 FLOAT *ymax,              // Maximum observations.
-                int   *length_h,          // Length of h.
-                FLOAT *h,                 // Sides of the hypersquare.
                 FLOAT *ar,                // Acceleration rate.
                 char  **Restraints,       // Restraints type.
                 int   *n,                 // Number of observations.
@@ -9734,19 +9725,14 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
     }
 
-    if (length_y0 && length_pdf && y0) {
-        if (*length_y0 > 0) {
-            y0_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+    if (length_pdf) {
+        y0_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
-            Error = NULL == y0_; if (Error) goto E0;
+        Error = NULL == y0_; if (Error) goto E0;
 
-            for (i = 0; i < length_pdf_; i++) {
-                y0_[i] = y0[i];
-            }
-        }
-        else {
-            y0_ = NULL;
-        }
+        h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = NULL == y0_; if (Error) goto E0;
     }
 
     if (length_ymin && length_pdf && ymin) {
@@ -9776,21 +9762,6 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
         else {
             ymax_ = NULL;
-        }
-    }
-
-    if (length_h && length_pdf && h) {
-        if (*length_h > 0) {
-            h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
-
-            Error = NULL == h_; if (Error) goto E0;
-
-            for (i = 0; i < length_pdf_; i++) {
-                h_[i] = h[i];
-            }
-        }
-        else {
-            h_ = NULL;
         }
     }
 

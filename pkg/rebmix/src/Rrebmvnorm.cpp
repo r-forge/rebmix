@@ -123,14 +123,10 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *Theta,          // Component parameters.
                 int    *length_K,       // Length of K.
                 int    *K,              // Numbers of bins v or numbers of nearest neighbours k.
-                int    *length_y0,      // Length of y0.
-                double *y0,             // Origins.
                 int    *length_ymin,    // Length of ymin.
                 double *ymin,           // Minimum observations.
                 int    *length_ymax,    // Length of ymax.
                 double *ymax,           // Maximum observations.
-                int    *length_h,       // Length of h.
-                double *h,              // Sides of the hypersquare.
                 double *ar,             // Acceleration rate.
                 char   **Restraints,    // Restraints type.
                 int    *n,              // Number of observations.
@@ -188,14 +184,10 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                             Theta,             // Component parameters.
                             length_K,          // Length of K.
                             K,                 // Numbers of bins v or numbers of nearest neighbours k.
-                            length_y0,         // Length of y0.
-                            y0,                // Origins.
                             length_ymin,       // Length of ymin.
                             ymin,              // Minimum observations.
                             length_ymax,       // Length of ymax.
                             ymax,              // Maximum observations.
-                            length_h,          // Length of h.
-                            h,                 // Sides of the hypersquare.
                             ar,                // Acceleration rate.
                             Restraints,        // Restraints type.
                             n,                 // Number of observations.
@@ -1696,14 +1688,10 @@ void REMMVNORM(int    *d,                 // Number of independent random variab
                            NULL,              // Component parameters.
                            NULL,              // Length of K.
                            NULL,              // Numbers of bins v or numbers of nearest neighbours k.
-                           NULL,              // Length of y0.
-                           NULL,              // Origins.
                            NULL,              // Length of ymin.
                            NULL,              // Minimum observations.
                            NULL,              // Length of ymax.
                            NULL,              // Maximum observations.
-                           NULL,              // Length of h.
-                           NULL,              // Sides of the hypersquare.
                            NULL,              // Acceleration rate.
                            NULL,              // Restraints type.
                            n,                 // Number of observations.

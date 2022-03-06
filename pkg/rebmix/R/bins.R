@@ -1,7 +1,7 @@
 ### Panic Branislav & Marko Nagode.  
 setMethod("bins",
           signature(Dataset = "list"),
-function(Dataset, K, y0, ymin, ymax, ...)
+function(Dataset, K, ymin, ymax, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -67,21 +67,6 @@ function(Dataset, K, y0, ymin, ymax, ...)
     stop(sQuote("K"), " number of rows in matrix must equal ", length(Dataset), "!", call. = FALSE)    
   }
   
-  # y0.
-
-  if (missing(y0) || (length(y0) == 0)) {
-    y0 <- numeric()
-  }
-  else {
-    if (!is.numeric(y0)) {
-      stop(sQuote("y0"), " numeric is requested!", call. = FALSE)
-    }
-
-    if (length(y0) != d) {
-      stop("lengths of ", sQuote("y0"), " and ", sQuote("d"), " must match!", call. = FALSE)
-    }
-  }
-    
   # ymin.
 
   if (missing(ymin) || (length(ymin) == 0)) {
@@ -127,8 +112,6 @@ function(Dataset, K, y0, ymin, ymax, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(x),
-      length.y0 = as.integer(length(y0)),
-      y0 = as.double(y0),
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
       length.ymax = as.integer(length(ymax)),

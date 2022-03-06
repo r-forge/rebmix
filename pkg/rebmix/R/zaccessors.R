@@ -1056,7 +1056,6 @@ function(x, pos)
 }) ## a.theta2.all
 
 setMethod("a.K", signature(x = "REBMIX"), function(x) x@K)
-setMethod("a.y0", signature(x = "REBMIX"), function(x) x@y0)
 setMethod("a.ymin", signature(x = "REBMIX"), function(x) x@ymin)
 setMethod("a.ymax", signature(x = "REBMIX"), function(x) x@ymax)
 setMethod("a.ar", signature(x = "REBMIX"), function(x) x@ar)
@@ -1458,3 +1457,10 @@ setMethod("a.Precision", signature(x = "RCLSMIX"), function(x) x@Precision)
 setMethod("a.Sensitivity", signature(x = "RCLSMIX"), function(x) x@Sensitivity)
 setMethod("a.Specificity", signature(x = "RCLSMIX"), function(x) x@Specificity)
 setMethod("a.Chunks", signature(x = "RCLSMIX"), function(x) x@Chunks)
+
+setMethod("a.Y", signature(x = "Histogram"), function(x) x@Y)
+setMethod("a.K", signature(x = "Histogram"), function(x) x@K)
+setMethod("a.ymin", signature(x = "Histogram"), function(x) x@ymin)
+setMethod("a.ymax", signature(x = "Histogram"), function(x) x@ymax)
+setMethod("a.y0", signature(x = "Histogram"), function(x) x@y0)
+setMethod("a.h", signature(x = "Histogram"), function(x) x@h)

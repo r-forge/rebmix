@@ -164,14 +164,10 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              double *Theta,          // Component parameters.
              int    *length_K,       // Length of K.
              int    *K,              // Numbers of bins v or numbers of nearest neighbours k.
-             int    *length_y0,      // Length of y0.
-             double *y0,             // Origins.
              int    *length_ymin,    // Length of ymin.
              double *ymin,           // Minimum observations.
              int    *length_ymax,    // Length of ymax.
              double *ymax,           // Maximum observations.
-             int    *length_h,       // Length of h.
-             double *h,              // Sides of the hypersquare.
              double *ar,             // Acceleration rate.
              char   **Restraints,    // Restraints type.
              int    *n,              // Number of observations.
@@ -230,14 +226,10 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
                          Theta,             // Component parameters.
                          length_K,          // Length of K.
                          K,                 // Numbers of bins v or numbers of nearest neighbours k.
-                         length_y0,         // Length of y0.
-                         y0,                // Origins.
                          length_ymin,       // Length of ymin.
                          ymin,              // Minimum observations.
                          length_ymax,       // Length of ymax.
                          ymax,              // Maximum observations.
-                         length_h,          // Length of h.
-                         h,                 // Sides of the hypersquare.
                          ar,                // Acceleration rate.
                          Restraints,        // Restraints type.
                          n,                 // Number of observations.
@@ -2436,8 +2428,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
               int    *n,           // Number of observations.
               double *x,           // Dataset.
               char   **Rule,       // Rule.
-              int    *length_y0,   // Length of y0.
-              double *y0,          // Origins.
               int    *length_ymin, // Length of ymin.
               double *ymin,        // Minimum observations.
               int    *length_ymax, // Length of ymax.
@@ -2449,7 +2439,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
-    FLOAT  *h = NULL;
     int    *opt_k_tmp = NULL;
     int    i, j, l;
 
@@ -2476,16 +2465,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
     for (j = 0; j < rebmix->length_pdf_; j++) {
         for (l = 0; l < rebmix->nr_; l++) {
             rebmix->Y_[j][l] = x[i]; i++;
-        }
-    }
-
-    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
-
-    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
-
-    if (*length_y0 > 0) {
-        for (i = 0; i < rebmix->length_pdf_; i++) {
-            rebmix->y0_[i] = y0[i];
         }
     }
 
@@ -2527,6 +2506,14 @@ void Roptbins(int    *d,           // Number of independent random variables.
         }
     }
 
+    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
+
+    rebmix->h_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->h_; if (*Error) goto E0;
+
     Y = (FLOAT**)malloc((rebmix->length_pdf_ + 1) * sizeof(FLOAT*));
 
     *Error = NULL == Y; if (*Error) goto E0;
@@ -2536,10 +2523,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
-
-    h = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
-
-    *Error = NULL == h; if (*Error) goto E0;
 
     rebmix->Initialize();
 
@@ -2575,14 +2558,12 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
         for (l = *kmin; l < *kmax + 1; l++) {
             for (j = 0; j < rebmix->length_pdf_; j++) {
-                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
+                rebmix->h_[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
 
-                if (*length_y0 == 0) {
-                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
-                }
+                rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * rebmix->h_[j];
             }
 
-            *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
+            *Error = rebmix->PreprocessingH(rebmix->h_, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
 
             if (*Error) goto E0;
 
@@ -2633,24 +2614,20 @@ void Roptbins(int    *d,           // Number of independent random variables.
             for (j = 0; j < rebmix->length_pdf_; j++) {
                 for (i = 0; i < rebmix->length_pdf_; i++) {
                     if (i != j) {
-                        h[i] = (rebmix->ymax_[i] - rebmix->ymin_[i]) / opt_k_tmp[i];
+                        rebmix->h_[i] = (rebmix->ymax_[i] - rebmix->ymin_[i]) / opt_k_tmp[i];
 
-                        if (*length_y0 == 0) {
-                            rebmix->y0_[i] = rebmix->ymin_[i] + (FLOAT)0.5 * h[i];
-                        }
+                        rebmix->y0_[i] = rebmix->ymin_[i] + (FLOAT)0.5 * rebmix->h_[i];
                     }
                 }
 
                 opt_k[j] = opt_k_tmp[j];
 
                 for (l = *kmin; l < *kmax + 1; l++) {
-                    h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
+                    rebmix->h_[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / l;
 
-                    if (*length_y0 == 0) {
-                        rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
-                    }
+                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * rebmix->h_[j];
 
-                    *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
+                    *Error = rebmix->PreprocessingH(rebmix->h_, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
 
                     if (*Error) goto E0;
 
@@ -2734,11 +2711,9 @@ void Roptbins(int    *d,           // Number of independent random variables.
             }
 
             for (j = 0; j < rebmix->length_pdf_; j++) {
-                h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / opt_k_tmp[j];
+                rebmix->h_[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / opt_k_tmp[j];
 
-                if (*length_y0 == 0) {
-                    rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
-                }
+                rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * rebmix->h_[j];
             }
 
             M = (FLOAT)1.0;
@@ -2751,7 +2726,7 @@ void Roptbins(int    *d,           // Number of independent random variables.
                 if (M > M_broken) continue;
             }
 
-            *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
+            *Error = rebmix->PreprocessingH(rebmix->h_, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, &k, Y);
 
             if (*Error) goto E0;
 
@@ -2777,8 +2752,6 @@ void Roptbins(int    *d,           // Number of independent random variables.
 
 E0: if (opt_k_tmp) free(opt_k_tmp);
     
-    if (h) free(h);
-    
     if (Y) {
         for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
             if (Y[i]) free(Y[i]);
@@ -2795,8 +2768,6 @@ E0: if (opt_k_tmp) free(opt_k_tmp);
 void Rbins(int    *d,           // Number of independent random variables.
            int    *n,           // Number of observations.
            double *x,           // Dataset.
-           int    *length_y0,   // Length of y0.
-           double *y0,          // Origins.
            int    *length_ymin, // Length of ymin.
            double *ymin,        // Minimum observations.
            int    *length_ymax, // Length of ymax.
@@ -2808,7 +2779,6 @@ void Rbins(int    *d,           // Number of independent random variables.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
-    FLOAT  *h = NULL;
     int    i, j, l;
 
     rebmix = new Rebmix;
@@ -2834,16 +2804,6 @@ void Rbins(int    *d,           // Number of independent random variables.
     for (j = 0; j < rebmix->length_pdf_; j++) {
         for (l = 0; l < rebmix->nr_; l++) {
             rebmix->Y_[j][l] = x[i]; i++;
-        }
-    }
-
-    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
-
-    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
-
-    if (*length_y0 > 0) {
-        for (i = 0; i < rebmix->length_pdf_; i++) {
-            rebmix->y0_[i] = y0[i];
         }
     }
 
@@ -2885,6 +2845,14 @@ void Rbins(int    *d,           // Number of independent random variables.
         }
     }
 
+    rebmix->y0_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->y0_; if (*Error) goto E0;
+
+    rebmix->h_ = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
+
+    *Error = NULL == rebmix->h_; if (*Error) goto E0;
+
     Y = (FLOAT**)malloc((rebmix->length_pdf_ + 1) * sizeof(FLOAT*));
 
     *Error = NULL == Y; if (*Error) goto E0;
@@ -2895,19 +2863,14 @@ void Rbins(int    *d,           // Number of independent random variables.
         *Error = NULL == Y[i]; if (*Error) goto E0;
     }
 
-    h = (FLOAT*)malloc(rebmix->length_pdf_ * sizeof(FLOAT));
-
-    *Error = NULL == h; if (*Error) goto E0;
 
     for (j = 0; j < rebmix->length_pdf_; j++) {
-        h[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / k[j];
+        rebmix->h_[j] = (rebmix->ymax_[j] - rebmix->ymin_[j]) / k[j];
 
-        if (*length_y0 == 0) {
-            rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * h[j];
-        }
+        rebmix->y0_[j] = rebmix->ymin_[j] + (FLOAT)0.5 * rebmix->h_[j];
     }
 
-    *Error = rebmix->PreprocessingH(h, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, length_y, Y);
+    *Error = rebmix->PreprocessingH(rebmix->h_, rebmix->y0_, rebmix->ymin_, rebmix->ymax_, length_y, Y);
 
     if (*Error) goto E0;
 
@@ -2919,9 +2882,7 @@ void Rbins(int    *d,           // Number of independent random variables.
         }
     }
 
-E0: if (h) free(h);
-
-    if (Y) {
+E0: if (Y) {
         for (i = 0; i < rebmix->length_pdf_ + 1; i++) {
             if (Y[i]) free(Y[i]);
         }
@@ -2980,14 +2941,10 @@ void REMMIX(int    *d,                 // Number of independent random variables
                         NULL,              // Component parameters.
                         NULL,              // Length of K.
                         NULL,              // Numbers of bins v or numbers of nearest neighbours k.
-                        NULL,              // Length of y0.
-                        NULL,              // Origins.
                         NULL,              // Length of ymin.
                         NULL,              // Minimum observations.
                         NULL,              // Length of ymax.
                         NULL,              // Maximum observations.
-                        NULL,              // Length of h.
-                        NULL,              // Sides of the hypersquare.
                         NULL,              // Acceleration rate.
                         NULL,              // Restraints type.
                         n,                 // Number of observations.
@@ -3112,6 +3069,7 @@ void Rhistogram(int    *K,      // Numbers of bins.
                 double *x,      // Pointer to the input array x.
                 int    *ny,     // Length of y.
                 double *y,      // Pointer to the output array y.
+                int    *shrink, // If 1 the output array is shrinked.
                 int    *Error)  // Error code.
 {
     int i, j, k, *l = NULL, *m = NULL, dny;
@@ -3152,81 +3110,94 @@ void Rhistogram(int    *K,      // Numbers of bins.
         y[j + dny] += (FLOAT)1.0;
     }
 
+    if (*shrink) {
+        i = 0;
+
+        for (j = 0; j < *ny; j++) if ((i != j) && (y[j + dny] > (FLOAT)0.5)) {
+            for (k = 0; k <= *d; k++) {
+                y[i + k * (*ny)] = y[j + k * (*ny)];
+            }
+
+            i++;
+        }
+
+        *ny = i;
+    }
+
 E0: if (m) free(m);
 
     if (l) free(l);
 } // Rhistogram
 
-void Rhistogramold(double *h,      // Sides of the hypersquare.
-                double *y0,     // Origins.
-                int    *d,      // Number of independent random variables.
-                int    *v,      // Total number of bins.
-                int    *nx,     // Length of x.
-                double *x,      // Pointer to the input array x.
-                int    *ny,     // Length of y.
-                double *y,      // Pointer to the output array y.
-                int    *Error)  // Error code.
+
+// Histogram calculation.
+
+void RhistogramB(int    *K,      // Numbers of bins.
+    double *y0,     // Origins.
+    double *h,      // Sides of the hypersquare.
+    int    *d,      // Number of independent random variables.
+    int    *nx,     // Length of x.
+    double *x,      // Pointer to the input array x.
+    int    *ny,     // Length of y.
+    double *y,      // Pointer to the output array y.
+    int    *shrink, // If 1 the output array is shrinked.
+    int    *Error)  // Error code.
 {
-    int i, j, k, dny, kny;
-    
+    int i, j, k, *l = NULL, *m = NULL, dny;
+
     *Error = *nx < 1;
 
     if (*Error) goto E0;
 
-    dny = (*d) * (*ny);
+    l = (int*)malloc(*d * sizeof(int));
+
+    *Error = NULL == l; if (*Error) goto E0;
+
+    m = (int*)malloc(*d * sizeof(int));
+
+    *Error = NULL == m; if (*Error) goto E0;
+
+    dny = (*d) * (*ny); m[*d - 1] = 1;
+
+    for (i = *d - 1; i > 0; i--) {
+        m[i - 1] = K[i] * m[i];
+    }
 
     for (i = 0; i < *nx; i++) {
-        for (j = 0; j < *d; j++) {
-            k = (int)floor((x[i + j * (*nx)] - y0[j]) / h[j] + (FLOAT)0.5);
+        j = 0;
 
-            y[*v + j * (*ny)] = y0[j] + k * h[j];
+        for (k = 0; k < *d; k++) {
+            l[k] = (int)floor((x[i + k * (*nx)] - y0[k]) / h[k] + (FLOAT)0.5);
+
+            if (l[k] < 0) l[k] = 0; else if (l[k] >= K[k]) l[k] = K[k] - 1;
+
+            j += l[k] * m[k];
         }
 
-        for (j = 0; j < *v; j++) {
-            for (k = 0; k < *d; k++) {
-                kny = k * (*ny);
+        for (k = 0; k < *d; k++) {
+            y[j + k * (*ny)] = y0[k] + l[k] * h[k];
+        }
 
-                if ((FLOAT)fabs(y[j + kny] - y[*v + kny]) > (FLOAT)0.5 * h[k]) goto S0;
+        y[j + dny] += (FLOAT)1.0;
+    }
+
+    if (*shrink) {
+        i = 0;
+
+        for (j = 0; j < *ny; j++) if ((i != j) && (y[j + dny] > (FLOAT)0.5)) {
+            for (k = 0; k <= *d; k++) {
+                y[i + k * (*ny)] = y[j + k * (*ny)];
             }
 
-            y[j + dny] += (FLOAT)1.0; goto S1;
-S0:;
+            i++;
         }
 
-        y[*v + dny] = (FLOAT)1.0;
-        
-        (*v)++;
-S1:;
+        *ny = i;
     }
-E0:;
+
+E0: if (m) free(m);
+
+    if (l) free(l);
 } // Rhistogram
-
-// Grey histogram calculation.
-
-void RhistogramG(int    *nx, // Length of x.
-                 double *x,  // Pointer to the input array x.
-                 int    *ny, // Length of y.
-                 int    *y)  // Pointer to the output array y.
-{
-    int i, j;
-
-    for (i = 0; i < *nx; i++) {
-        j = (int)round(x[i]); y[j + *ny] += 1;
-    }
-} // RhistogramG
-
-// RGB histogram calculation.
-
-void RhistogramRGB(int    *nx, // Length of x.
-                   double *x,  // Pointer to the input array x.
-                   int    *ny, // Length of y.
-                   int    *y)  // Pointer to the output array y.
-{
-    int i, j;
-
-    for (i = 0; i < *nx; i++) {
-        j = (int)round(x[i]); y[j + *ny] += 1;
-    }
-} // RhistogramRGB
 
 }

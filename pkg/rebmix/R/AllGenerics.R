@@ -18,7 +18,6 @@ setGeneric("REBMIX",
     theta2 = numeric(),
     theta3 = numeric(),
     K = "auto",
-    y0 = numeric(),
     ymin = numeric(),
     ymax = numeric(),
     ar = 0.1,
@@ -240,11 +239,13 @@ setGeneric("a.eliminate.zero.components", function(x = NULL) standardGeneric("a.
 setGeneric("a.eliminate.zero.components<-", function(x = NULL, value = numeric()) standardGeneric("a.eliminate.zero.components<-"))
 ### End
 
+setGeneric("a.Y", function(x = NULL) standardGeneric("a.Y"))
+setGeneric("a.h", function(x = NULL) standardGeneric("a.h"))
+
 ### Panic Branislav & Marko Nagode.
 setGeneric("optbins",
   function(Dataset = list(),
     Rule = "Knuth equal",  
-    y0 = numeric(),
     ymin = numeric(),
     ymax = numeric(), 
     kmin = numeric(),
@@ -254,7 +255,6 @@ setGeneric("optbins",
 setGeneric("bins",
   function(Dataset = list(),
     K = matrix(),
-    y0 = numeric(),
     ymin = numeric(),
     ymax = numeric(), ...)
   standardGeneric("bins"))  
@@ -265,6 +265,7 @@ setGeneric("histogram",
     Dataset = data.frame,
     K = numeric(),
     ymin = numeric(),
-    ymax = numeric(), ...)
+    ymax = numeric(), 
+    shrink = FALSE, ...)
   standardGeneric("histogram"))
 
