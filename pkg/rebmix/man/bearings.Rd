@@ -35,7 +35,7 @@ data(bearings)
 \item{
 \code{IF} continuous.
 }
-\item{
+\item{ 
 \code{MF} continuous.
 }
 \item{
