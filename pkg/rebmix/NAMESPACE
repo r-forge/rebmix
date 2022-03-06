@@ -164,4 +164,5 @@ exportMethods("RNGMIX",
 ### End 
               "a.Y",
               "a.h",
-              "histogram")
+              "fhistogram",
+              "chistogram")

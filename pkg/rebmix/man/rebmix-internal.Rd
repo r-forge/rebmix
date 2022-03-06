@@ -22,6 +22,8 @@
 \alias{RCLSMIX,ANY-method}
 \alias{BFSMIX,ANY-method}
 \alias{EMMIX,ANY-method}
+\alias{fhistogram,ANY-method}
+\alias{chistogram,ANY-method}
 
 \alias{a.d}
 \alias{a.theta1<-}

@@ -260,12 +260,20 @@ setGeneric("bins",
   standardGeneric("bins"))  
 ### End
 
-setGeneric("histogram",
+setGeneric("fhistogram",
   function(x = NULL,
-    Dataset = data.frame,
+    Dataset = data.frame(),
     K = numeric(),
     ymin = numeric(),
     ymax = numeric(), 
     shrink = FALSE, ...)
-  standardGeneric("histogram"))
+  standardGeneric("fhistogram"))
+  
+setGeneric("chistogram",
+  function(x = NULL,
+    Dataset = data.frame(),
+    K = numeric(),
+    ymin = numeric(),
+    ymax = numeric(), ...)
+  standardGeneric("chistogram"))  
 

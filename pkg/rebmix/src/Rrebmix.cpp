@@ -3059,18 +3059,18 @@ E0:
 }
 /// End
 
-// Histogram calculation.
+// Fast Histogram calculation.
 
-void Rhistogram(int    *K,      // Numbers of bins.
-                double *y0,     // Origins.
-                double *h,      // Sides of the hypersquare.
-                int    *d,      // Number of independent random variables.
-                int    *nx,     // Length of x.
-                double *x,      // Pointer to the input array x.
-                int    *ny,     // Length of y.
-                double *y,      // Pointer to the output array y.
-                int    *shrink, // If 1 the output array is shrinked.
-                int    *Error)  // Error code.
+void Rfhistogram(int    *K,      // Numbers of bins.
+                 double *y0,     // Origins.
+                 double *h,      // Sides of the hypersquare.
+                 int    *d,      // Number of independent random variables.
+                 int    *nx,     // Length of x.
+                 double *x,      // Pointer to the input array x.
+                 int    *ny,     // Length of y.
+                 double *y,      // Pointer to the output array y.
+                 int    *shrink, // If 1 the output array is shrinked.
+                 int    *Error)  // Error code.
 {
     int i, j, k, *l = NULL, *m = NULL, dny;
 
@@ -3127,77 +3127,53 @@ void Rhistogram(int    *K,      // Numbers of bins.
 E0: if (m) free(m);
 
     if (l) free(l);
-} // Rhistogram
+} // Rfhistogram
 
+// Compact histogram calculation.
 
-// Histogram calculation.
-
-void RhistogramB(int    *K,      // Numbers of bins.
-    double *y0,     // Origins.
-    double *h,      // Sides of the hypersquare.
-    int    *d,      // Number of independent random variables.
-    int    *nx,     // Length of x.
-    double *x,      // Pointer to the input array x.
-    int    *ny,     // Length of y.
-    double *y,      // Pointer to the output array y.
-    int    *shrink, // If 1 the output array is shrinked.
-    int    *Error)  // Error code.
+void Rchistogram(int    *K,      // Numbers of bins.
+                 int    *v,      // Number of nonempty bins.
+                 double *y0,     // Origins.
+                 double *h,      // Sides of the hypersquare.
+                 int    *d,      // Number of independent random variables.
+                 int    *nx,     // Length of x.
+                 double *x,      // Pointer to the input array x.
+                 int    *ny,     // Length of y.
+                 double *y,      // Pointer to the output array y.
+                 int    *Error)  // Error code.
 {
-    int i, j, k, *l = NULL, *m = NULL, dny;
-
+    int i, j, k, dny, kny;
+    
     *Error = *nx < 1;
 
     if (*Error) goto E0;
 
-    l = (int*)malloc(*d * sizeof(int));
-
-    *Error = NULL == l; if (*Error) goto E0;
-
-    m = (int*)malloc(*d * sizeof(int));
-
-    *Error = NULL == m; if (*Error) goto E0;
-
-    dny = (*d) * (*ny); m[*d - 1] = 1;
-
-    for (i = *d - 1; i > 0; i--) {
-        m[i - 1] = K[i] * m[i];
-    }
+    dny = (*d) * (*ny);
 
     for (i = 0; i < *nx; i++) {
-        j = 0;
+        for (j = 0; j < *d; j++) {
+            k = (int)floor((x[i + j * (*nx)] - y0[j]) / h[j] + (FLOAT)0.5);
 
-        for (k = 0; k < *d; k++) {
-            l[k] = (int)floor((x[i + k * (*nx)] - y0[k]) / h[k] + (FLOAT)0.5);
+            if (k < 0) k = 0; else if (k >= K[j]) k = K[j] - 1;
 
-            if (l[k] < 0) l[k] = 0; else if (l[k] >= K[k]) l[k] = K[k] - 1;
-
-            j += l[k] * m[k];
+            y[*v + j * (*ny)] = y0[j] + k * h[j];
         }
 
-        for (k = 0; k < *d; k++) {
-            y[j + k * (*ny)] = y0[k] + l[k] * h[k];
-        }
+        for (j = 0; j < *v; j++) {
+            for (k = 0; k < *d; k++) {
+                kny = k * (*ny);
 
-        y[j + dny] += (FLOAT)1.0;
-    }
-
-    if (*shrink) {
-        i = 0;
-
-        for (j = 0; j < *ny; j++) if ((i != j) && (y[j + dny] > (FLOAT)0.5)) {
-            for (k = 0; k <= *d; k++) {
-                y[i + k * (*ny)] = y[j + k * (*ny)];
+                if ((FLOAT)fabs(y[j + kny] - y[*v + kny]) > (FLOAT)0.5 * h[k]) goto S0;
             }
 
-            i++;
+            y[j + dny] += (FLOAT)1.0; goto S1;
+S0:;
         }
 
-        *ny = i;
+        y[*v + dny] = (FLOAT)1.0; (*v)++;
+S1:;
     }
-
-E0: if (m) free(m);
-
-    if (l) free(l);
-} // Rhistogram
+E0:;
+} // Rchistogram
 
 }
