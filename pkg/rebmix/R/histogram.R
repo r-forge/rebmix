@@ -80,7 +80,11 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
   
   dim(output$z) <- c(nz, d + 1)
   
-  if (shrink) output$z <- output$z[1:output$nz, ]
+  if (shrink) {
+    output$z <- output$z[1:output$nz, ]
+    
+    dim(output$z) <- c(output$nz, d + 1)
+  }
   
   colnames(output$z) <- colnames(x@Y)
   
@@ -180,6 +184,8 @@ function(x, Dataset, K, ymin, ymax, ...)
   dim(output$z) <- c(nz, d + 1)
   
   output$z <- output$z[1:output$v, ]
+  
+  dim(output$z) <- c(output$v, d + 1)
   
   colnames(output$z) <- colnames(x@Y)
   

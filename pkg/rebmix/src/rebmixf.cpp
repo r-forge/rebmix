@@ -5524,7 +5524,9 @@ int Rebmix::REBMIXKNN()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
-                if (l >= cmax_) goto E2;
+                if (l >= cmax_) {
+                    Stop = 1; goto E2;
+                }
 
                 // Global mode detection.
 
@@ -5633,7 +5635,7 @@ int Rebmix::REBMIXKNN()
 
             // Bayes classification of the remaining observations.
 
-            Error = BayesClassificationKNN(Y, c, W, LooseTheta, FirstM, SecondM);
+E2:         Error = BayesClassificationKNN(Y, c, W, LooseTheta, FirstM, SecondM);
 
             if (Error) goto E0;
 
@@ -5701,7 +5703,7 @@ int Rebmix::REBMIXKNN()
         }
 
 /// Panic Branislav
-E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
@@ -6301,7 +6303,9 @@ int Rebmix::REBMIXKDE()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
-                if (l >= cmax_) goto E2;
+                if (l >= cmax_) {
+                    Stop = 1; goto E2;
+                }
 
                 // Global mode detection.
 
@@ -6410,7 +6414,7 @@ int Rebmix::REBMIXKDE()
 
             // Bayes classification of the remaining observations.
 
-            Error = BayesClassificationKDE(Y, c, W, LooseTheta, FirstM, SecondM);
+E2:         Error = BayesClassificationKDE(Y, c, W, LooseTheta, FirstM, SecondM);
 
             if (Error) goto E0;
 
@@ -6480,7 +6484,7 @@ int Rebmix::REBMIXKDE()
         }
 
 /// Panic Branislav
-E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
@@ -7103,7 +7107,9 @@ int Rebmix::REBMIXH()
             // Middle loop.
 
             while (nl / n_ > Dmin * l) {
-                if (l >= cmax_) goto E2;
+                if (l >= cmax_) {
+                    Stop = 1; goto E2;
+                }
 
                 // Global mode detection.
 
@@ -7212,7 +7218,7 @@ int Rebmix::REBMIXH()
 
             // Bayes classification of the remaining observations.
 
-            Error = BayesClassificationH(all_K_[i], Y, c, W, LooseTheta, FirstM, SecondM);
+E2:         Error = BayesClassificationH(all_K_[i], Y, c, W, LooseTheta, FirstM, SecondM);
 
             if (Error) goto E0;
 
@@ -7286,7 +7292,7 @@ int Rebmix::REBMIXH()
         }
 
 /// Panic Branislav
-E2:     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+        if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
             EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
             for (j = 0; j < all_c; j++) {
@@ -7838,7 +7844,9 @@ int Rebmix::REBMIXK()
         // Middle loop.
 
         while (nl / n_ > Dmin * l) {
-            if (l >= cmax_) goto E2;
+           if (l >= cmax_) {
+               Stop = 1; goto E2;
+           }
 
             // Global mode detection.
 
@@ -7947,7 +7955,7 @@ int Rebmix::REBMIXK()
 
         // Bayes classification of the remaining observations.
 
-        Error = BayesClassificationH(nr_, Y, c, W, LooseTheta, FirstM, SecondM);
+E2:     Error = BayesClassificationH(nr_, Y, c, W, LooseTheta, FirstM, SecondM);
 
         if (Error) goto E0;
 
@@ -8005,7 +8013,7 @@ int Rebmix::REBMIXK()
     }
 
     /// Panic Branislav
-E2: if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
+    if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
         EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
         for (j = 0; j < all_c; j++) {
@@ -9269,27 +9277,6 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             length_K_ = 1;
         }
         else
-        if (!strcmp(ident, "Y0")) {
-            i = 0;
-
-            while (pchar) {
-                y0_ = (FLOAT*)realloc(y0_, (i + 1) * sizeof(FLOAT));
-
-                Error = NULL == y0_; if (Error) goto E0;
-
-                y0_[i] = (FLOAT)atof(pchar);
-
-                pchar = strtok(NULL, "\t"); ++i;
-            }
-
-            if ((length_pdf_ > 0) && (length_pdf_ != i)) {
-                Error = 1; goto E0;
-            }
-            else {
-                length_pdf_ = i;
-            }
-        }
-        else
         if (!strcmp(ident, "YMIN")) {
             i = 0;
 
@@ -9521,6 +9508,8 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *ymin,              // Minimum observations.
                 int   *length_ymax,       // Length of ymax.
                 FLOAT *ymax,              // Maximum observations.
+                int    *length_h,         // Length of h.
+                double *h,                // Sides of the hypersquare.
                 FLOAT *ar,                // Acceleration rate.
                 char  **Restraints,       // Restraints type.
                 int   *n,                 // Number of observations.
@@ -9536,23 +9525,6 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
 {
     int  i, j, k, l;
     int  Error = 0;
-
-    if (Preprocessing) {
-        if (!strcmp(Preprocessing[0], "histogram")) {
-            Preprocessing_ = poHistogram;
-        }
-        else
-        if (!strcmp(Preprocessing[0], "kernel density estimation")) {
-            Preprocessing_ = poKDE;
-        }
-        else
-        if (!strcmp(Preprocessing[0], "k-nearest neighbour")) {
-            Preprocessing_ = poKNearestNeighbour;
-        }
-        else {
-            Error = 1; goto E0;
-        }
-    }
 
     if (cmax) cmax_ = *cmax;
 
@@ -9725,16 +9697,6 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
     }
 
-    if (length_pdf) {
-        y0_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
-
-        Error = NULL == y0_; if (Error) goto E0;
-
-        h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
-
-        Error = NULL == y0_; if (Error) goto E0;
-    }
-
     if (length_ymin && length_pdf && ymin) {
         if (*length_ymin > 0) {
             ymin_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
@@ -9762,6 +9724,16 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
         else {
             ymax_ = NULL;
+        }
+    }
+
+    if (length_h && length_pdf && h) {
+        h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+        Error = NULL == h_; if (Error) goto E0;
+
+        for (i = 0; i < length_pdf_; i++) {
+            h_[i] = h[i];
         }
     }
 
@@ -9852,6 +9824,23 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
 
         if (Y_type_ == 0) {
             nc_ = length_pdf_;
+
+            if (Preprocessing) {
+                if (!strcmp(Preprocessing[0], "histogram")) {
+                    Preprocessing_ = poHistogram;
+                }
+                else
+                if (!strcmp(Preprocessing[0], "kernel density estimation")) {
+                    Preprocessing_ = poKDE;
+                }
+                else
+                if (!strcmp(Preprocessing[0], "k-nearest neighbour")) {
+                    Preprocessing_ = poKNearestNeighbour;
+                }
+                else {
+                    Error = 1; goto E0;
+                }
+            }
         }
         else
         if (Y_type_ == 1) {

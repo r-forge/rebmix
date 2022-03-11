@@ -16,7 +16,9 @@ function(model, ...)
       
       X <- as.matrix(model@Dataset[[i]])
       
-      d <- ncol(X)  
+      d <- ncol(X)
+      
+      h <- NULL
     }
     else
     if (class(model@Dataset[[i]]) == "Histogram") {
@@ -27,6 +29,8 @@ function(model, ...)
       X <- as.matrix(model@Dataset[[i]]@Y)
       
       d <- ncol(X) - 1
+      
+      h <- model@Dataset[[i]]@h 
     }
 
     message("Dataset = ", Dataset.name)
@@ -67,7 +71,7 @@ function(model, ...)
     }
     else
     if (Y.type == 1) {
-      dK <- 1; length.K <- 0; K <- NULL
+      dK <- 1; length.K <- 0; K <- NULL 
     }
 
     if (length(model@theta1) > 0) {
@@ -109,6 +113,8 @@ function(model, ...)
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
+      length.h = as.integer(length(h)),
+      h = as.double(h),      
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),
@@ -370,7 +376,9 @@ function(model, ...)
       
       X <- as.matrix(model@Dataset[[i]])
       
-      d <- ncol(X)  
+      d <- ncol(X)
+      
+      h <- NULL
     }
     else
     if (class(model@Dataset[[i]]) == "Histogram") {
@@ -381,6 +389,8 @@ function(model, ...)
       X <- as.matrix(model@Dataset[[i]]@Y)
       
       d <- ncol(X) - 1
+      
+      h <- model@Dataset[[i]]@h
     }
 
     message("Dataset = ", Dataset.name)
@@ -456,6 +466,8 @@ function(model, ...)
       ymin = as.double(model@ymin),
       length.ymax = as.integer(length(model@ymax)),
       ymax = as.double(model@ymax),
+      length.h = as.integer(length(h)),
+      h = as.double(h),       
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
       n = as.integer(n),

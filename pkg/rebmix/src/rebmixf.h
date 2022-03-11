@@ -181,6 +181,8 @@ public:
             FLOAT *ymin,              // Minimum observations.
             int   *length_ymax,       // Length of ymax.
             FLOAT *ymax,              // Maximum observations.
+            int    *length_h,         // Length of h.
+            double *h,                // Sides of the hypersquare.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
             int   *n,                 // Number of observations.

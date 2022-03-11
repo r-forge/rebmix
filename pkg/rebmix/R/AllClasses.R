@@ -926,7 +926,7 @@ function(.Object, ...,
     stop(sQuote("Dataset"), " list of data frames or objects of class ", "Histogram", " is requested!", call. = FALSE)
   }
 
-  d <- NULL
+  d <- NULL;
   
   for (i in 1:length(Dataset)) {
     if (class(Dataset[[i]]) == "data.frame") {
@@ -943,6 +943,18 @@ function(.Object, ...,
       if (nrow(Dataset[[i]]) < 2) {
         stop(sQuote("Dataset"), " numbers of rows in data frames must be greater than 1!", call. = FALSE)
       }
+      
+      # Preprocessing.
+
+      if (missing(Preprocessing) || (length(Preprocessing) == 0)) {
+        stop(sQuote("Preprocessing"), " must not be empty!", call. = FALSE)
+      }
+
+      if (!is.character(Preprocessing)) {
+        stop(sQuote("Preprocessing"), " character vector is requested!", call. = FALSE)
+      }
+
+      Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = FALSE)      
     }
     else {
       di <- ncol(Dataset[[i]]@Y) - 1
@@ -956,18 +968,6 @@ function(.Object, ...,
   if (length(d) != 1) {
     stop(sQuote("Dataset"), " numbers of variables in data frames must be equal!", call. = FALSE)
   }  
-
-  # Preprocessing.
-
-  if (missing(Preprocessing) || (length(Preprocessing) == 0)) {
-    stop(sQuote("Preprocessing"), " must not be empty!", call. = FALSE)
-  }
-
-  if (!is.character(Preprocessing)) {
-    stop(sQuote("Preprocessing"), " character vector is requested!", call. = FALSE)
-  }
-
-  Preprocessing <- match.arg(Preprocessing, .rebmix$Preprocessing, several.ok = FALSE)
 
   # cmax.
 

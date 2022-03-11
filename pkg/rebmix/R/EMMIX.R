@@ -31,18 +31,30 @@ function(model, Theta, ...)
 
   for (i in 1:length(model@Dataset)) {
     Dataset.name <- names(model@Dataset)[i]
+    
+    Dataset <- model@Dataset[[i]]
+    
+    if (class(Dataset) == "data.frame") {
+      Y.type <- 0
+    
+      X <- as.matrix(model@Dataset[[i]])
 
-    X <- as.matrix(model@Dataset[[i]])
+      n <- nrow(X)
+      d <- ncol(X)    
+    }
+    else
+    if (class(Dataset) == "Histogram") {
+      Y.type <- 1
+    
+      X <- as.matrix(model@Dataset[[i]]@Y)
+
+      n <- nrow(X)
+      d <- ncol(X) - 1 
+    }     
 
     message("Dataset = ", Dataset.name)
 
     flush.console()
-
-    n <- nrow(X)
-
-    d <- ncol(X)
-    
-    Y.type <- 0
 
     output <- .C(C_REMMIX,
       d = as.integer(d),
@@ -212,17 +224,29 @@ function(model, Theta, ...)
   for (i in 1:length(model@Dataset)) {
     Dataset.name <- names(model@Dataset)[i]
 
-    X <- as.matrix(model@Dataset[[i]])
+    Dataset <- model@Dataset[[i]]
+    
+    if (class(Dataset) == "data.frame") {
+      Y.type <- 0
+    
+      X <- as.matrix(model@Dataset[[i]])
+
+      n <- nrow(X)
+      d <- ncol(X)    
+    }
+    else
+    if (class(Dataset) == "Histogram") {
+      Y.type <- 1
+    
+      X <- as.matrix(model@Dataset[[i]]@Y)
+
+      n <- nrow(X)
+      d <- ncol(X) - 1 
+    }  
 
     message("Dataset = ", Dataset.name)
 
     flush.console()
-
-    n <- nrow(X)
-
-    d <- ncol(X)
-    
-    Y.type <- 0
 
     output <- .C(C_REMMVNORM,
       d = as.integer(d),

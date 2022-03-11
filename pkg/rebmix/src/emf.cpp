@@ -147,7 +147,7 @@ int Emmix::Initialize(int                  n,             // Number of observati
     Error = NULL == Y_; if (Error) goto E0;
 
     for (i = 0; i < length_pdf_ + 1; i++) {
-        Y_[i] = (FLOAT*)malloc(n_ * sizeof(FLOAT));
+        Y_[i] = (FLOAT*)malloc(nr_ * sizeof(FLOAT));
 
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
