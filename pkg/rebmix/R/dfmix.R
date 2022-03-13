@@ -19,16 +19,18 @@ function(x,
 
   if ((pos < 1) || (pos > nrow(x@summary))) {
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
-  }  
-
+  }
+  
   if (missing(Dataset)) {
     Dataset <- x@Dataset[[pos]]  
-  
-    if (missing(Dataset)) {
-      stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+    
+    if (class(Dataset) == "Histogram") {
+      d <- ncol(Dataset@Y) - 1
+   
+      Dataset <- as.data.frame(Dataset@Y[, 1:d])
     }
   }
-
+  
   if (!is.data.frame(Dataset)) {
     stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
   }
@@ -178,10 +180,12 @@ function(x,
   }  
 
   if (missing(Dataset)) {
-    Dataset <- x@Dataset[[pos]]  
+    Dataset <- x@Dataset[[pos]]
   
-    if (missing(Dataset)) {
-      stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+    if (class(Dataset) == "Histogram") {
+      d <- ncol(Dataset@Y) - 1
+   
+      Dataset <- as.data.frame(Dataset@Y[, 1:d])
     }
   }
   

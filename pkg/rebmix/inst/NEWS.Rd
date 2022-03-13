@@ -4,9 +4,9 @@
 \itemize{
 \item Class \code{"Histogram"} is added.
 \item Methods \code{"chistogram"} and \code{"fhistogram"} are added.
-\item Argument \code{y0} is removed from \code{REBMIX}, \code{bins} and \code{optbins} methods.
+\item Argument \code{y0} is removed from \code{REBMIX}, \code{bins}, \code{optbins} methods and from class \code{"REBMIX"}.
 \item The C++ function \code{REBMIXK()} is added. It is called by the \code{REBMIX} method if the argument \code{Dataset} contains objects of type \code{"Histogram"}.
-\item Numerous minor changes in C++ and R codes required due to the above changes.
+\item Numerous minor changes and debugging in C++ and R codes required due to the above changes.
 }
 }
 \section{Changes in version 2.14.0}{ 

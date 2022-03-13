@@ -1422,6 +1422,46 @@ E0: if (Y) {
     if (rebmix) delete rebmix;
 } // RPreprocessingHMIX
 
+void RPreprocessingKMIX(double *h,      // Sides of the hypersquare.
+                        int    *d,      // Number of independent random variables.
+                        int    *n,      // Length of x.
+                        double *x,      // Pointer to the array x.
+                        int    *Error)  // Error code.
+{
+    int i, j, k, l, dn, jn, kn;
+
+    *Error = *n < 1;
+
+    if (*Error) goto E0;
+
+    dn = (*d) * (*n);
+
+    l = 0;
+
+    for (i = 0; i < *n; i++) {
+        for (j = 0; j <= *d; j++) {
+            jn = j * (*n); x[l + jn] = x[i + jn];
+        }
+
+        for (j = 0; j < l; j++) {
+            for (k = 0; k < *d; k++) {
+                kn = k * (*n);
+
+                if ((FLOAT)fabs(x[j + kn] - x[l + kn]) > (FLOAT)0.5 * h[k]) goto S0;
+            }
+
+            x[j + dn] += x[l + dn]; goto S1;
+S0:;
+        }
+
+        (l)++;
+S1:;
+    }
+
+    *n = l;
+E0:;
+} // RPreprocessingKMIX
+
 void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersquare.
                                  int    *k,            // k-nearest neighbours.
                                  char   **Criterion,   // Information criterion type.

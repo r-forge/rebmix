@@ -26,8 +26,10 @@ function(x,
   if (missing(Dataset)) {
     Dataset <- x@Dataset[[pos]]  
   
-    if (missing(Dataset)) {
-      stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+    if (class(Dataset) == "Histogram") {
+      d <- ncol(Dataset@Y) - 1
+   
+      Dataset <- as.data.frame(Dataset@Y[, 1:d])
     }
   }
 
@@ -192,8 +194,10 @@ function(x,
   if (missing(Dataset)) {
     Dataset <- x@Dataset[[pos]]  
   
-    if (missing(Dataset)) {
-      stop(sQuote("Dataset"), " must not be empty!", call. = FALSE)
+    if (class(Dataset) == "Histogram") {
+      d <- ncol(Dataset@Y) - 1
+   
+      Dataset <- as.data.frame(Dataset@Y[, 1:d])
     }
   }
   

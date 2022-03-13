@@ -25,6 +25,7 @@ extern void RCLRMIX(void *, void *, void *, void *, void *, void *, void *, void
 extern void RPreprocessingKNNMIX(void *, void *, void *, void *, void *, void *, void *);
 extern void RPreprocessingKDEMIX(void *, void *, void *, void *, void *, void *);
 extern void RPreprocessingHMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RPreprocessingKMIX(void *, void *, void *, void *, void *);
 
 extern void RInformationCriterionKNNMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RInformationCriterionKDEMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -108,6 +109,7 @@ static const R_CMethodDef CMethods[] = {
     {"RPreprocessingKNNMVNORM", (DL_FUNC) &RPreprocessingKNNMVNORM, 7},
     {"RPreprocessingKDEMVNORM", (DL_FUNC) &RPreprocessingKDEMVNORM, 6},
     {"RPreprocessingHMVNORM", (DL_FUNC) &RPreprocessingHMVNORM, 10},
+    {"RPreprocessingKMIX", (DL_FUNC)&RPreprocessingKMIX, 5},
     {"RInformationCriterionKNNMVNORM", (DL_FUNC) &RInformationCriterionKNNMVNORM, 17},
     {"RInformationCriterionKDEMVNORM", (DL_FUNC) &RInformationCriterionKDEMVNORM, 16},
     {"RInformationCriterionHMVNORM", (DL_FUNC) &RInformationCriterionHMVNORM, 20},
