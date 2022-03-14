@@ -23,8 +23,23 @@ function(x,
   }
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
+  
+  if (class(Dataset) == "data.frame") {
+    Y.type <- 0
+    
+    d <- ncol(Dataset)
+  }  
+  else
+  if (class(Dataset) == "Histogram") {
+    Y.type <- 1
+    
+    Dataset <- Dataset@Y
+    
+    d <- ncol(Dataset) - 1
+  }  
 
-  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
+  dini <- d; variables <- eval(variables)
+  
   n <- nrow(Dataset)
 
   if (length(variables) != 0) {
@@ -49,22 +64,47 @@ function(x,
   if (!is.logical(log.p)) {
     stop(sQuote("log.p"), " logical is requested!", call. = FALSE)
   }
-
-  Dataset <- as.matrix(Dataset[, variables])
-
+  
   F <- array(data = 0.0, dim = n, dimnames = NULL)
-
-  if (lower.tail == TRUE) {
-    for (i in 1:n) {
-      F[i] <- sum(apply(Dataset <= Dataset[i,], 1, all))
+  
+  if (Y.type == 0) {
+    Dataset <- as.matrix(Dataset[, variables])
+    
+    if (lower.tail == TRUE) {
+      for (i in 1:n) {
+        F[i] <- sum(apply(Dataset <= Dataset[i,], 1, all))
+      }
     }
+    else {
+      for (i in 1:n) {
+        F[i] <- sum(apply(Dataset > Dataset[i,], 1, all))
+      }
+    }    
   }
-  else {
-    for (i in 1:n) {
-      F[i] <- sum(apply(Dataset > Dataset[i,], 1, all))
+  else 
+  if (Y.type == 1) {
+    Dataset <- as.matrix(Dataset[, c(variables, dini + 1)])
+    
+    if (lower.tail == TRUE) {
+      for (i in 1:n) {
+        rows <- which(apply(Dataset <= Dataset[i, 1:d], 1, all))
+      
+        F[i] <- sum(Dataset[rows, d + 1])
+      }
     }
+    else {
+      for (i in 1:n) {
+        rows <- which(apply(Dataset > Dataset[i, 1:d], 1, all))
+        
+        F[i] <- sum(Dataset[rows, d + 1])
+      }
+    }
+    
+    n <- sum(Dataset[, d + 1])    
+    
+    Dataset <- Dataset[, -(d + 1)]
   }
-
+      
   F <- F / n
 
   if (log.p == TRUE) {
@@ -107,8 +147,23 @@ function(x,
   }
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
+  
+  if (class(Dataset) == "data.frame") {
+    Y.type <- 0
+    
+    d <- ncol(Dataset)
+  }  
+  else
+  if (class(Dataset) == "Histogram") {
+    Y.type <- 1
+    
+    Dataset <- Dataset@Y
+    
+    d <- ncol(Dataset) - 1
+  }  
 
-  d <- ncol(Dataset); dini <- d; variables <- eval(variables)
+  dini <- d; variables <- eval(variables)
+  
   n <- nrow(Dataset)
 
   if (length(variables) != 0) {
@@ -133,23 +188,48 @@ function(x,
   if (!is.logical(log.p)) {
     stop(sQuote("log.p"), " logical is requested!", call. = FALSE)
   }
-
-  Dataset <- as.matrix(Dataset[, variables])
-
+  
   F <- array(data = 0.0, dim = n, dimnames = NULL)
 
-  if (lower.tail == TRUE) {
-    for (i in 1:n) {
-      F[i] <- sum(apply(Dataset <= Dataset[i,], 1, all))
+  if (Y.type == 0) {
+    Dataset <- as.matrix(Dataset[, variables])
+    
+    if (lower.tail == TRUE) {
+      for (i in 1:n) {
+        F[i] <- sum(apply(Dataset <= Dataset[i,], 1, all))
+      }
+    }
+    else {
+      for (i in 1:n) {
+        F[i] <- sum(apply(Dataset > Dataset[i,], 1, all))
+      }
     }
   }
-  else {
-    for (i in 1:n) {
-      F[i] <- sum(apply(Dataset > Dataset[i,], 1, all))
+  else
+  if (Y.type == 1) {
+    Dataset <- as.matrix(Dataset[, c(variables, dini + 1)])
+   
+    if (lower.tail == TRUE) {
+      for (i in 1:n) {
+        rows <- which(apply(Dataset <= Dataset[i, 1:d], 1, all))
+      
+        F[i] <- sum(Dataset[rows, d + 1])
+      }
     }
+    else {
+      for (i in 1:n) {
+        rows <- which(apply(Dataset > Dataset[i, 1:d], 1, all))
+        
+        F[i] <- sum(Dataset[rows, d + 1])
+      }
+    }
+        
+    n <- sum(Dataset[, d + 1])
+    
+    Dataset <- Dataset[, -(d + 1)]
   }
-
-  F <- F / n
+    
+  F <- F / n     
 
   if (log.p == TRUE) {
     F <- log(F)

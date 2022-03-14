@@ -128,7 +128,7 @@ Communications in Statistics - Theory and Methods, 40(5):876-892, 2011a. \doi{10
 M. Nagode and M. Fajdiga. The rebmix algorithm for the multivariate finite mixture estimation.
 Communications in Statistics - Theory and Methods, 40(11):2022-2034, 2011b. \doi{10.1080/03610921003725788}.\cr\cr
 M. Nagode. Finite mixture modeling via REBMIX.
-Journal of Algorithms and Optimization, 3(2):14-28, 2015. \doi{10.5963/JAO0302001}.\cr\cr
+Journal of Algorithms and Optimization, 3(2):14-28, 2015. \url{https://repozitorij.uni-lj.si/Dokument.php?id=127674&lang=eng}.\cr\cr
 B. Panic, J. Klemenc, M. Nagode. Improved initialization of the EM algorithm for mixture model parameter estimation.
 Mathematics, 8(3):373, 2020.
 \doi{10.3390/math8030373}.
