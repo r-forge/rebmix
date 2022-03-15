@@ -130,13 +130,11 @@ citEntry(entry = "Article",
   volume = "3",
   number = "2",
   pages = "14-28",
-  doi = "10.5963/JAO0302001",
   url = "https://repozitorij.uni-lj.si/Dokument.php?id=127674&lang=eng",
 
   textVersion  =
   paste("Marko Nagode (2015).",
         "Finite Mixture Modeling via REBMIX.",
         "Journal of Algorithms and Optimization, 3(2), 14-28.",
-        "doi: 10.5963/JAO0302001 ",
         "url: https://repozitorij.uni-lj.si/Dokument.php?id=127674&lang=eng.")
 )
