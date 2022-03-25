@@ -20,7 +20,7 @@ a desired number of clusters for which the slot is calculated.
 an object of class \code{REBMIX}.
 }
 \item{\code{Dataset}:}{
-a data frame to be clustered. The default value is \code{data.frame()}.
+a data frame or an object of class \code{Histogram} to be clustered.
 }
 \item{\code{pos}:}{
 a desired row number in \code{x@summary} for which the clustering is performed. The default value is \code{1}.

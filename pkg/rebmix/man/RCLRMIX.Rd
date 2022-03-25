@@ -15,7 +15,7 @@ Predicts Cluster Membership Based Upon a Model Trained by REBMIX
 Returns as default the RCLRMIX algorithm output for mixtures of conditionally independent normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac, uniform or von Mises component densities, following the methodology proposed in the article cited in the references. If \code{model} equals \code{"RCLRMVNORM"} output for mixtures of multivariate normal component densities with unrestricted variance-covariance matrices is returned.
 }
 \usage{
-\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, Dataset = data.frame(), 
+\S4method{RCLRMIX}{RCLRMIX}(model = "RCLRMIX", x = NULL, Dataset = NULL, 
         pos = 1, Zt = factor(), Rule = character(), ...)
 ## ... and for other signatures
 \S4method{summary}{RCLRMIX}(object, ...)
@@ -29,7 +29,7 @@ see Methods section below.
 an object of class \code{REBMIX}.
 }
 \item{Dataset}{
-a data frame to be clustered. The default value is \code{data.frame()}.
+a data frame or an object of class \code{Histogram} to be clustered.
 }
 \item{pos}{
 a desired row number in \code{x@summary} for which the clustering is performed. The default value is \code{1}.

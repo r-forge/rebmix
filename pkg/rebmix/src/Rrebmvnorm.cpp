@@ -203,7 +203,9 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                             EMTolerance,       // Tolerance for EM algortihm.
                             EMAccelerationMul, // Acceleration rate for Em algorithm.
                             EMMaxIter,         // Maximum number of iterations in EM algorithm.
-                            EMK);              // Number of bins for histogram EM algorithm.
+                            EMK,               // Number of bins for histogram EM algorithm.
+                            NULL,              // Component weights.
+                            NULL);             // Mixture parameters.
     
     if (*Error) goto E0;
 
@@ -1643,7 +1645,8 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
                               char   **pdf,         // Parametric family types.
                               double *Theta,        // Component parameters.
                               int    *n,            // Number of observations.
-                              double *x,            // Dataset.
+                              double *Y,            // Dataset.
+                              int    *Y_type,       // Dataset type.
 /// Panic Branislav
                               char   **Rule,        // Mergining rule
 /// End
@@ -1724,6 +1727,8 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
         }
     }
 
+    rebmvnorm->Y_type_ = *Y_type;
+
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
     rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
@@ -1740,7 +1745,7 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
 
     for (j = 0; j < rebmvnorm->length_pdf_; j++) {
         for (l = 0; l < rebmvnorm->nr_; l++) {
-            rebmvnorm->Y_[j][l] = x[i]; i++;
+            rebmvnorm->Y_[j][l] = Y[i]; i++;
         }
     }
 
@@ -1754,7 +1759,7 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
 
 /// Panic Branislav
     if (!strcmp(Rule[0], "Entropy")) {
-        *Error = rebmvnorm->CombineComponents(*c,
+        *Error = rebmvnorm->CombineComponentsEntropy(*c,
             rebmvnorm->W_,
             rebmvnorm->MixTheta_,
             tau,
@@ -1913,7 +1918,9 @@ void REMMVNORM(int    *d,                 // Number of independent random variab
                            EMTolerance,       // Tolerance for EM algortihm.
                            EMAccelerationMul, // Acceleration rate for Em algorithm.
                            EMMaxIter,         // Maximum number of iterations in EM algorithm.
-                           EMK);              // Number of bins for histogram EM algorithm.
+                           EMK,               // Number of bins for histogram EM algorithm.
+                           NULL,              // Component weights.
+                           NULL);             // Mixture parameters.
 
     rebmvnorm->EM_strategy_ = strategy_single;
 

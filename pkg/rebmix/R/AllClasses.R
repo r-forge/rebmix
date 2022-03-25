@@ -271,7 +271,7 @@ setMethod("show",
 function(object)
 {
   if (missing(object)) {
-    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+    stop(sQuote("object"), " object of class RNGMIX.Theta is requested!", call. = FALSE)
   }
 
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
@@ -467,7 +467,7 @@ setMethod("show",
 function(object)
 {
   if (missing(object)) {
-    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+    stop(sQuote("object"), " object of class EMMIX.Theta is requested!", call. = FALSE)
   }
 
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
@@ -588,7 +588,7 @@ setMethod("show",
 function(object)
 {
   if (missing(object)) {
-    stop(sQuote("object"), " object of class THETA is requested!", call. = FALSE)
+    stop(sQuote("object"), " object of class EMMVNORM.Theta is requested!", call. = FALSE)
   }
 
   cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
@@ -1219,7 +1219,7 @@ function(.Object, ...,
   }
 
   if (class(EMcontrol) != "EM.Control") {
-    stop(sQuote("EMcontrol"), " object of class ", "EM.Control", " is requested!", call. = FALSE)
+    stop(sQuote("EMcontrol"), " object of class EM.Control is requested!", call. = FALSE)
   }
 ### End  
 
@@ -1565,7 +1565,7 @@ function(object)
 
 setClass("RCLRMIX",
 slots = c(x = "ANY",
-  Dataset = "data.frame",
+  Dataset = "ANY",
   pos = "numeric",
   Zt = "factor",
   Zp = "factor",
@@ -1621,26 +1621,40 @@ function(.Object, ...,
   # Dataset.
   
   if (missing(Dataset) || (length(Dataset) == 0)) {
-    Dataset <- .Object@Dataset
+    Dataset <- x@Dataset[[pos]]
     
-    n <- nrow(x@Dataset[[pos]])
+    n <- nrow(Dataset)
   }
   else {
-    if (!is.data.frame(Dataset)) {
-      stop(sQuote("Dataset"), " data frame is requested!", call. = FALSE)
+    if ((class(Dataset) != "Histogram") && (class(Dataset) != "data.frame")) {
+      stop(sQuote("Dataset"), " data frame or object of class Histogram is requested!", call. = FALSE)
     }
-
+    
     d <- length(x@Variables)
 
-    if (ncol(Dataset) != d) {
-      stop(sQuote("Dataset"), " number of columns in data frame must equal ", d, "!", call. = FALSE)
+    if (class(Dataset) == "data.frame") {
+      if (ncol(Dataset) != d) {
+        stop(sQuote("Dataset"), " number of columns in data frame must equal ", d, "!", call. = FALSE)
+      }
+      
+      n <- nrow(Dataset)
+
+      if (n < 1) {
+        stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
+      }      
     }
+    else
+    if (class(Dataset) == "Histogram") {
+      if (length(Dataset@h) != d) {
+        stop(sQuote("Dataset"), " number of variables in object of class Histogram must equal ", d, "!", call. = FALSE)
+      }
+      
+      n <- nrow(Dataset@Y)
 
-    n <- nrow(Dataset)
-
-    if (n < 1) {
-      stop(sQuote("Dataset"), " number of rows in data frame must be greater than 0!", call. = FALSE)
-    }  
+      if (n < 1) {
+        stop(sQuote("Dataset"), " number of bins in object of class Histogram must be greater than 0!", call. = FALSE)
+      }       
+    }      
   }
 
   # Zt.

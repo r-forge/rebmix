@@ -27,11 +27,20 @@ function(model, ...)
   dataset <- model@Dataset
 
   if (missing(dataset) || (length(dataset) == 0)) {
-    dataset <- as.matrix(model@x@Dataset[[model@pos]])
+    dataset <- model@x@Dataset[[model@pos]]
   }
-  else {
+    
+  if (class(dataset) == "data.frame") {
+    Y.type <- 0
+    
     dataset <- as.matrix(dataset)
   }  
+  else
+  if (class(dataset) == "Histogram") {
+    Y.type <- 1
+    
+    dataset <- as.matrix(dataset@Y)
+  }   
 
   n <- nrow(dataset)
 
@@ -127,7 +136,8 @@ function(model, ...)
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2, theta3)),
     n = as.integer(n),
-    x = as.double(dataset),
+    Y = as.double(dataset),
+    Y.type = as.integer(Y.type),
 ### Panic Branislav.
     Rule = as.character(model@Rule),
 ### End    
@@ -247,11 +257,20 @@ function(model, ...)
   dataset <- model@Dataset
 
   if (missing(dataset) || (length(dataset) == 0)) {
-    dataset <- as.matrix(model@x@Dataset[[model@pos]])
+    dataset <- model@x@Dataset[[model@pos]]
   }
-  else {
+    
+  if (class(dataset) == "data.frame") {
+    Y.type <- 0
+    
     dataset <- as.matrix(dataset)
-  } 
+  }  
+  else
+  if (class(dataset) == "Histogram") {
+    Y.type <- 1
+    
+    dataset <- as.matrix(dataset@Y)
+  }
 
   n <- nrow(dataset)
 
@@ -264,7 +283,8 @@ function(model, ...)
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2)),
     n = as.integer(n),
-    x = as.double(dataset),
+    Y = as.double(dataset),
+    Y.type = as.integer(Y.type),
 ### Panic Branislav.
     Rule = as.character(model@Rule),
 ### End    

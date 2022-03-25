@@ -4908,14 +4908,14 @@ E0: return Error;
 
 // Returns combined components.
 
-int Rebmix::CombineComponents(int                  c,          // Number of components.
-                              FLOAT                *W,         // Component weights.
-                              CompnentDistribution **MixTheta, // Mixture parameters.
-                              FLOAT                *tau,       // Conditional probabilities.
-                              int                  *F,         // From components.
-                              int                  *T,         // To components.
-                              FLOAT                *EN,        // Entropy.
-                              FLOAT                *ED)        // Entropy decrease.
+int Rebmix::CombineComponentsEntropy(int                  c,          // Number of components.
+                                     FLOAT                *W,         // Component weights.
+                                     CompnentDistribution **MixTheta, // Mixture parameters.
+                                     FLOAT                *tau,       // Conditional probabilities.
+                                     int                  *F,         // From components.
+                                     int                  *T,         // To components.
+                                     FLOAT                *EN,        // Entropy.
+                                     FLOAT                *ED)        // Entropy decrease.
 {
     int   *C = NULL, i, ii, j, jj, II, J, k, l;
     FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL;
@@ -5011,7 +5011,7 @@ E0: if (C) free(C);
     if (Tmp) free(Tmp);
 
     return Error;
-} // CombineComponents
+} // CombineComponentsEntropy
 
 /// Panic Branislav
 int Rebmix::CombineComponentsDemp(int                  c,          // Number of components.
@@ -9521,7 +9521,9 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *EMTolerance,       // Tolerance for EM algortihm.
                 FLOAT *EMAccelerationMul, // Acceleration rate for Em algorithm.
                 int   *EMMaxIter,         // Maximum number of iterations in EM algorithm.
-                int   *EMK)               // Number of bins for histogram EM algorithm.
+                int   *EMK,               // Number of bins for histogram EM algorithm.
+                FLOAT *W,                 // Component weights.
+                FLOAT *MixTheta)          // Mixture parameters.
 {
     int  i, j, k, l;
     int  Error = 0;
@@ -9585,6 +9587,8 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
 
     if (d) length_pdf_ = *d;
 
+    if (length_pdf) length_pdf_ = *length_pdf;
+
     if (Variables && d) {
         Variables_ = (VariablesType_e*)malloc(length_pdf_ * sizeof(VariablesType_e));
 
@@ -9608,8 +9612,6 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
 
     Error = NULL == IniTheta_; if (Error) goto E0;
 
-    if (length_pdf) length_pdf_ = *length_pdf;
-
     if (length_Theta && length_pdf && length_theta) {
         length_Theta_ = *length_Theta;
 
@@ -9626,7 +9628,7 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         if (Error) goto E0;
     }
 
-    if (pdf && length_Theta && length_pdf && length_theta) {
+    if (pdf && length_pdf) {
         for (i = 0; i < length_pdf_; i++) {
             if (!strcmp(pdf[i], "normal")) {
                 IniTheta_->pdf_[i] = pfNormal;
@@ -9883,6 +9885,48 @@ int Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
 
             for (l = 0; l < nr_; l++) {
                 n_ += (int)Y_[length_pdf_][l];
+            }
+        }
+    }
+
+    if (W) {
+        W_ = (FLOAT*)malloc(cmax_ * sizeof(FLOAT));
+
+        Error = NULL == W_; if (Error) goto E0;
+
+        for (i = 0; i < cmax_; i++) W_[i] = W[i];
+    }
+
+    if (MixTheta) {
+        MixTheta_ = new CompnentDistribution*[(unsigned int)cmax_];
+
+        Error = NULL == MixTheta_; if (Error) goto E0;
+
+        for (i = 0; i < cmax_; i++) {
+            MixTheta_[i] = new CompnentDistribution(this);
+
+            Error = NULL == MixTheta_[i]; if (Error) goto E0;
+
+            Error = MixTheta_[i]->Realloc(length_pdf_, length_Theta_, length_theta_);
+
+            if (Error) goto E0;
+        }
+
+        for (i = 0; i < cmax_; i++) {
+            for (j = 0; j < length_pdf_; j++) {
+                MixTheta_[i]->pdf_[j] = IniTheta_->pdf_[j];
+            }
+        }
+
+        i = 0;
+
+        for (j = 0; j < length_Theta_; j++) if (IniTheta_->Theta_[j]) {
+            for (k = 0; k < cmax_; k++) {
+                for (l = 0; l < length_theta_[j]; l++) {
+                    MixTheta_[k]->Theta_[j][l] = MixTheta[i];
+
+                    i++;
+                }
             }
         }
     }

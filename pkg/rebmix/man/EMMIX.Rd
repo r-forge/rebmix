@@ -26,7 +26,7 @@ a list of length \eqn{n_{\mathrm{D}}} of data frames of size \eqn{n \times d} co
 represents one random variable. Numbers of observations \eqn{n} equal the number of rows in the datasets.
 }
 \item{Theta}{
-an object of class \code{"EMMIX.Theta"} or \code{"EMMVNORM.Theta"}.
+an object of class \code{EMMIX.Theta} or \code{EMMVNORM.Theta}.
 }
 \item{EMcontrol}{
 an object of class \code{EM.Control}.

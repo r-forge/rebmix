@@ -159,7 +159,7 @@ public:
     int InformationCriterionKNN(int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionKDE(FLOAT logV, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
     int InformationCriterionH(FLOAT logV, int k, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, int *M, FLOAT *D);
-    int CombineComponents(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, int *F, int *T, FLOAT *EN, FLOAT *ED);
+    int CombineComponentsEntropy(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, int *F, int *T, FLOAT *EN, FLOAT *ED);
 /// Panic Branislav
     int CombineComponentsDemp(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, int *F, int *T, FLOAT *EN, FLOAT *ED);
 /// End
@@ -194,7 +194,10 @@ public:
             FLOAT *EMTolerance,       // Tolerance for EM algortihm.
             FLOAT *EMAccelerationMul, // Acceleration rate for Em algorithm.
             int   *EMMaxIter,         // Maximum number of iterations in EM algorithm.
-            int   *EMK);              // Number of bins for histogram EM algorithm.
+            int   *EMK,               // Number of bins for histogram EM algorithm.
+            FLOAT *W,                 // Component weights.
+            FLOAT *MixTheta);         // Mixture parameters.
+
 /// Panic Branislav
     int Get(int   *n_iter,         // Number of iterations for optimal case.
             int   *n_iter_sum,     // Number of iterations in whole run.
