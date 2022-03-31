@@ -1227,12 +1227,13 @@ function(x, s)
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
 
-  l <- c - 1
+  l <- c
 
-  while (s < length(unique(Zp))) {
+  while (l > s) {
+    l <- l - 1
+    
     Zp[Zp == x@from[l]] <- x@to[l]
 
-    l <- l - 1
   }
 
   rm(list = ls()[!(ls() %in% c("Zp"))])

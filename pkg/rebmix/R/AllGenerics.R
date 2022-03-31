@@ -275,5 +275,11 @@ setGeneric("chistogram",
     K = numeric(),
     ymin = numeric(),
     ymax = numeric(), ...)
-  standardGeneric("chistogram"))  
+  standardGeneric("chistogram"))
+  
+setGeneric("mapclusters",
+  function(x = NULL,
+    Dataset = data.frame(),
+    s = expression(c), ...)
+  standardGeneric("mapclusters"))  
 

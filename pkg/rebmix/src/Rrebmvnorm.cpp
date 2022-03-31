@@ -1643,7 +1643,7 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
                               int    *length_Theta, // Length of Theta.
                               int    *length_theta, // Length of Theta[i].
                               char   **pdf,         // Parametric family types.
-                              double *Theta,        // Component parameters.
+                              double *MixTheta,     // Mixture parameters.
                               int    *n,            // Number of observations.
                               double *Y,            // Dataset.
                               int    *Y_type,       // Dataset type.
@@ -1658,100 +1658,47 @@ void RCombineComponentsMVNORM(int    *c,            // Number of components.
                               int    *Error)        // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    int       i, j, l, m;
+    int       i;
 
     rebmvnorm = new Rebmvnorm;
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+    rebmvnorm->Set(NULL,         // Preprocessing type.
+                   c,            // Maximum number of components.
+                   NULL,         // Minimum number of components.
+                   NULL,         // Information criterion type.
+                   length_pdf,   // Number of independent random variables.
+                   NULL,         // Types of variables.
+                   length_pdf,   // Length of pdf.
+                   pdf,          // Parametric family types.
+                   length_Theta, // Length of Theta.
+                   length_theta, // Length of Theta[i].
+                   NULL,         // Component parameters.
+                   NULL,         // Length of K.
+                   NULL,         // Numbers of bins v or numbers of nearest neighbours k.
+                   NULL,         // Length of ymin.
+                   NULL,         // Minimum observations.
+                   NULL,         // Length of ymax.
+                   NULL,         // Maximum observations.
+                   NULL,         // Length of h.
+                   NULL,         // Sides of the hypersquare.
+                   NULL,         // Acceleration rate.
+                   NULL,         // Restraints type.
+                   n,            // Number of observations.
+                   Y,            // Dataset.
+                   Y_type,       // Dataset type. 
+                   NULL,         // Strategy for EM algorithm.
+                   NULL,         // EM algorithm variant.
+                   NULL,         // Acceleration for the standard EM algorithm.
+                   NULL,         // Tolerance for EM algortihm.
+                   NULL,         // Acceleration rate for Em algorithm.
+                   NULL,         // Maximum number of iterations in EM algorithm.
+                   NULL,         // Number of bins for histogram EM algorithm.
+                   W,            // Component weights.
+                   MixTheta);    // Mixture parameters.
 
-    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
-
-    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
-
-    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
-
-    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
-
-    rebmvnorm->length_pdf_ = *length_pdf;
-
-    rebmvnorm->length_Theta_ = *length_Theta;
-
-    rebmvnorm->length_theta_ = (int*)malloc(rebmvnorm->length_Theta_ * sizeof(int));
-
-    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
-
-    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
-
-    if (*Error) goto E0;
-
-    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        if (!strcmp(pdf[i], "normal")) {
-            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
-        }
-        else {
-            *Error = 1; goto E0;
-        }
-    }
-
-    rebmvnorm->MixTheta_ = new CompnentDistribution* [(unsigned int)(*c)];
-
-    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
-
-    for (i = 0; i < *c; i++) {
-        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
-
-        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
-
-        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
-
-        if (*Error) goto E0;
-    }
-
-    for (i = 0; i < *c; i++) {
-        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
-        }
-    }
-
-    i = 0;
-
-    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
-        for (l = 0; l < *c; l++) {
-            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
-                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
-
-                i++;
-            }
-        }
-    }
-
-    rebmvnorm->Y_type_ = *Y_type;
-
-    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
-
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
-
-    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
-
-    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
-        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
-
-        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
-    }
-
-    i = 0;
-
-    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
-        for (l = 0; l < rebmvnorm->nr_; l++) {
-            rebmvnorm->Y_[j][l] = Y[i]; i++;
-        }
-    }
-
-    rebmvnorm->cmax_ = *c;
-
-    for (i = 0; i < *c; i++) {
+    for (i = 0; i < rebmvnorm->cmax_; i++) {
         *Error = Cholinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
 
         if (*Error) goto E0;

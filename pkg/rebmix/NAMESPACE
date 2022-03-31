@@ -165,4 +165,5 @@ exportMethods("RNGMIX",
               "a.Y",
               "a.h",
               "fhistogram",
-              "chistogram")
+              "chistogram",
+              "mapclusters")

@@ -4942,7 +4942,15 @@ int Rebmix::CombineComponentsEntropy(int                  c,          // Number 
 
                 l = k + j;
 
-                Tmp[l] = tau[l] = W[j] * CmpDist / MixDist; en -= xlogx(tau[l]);
+                Tmp[l] = tau[l] = W[j] * CmpDist / MixDist; 
+                
+                if (Y_type_ == 0) {
+                    en -= xlogx(tau[l]);
+                }
+                else
+                if (Y_type_ == 1) {
+                    en -= Y_[length_pdf_][i] * xlogx(tau[l]);
+                }
             }
         }
         else {
@@ -4974,7 +4982,13 @@ int Rebmix::CombineComponentsEntropy(int                  c,          // Number 
                 for (jj = 0; jj < nr_; jj++) {
                     k = jj * c + ii; l = jj * c + j;
 
-                    ed += xlogx(Tmp[k] + Tmp[l]) - xlogx(Tmp[k]) - xlogx(Tmp[l]);
+                    if (Y_type_ == 0) {
+                        ed += xlogx(Tmp[k] + Tmp[l]) - xlogx(Tmp[k]) - xlogx(Tmp[l]);
+                    }
+                    else
+                    if (Y_type_ == 1) {
+                        ed += Y_[length_pdf_][jj] * (xlogx(Tmp[k] + Tmp[l]) - xlogx(Tmp[k]) - xlogx(Tmp[l]));
+                    }
                 }
 
                 if (ed >= ED[i - 2]) {
@@ -4995,7 +5009,13 @@ int Rebmix::CombineComponentsEntropy(int                  c,          // Number 
             }
 
             for (ii = 0; ii < i - 1; ii++) {
-                EN[i - 2] -= xlogx(Tmp[k + ii]);
+                if (Y_type_ == 0) {
+                    EN[i - 2] -= xlogx(Tmp[k + ii]);
+                }
+                else
+                if (Y_type_ == 1) {
+                    EN[i - 2] -= Y_[length_pdf_][j] * xlogx(Tmp[k + ii]);
+                }
             }
         }
 

@@ -34,12 +34,7 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (length(x@Dataset) == 0) {
-    d <- ncol(x@x@Dataset[[x@pos]])
-  }
-  else {
-    d <- ncol(x@Dataset)
-  }  
+  d <- length(x@x@Variables)
 
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
@@ -91,10 +86,22 @@ function(x,
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
   if (length(x@Dataset) == 0) {
-    ey <- as.matrix(x@x@Dataset[[x@pos]]);
+    if (class(x@x@Dataset[[x@pos]]) == "data.frame") {
+      ey <- as.matrix(x@x@Dataset[[x@pos]])
+    }
+    else
+    if (class(x@x@Dataset[[x@pos]]) == "Histogram") {
+      ey <- matrix(x@x@Dataset[[x@pos]]@Y[, 1:d], ncol = d)
+    }
   }
   else {
-    ey <- as.matrix(x@Dataset);
+    if (class(x@Dataset) == "data.frame") {
+      ey <- as.matrix(x@Dataset)
+    }
+    else
+    if (class(x@Dataset) == "Histogram") {
+      ey <- matrix(x@Dataset@Y[, 1:d], ncol = d)
+    }  
   }
   
   ep <- Zp - 1
@@ -332,12 +339,7 @@ function(x,
     stop(sQuote("ncol"), " must be greater than 0!", call. = FALSE)
   }
 
-  if (length(x@Dataset) == 0) {
-    d <- ncol(x@x@Dataset[[x@pos]])
-  }
-  else {
-    d <- ncol(x@Dataset)
-  }
+  d <- length(x@x@Variables)
 
   Zp <- as.numeric(levels(x@Zp))[x@Zp]
   Zt <- as.numeric(levels(x@Zt))[x@Zt]
@@ -389,10 +391,22 @@ function(x,
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
   if (length(x@Dataset) == 0) {
-    ey <- as.matrix(x@x@Dataset[[x@pos]]);
+    if (class(x@x@Dataset[[x@pos]]) == "data.frame") {
+      ey <- as.matrix(x@x@Dataset[[x@pos]])
+    }
+    else
+    if (class(x@x@Dataset[[x@pos]]) == "Histogram") {
+      ey <- matrix(x@x@Dataset[[x@pos]]@Y[, 1:d], ncol = d)
+    }
   }
   else {
-    ey <- as.matrix(x@Dataset);
+    if (class(x@Dataset) == "data.frame") {
+      ey <- as.matrix(x@Dataset)
+    }
+    else
+    if (class(x@Dataset) == "Histogram") {
+      ey <- matrix(x@Dataset@Y[, 1:d], ncol = d)
+    }  
   }
 
   ep <- Zp - 1

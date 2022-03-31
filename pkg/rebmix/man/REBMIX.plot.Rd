@@ -45,7 +45,7 @@ see Methods section below.
 currently not used.
 }
 \item{pos}{
-a desired row number in \code{x@summary} or a desired element number in \code{x@Dataset} to be plotted. The default value is \code{1}.
+a desired row number in \code{x@summary} to be plotted. The default value is \code{1}.
 }
 \item{s}{
 a desired number of clusters to be plotted. The default value is \code{expression(c)}.

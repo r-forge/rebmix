@@ -34,98 +34,100 @@ function(model, ...)
     Y.type <- 0
     
     dataset <- as.matrix(dataset)
+    
+    n <- nrow(dataset)
+
+    if (sum(pdf %in% .rebmix$pdf[c(4, 6)]) == c * d) {
+      model@p <- w
+
+      model@pi <- list(); nlevels <- array()
+
+      for (i in 1:d) {
+        for (j in 1:c) {
+          if (pdf[(j - 1) * d + i] == .rebmix$pdf[4]) {
+            if (j == 1) {
+              nlevels[i] <- as.integer(theta1[(j - 1) * d + i]) + 1
+
+              model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
+
+              colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
+              rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+            }
+
+            for (ii in 1:nlevels[i]) {
+              model@pi[[i]][j, ii] <- dbinom(ii - 1, size = as.integer(theta1[(j - 1) * d + i]), prob = as.numeric(theta2[(j - 1) * d + i]))
+            }
+          }
+          else
+          if (pdf[(j - 1) * d + i] == .rebmix$pdf[6]) {
+            if (j == 1) {
+              nlevels[i] <- length(unique(dataset[, i]))
+
+              model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
+
+              colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
+              rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+            }
+
+            for (ii in 1:nlevels[i]) {
+              model@pi[[i]][j, ii] <- ddirac(ii - 1, location = as.integer(theta1[(j - 1) * d + i]))
+            }
+          }
+        }
+      }
+
+      Y <- dataset; y <- as.matrix(unique(Y)); Nt <- array(); Np <- array()
+
+      for (j in 1:nrow(y)) {
+        x <- array(); k <- 1
+
+        for (l in 1:nrow(Y)) {
+          if (all(y[j, ] == Y[l, ])) {
+            x[k] <- l; k <- k + 1
+          }
+        }
+
+        Nt[j] <- length(x); Y <- as.matrix(Y[-x, ]); Np[j] <- 0.0
+
+        for (l in 1:c) {
+          Pl <- 1.0
+
+          for(i in 1:d) {
+            for (ii in 1:length(model@pi[[i]][l, ])) {
+              if (y[j, i] == ii - 1) {
+                Pl <- Pl * model@pi[[i]][l, ii]
+              }
+            }
+          }
+
+          Np[j] <- Np[j] + model@p[l] * Pl * n
+        }
+      }
+
+      model@P <- as.data.frame(cbind(y, Nt, Np))
+
+      if (is.null(colnames(dataset))) {
+        colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
+      
+        names(model@pi) <- 1:d
+      }
+      else {
+        colnames(model@P) <- c(colnames(dataset), "Nt", "Np")
+      
+        names(model@pi) <- colnames(dataset)
+      }
+
+      rownames(model@pi[[i]]) <- paste(1:c, sep = "")
+    }
   }  
   else
   if (class(dataset) == "Histogram") {
     Y.type <- 1
     
     dataset <- as.matrix(dataset@Y)
+    
+    n <- nrow(dataset)
   }   
-
-  n <- nrow(dataset)
-
-  if (sum(pdf %in% .rebmix$pdf[c(4, 6)]) == c * d) {
-    model@p <- w
-
-    model@pi <- list(); nlevels <- array()
-
-    for (i in 1:d) {
-      for (j in 1:c) {
-        if (pdf[(j - 1) * d + i] == .rebmix$pdf[4]) {
-          if (j == 1) {
-            nlevels[i] <- as.integer(theta1[(j - 1) * d + i]) + 1
-
-            model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
-
-            colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
-            rownames(model@pi[[i]]) <- paste(1:c, sep = "")
-          }
-
-          for (ii in 1:nlevels[i]) {
-            model@pi[[i]][j, ii] <- dbinom(ii - 1, size = as.integer(theta1[(j - 1) * d + i]), prob = as.numeric(theta2[(j - 1) * d + i]))
-          }
-        }
-        else
-        if (pdf[(j - 1) * d + i] == .rebmix$pdf[6]) {
-          if (j == 1) {
-            nlevels[i] <- length(unique(dataset[, i]))
-
-            model@pi[[i]] <- matrix(data = 0.0, nrow = c, ncol = nlevels[i])
-
-            colnames(model@pi[[i]]) <- paste(0:(nlevels[i] - 1), sep = "")
-            rownames(model@pi[[i]]) <- paste(1:c, sep = "")
-          }
-
-          for (ii in 1:nlevels[i]) {
-            model@pi[[i]][j, ii] <- ddirac(ii - 1, location = as.integer(theta1[(j - 1) * d + i]))
-          }
-        }
-      }
-    }
-
-    Y <- dataset; y <- as.matrix(unique(Y)); Nt <- array(); Np <- array()
-
-    for (j in 1:nrow(y)) {
-      x <- array(); k <- 1
-
-      for (l in 1:nrow(Y)) {
-        if (all(y[j, ] == Y[l, ])) {
-          x[k] <- l; k <- k + 1
-        }
-      }
-
-      Nt[j] <- length(x); Y <- as.matrix(Y[-x, ]); Np[j] <- 0.0
-
-      for (l in 1:c) {
-        Pl <- 1.0
-
-        for(i in 1:d) {
-          for (ii in 1:length(model@pi[[i]][l, ])) {
-            if (y[j, i] == ii - 1) {
-              Pl <- Pl * model@pi[[i]][l, ii]
-            }
-          }
-        }
-
-        Np[j] <- Np[j] + model@p[l] * Pl * n
-      }
-    }
-
-    model@P <- as.data.frame(cbind(y, Nt, Np))
-
-    if (is.null(colnames(dataset))) {
-      colnames(model@P) <- paste(c(1:d, "Nt", "Np"), sep = "")
-      
-      names(model@pi) <- 1:d
-    }
-    else {
-      colnames(model@P) <- c(colnames(dataset), "Nt", "Np")
-      
-      names(model@pi) <- colnames(dataset)
-    }
-
-    rownames(model@pi[[i]]) <- paste(1:c, sep = "")
-  }
 
   output <- .C(C_RCombineComponentsMIX,
     c = as.integer(c),
@@ -264,15 +266,17 @@ function(model, ...)
     Y.type <- 0
     
     dataset <- as.matrix(dataset)
+    
+    n <- nrow(dataset)
   }  
   else
   if (class(dataset) == "Histogram") {
     Y.type <- 1
     
     dataset <- as.matrix(dataset@Y)
+    
+    n <- nrow(dataset)    
   }
-
-  n <- nrow(dataset)
 
   output <- .C(C_RCombineComponentsMVNORM,
     c = as.integer(c),
