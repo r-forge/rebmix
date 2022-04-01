@@ -161,10 +161,10 @@ function(model, ...)
   rownames(model@tau) <- paste(1:n, sep = "")
 
   if (output$c > 1) {
-    model@from <- output$F
-    model@to <- output$T
+    model@from <- output$F[-c]
+    model@to <- output$T[-c]
     model@EN <- output$EN
-    model@ED <- output$ED
+    model@ED <- output$ED[-c]
   }
 
   output <- .C(C_RCLRMIX,
@@ -188,40 +188,6 @@ function(model, ...)
   unique.Z <- unique(output$Z)
 
   model@c <- length(unique.Z)
-
-  i <- length(model@from)
-
-  while (i > 0) {
-    from.in.unique.Z <- model@from[i] %in% unique.Z
-    to.in.unique.Z <- model@to[i] %in% unique.Z
-
-    if (from.in.unique.Z && to.in.unique.Z) {
-    }
-    else
-    if (from.in.unique.Z) {
-      j <- 1
-
-      while (j < i) {
-        if (model@from[j] == model@to[i]) model@from[j] <- model@from[i]
-        if (model@to[j] == model@to[i]) model@to[j] <- model@from[i]
-
-        j <- j + 1
-      }
-
-      model@from <- model@from[-i]
-      model@to <- model@to[-i]
-      model@EN <- model@EN[-i]
-      model@ED <- model@ED[-i]
-    }
-    else {
-      model@from <- model@from[-i]
-      model@to <- model@to[-i]
-      model@EN <- model@EN[-i]
-      model@ED <- model@ED[-i]
-    }
-
-    i <- i - 1
-  }
 
   model@Zp <- as.factor(output$Z)
   
@@ -336,40 +302,6 @@ function(model, ...)
   unique.Z <- unique(output$Z)
 
   model@c <- length(unique.Z)
-
-  i <- length(model@from)
-
-  while (i > 0) {
-    from.in.unique.Z <- model@from[i] %in% unique.Z
-    to.in.unique.Z <- model@to[i] %in% unique.Z
-
-    if (from.in.unique.Z && to.in.unique.Z) {
-    }
-    else
-    if (from.in.unique.Z) {
-      j <- 1
-
-      while (j < i) {
-        if (model@from[j] == model@to[i]) model@from[j] <- model@from[i]
-        if (model@to[j] == model@to[i]) model@to[j] <- model@from[i]
-
-        j <- j + 1
-      }
-
-      model@from <- model@from[-i]
-      model@to <- model@to[-i]
-      model@EN <- model@EN[-i]
-      model@ED <- model@ED[-i]
-    }
-    else {
-      model@from <- model@from[-i]
-      model@to <- model@to[-i]
-      model@EN <- model@EN[-i]
-      model@ED <- model@ED[-i]
-    }
-
-    i <- i - 1
-  }
 
   model@Zp <- as.factor(output$Z)
   

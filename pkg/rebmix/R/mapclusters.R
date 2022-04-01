@@ -86,12 +86,18 @@ function(x,
   
   output <- output$Z
   
-  l <- x@c
+  unique.output <- unique(output)
+  
+  set <- which(x@from %in% unique.output)
+
+  from <- x@from[set]; to <- x@to[set]
+  
+  l <- length(unique.output)
 
   while (l > s) {
     l <- l - 1
     
-    output[output == x@from[l]] <- x@to[l]
+    output[output == from[l]] <- to[l]
   }
   
   output <- as.factor(output)
@@ -186,12 +192,18 @@ function(x,
   
   output <- output$Z
   
-  l <- x@c
+  unique.output <- unique(output)
+  
+  set <- which(x@from %in% unique.output)
+
+  from <- x@from[set]; to <- x@to[set]
+  
+  l <- length(unique.output)
 
   while (l > s) {
     l <- l - 1
     
-    output[output == x@from[l]] <- x@to[l]
+    output[output == from[l]] <- to[l]
   }
   
   output <- as.factor(output)

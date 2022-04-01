@@ -52,16 +52,22 @@ function(x,
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
+  
+  unique.Zp <- unique(Zp)
+  
+  set <- which(x@from %in% unique.Zp)
 
-  i <- c - 1
+  from <- x@from[set]; to <- x@to[set]
+  
+  l <- length(unique.Zp)
 
-  while (s < length(unique(Zp))) {
-    Zp[Zp == x@from[i]] <- x@to[i]
-
-    i <- i - 1
+  while (l > s) {
+    l <- l - 1
+    
+    Zp[Zp == from[l]] <- to[l]
   }
 
-  unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
+  sort.unique.Zp <- sort(unique.Zp)
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)
@@ -358,15 +364,21 @@ function(x,
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
 
-  i <- c - 1
+  unique.Zp <- unique(Zp)
+  
+  set <- which(x@from %in% unique.Zp)
 
-  while (s < length(unique(Zp))) {
-    Zp[Zp == x@from[i]] <- x@to[i]
+  from <- x@from[set]; to <- x@to[set]
+  
+  l <- length(unique.Zp)
 
-    i <- i - 1
+  while (l > s) {
+    l <- l - 1
+    
+    Zp[Zp == from[l]] <- to[l]
   }
 
-  unique.Zp <- unique(Zp); sort.unique.Zp <- sort(unique.Zp)
+  sort.unique.Zp <- sort(unique.Zp)
 
   nrow <- max(1, nrow)
   ncol <- max(1, ncol)

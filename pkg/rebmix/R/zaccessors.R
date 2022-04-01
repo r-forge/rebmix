@@ -1226,16 +1226,21 @@ function(x, s)
   if ((s < 1) || (s > c)) {
     stop(sQuote("s"), " must be greater than 0 and less or equal than ", c, "!", call. = FALSE)
   }
+  
+  unique.Zp <- unique(Zp)
+  
+  set <- which(x@from %in% unique.Zp)
 
-  l <- c
+  from <- x@from[set]; to <- x@to[set]
+  
+  l <- length(unique.Zp)
 
   while (l > s) {
     l <- l - 1
     
-    Zp[Zp == x@from[l]] <- x@to[l]
-
-  }
-
+    Zp[Zp == from[l]] <- to[l]
+  }  
+  
   rm(list = ls()[!(ls() %in% c("Zp"))])
 
   as.factor(Zp)
