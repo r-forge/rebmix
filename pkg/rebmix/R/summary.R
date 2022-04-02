@@ -139,7 +139,7 @@ function(object, ...)
     stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
   }
 
-  c <- object@c - 1
+  c <- as.numeric(object@x@summary[object@pos, "c"]) - 1
 
   if (c > 0) {
     combine <- rbind(as.number(1:c), as.number(object@from), as.number(object@to), as.number(object@EN), as.number(object@ED))
@@ -179,7 +179,7 @@ function(object, ...)
     stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
   }
 
-  c <- object@c - 1
+  c <- as.numeric(object@x@summary[object@pos, "c"]) - 1
 
   if (c > 0) {
     combine <- rbind(as.number(1:c), as.number(object@from), as.number(object@to), as.number(object@EN), as.number(object@ED))

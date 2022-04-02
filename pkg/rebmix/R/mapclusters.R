@@ -175,7 +175,7 @@ function(x,
 
   output <- .C(C_RCLRMVNORM,
     n = n,
-    X = as.double(dataset),
+    X = as.double(Dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
     w = as.double(unlist(w)),

@@ -1623,7 +1623,13 @@ function(.Object, ...,
   if (missing(Dataset) || (length(Dataset) == 0)) {
     Dataset <- x@Dataset[[pos]]
     
-    n <- nrow(Dataset)
+    if (class(Dataset) == "data.frame") {
+      n <- nrow(Dataset)
+    }
+    else
+    if (class(Dataset) == "Histogram") {
+      n <- nrow(Dataset@Y)
+    }     
   }
   else {
     if ((class(Dataset) != "Histogram") && (class(Dataset) != "data.frame")) {

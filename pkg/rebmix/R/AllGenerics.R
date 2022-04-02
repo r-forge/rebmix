@@ -111,7 +111,7 @@ setGeneric("boot",
 setGeneric("RCLRMIX",
   function(model = "RCLRMIX",
     x = NULL,
-    Dataset = data.frame(),
+    Dataset = NULL,
     pos = 1,
     Zt = factor(), 
     Rule = character(), ...)

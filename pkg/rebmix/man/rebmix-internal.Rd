@@ -24,6 +24,7 @@
 \alias{EMMIX,ANY-method}
 \alias{fhistogram,ANY-method}
 \alias{chistogram,ANY-method}
+\alias{mapclusters,ANY-method}
 
 \alias{a.d}
 \alias{a.theta1<-}

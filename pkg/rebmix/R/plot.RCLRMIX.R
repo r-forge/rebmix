@@ -59,12 +59,12 @@ function(x,
 
   from <- x@from[set]; to <- x@to[set]
   
-  l <- length(unique.Zp)
+  i <- length(unique.Zp)
 
-  while (l > s) {
-    l <- l - 1
+  while (i > s) {
+    i <- i - 1
     
-    Zp[Zp == from[l]] <- to[l]
+    Zp[Zp == from[i]] <- to[i]
   }
 
   sort.unique.Zp <- sort(unique.Zp)
@@ -91,24 +91,13 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  if (length(x@Dataset) == 0) {
-    if (class(x@x@Dataset[[x@pos]]) == "data.frame") {
-      ey <- as.matrix(x@x@Dataset[[x@pos]])
-    }
-    else
-    if (class(x@x@Dataset[[x@pos]]) == "Histogram") {
-      ey <- matrix(x@x@Dataset[[x@pos]]@Y[, 1:d], ncol = d)
-    }
+  if (class(x@Dataset) == "data.frame") {
+    ey <- as.matrix(x@Dataset)
   }
-  else {
-    if (class(x@Dataset) == "data.frame") {
-      ey <- as.matrix(x@Dataset)
-    }
-    else
-    if (class(x@Dataset) == "Histogram") {
-      ey <- matrix(x@Dataset@Y[, 1:d], ncol = d)
-    }  
-  }
+  else
+  if (class(x@Dataset) == "Histogram") {
+    ey <- as.matrix(x@Dataset@Y[, 1:d])
+  }  
   
   ep <- Zp - 1
 
@@ -120,8 +109,8 @@ function(x,
 
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
 
-  if (i > 0) {
-    plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
+  if (i > 1) {
+    plot.mul <- ifelse((Zp == from[i - 1]) | (Zp == to[i - 1]), 1.5, 1.0)
   }
   else {
     plot.mul <- rep(1.0, length(Zp))
@@ -370,12 +359,12 @@ function(x,
 
   from <- x@from[set]; to <- x@to[set]
   
-  l <- length(unique.Zp)
+  i <- length(unique.Zp)
 
-  while (l > s) {
-    l <- l - 1
+  while (i > s) {
+    i <- i - 1
     
-    Zp[Zp == from[l]] <- to[l]
+    Zp[Zp == from[i]] <- to[i]
   }
 
   sort.unique.Zp <- sort(unique.Zp)
@@ -402,24 +391,13 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  if (length(x@Dataset) == 0) {
-    if (class(x@x@Dataset[[x@pos]]) == "data.frame") {
-      ey <- as.matrix(x@x@Dataset[[x@pos]])
-    }
-    else
-    if (class(x@x@Dataset[[x@pos]]) == "Histogram") {
-      ey <- matrix(x@x@Dataset[[x@pos]]@Y[, 1:d], ncol = d)
-    }
+  if (class(x@Dataset) == "data.frame") {
+    ey <- as.matrix(x@Dataset)
   }
-  else {
-    if (class(x@Dataset) == "data.frame") {
-      ey <- as.matrix(x@Dataset)
-    }
-    else
-    if (class(x@Dataset) == "Histogram") {
-      ey <- matrix(x@Dataset@Y[, 1:d], ncol = d)
-    }  
-  }
+  else
+  if (class(x@Dataset) == "Histogram") {
+    ey <- as.matrix(x@Dataset@Y[, 1:d])
+  }  
 
   ep <- Zp - 1
 
@@ -431,8 +409,8 @@ function(x,
 
   plot.col <- rgb(ramp(ep / zmax), maxColorValue = 255)
 
-  if (i > 0) {
-    plot.mul <- ifelse((Zp == x@from[i]) | (Zp == x@to[i]), 1.5, 1.0)
+  if (i > 1) {
+    plot.mul <- ifelse((Zp == from[i - 1]) | (Zp == to[i - 1]), 1.5, 1.0)
   }
   else {
     plot.mul <- rep(1.0, length(Zp))

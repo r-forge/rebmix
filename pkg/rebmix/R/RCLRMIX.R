@@ -163,7 +163,7 @@ function(model, ...)
   if (output$c > 1) {
     model@from <- output$F[-c]
     model@to <- output$T[-c]
-    model@EN <- output$EN
+    model@EN <- output$EN[-c]
     model@ED <- output$ED[-c]
   }
 
@@ -276,10 +276,10 @@ function(model, ...)
   rownames(model@tau) <- paste(1:n, sep = "")
 
   if (output$c > 1) {
-    model@from <- output$F
-    model@to <- output$T
-    model@EN <- output$EN
-    model@ED <- output$ED
+    model@from <- output$F[-c]
+    model@to <- output$T[-c]
+    model@EN <- output$EN[-c]
+    model@ED <- output$ED[-c]
   }
 
   output <- .C(C_RCLRMVNORM,
