@@ -52,7 +52,8 @@ a.theta2(Theta, 1) <- c(3, 0.3, 0.3, 2)
 a.theta2(Theta, 2) <- c(5.7, -2.3, -2.3, 3.5)
 a.theta2(Theta, 3) <- c(2, 1, 1, 2)
 
-normal <- RNGMIX(model = "RNGMVNORM", Dataset.name = paste("normal_", 1:10, sep = ""), n = n, Theta = a.Theta(Theta))
+normal <- RNGMIX(model = "RNGMVNORM", Dataset.name = paste("normal_", 1:10, sep = ""),
+  n = n, Theta = a.Theta(Theta))
 
 # Convert all datasets to single histogram.
 
@@ -60,7 +61,8 @@ hist <- NULL
 
 n <- length(normal@Dataset)
 
-hist <- fhistogram(Dataset = normal@Dataset[[1]], K = c(10, 10), ymin = a.ymin(normal), ymax = a.ymax(normal))
+hist <- fhistogram(Dataset = normal@Dataset[[1]], K = c(10, 10), 
+  ymin = a.ymin(normal), ymax = a.ymax(normal))
 
 for (i in 2:n) {
   hist <- fhistogram(x = hist, Dataset = normal@Dataset[[i]], shrink = i == n)

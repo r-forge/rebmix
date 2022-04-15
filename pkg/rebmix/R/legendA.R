@@ -22,6 +22,7 @@
       plot = FALSE,
       horiz = TRUE,
       inset = c(0, 0),
+      x.intersp = 0.25,
       xpd = TRUE)$rect$w
 
     usr <- par("usr")
@@ -41,5 +42,6 @@
     y.intersp = 0,
     horiz = TRUE,
     inset = c(0, 0),
+    x.intersp = 0.25,
     xpd = TRUE)
 } ## .legendA
