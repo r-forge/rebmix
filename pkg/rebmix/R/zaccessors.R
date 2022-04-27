@@ -1229,11 +1229,22 @@ function(x, s)
   
   unique.Zp <- unique(Zp)
   
-  set <- which(x@from %in% unique.Zp)
-
-  from <- x@from[set]; to <- x@to[set]
+  from <- x@from; to <- x@to
   
-  l <- length(unique.Zp)
+  for (i in length(x@from):1) {
+    if (from[i] %in% unique.Zp) {
+      if (!(to[i] %in% unique.Zp)) {
+        j <- which(from %in% to[i])[1]
+
+        if (!is.na(j)) to[i] <- to[j]      
+      }
+    }
+    else {
+      from <- from[-i]; to <- to[-i]
+    }
+  }
+  
+  l <- length(from) + 1  
 
   while (l > s) {
     l <- l - 1

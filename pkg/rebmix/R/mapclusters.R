@@ -88,11 +88,22 @@ function(x,
   
   unique.output <- unique(output)
   
-  set <- which(x@from %in% unique.output)
-
-  from <- x@from[set]; to <- x@to[set]
+  from <- x@from; to <- x@to
   
-  l <- length(unique.output)
+  for (i in length(x@from):1) {
+    if (from[i] %in% unique.output) {
+      if (!(to[i] %in% unique.output)) {
+        j <- which(from %in% to[i])[1]
+
+        if (!is.na(j)) to[i] <- to[j]
+      }
+    }
+    else {
+      from <- from[-i]; to <- to[-i]
+    }
+  }
+  
+  l <- length(from) + 1
 
   while (l > s) {
     l <- l - 1
@@ -194,11 +205,22 @@ function(x,
   
   unique.output <- unique(output)
   
-  set <- which(x@from %in% unique.output)
-
-  from <- x@from[set]; to <- x@to[set]
+  from <- x@from; to <- x@to
   
-  l <- length(unique.output)
+  for (i in length(x@from):1) {
+    if (from[i] %in% unique.output) {
+      if (!(to[i] %in% unique.output)) {
+        j <- which(from %in% to[i])[1]
+
+        if (!is.na(j)) to[i] <- to[j]      
+      }
+    }
+    else {
+      from <- from[-i]; to <- to[-i]
+    }
+  }
+  
+  l <- length(from) + 1
 
   while (l > s) {
     l <- l - 1
