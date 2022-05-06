@@ -56,7 +56,7 @@ function(x,
   }
   
   if (length(model@x@theta3) > 0) {
-    theta3 <- model@x@theta3; theta3[is.na(theta3)] <- 0
+    theta3 <- model@x@theta3
   }
   else {
     theta3 <- numeric()
