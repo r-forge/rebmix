@@ -489,7 +489,7 @@ function(x,
       }
       else
       if (Y.type == 1) {
-        edens <- .densK.x(v, ey[, i], ey[, d + 1], h[i])      
+        edens <- .densK.x(v, ey[, i], ey[, d + 1], h[i])
       }
 
       ylim <- range(ylim, edens$y, finite = TRUE)

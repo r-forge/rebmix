@@ -7,9 +7,9 @@
 #include <stdio.h>
 #endif
 
-static int   NDevISet = 0;
+static INT   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;
-static int   LDevISet = 0;
+static INT   LDevISet = 0;
 static FLOAT LDevVSet = (FLOAT)0.0;
 static FLOAT Bn = -(FLOAT)1.0, Bp = -(FLOAT)1.0, Be, Bg, Bplog, Bpc, Bpclog;
 static FLOAT PTheta = -(FLOAT)1.0, Pg, Psq, PalTheta;
@@ -36,7 +36,7 @@ Rngmix::Rngmix()
 
 Rngmix::~Rngmix()
 {
-    int i;
+    INT i;
 
     if (Z_) free(Z_);
 
@@ -74,11 +74,11 @@ Rngmix::~Rngmix()
 #if (_MAINTAIN_SWITCH)
 // Writes data file.
 
-int Rngmix::WriteDataFile()
+INT Rngmix::WriteDataFile()
 {
-    int  i, j;
+    INT  i, j;
     FILE *fp = NULL;
-    int  Error = 0;
+    INT  Error = 0;
 
     if ((fp = fopen(curr_, "w")) == NULL) {
         Error = 1; goto E0;
@@ -113,14 +113,14 @@ E0: if (fp) fclose(fp);
 #if (_MAINTAIN_SWITCH)
 // Writes parameters file:
 
-int Rngmix::WriteParameterFile()
+INT Rngmix::WriteParameterFile()
 {
     char line[65536];
     char path[FILENAME_MAX];
     char ext[FILENAME_MAX];
     char *pchar = NULL;
     FILE *fp = NULL;
-    int  Error = 0;
+    INT  Error = 0;
 
     strcpy(path, save_);
 
@@ -149,12 +149,12 @@ E0: if (fp) fclose(fp);
 } // WriteParameterFile
 #endif
 
-int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
+INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
 {
     FLOAT C[8];
     FLOAT y, p;
-    int   i, k;
-    int   Error = 0;
+    INT   i, k;
+    INT   Error = 0;
 
     for (i = 0; i < length_pdf_; i++) {
         switch (CmpDist->pdf_[i]) {
@@ -226,7 +226,7 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
 
             break;
         case pfvonMises:
-            CmpDist->Theta_[0][i] -= Pi2 * int(CmpDist->Theta_[0][i] / Pi2);
+            CmpDist->Theta_[0][i] -= Pi2 * INT(CmpDist->Theta_[0][i] / Pi2);
 
             Y[i][j] = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i]);
 
@@ -240,10 +240,10 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
             }
 
             C[0] = CmpDist->Theta_[0][i] * p;
-            if ((int)CmpDist->Theta_[0][i] < 25) {
+            if ((INT)CmpDist->Theta_[0][i] < 25) {
                 Y[i][j] = (FLOAT)0.0;
 
-                for (k = 0; k < (int)CmpDist->Theta_[0][i]; k++) {
+                for (k = 0; k < (INT)CmpDist->Theta_[0][i]; k++) {
                     if (Ran1(&IDum_) < p) ++Y[i][j];
                 }
             }
@@ -251,11 +251,11 @@ int Rngmix::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
             if (C[0] < (FLOAT)1.0) {
                 C[1] = (FLOAT)exp(-C[0]); C[2] = (FLOAT)1.0;
 
-                for (k = 0; k < (int)CmpDist->Theta_[0][i]; k++) {
+                for (k = 0; k < (INT)CmpDist->Theta_[0][i]; k++) {
                     C[2] *= Ran1(&IDum_); if (C[2] < C[1]) break;
                 }
 
-                if (k > (int)CmpDist->Theta_[0][i]) {
+                if (k > (INT)CmpDist->Theta_[0][i]) {
                     Y[i][j] = CmpDist->Theta_[0][i];
                 }
                 else {
@@ -363,10 +363,10 @@ E0: return Error;
 
 // Returns random sample of independent observations.
 
-int Rngmix::RNGMIX()
+INT Rngmix::RNGMIX()
 {
-    int i, j, k;
-    int Error = 0;
+    INT i, j, k;
+    INT Error = 0;
 
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
 
@@ -380,7 +380,7 @@ int Rngmix::RNGMIX()
         Error = NULL == Y_[i]; if (Error) goto E0;
     }
 
-    Z_ = (int*)malloc(n_ * sizeof(int));
+    Z_ = (INT*)malloc(n_ * sizeof(INT));
 
     Error = NULL == Z_; if (Error) goto E0;
 
@@ -406,14 +406,14 @@ E0: return Error;
 #if (_MAINTAIN_SWITCH)
 // Runs template file.
 
-int Rngmix::RunTemplateFile(char *file)
+INT Rngmix::RunTemplateFile(char *file)
 {
-    int                  i, imin, imax, j, k, isI;
+    INT                  i, imin, imax, j, k, isI;
     char                 line[65536], ident[65536], list[65536];
     char                 *pchar = NULL;
     FILE                 *fp = NULL;
     CompnentDistribution **MixTheta = NULL;
-    int                  Error = 0;
+    INT                  Error = 0;
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;
@@ -430,7 +430,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
         j = 0;
 
-        for (i = 0; i < (int)strlen(pchar); i++) {
+        for (i = 0; i < (INT)strlen(pchar); i++) {
             if (pchar[i] != ' ') {
                 ident[j] = (char)toupper(pchar[i]); j++;
             }
@@ -508,13 +508,13 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         }
         else
         if (!strcmp(ident, "RSEED")) {
-            IDum_ = isI = (int)atol(pchar);
+            IDum_ = isI = (INT)atol(pchar);
 
             Error = isI >= 0; if (Error) goto E0;
         }
         else
         if (!strcmp(ident, "LENGTHPDF")) {
-            length_pdf_ = isI = (int)atol(pchar);
+            length_pdf_ = isI = (INT)atol(pchar);
 
             Error = isI < 1; if (Error) goto E0;
         }
@@ -523,11 +523,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             i = 0;
 
             while (pchar) {
-                length_theta_ = (int*)realloc(length_theta_, (i + 1) * sizeof(int));
+                length_theta_ = (INT*)realloc(length_theta_, (i + 1) * sizeof(INT));
 
                 Error = NULL == length_theta_; if (Error) goto E0;
 
-                length_theta_[i] = isI = (int)atol(pchar);
+                length_theta_[i] = isI = (INT)atol(pchar);
 
                 Error = isI == 0; if (Error) goto E0;
 
@@ -591,15 +591,15 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         }
         else
         if (!strcmp(ident, "NTHETA")) {
-            N_ = (int*)realloc(N_, (c_ + 1) * sizeof(int));
+            N_ = (INT*)realloc(N_, (c_ + 1) * sizeof(INT));
 
             Error = NULL == N_; if (Error) goto E0;
 
-            N_[c_] = isI = (int)atol(pchar);
+            N_[c_] = isI = (INT)atol(pchar);
 
             Error = isI < 1; if (Error) goto E0;
 
-            MixTheta = new CompnentDistribution* [(unsigned int)(c_ + 1)];
+            MixTheta = new CompnentDistribution* [(unsigned INT)(c_ + 1)];
 
             Error = NULL == MixTheta; if (Error) goto E0;
 

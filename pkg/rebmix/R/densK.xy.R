@@ -4,7 +4,7 @@
     v = as.integer(v),
     x = as.double(x),
     y = as.double(y),
-    k = as.integer(k),
+    k = as.double(k),
     z = double(length(x)),
     hx = as.double(hx),
     hy = as.double(hy),
@@ -12,7 +12,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densK.xy!", call. = FALSE); return(NA)
+    stop("in RdensKXY!", call. = FALSE); return(NA)
   }
 
   length(output$x) <- output$v

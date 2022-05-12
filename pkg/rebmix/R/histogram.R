@@ -75,7 +75,7 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in fhistogram!", call. = FALSE); return(NA)
+    stop("in Rfhistogram!", call. = FALSE); return(NA)
   }
   
   dim(output$z) <- c(nz, d + 1)
@@ -178,7 +178,7 @@ function(x, Dataset, K, ymin, ymax, ...)
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in chistogram!", call. = FALSE); return(NA)
+    stop("in Rchistogram!", call. = FALSE); return(NA)
   }
   
   dim(output$z) <- c(nz, d + 1)

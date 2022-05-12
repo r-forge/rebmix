@@ -6,7 +6,7 @@
   
   for (i in 1:length(w)) {
     output <- .C(C_RTvtNormalPdf,
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(x),
       y = as.double(y),
       Mean = as.double(Theta[[i]]$theta1[c(xi, yi)]),

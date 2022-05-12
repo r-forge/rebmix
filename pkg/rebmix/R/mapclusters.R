@@ -67,7 +67,7 @@ function(x,
   n <- nrow(Dataset)
 
   output <- .C(C_RCLRMIX,
-    n = n,
+    n = as.double(n),
     X = as.double(Dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -81,7 +81,7 @@ function(x,
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in mapclusters!", call. = FALSE); return(NA)
+    stop("in RCLRMIX!", call. = FALSE); return(NA)
   }
   
   output <- output$Z
@@ -185,7 +185,7 @@ function(x,
   n <- nrow(Dataset)
 
   output <- .C(C_RCLRMVNORM,
-    n = n,
+    n = as.double(n),
     X = as.double(Dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -198,7 +198,7 @@ function(x,
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in mapclusters!", call. = FALSE); return(NA)
+    stop("in RCLRMVNORM!", call. = FALSE); return(NA)
   }
   
   output <- output$Z

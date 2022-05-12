@@ -78,7 +78,7 @@ function(x, pos, variables, ...)
         ymin = as.double(ymin),
         ymax = as.double(ymax),      
         k = as.integer(k),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
@@ -86,7 +86,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingHMIX!", call. = FALSE); return(NA)
       }
 
       length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -103,7 +103,7 @@ function(x, pos, variables, ...)
 
       output <- .C(C_RPreprocessingKDEMIX,
         h = as.double(h),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
@@ -111,7 +111,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingKDEMIX!", call. = FALSE); return(NA)
       }
 
       dim(output$y) <- c(n, d + 2)
@@ -129,7 +129,7 @@ function(x, pos, variables, ...)
       output <- .C(C_RPreprocessingKNNMIX,
         k = as.integer(k),
         h = as.double(h),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
@@ -137,7 +137,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingKNNMIX!", call. = FALSE); return(NA)
       }
 
       dim(output$y) <- c(n, d + 3)
@@ -158,13 +158,13 @@ function(x, pos, variables, ...)
     output <- .C(C_RPreprocessingKMIX,
       h = as.double(h),
       d = as.integer(d),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(Dataset),
       error = integer(1),
       PACKAGE = "rebmix")    
     
     if (output$error == 1) {
-      stop("in demix!", call. = FALSE); return(NA)
+      stop("in RPreprocessingKMIX!", call. = FALSE); return(NA)
     }
     
     dim(output$x) <- c(n, d + 1); 
@@ -265,7 +265,7 @@ function(x, pos, variables, ...)
         ymin = as.double(ymin),
         ymax = as.double(ymax),
         k = as.integer(k),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
@@ -273,7 +273,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingHMVNORM!", call. = FALSE); return(NA)
       }
 
       length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -290,7 +290,7 @@ function(x, pos, variables, ...)
 
       output <- .C(C_RPreprocessingKDEMVNORM,
         h = as.double(h),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
@@ -298,7 +298,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingKDEMVNORM!", call. = FALSE); return(NA)
       }
 
       dim(output$y) <- c(n, d + 2)
@@ -316,7 +316,7 @@ function(x, pos, variables, ...)
       output <- .C(C_RPreprocessingKNNMVNORM,
         k = as.integer(k),
         h = as.double(h),
-        n = as.integer(n),
+        n = as.double(n),
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
@@ -324,7 +324,7 @@ function(x, pos, variables, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in demix!", call. = FALSE); return(NA)
+        stop("in RPreprocessingKNNMVNORM!", call. = FALSE); return(NA)
       }
 
       dim(output$y) <- c(n, d + 3)
@@ -345,13 +345,13 @@ function(x, pos, variables, ...)
     output <- .C(C_RPreprocessingKMIX,
       h = as.double(h),
       d = as.integer(d),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(Dataset),
       error = integer(1),
       PACKAGE = "rebmix")    
     
     if (output$error == 1) {
-      stop("in demix!", call. = FALSE); return(NA)
+      stop("in RPreprocessingKMIX!", call. = FALSE); return(NA)
     }
     
     dim(output$x) <- c(n, d + 1); 

@@ -137,7 +137,7 @@ function(model, ...)
     length.theta = as.integer(c(d, d, d)),
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2, theta3)),
-    n = as.integer(n),
+    n = as.double(n),
     Y = as.double(dataset),
     Y.type = as.integer(Y.type),
 ### Panic Branislav.
@@ -152,7 +152,7 @@ function(model, ...)
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in RCLRMIX!", call. = FALSE); return(NA)
+    stop("in RCombineComponentsMIX!", call. = FALSE); return(NA)
   }
 
   model@tau <- matrix(data = output$tau, ncol = c, byrow = TRUE)
@@ -168,7 +168,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLRMIX,
-    n = n,
+    n = as.double(n),
     X = as.double(dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -252,7 +252,7 @@ function(model, ...)
     length.theta = as.integer(c(d, d * d, -d * d, -1)),
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2)),
-    n = as.integer(n),
+    n = as.double(n),
     Y = as.double(dataset),
     Y.type = as.integer(Y.type),
 ### Panic Branislav.
@@ -267,7 +267,7 @@ function(model, ...)
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in RCLRMIX!", call. = FALSE); return(NA)
+    stop("in RCombineComponentsMVNORM!", call. = FALSE); return(NA)
   }
 
   model@tau <- matrix(data = output$tau, ncol = c, byrow = TRUE)
@@ -283,7 +283,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLRMVNORM,
-    n = n,
+    n = as.double(n),
     X = as.double(dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -296,7 +296,7 @@ function(model, ...)
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in RCLRMIX!", call. = FALSE); return(NA)
+    stop("in RCLRMVNORM!", call. = FALSE); return(NA)
   }
 
   unique.Z <- unique(output$Z)

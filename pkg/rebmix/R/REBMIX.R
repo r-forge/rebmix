@@ -117,7 +117,7 @@ function(model, ...)
       h = as.double(h),      
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
-      n = as.integer(n),
+      n = as.double(n),
       Y = as.double(X),
       Y.type = as.integer(Y.type),
 ### Panic Branislav.      
@@ -470,7 +470,7 @@ function(model, ...)
       h = as.double(h),       
       ar = as.double(model@ar),
       Restraints = as.character(model@Restraints),
-      n = as.integer(n),
+      n = as.double(n),
       Y = as.double(X),
       Y.type = as.integer(Y.type),
 ### Panic Branislav.      

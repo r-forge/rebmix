@@ -1,7 +1,7 @@
 .densKNearestNeighbour.x <- function(x, k, hx, npts)
 {
   output <- .C(C_RdensKNearestNeighbourX,
-    n = as.integer(length(x)),
+    n = as.double(length(x)),
     x = as.double(x),
     y = double(length(x)),
     k = as.integer(k),
@@ -10,7 +10,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densKNearestNeighbour.x!", call. = FALSE); return(NA)
+    stop("in RdensKNearestNeighbourX!", call. = FALSE); return(NA)
   }
 
   i <- !duplicated(output$x)

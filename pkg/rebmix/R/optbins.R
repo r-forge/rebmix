@@ -131,7 +131,7 @@ function(Dataset, Rule = "Knuth equal", ymin, ymax, kmin, kmax, ...)
 
     temp <- .C(C_Roptbins,
       d = as.integer(d),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(x),
       Rule = as.character(Rule),
       length.ymin = as.integer(length(ymin)),
@@ -145,7 +145,7 @@ function(Dataset, Rule = "Knuth equal", ymin, ymax, kmin, kmax, ...)
       PACKAGE = "rebmix")
 
     if (temp$error == 1) {
-      stop("in optbins!", call. = FALSE); return(NA)
+      stop("in Roptbins!", call. = FALSE); return(NA)
     }
     
     output[i, ] <- temp$opt.k

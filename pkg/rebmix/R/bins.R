@@ -110,7 +110,7 @@ function(Dataset, K, ymin, ymax, ...)
     
     temp <- .C(C_Rbins,
       d = as.integer(d),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(x),
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),
@@ -123,7 +123,7 @@ function(Dataset, K, ymin, ymax, ...)
       PACKAGE = "rebmix")
 
     if (temp$error == 1) {
-      stop("in bins!", call. = FALSE); return(NA)
+      stop("in Rbins!", call. = FALSE); return(NA)
     }
     
     length(temp$y) <- temp$length.y * (d + 1); dim(temp$y) <- c(temp$length.y, temp$d + 1)

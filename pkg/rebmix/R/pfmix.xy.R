@@ -39,7 +39,7 @@
     else    
     if (xTheta[[i]]$pdf == .rebmix$pdf[9]) {
       output <- .C(C_RvonMisesCdf,
-        n = as.integer(n),
+        n = as.double(n),
         y = as.double(x),
         Mean = as.double(xTheta[[i]]$theta1),
         Kappa = as.double(xTheta[[i]]$theta2),
@@ -51,7 +51,7 @@
     else
     if (xTheta[[i]]$pdf == .rebmix$pdf[10]) {
       output <- .C(C_RGumbelCdf,
-        n = as.integer(n),
+        n = as.double(n),
         y = as.double(x),
         Mean = as.double(xTheta[[i]]$theta1),
         Sigma = as.double(xTheta[[i]]$theta2),
@@ -96,7 +96,7 @@
     else    
     if (yTheta[[i]]$pdf == .rebmix$pdf[9]) {
       output <- .C(C_RvonMisesCdf,
-        n = as.integer(n),
+        n = as.double(n),
         y = as.double(y),
         Mean = as.double(yTheta[[i]]$theta1),
         Kappa = as.double(yTheta[[i]]$theta2),
@@ -108,7 +108,7 @@
     else
     if (yTheta[[i]]$pdf == .rebmix$pdf[10]) {
       output <- .C(C_RGumbelCdf,
-        n = as.integer(n),
+        n = as.double(n),
         y = as.double(y),
         Mean = as.double(yTheta[[i]]$theta1),
         Sigma = as.double(yTheta[[i]]$theta2),

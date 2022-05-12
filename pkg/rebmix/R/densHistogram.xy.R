@@ -2,7 +2,7 @@
 {
   output <- .C(C_RdensHistogramXY,
     k = as.integer(k),
-    n = as.integer(length(x)),
+    n = as.double(length(x)),
     x = as.double(x),
     y = as.double(y),
     z = double(length(x)),
@@ -20,7 +20,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densHistogram.xy!", call. = FALSE); return(NA)
+    stop("in RdensHistogramXY!", call. = FALSE); return(NA)
   }
 
   length(output$x) <- output$k

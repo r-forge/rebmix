@@ -128,7 +128,7 @@ function(x,
       else      
       if (pdf[[i]][j] == .rebmix$pdf[9]) {
         output <- .C(C_RvonMisesCdf,
-          n = as.integer(n),
+          n = as.double(n),
           y = as.double(Dataset[, j]),
           Mean = as.double(theta1[[i]][j]),
           Kappa = as.double(theta2[[i]][j]),
@@ -140,7 +140,7 @@ function(x,
       else
       if (pdf[[i]][j] == .rebmix$pdf[10]) {
         output <- .C(C_RGumbelCdf,
-          n = as.integer(n),
+          n = as.double(n),
           y = as.double(Dataset[, j]),
           Mean = as.double(theta1[[i]][j]),
           Sigma = as.double(theta2[[i]][j]),

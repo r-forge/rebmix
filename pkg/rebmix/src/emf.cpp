@@ -63,7 +63,7 @@ Emmix::Emmix()
 
 Emmix::~Emmix()
 {
-    int i;
+    INT i;
 
     if (P_) {
         for (i = 0; i < cmax_; i++) {
@@ -104,23 +104,23 @@ Emmix::~Emmix()
 
 // Emmix initialize. Returns 0 on success, 1 otherwise.
 
-int Emmix::Initialize(int                  n,             // Number of observations.
-                      int                  nr,            // Number of rows.
-                      int                  nc,            // Number of columns.
+INT Emmix::Initialize(INT                  n,             // Number of observations.
+                      INT                  nr,            // Number of rows.
+                      INT                  nc,            // Number of columns.
                       FLOAT                **Y,           // Dataset.
-                      int                  cmax,          // Maximum number of components. 
-                      int                  length_pdf,    // Length of pdf.
-                      int                  length_Theta,  // Length of Theta.
-                      int                  *length_theta, // Length of Theta[i].
+                      INT                  cmax,          // Maximum number of components. 
+                      INT                  length_pdf,    // Length of pdf.
+                      INT                  length_Theta,  // Length of Theta.
+                      INT                  *length_theta, // Length of Theta[i].
                       FLOAT                TOL,           // Tolerance for EM algorithm.
                       FLOAT                am,            // Acceleration multiplier for EM algorithm.
-                      int                  max_iter,      // Maximum number of iterations of EM algorithm.
-                      int                  K,             // Number of bins for histogram EM algorithm.
+                      INT                  max_iter,      // Maximum number of iterations of EM algorithm.
+                      INT                  K,             // Number of bins for histogram EM algorithm.
                       EmStrategyType_e     strategy,      // EM strategy utilization.
                       EmVariantType_e      variant,       // Type of EM variant algorithm.
                       EmAccelerationType_e accel)         // Type of acceleration of standard EM algorithm.
 {
-    int i, j, Error = 0;
+    INT i, j, Error = 0;
     
     n_ = n;
 
@@ -134,12 +134,12 @@ int Emmix::Initialize(int                  n,             // Number of observati
 
     length_Theta_ = length_Theta;
 
-    length_theta_ = (int*)malloc(length_Theta_ * sizeof(int));
+    length_theta_ = (INT*)malloc(length_Theta_ * sizeof(INT));
 
     Error = NULL == length_theta_; if (Error) goto E0;
 
     for (i = 0; i < length_Theta_; i++) {
-        length_theta_[i] = (int)labs(length_theta[i]);
+        length_theta_[i] = (INT)labs(length_theta[i]);
     }
 
     Y_ = (FLOAT**)malloc((length_pdf_ + 1) * sizeof(FLOAT*));
@@ -196,7 +196,7 @@ int Emmix::Initialize(int                  n,             // Number of observati
 
     Error = NULL == W_; if (Error) goto E0;
 
-    MixTheta_ = new CompnentDistribution* [(unsigned int)cmax_];
+    MixTheta_ = new CompnentDistribution* [(unsigned INT)cmax_];
 
     Error = NULL == MixTheta_; if (Error) goto E0;
 
@@ -214,7 +214,7 @@ int Emmix::Initialize(int                  n,             // Number of observati
     
     Error = NULL == dW_; if (Error) goto E0;
 
-    dMixTheta_ = new CompnentDistribution* [(unsigned int)cmax_];
+    dMixTheta_ = new CompnentDistribution* [(unsigned INT)cmax_];
 
     Error = NULL == dMixTheta_; if (Error) goto E0;
 
@@ -245,9 +245,9 @@ int Emmix::Initialize(int                  n,             // Number of observati
 E0: return Error;
 } // Initialize
 
-int Emmix::Transform(FLOAT **Y)
+INT Emmix::Transform(FLOAT **Y)
 {
-    int i, j, l, Error = 0;
+    INT i, j, l, Error = 0;
 
     FLOAT *y0 = NULL, *ymin = NULL, *ymax = NULL, *h = NULL;
 
@@ -293,7 +293,7 @@ int Emmix::Transform(FLOAT **Y)
 
     for (i = 0; i < n_; i++) {
         for (j = 0; j < length_pdf_; j++) {
-            l = (int)floor((Y[j][i] - y0[j]) / h[j] + (FLOAT)0.5);
+            l = (INT)floor((Y[j][i] - y0[j]) / h[j] + (FLOAT)0.5);
 
             Y_[j][nr_] = y0[j] + l * h[j];
 
@@ -330,16 +330,16 @@ E0: if (h) free(h);
 
 // Returns mixture p.d.f..
 
-int Emmix::MixtureDist(int                  j,          // Indey of observation.  
+INT Emmix::MixtureDist(INT                  j,          // Indey of observation.  
                        FLOAT                **Y,        // Pointer to the input array [y0,...,yd-1,...]
-                       int                  c,          // Number of components.
+                       INT                  c,          // Number of components.
                        FLOAT                *W,         // Component weights.
                        CompnentDistribution **MixTheta, // Mixture parameters.
                        FLOAT                *MixDist)   // Mixture distribution.
 {
     FLOAT CmpDist;
-    int   i;
-    int   Error = 0;
+    INT   i;
+    INT   Error = 0;
 
     *MixDist = (FLOAT)0.0;
 
@@ -356,13 +356,13 @@ E0: return Error;
 
 // Calculates the log likelihood value of current mixture model parameters. 
 
-int Emmix::LogLikelihood(int                  c,          // Number of components.
+INT Emmix::LogLikelihood(INT                  c,          // Number of components.
                          FLOAT                *W,         // Component weights.
                          CompnentDistribution **MixTheta, // Mixture parameters.    
                          FLOAT                *LogL)      // Value of log likelihood.
 {
     FLOAT MixDist;
-    int   i, Error = 0;
+    INT   i, Error = 0;
 
     *LogL = (FLOAT)0.0;
 
@@ -384,11 +384,11 @@ E0: return Error;
 
 // Calculates posterior probabilities P for all components in mixture model (expectation step of EM algorith). 
 
-int Emmix::ExpectationStep()
+INT Emmix::ExpectationStep()
 {
     FLOAT CmpDist, PostProb;
     FLOAT *CmpDistArr = NULL;
-    int   i, j, Error = 0;
+    INT   i, j, Error = 0;
 
     CmpDistArr = (FLOAT*)malloc(c_ * sizeof(FLOAT));
 
@@ -421,9 +421,9 @@ E0: if (CmpDistArr) free(CmpDistArr);
 
 // Performs hard clustering (k-means like variant of E-step).
 
-int Emmix::ConditionalStep()
+INT Emmix::ConditionalStep()
 {
-    int   i, j, MaxPos, Error = 0;
+    INT   i, j, MaxPos, Error = 0;
     FLOAT TmpVal;
 
     for (i = 0; i < nr_; i++) {
@@ -445,7 +445,7 @@ int Emmix::ConditionalStep()
 
 // Performs golden ration search from minimum value (hardcoded to 1) to maximum value (hardcoded to 1.9) for acceleration constant of mixture parameter update increment.
 
-int Emmix::GoldenRatioSearch(FLOAT *am_opt) // Optimal acceleration rate.
+INT Emmix::GoldenRatioSearch(FLOAT *am_opt) // Optimal acceleration rate.
 {
     FLOAT                arLowerBracket = (FLOAT)1.0;
     FLOAT                arUpperBracket = (FLOAT)1.9;
@@ -454,7 +454,7 @@ int Emmix::GoldenRatioSearch(FLOAT *am_opt) // Optimal acceleration rate.
     FLOAT                GolderRation = (FLOAT)((sqrt(5.0) + 1.0) / 2.0);
     FLOAT                LogLLower = (FLOAT)0.0;
     FLOAT                LogLUpper = (FLOAT)0.0;
-    int                  i, j, max_iter = 100, Error = 0;
+    INT                  i, j, max_iter = 100, Error = 0;
     FLOAT                TOL = (FLOAT)0.01;
     FLOAT                *W = NULL;
     CompnentDistribution **MixTheta = NULL;
@@ -463,7 +463,7 @@ int Emmix::GoldenRatioSearch(FLOAT *am_opt) // Optimal acceleration rate.
 
     Error = NULL == W; if (Error) goto E0;
 
-    MixTheta = new CompnentDistribution* [(unsigned int)c_];
+    MixTheta = new CompnentDistribution* [(unsigned INT)c_];
 
     Error = NULL == MixTheta; if (Error) goto E0;
 
@@ -549,9 +549,9 @@ E0: if (MixTheta) {
 
 // Performs line search from minimum value (hardcoded to 1) to maximum value (hardcoded to 1.9) for acceleration constant of mixture parameter update increment.
 
-int Emmix::LineSearch(FLOAT *am_opt) // Return value for optimal acceleration rate.
+INT Emmix::LineSearch(FLOAT *am_opt) // Return value for optimal acceleration rate.
 {
-    int                  i, j, Error = 0;
+    INT                  i, j, Error = 0;
     FLOAT                LogL = (FLOAT)0.0;
     FLOAT                LogLUpdate = (FLOAT)0.0;
     FLOAT                am = (FLOAT)1.0;
@@ -562,7 +562,7 @@ int Emmix::LineSearch(FLOAT *am_opt) // Return value for optimal acceleration ra
 
     Error = NULL == W; if (Error) goto E0;
 
-    MixTheta = new CompnentDistribution* [(unsigned int)c_];
+    MixTheta = new CompnentDistribution* [(unsigned INT)c_];
 
     Error = NULL == MixTheta; if (Error) goto E0;
 
@@ -641,9 +641,9 @@ E0: if (MixTheta) {
 
 // Performs the standard EM algorithm (reference).
 
-int Emmix::EM()
+INT Emmix::EM()
 {
-    int   i = 0, Error = 0;
+    INT   i = 0, Error = 0;
     FLOAT LogLOld = (FLOAT)0.0, LogLNew = (FLOAT)0.0;
 
     Error = LogLikelihood(c_, W_, MixTheta_, &LogLOld);
@@ -679,9 +679,9 @@ E0: return Error;
 
 // Performs the Expectation-Conditional-Maximization algorithm (reference).
 
-int Emmix::ECM()
+INT Emmix::ECM()
 {
-    int   i, Error = 0;
+    INT   i, Error = 0;
     FLOAT LogLOld = (FLOAT)0.0, LogLNew = (FLOAT)0.0;
 
     Error = LogLikelihood(c_, W_, MixTheta_, &LogLOld);
@@ -717,9 +717,9 @@ E0: return Error;
 
 // Runs the EM algorithm or its variant.
 
-int Emmix::Run(int *c, FLOAT *W, CompnentDistribution **MixTheta)
+INT Emmix::Run(INT *c, FLOAT *W, CompnentDistribution **MixTheta)
 {
-    int i, Error = 0;
+    INT i, Error = 0;
 
     c_ = *c;
 
@@ -759,14 +759,14 @@ E0: return Error;
 
 // Returns logarithm of component p.d.f..
 
-int Emmix::LogComponentDist(int                  j,         // Indey of observation.  
+INT Emmix::LogComponentDist(INT                  j,         // Indey of observation.  
                             FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
                             CompnentDistribution *CmpTheta, // Component parameters.
                             FLOAT                *CmpDist)  // Component distribution value.
 {
     FLOAT y, ypb, p, Theta;
-    int   i, k, n;
-    int   Error = 0;
+    INT   i, k, n;
+    INT   Error = 0;
 
     *CmpDist = (FLOAT)0.0;
 
@@ -829,7 +829,7 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
 
             break;
         case pfBinomial:
-            k = (int)Y[i][j]; n = (int)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
+            k = (INT)Y[i][j]; n = (INT)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
 
             if (k < 0) {
                 *CmpDist = -FLOAT_MAX; goto E0;
@@ -850,7 +850,7 @@ int Emmix::LogComponentDist(int                  j,         // Indey of observat
 
             break;
         case pfPoisson:
-            k = (int)Y[i][j]; Theta = CmpTheta->Theta_[0][i];
+            k = (INT)Y[i][j]; Theta = CmpTheta->Theta_[0][i];
 
             *CmpDist += k * (FLOAT)log(Theta) - Theta - Gammaln(k + (FLOAT)1.0);
 
@@ -879,14 +879,14 @@ E0: return Error;
 
 // Updates mixture model parameters with appropriate increment.
 
-int Emmix::UpdateMixtureParameters(int                  *c,          // Number of components. 
+INT Emmix::UpdateMixtureParameters(INT                  *c,          // Number of components. 
                                    FLOAT                *W,          // Mixture model weight values.
                                    CompnentDistribution **MixTheta,  // Mixture model distribution parameter values.
                                    FLOAT                *dW,         // Update increment of mixture model weights.
                                    CompnentDistribution **dMixTheta, // Update increment of mixture model distribution parameter values.
                                    FLOAT                am)          // Acceleration multiplier for EM algorithm.
 {
-    int i, j, l, Error = 0;
+    INT i, j, l, Error = 0;
 
     for (l = 0; l < *c; l++) {
         W[l] += am * dW[l];
@@ -1030,12 +1030,12 @@ S1:;
 
 // Maximization step of the EM algoritm.
 
-int Emmix::MaximizationStep()
+INT Emmix::MaximizationStep()
 {
     FLOAT dM, dC, A[5], T[2];
     FLOAT W, am_opt = (FLOAT)1.0;
     FLOAT *M = NULL, *C = NULL;
-    int   i, j, k, l, Error = 0;
+    INT   i, j, k, l, Error = 0;
 
     M = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
@@ -1414,13 +1414,13 @@ E0: if (C) free(C);
 
 // Returns logarithm of component p.d.f..
 
-int Emmvnorm::LogComponentDist(int                  j,         // Indey of observation.  
+INT Emmvnorm::LogComponentDist(INT                  j,         // Indey of observation.  
                                FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
                                CompnentDistribution *CmpTheta, // Component parameters.
                                FLOAT                *CmpDist)  // Component distribution value.
 {
     FLOAT y, yi, yk;
-    int   i, k, Error = 0;
+    INT   i, k, Error = 0;
 
     y = (FLOAT)0.0;
 
@@ -1439,14 +1439,14 @@ int Emmvnorm::LogComponentDist(int                  j,         // Indey of obser
 
 // Updates mixture model parameters with appropriate increment.
 
-int Emmvnorm::UpdateMixtureParameters(int                  *c,          // Number of components. 
+INT Emmvnorm::UpdateMixtureParameters(INT                  *c,          // Number of components. 
                                       FLOAT                *W,          // Mixture model weight values.
                                       CompnentDistribution **MixTheta,  // Mixture model distribution parameter values.
                                       FLOAT                *dW,         // Update increment of mixture model weights.
                                       CompnentDistribution **dMixTheta, // Update increment of mixture model distribution parameter values.
                                       FLOAT                am)          // Acceleration multiplier for EM algorithm.
 {
-    int l, i, ii, j, p, q, Error = 0;
+    INT l, i, ii, j, p, q, Error = 0;
     
     for (l = 0; l < *c; l++) {
         W[l] += am * dW[l];
@@ -1527,11 +1527,11 @@ E0: return Error;
 
 // Maximization step of the EM algoritm.
 
-int Emmvnorm::MaximizationStep()
+INT Emmvnorm::MaximizationStep()
 {
     FLOAT W, am_opt = (FLOAT)1.0;
     FLOAT *M = NULL, *C = NULL;
-    int   i, ii, j, l, p, q, Error = 0;
+    INT   i, ii, j, l, p, q, Error = 0;
      
     M = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 

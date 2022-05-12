@@ -22,6 +22,10 @@
 #define FLOAT double
 #endif
 
+#ifndef INT
+#define INT int
+#endif
+
 #ifndef FLOAT_MIN
 #define FLOAT_MIN DBL_MIN
 #endif
@@ -176,32 +180,32 @@ typedef enum {
 } EmMergeCompsType_e;
 
 typedef struct summaryparametertype {
-    int   c;     // Optimal number of components.
-    int   k;     // Optimal v or optimal k.
+    INT   c;     // Optimal number of components.
+    INT   k;     // Optimal v or optimal k.
     FLOAT *y0;   // Optimal origins of length d.
     FLOAT *ymin; // Minimum observations.
     FLOAT *ymax; // Maximum observations.
     FLOAT *h;    // Optimal class widths of length d.
     FLOAT IC;    // Optimal information criterion.
     FLOAT logL;  // Log-likelihood.
-    int   M;     // Degrees of freedom.
+    INT   M;     // Degrees of freedom.
 } SummaryParameterType;
 
 typedef struct additinalparametertype {
-    int Bracket; // 1 for bracketing and 0 for golden section.
-    int a;       // Golden section constant.
-    int b;       // Golden section constant.
-    int c;       // Golden section constant.
-    int d;       // Golden section constant.
+    INT Bracket; // 1 for bracketing and 0 for golden section.
+    INT a;       // Golden section constant.
+    INT b;       // Golden section constant.
+    INT c;       // Golden section constant.
+    INT d;       // Golden section constant.
 } AdditionalParameterType;
 
 class Base {
 public:
     // Members.
-    int Trigger_;       // Trigger.
-    int length_pdf_;    // Length of pdf_.
-    int length_Theta_;  // Length of Theta_.
-    int *length_theta_; // Length of Theta_[i].
+    INT Trigger_;       // Trigger.
+    INT length_pdf_;    // Length of pdf_.
+    INT length_Theta_;  // Length of Theta_.
+    INT *length_theta_; // Length of Theta_[i].
     // Constructor.
     Base();
     // Destructor.
@@ -219,31 +223,31 @@ public:
     // Destructor.
     ~CompnentDistribution();
     // Methods.
-    int Realloc(int length_pdf, int length_Theta, int *length_theta);
-    int Memmove(CompnentDistribution *CmpTheta);
+    INT Realloc(INT length_pdf, INT length_Theta, INT *length_theta);
+    INT Memmove(CompnentDistribution *CmpTheta);
 }; // CompnentDistribution
 
 typedef struct mixtureparametertype {
     FLOAT                *W;          // Pointer to weight.
     CompnentDistribution **MixTheta;  // Pointer to mixture parameters.
-    int                  c;           // Number of components in mixture.
+    INT                  c;           // Number of components in mixture.
     FLOAT                logL;        // Estimated value of log likelihood.
     FLOAT                logV;        // Logaritmic value of V.
-    int                  k;           // Number of bins for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
+    INT                  k;           // Number of bins for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
     FLOAT                *h;          // Sides of the hypersquare for histogram preprocessing or smothing parameter for kernel density estimation and k-nearest neighbour preprocessing.
     FLOAT                *y0;         // Bin origins for histogram preprocessing or NULL for kernel density estimation and k-nearest neighbour preprocessing.
     FLOAT                *ymin;       // Minimum values from data.
     FLOAT                *ymax;       // Maximum values from data.
-    int                  n_iter_em;   // Number of performed iterations of EM algorithm.
-    int                  initialized; // Boolean indicator if struct contains mixture model parameters. 
+    INT                  n_iter_em;   // Number of performed iterations of EM algorithm.
+    INT                  initialized; // Boolean indicator if struct contains mixture model parameters. 
 } MixtureParameterType;
 
-FLOAT Ran1(int *IDum);
+FLOAT Ran1(INT *IDum);
 
 // Inserts y into ascending list Y of length n. Set n = 0 initially.
 
 void Insert(FLOAT y,   // Inserted value.
-            int   *n,  // Length of Y.
+            INT   *n,  // Length of Y.
             FLOAT *Y); // Pointer to Y = [y0,...,yn-1].
 
 // Returns the value log(Gamma(y)) for y > 0. See http://www.nr.com/.
@@ -252,7 +256,7 @@ FLOAT Gammaln(FLOAT y);
 
 // Returns the digamma for y > 0. See http://www.nr.com/.
 
-int Digamma(FLOAT y, FLOAT *Psi);
+INT Digamma(FLOAT y, FLOAT *Psi);
 
 // Returns the inverse of the binomial c.d.f. for the specified n and p.
 
@@ -265,7 +269,7 @@ FLOAT PoissonInv(FLOAT Fy, FLOAT Theta);
 // Returns the incomplete gamma function P(a, y) evaluated by its series
 // representation as GamSer. Also returns log(Gamma(a)) as Gamln. See http://www.nr.com/.
 
-int GammaSer(FLOAT a,       // Constant a > 0.
+INT GammaSer(FLOAT a,       // Constant a > 0.
              FLOAT y,       // Variable y > 0.
              FLOAT *GamSer, // Incomplete gamma function.
              FLOAT *Gamln); // Log(Gamma(a)).
@@ -273,21 +277,21 @@ int GammaSer(FLOAT a,       // Constant a > 0.
 // Returns the incomplete gamma function Q(a, y) evaluated by its continued
 // fraction representation as GamCfg. Also returns log(Gamma(a)) as Gamln. See http://www.nr.com/.
 
-int GammaCfg(FLOAT a,       // Constant a > 0.
+INT GammaCfg(FLOAT a,       // Constant a > 0.
              FLOAT y,       // Variable y > 0.
              FLOAT *GamCfg, // Incomplete gamma function.
              FLOAT *Gamln); // Log(Gamma(a)).
 
 // Returns the incomplete gamma function P(a, y). Also returns log(Gamma(a)) as Gamln. See http://www.nr.com/.
 
-int GammaP(FLOAT a,       // Constant a > 0.
+INT GammaP(FLOAT a,       // Constant a > 0.
            FLOAT y,       // Variable y > 0.
            FLOAT *GamP,   // Incomplete gamma function.
            FLOAT *Gamln); // Log(Gamma(a)).
 
 // Returns the inverse of the gamma c.d.f. for the specified Theta and Beta. See http://www.nr.com/.
 
-int GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
+INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y);
 
 // Returns the inverse of the Weibull c.d.f. for the specified Theta and Beta.
 
@@ -299,25 +303,25 @@ FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Sigma, FLOAT Xi);
 
 // Returns the error function erf(y). See http://www.nr.com/.
 
-int ErrorF(FLOAT y,     // Variable y.
+INT ErrorF(FLOAT y,     // Variable y.
            FLOAT *ErF); // Error function.
 
 // Returns the determinant and the inverse matrix of A. See http://www.nr.com/
 
-int LUinvdet(int   n,      // Size of square matrix.
+INT LUinvdet(INT   n,      // Size of square matrix.
              FLOAT *A,     // Pointer to the square matrix A.
              FLOAT *Ainv,  // Pointer to the inverse matrix of A.
              FLOAT *Adet); // Pointer to the determinant of A.
 
 // Returns the Cholesky decomposition of matrix A. See http://www.nr.com/
 
-int Choldc(int   n,   // Size of square matrix.
+INT Choldc(INT   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
            FLOAT *L); // Lower triangular factors.
 
 // Returns the determinant and the inverse matrix of A. See http ://www.nr.com/
 
-int Cholinvdet(int   n,         // Size of square matrix.
+INT Cholinvdet(INT   n,         // Size of square matrix.
                FLOAT *A,        // Pointer to the symmetric square matrix A.
                FLOAT *Ainv,     // Pointer to the inverse matrix of A.
                FLOAT *logAdet); // Pointer to the logarithm of determinant of A.

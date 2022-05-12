@@ -7,32 +7,32 @@
 class Rngmix : public Base {
     // Methods.
     #if (_MAINTAIN_SWITCH)
-    int WriteDataFile();
-    int WriteParameterFile();
+    INT WriteDataFile();
+    INT WriteParameterFile();
     #endif
 public:
     // Members.
     char                 *curr_;         // Path to the currently open data file.
-    int                  o_;             // Number of paths.
+    INT                  o_;             // Number of paths.
     char                 **open_;        // Paths to open data files.
     char                 *save_;         // Path to the save data file.
-    int                  IDum_;          // Random seed.
-    int                  c_;             // Number of components.
+    INT                  IDum_;          // Random seed.
+    INT                  c_;             // Number of components.
     CompnentDistribution *IniTheta_;     // Initial component parameters.
-    int                  n_;             // Number of observations.
+    INT                  n_;             // Number of observations.
     FLOAT                **Y_;           // Dataset.
-    int                  *N_;            // Numbers of observations.
+    INT                  *N_;            // Numbers of observations.
     CompnentDistribution **MixTheta_;    // Mixture parameters.
-    int                  *Z_;            // Component membership.
+    INT                  *Z_;            // Component membership.
     // Constructor.
     Rngmix();
     // Destructor.
     virtual ~Rngmix();
     // Methods.
-    virtual int InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y);
-    int RNGMIX();
+    virtual INT InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y);
+    INT RNGMIX();
     #if (_MAINTAIN_SWITCH)
-    int RunTemplateFile(char *file);
+    INT RunTemplateFile(char *file);
     #endif
 }; // Rngmix
 

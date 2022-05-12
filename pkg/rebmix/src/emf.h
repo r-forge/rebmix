@@ -14,23 +14,23 @@
 class Emmix : public Base {
 public:
     // Members.
-    int                  n_;               // Number of observations.
-    int                  nr_;              // Total number of bins.
-    int                  nc_;              // Number of columns.
+    INT                  n_;               // Number of observations.
+    INT                  nr_;              // Total number of bins.
+    INT                  nc_;              // Number of columns.
     FLOAT                **Y_;             // Dataset.
-    int                  cmax_;            // Maximum number of components.
+    INT                  cmax_;            // Maximum number of components.
     FLOAT                TOL_;             // Tolerance for EM algorithm.
     FLOAT                am_;              // Acceleration multiplier for EM algorithm.
-    int                  max_iter_;        // Maximum number of iterations of EM algorithm.
-    int                  K_;               // Number of bins for histogram EM algorithm.
+    INT                  max_iter_;        // Maximum number of iterations of EM algorithm.
+    INT                  K_;               // Number of bins for histogram EM algorithm.
     EmStrategyType_e     strategy_;        // EM strategy utilization.
     EmVariantType_e      variant_;         // Type of EM variant algorithm.
     EmAccelerationType_e accel_;           // Type of acceleration of standard EM algorithm.
 /// Panic Branislav
     EmMergeCompsType_e   merge_;           // Merge components with zero weight.s
 /// End
-    int                  n_iter_;          // Number of iterations.
-    int                  c_;               // Number of components.
+    INT                  n_iter_;          // Number of iterations.
+    INT                  c_;               // Number of components.
     FLOAT                *W_;              // Component weights.
     CompnentDistribution **MixTheta_;      // Mixture parameters.    
     FLOAT                *dW_;             // Update component weights.
@@ -41,28 +41,28 @@ public:
     Emmix();
     // Destructor.
     virtual ~Emmix();
-    int Initialize(int n, int nr, int nc, FLOAT **Y, int cmax, int length_pdf, int length_Theta, int *length_theta, FLOAT TOL, FLOAT am, int max_iter, int EM_K, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
-    int Transform(FLOAT **Y);
-    int MixtureDist(int j, FLOAT **Y, int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
-    int LogLikelihood(int c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);
-    int ExpectationStep();
-    int ConditionalStep();
-    int GoldenRatioSearch(FLOAT *am_opt);
-    int LineSearch(FLOAT *am_opt);
-    int EM();
-    int ECM();
-    int Run(int *c, FLOAT *W, CompnentDistribution **MixTheta);
-    virtual int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
-    virtual int UpdateMixtureParameters(int *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
-    virtual int MaximizationStep();
+    INT Initialize(INT n, INT nr, INT nc, FLOAT **Y, INT cmax, INT length_pdf, INT length_Theta, INT *length_theta, FLOAT TOL, FLOAT am, INT max_iter, INT EM_K, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
+    INT Transform(FLOAT **Y);
+    INT MixtureDist(INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    INT LogLikelihood(INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);
+    INT ExpectationStep();
+    INT ConditionalStep();
+    INT GoldenRatioSearch(FLOAT *am_opt);
+    INT LineSearch(FLOAT *am_opt);
+    INT EM();
+    INT ECM();
+    INT Run(INT *c, FLOAT *W, CompnentDistribution **MixTheta);
+    virtual INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual INT UpdateMixtureParameters(INT *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
+    virtual INT MaximizationStep();
 }; // Emmix
 
 class Emmvnorm : public Emmix {
 public:
     // Constructor.
-    int LogComponentDist(int j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
-    int UpdateMixtureParameters(int *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
-    int MaximizationStep();
+    INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    INT UpdateMixtureParameters(INT *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
+    INT MaximizationStep();
 }; // Emmvnorm
 
 #endif

@@ -92,7 +92,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d, d)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2, theta3)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -102,7 +102,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionHMIX!", call. = FALSE); return(NA)
       }
     }
     else
@@ -117,7 +117,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d, d)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2, theta3)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -127,7 +127,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionKDEMIX!", call. = FALSE); return(NA)
       }
     }
     else
@@ -145,7 +145,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d, d)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2, theta3)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -155,7 +155,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionKNNMIX!", call. = FALSE); return(NA)
       }
     }
   }  
@@ -171,7 +171,7 @@ function(x, Criterion, pos, ...)
       length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2, theta3)),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(X),
       IC = double(1),
       logL = double(1),
@@ -181,7 +181,7 @@ function(x, Criterion, pos, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in .IC!", call. = FALSE); return(NA)
+      stop("in RInformationCriterionKMIX!", call. = FALSE); return(NA)
     }  
   }  
 
@@ -280,7 +280,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d * d, -d * d, -1)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -290,7 +290,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionHMVNORM!", call. = FALSE); return(NA)
       }
     }
     else
@@ -305,7 +305,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d * d, -d * d, -1)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -315,7 +315,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionKDEMVNORM!", call. = FALSE); return(NA)
       }
     }
     else
@@ -333,7 +333,7 @@ function(x, Criterion, pos, ...)
         length.theta = as.integer(c(d, d * d, -d * d, -1)),
         pdf = as.character(pdf),
         Theta = as.double(c(theta1, theta2)),
-        n = as.integer(n),
+        n = as.double(n),
         x = as.double(X),
         IC = double(1),
         logL = double(1),
@@ -343,7 +343,7 @@ function(x, Criterion, pos, ...)
         PACKAGE = "rebmix")
 
       if (output$error == 1) {
-        stop("in .IC!", call. = FALSE); return(NA)
+        stop("in RInformationCriterionKNNMVNORM!", call. = FALSE); return(NA)
       }
     }
   }
@@ -359,7 +359,7 @@ function(x, Criterion, pos, ...)
       length.theta = as.integer(c(d, d * d, -d * d, -1)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2)),
-      n = as.integer(n),
+      n = as.double(n),
       x = as.double(X),
       IC = double(1),
       logL = double(1),
@@ -369,7 +369,7 @@ function(x, Criterion, pos, ...)
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in .IC!", call. = FALSE); return(NA)
+      stop("in RInformationCriterionKMVNORM!", call. = FALSE); return(NA)
     }  
   }    
 

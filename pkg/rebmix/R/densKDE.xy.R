@@ -1,7 +1,7 @@
 .densKDE.xy <- function(x, y, hx, hy, npts)
 {
   output <- .C(C_RdensKDEXY,
-    n = as.integer(length(x)),
+    n = as.double(length(x)),
     x = as.double(x),
     y = as.double(y),
     z = double(length(x)),
@@ -11,7 +11,7 @@
     PACKAGE = "rebmix")
 
   if (output$error == 1) {
-    stop("in densKDE.xy!", call. = FALSE); return(NA)
+    stop("in RdensKDEXY!", call. = FALSE); return(NA)
   }
 
   i <- !duplicated(data.frame(output$x, output$y))

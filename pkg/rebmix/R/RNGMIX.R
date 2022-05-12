@@ -36,13 +36,13 @@ function(model, ...)
       IDum = as.integer(IDum),
       d = as.integer(d),
       c = as.integer(c),
-      N = as.integer(model@n),
+      N = as.double(model@n),
       length.pdf = as.integer(d),
       length.Theta = as.integer(3),
       length.theta = as.integer(c(d, d, d)),
       pdf = as.character(pdf),
       Theta = as.double(c(theta1, theta2, theta3)),
-      n = integer(1),
+      n = double(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
       error = integer(1),
@@ -114,19 +114,19 @@ function(model, ...)
       IDum = as.integer(IDum),
       d = as.integer(d),
       c = as.integer(c),
-      N = as.integer(model@n),
+      N = as.double(model@n),
       length.pdf = as.integer(d),
       length.Theta = as.integer(4),
       length.theta = as.integer(c(d, d * d, -d * d, -1)),
       Theta = as.double(c(theta1, theta2)),
-      n = integer(1),
+      n = double(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
       error = integer(1),
       PACKAGE = "rebmix")
 
     if (output$error == 1) {
-      stop("in RNGMIX!", call. = FALSE); return(NA)
+      stop("in RRNGMVNORM!", call. = FALSE); return(NA)
     }
 
     dim(output$Y) <- c(output$n, d)

@@ -7,15 +7,15 @@
 #include <stdio.h>
 #endif
 
-static int   NDevISet = 0;
+static INT   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;
 
-int Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, int j, FLOAT **Y)
+INT Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
 {
     FLOAT C[4];
     FLOAT *y, Sum;
-    int   i, k;
-    int   Error = 0;
+    INT   i, k;
+    INT   Error = 0;
 
     y = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
