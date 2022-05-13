@@ -2,7 +2,7 @@
 {
   output <- .C(C_RdensHistogramXY,
     k = as.integer(k),
-    n = as.double(length(x)),
+    n = as.integer(length(x)),
     x = as.double(x),
     y = as.double(y),
     z = double(length(x)),

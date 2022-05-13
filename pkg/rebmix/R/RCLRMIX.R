@@ -137,7 +137,7 @@ function(model, ...)
     length.theta = as.integer(c(d, d, d)),
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2, theta3)),
-    n = as.double(n),
+    n = as.integer(n),
     Y = as.double(dataset),
     Y.type = as.integer(Y.type),
 ### Panic Branislav.
@@ -168,7 +168,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLRMIX,
-    n = as.double(n),
+    n = as.integer(n),
     X = as.double(dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -252,7 +252,7 @@ function(model, ...)
     length.theta = as.integer(c(d, d * d, -d * d, -1)),
     pdf = as.character(pdf),
     Theta = as.double(c(theta1, theta2)),
-    n = as.double(n),
+    n = as.integer(n),
     Y = as.double(dataset),
     Y.type = as.integer(Y.type),
 ### Panic Branislav.
@@ -283,7 +283,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLRMVNORM,
-    n = as.double(n),
+    n = as.integer(n),
     X = as.double(dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),

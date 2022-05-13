@@ -110,7 +110,7 @@ function(Dataset, K, ymin, ymax, ...)
     
     temp <- .C(C_Rbins,
       d = as.integer(d),
-      n = as.double(n),
+      n = as.integer(n),
       x = as.double(x),
       length.ymin = as.integer(length(ymin)),
       ymin = as.double(ymin),

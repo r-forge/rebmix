@@ -1,7 +1,7 @@
 .densKDE.xy <- function(x, y, hx, hy, npts)
 {
   output <- .C(C_RdensKDEXY,
-    n = as.double(length(x)),
+    n = as.integer(length(x)),
     x = as.double(x),
     y = as.double(y),
     z = double(length(x)),

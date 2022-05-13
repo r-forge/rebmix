@@ -131,7 +131,7 @@ function(Dataset, Rule = "Knuth equal", ymin, ymax, kmin, kmax, ...)
 
     temp <- .C(C_Roptbins,
       d = as.integer(d),
-      n = as.double(n),
+      n = as.integer(n),
       x = as.double(x),
       Rule = as.character(Rule),
       length.ymin = as.integer(length(ymin)),

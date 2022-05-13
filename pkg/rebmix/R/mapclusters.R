@@ -67,7 +67,7 @@ function(x,
   n <- nrow(Dataset)
 
   output <- .C(C_RCLRMIX,
-    n = as.double(n),
+    n = as.integer(n),
     X = as.double(Dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),
@@ -185,7 +185,7 @@ function(x,
   n <- nrow(Dataset)
 
   output <- .C(C_RCLRMVNORM,
-    n = as.double(n),
+    n = as.integer(n),
     X = as.double(Dataset),
     d = as.integer(d),
     c = as.integer(unlist(c)),

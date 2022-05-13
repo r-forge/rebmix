@@ -45,7 +45,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLSMIX,
-    n = as.double(model@ntest),
+    n = as.integer(model@ntest),
     X = as.double(unlist(model@Dataset)),
     s = as.integer(model@s),
     o = as.integer(o),
@@ -113,7 +113,7 @@ function(model, ...)
   }
 
   output <- .C(C_RCLSMVNORM,
-    n = as.double(model@ntest),
+    n = as.integer(model@ntest),
     X = as.double(unlist(model@Dataset)),
     s = as.integer(model@s),
     o = as.integer(o),

@@ -185,7 +185,7 @@ public:
             FLOAT *h,                // Sides of the hypersquare.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
-            FLOAT *n,                 // Number of observations.
+            INT   *n,                 // Number of observations.
             FLOAT *Y,                 // Dataset.
             INT   *Y_type,            // Dataset type. 
             char  **EMStrategy,       // Strategy for EM algorithm.
