@@ -34,7 +34,7 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
       K = K, 
       ymin = ymin, 
       ymax = ymax)
-      
+
     nz <- prod(x@K)
     
     names <- names(x@Y)
@@ -89,6 +89,12 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
   colnames(output$z) <- colnames(x@Y)
   
   x@Y <- as.data.frame(output$z)
+  
+  x@n <- x@n + ny
+  
+  if (x@n >= 2147483647) {
+    message("Note: Total number of observations ", x@n, " is greater or equal than ", 2147483647, "!")
+  }    
   
   output <- x
   
@@ -190,6 +196,12 @@ function(x, Dataset, K, ymin, ymax, ...)
   colnames(output$z) <- colnames(x@Y)
   
   x@Y <- as.data.frame(output$z)
+  
+  x@n <- x@n + ny
+  
+  if (x@n >= 2147483647) {
+    message("Note: Total number of observations ", x@n, " is greater or equal than ", 2147483647, "!")
+  }  
   
   output <- x
   

@@ -3270,7 +3270,7 @@ void Rfhistogram(INT    *K,      // Numbers of bins.
                  INT    *shrink, // If 1 the output array is shrinked.
                  INT    *Error)  // Error code.
 {
-    INT i, j, k, *l = NULL, *m = NULL, dny;
+    INT   i, j, k, *l = NULL, *m = NULL, dny;
 
     *Error = *nx < 1;
 
@@ -3311,7 +3311,7 @@ void Rfhistogram(INT    *K,      // Numbers of bins.
     if (*shrink) {
         i = 0;
 
-        for (j = 0; j < *ny; j++) if (y[j + dny] > (FLOAT)0.5) {
+        for (j = 0; j < *ny; j++) if (y[j + dny] > FLOAT_MIN) {
             if (i != j) for (k = 0; k <= *d; k++) y[i + k * (*ny)] = y[j + k * (*ny)];
 
             i++;
@@ -3338,7 +3338,7 @@ void Rchistogram(INT    *K,      // Numbers of bins.
                  double *y,      // Pointer to the output array y.
                  INT    *Error)  // Error code.
 {
-    INT i, j, k, dny, kny;
+    INT   i, j, k, dny, kny;
     
     *Error = *nx < 1;
 

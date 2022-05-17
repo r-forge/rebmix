@@ -362,6 +362,7 @@
 \alias{a.ymax,Histogram-method}
 \alias{a.y0,Histogram-method}
 \alias{a.h,Histogram-method}
+\alias{a.n,Histogram-method}
 
 
 \title{Internal rebmix Functions}
