@@ -71,11 +71,11 @@ WNmodel <- function (formula = .~.) {
 
       beta <- beta - dbeta
 
-      if (is.nan(dbeta) || is.infinite(dbeta) || (beta <= 1e-6)) {
+      if (is.nan(dbeta) || is.infinite(dbeta) || (beta <= 1.E-6)) {
         stop("Not converged!")
       }
 
-      if (abs(dbeta / beta) < 1e-6) {
+      if (abs(dbeta / beta) < 1.E-6) {
         Error <- 0
       }
 

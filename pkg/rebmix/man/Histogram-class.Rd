@@ -39,7 +39,7 @@ an integer containing number \eqn{n_{\mathrm{s}}} of samples.
 }
 \author{Marko Nagode}
 \examples{
-Y <- as.data.frame(matrix(0.0, nrow = 8, ncol = 3))
+Y <- as.data.frame(matrix(1.0, nrow = 8, ncol = 3))
 
 hist <- new("Histogram", Y = Y, K = c(4, 2), ymin = c(2, 1), ymax = c(10, 8))
 
@@ -51,5 +51,9 @@ a.y0(hist)
 a.h(hist)
 a.n(hist)
 a.ns(hist)
+
+# Multiplay Y[ , d + 1] by 0.1.
+
+a.Y(hist) <- 0.1
 }
 \keyword{classes}

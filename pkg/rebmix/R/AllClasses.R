@@ -54,7 +54,7 @@ function(.Object, ...,
   # tolerance.
   
   if (missing(tolerance) || (length(tolerance) == 0)) {
-    tolerance <- 1e-4
+    tolerance <- 1.E-4
   }
 
   if (!is.numeric(tolerance)) {

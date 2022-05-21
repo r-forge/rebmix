@@ -260,7 +260,7 @@ function(x,
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
 
-    if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
+    if (abs(lim[2, i] - lim[1, i]) < 1.E-6) {
       lim[2, i] <- lim[1, i] + 1.0
     }
 
@@ -1160,7 +1160,7 @@ function(x,
       lim[, i] <- range(ey[, i], finite = TRUE)
     }
 
-    if (abs(lim[2, i] - lim[1, i]) < 1e-6) {
+    if (abs(lim[2, i] - lim[1, i]) < 1.E-6) {
       lim[2, i] <- lim[1, i] + 1.0
     }
 

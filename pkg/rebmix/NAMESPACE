@@ -163,7 +163,9 @@ exportMethods("RNGMIX",
               "bins",
 ### End 
               "a.Y",
+              "a.Y<-",
               "a.h",
+              "a.ns",
               "fhistogram",
               "chistogram",
               "mapclusters")

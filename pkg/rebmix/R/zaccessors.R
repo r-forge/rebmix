@@ -227,11 +227,11 @@ function(x, value)
     stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
   }
 
-  if (abs(sum(value) - 1.0) > 1e-6){
+  if (abs(sum(value) - 1.0) > 1.E-6){
     stop(sQuote("value"), " must sum to 1.0!", call. = FALSE) 
   }
 
-  value <- value/sum(value)
+  value <- value / sum(value)
 
   x@w <- value
 
@@ -258,7 +258,7 @@ function(x, value)
     stop("length of ", sQuote("value"), " must equal " , x@c, "!", call. = FALSE)
   }
 
-  if (abs(sum(value) - 1.0) > 1e-6){
+  if (abs(sum(value) - 1.0) > 1.E-6){
     stop(sQuote("value"), " must sum to 1.0!", call. = FALSE) 
   }
 
@@ -1476,6 +1476,32 @@ setMethod("a.Specificity", signature(x = "RCLSMIX"), function(x) x@Specificity)
 setMethod("a.Chunks", signature(x = "RCLSMIX"), function(x) x@Chunks)
 
 setMethod("a.Y", signature(x = "Histogram"), function(x) x@Y)
+
+setMethod("a.Y<-",
+          signature = (x = "Histogram"),
+function(x, value)
+{
+  # value.
+  
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("multiplier"), " must not be empty!", call. = FALSE)
+  }
+
+  length(value) <- 1
+  
+  if ((value <= 0.0) || (value >= 1.0)) {
+    stop(sQuote("multiplier"), " must be greater than 0.0 and less than 1.0!", call. = FALSE)
+  }  
+  
+  d <- ncol(x@Y)
+
+  x@Y[ , d] <- x@Y[ , d] * value
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.Y<-
+
 setMethod("a.K", signature(x = "Histogram"), function(x) x@K)
 setMethod("a.ymin", signature(x = "Histogram"), function(x) x@ymin)
 setMethod("a.ymax", signature(x = "Histogram"), function(x) x@ymax)

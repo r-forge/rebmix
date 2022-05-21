@@ -240,6 +240,7 @@ setGeneric("a.eliminate.zero.components<-", function(x = NULL, value = numeric()
 ### End
 
 setGeneric("a.Y", function(x = NULL) standardGeneric("a.Y"))
+setGeneric("a.Y<-", function(x = NULL, value = numeric()) standardGeneric("a.Y<-"))
 setGeneric("a.h", function(x = NULL) standardGeneric("a.h"))
 setGeneric("a.ns", function(x = NULL) standardGeneric("a.ns"))
 

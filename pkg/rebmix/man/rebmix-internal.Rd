@@ -354,16 +354,19 @@
 \alias{a.w<-,EMMIX.Theta-method}
 \alias{a.w<-,EMMVNORM.Theta-method}
 
-\alias{a.h}
 \alias{a.Y}
+\alias{a.Y<-}
+\alias{a.h}
+\alias{a.ns}
 \alias{a.Y,Histogram-method}
+\alias{a.Y<-,Histogram-method}
 \alias{a.K,Histogram-method}
 \alias{a.ymin,Histogram-method}
 \alias{a.ymax,Histogram-method}
 \alias{a.y0,Histogram-method}
 \alias{a.h,Histogram-method}
 \alias{a.n,Histogram-method}
-
+\alias{a.ns,Histogram-method}
 
 \title{Internal rebmix Functions}
 \description{
