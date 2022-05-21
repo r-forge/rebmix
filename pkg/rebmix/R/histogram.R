@@ -94,7 +94,9 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
   
   if (x@n >= 2147483647) {
     message("Note: Total number of observations ", x@n, " is greater or equal than ", 2147483647, "!")
-  }    
+  }
+  
+  x@ns <- x@ns + 1    
   
   output <- x
   
@@ -201,7 +203,9 @@ function(x, Dataset, K, ymin, ymax, ...)
   
   if (x@n >= 2147483647) {
     message("Note: Total number of observations ", x@n, " is greater or equal than ", 2147483647, "!")
-  }  
+  }
+  
+  x@ns <- x@ns + 1  
   
   output <- x
   

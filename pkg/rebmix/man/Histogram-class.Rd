@@ -5,7 +5,7 @@
 \description{Object of class \code{Histogram}.}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Histogram", ...)}. Accessor methods for the slots are \code{a.Y(x = NULL)}, 
-\code{a.K(x = NULL)}, \code{a.ymin(x = NULL)}, \code{a.ymax(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.h(x = NULL)} and \code{a.n(x = NULL)}.
+\code{a.K(x = NULL)}, \code{a.ymin(x = NULL)}, \code{a.ymax(x = NULL)}, \code{a.y0(x = NULL)}, \code{a.h(x = NULL)}, \code{a.n(x = NULL)} and \code{a.ns(x = NULL)}.
 }
 \section{Slots}{
 \describe{
@@ -32,6 +32,9 @@ a vector of length \eqn{d} containing bin widths.
 \item{\code{n}:}{
 an integer containing total number \eqn{n} of observations.
 }
+\item{\code{ns}:}{
+an integer containing number \eqn{n_{\mathrm{s}}} of samples.
+}
 }
 }
 \author{Marko Nagode}
@@ -47,5 +50,6 @@ a.ymax(hist)
 a.y0(hist)
 a.h(hist)
 a.n(hist)
+a.ns(hist)
 }
 \keyword{classes}

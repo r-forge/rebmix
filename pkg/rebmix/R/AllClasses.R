@@ -2046,7 +2046,8 @@ slots = c(Y = "data.frame",
   ymax = "numeric",
   y0 = "numeric",  
   h = "numeric",
-  n = "numeric"))
+  n = "numeric",
+  ns = "numeric"))
 
 setMethod("initialize", "Histogram",
 function(.Object, ...,
@@ -2056,7 +2057,8 @@ function(.Object, ...,
   ymax,
   y0,
   h,
-  n)
+  n,
+  ns)
 {
   # Y.
 
@@ -2130,6 +2132,8 @@ function(.Object, ...,
   
   n <- 0
   
+  ns <- 0
+  
   .Object@Y <- Y
   .Object@K <- K
   .Object@ymin <- ymin
@@ -2137,6 +2141,7 @@ function(.Object, ...,
   .Object@y0 <- y0
   .Object@h <- h
   .Object@n <- n
+  .Object@ns <- ns
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 
