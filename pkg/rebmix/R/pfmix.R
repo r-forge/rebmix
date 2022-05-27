@@ -26,7 +26,7 @@ function(x,
   if (missing(Dataset)) {
     Dataset <- x@Dataset[[pos]]  
   
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       d <- ncol(Dataset@Y) - 1
    
       Dataset <- as.data.frame(Dataset@Y[, 1:d])
@@ -194,7 +194,7 @@ function(x,
   if (missing(Dataset)) {
     Dataset <- x@Dataset[[pos]]  
   
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       d <- ncol(Dataset@Y) - 1
    
       Dataset <- as.data.frame(Dataset@Y[, 1:d])

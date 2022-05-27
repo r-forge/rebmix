@@ -67,7 +67,7 @@ E0: if (rngmix) delete rngmix;
     if (_CrtMemDifference(&s3, &s1, &s2)) _CrtMemDumpStatistics(&s3);
     #endif
 
-    printf("\n%s%ld\n", "Error: ", Error);
+    printf("\n%s%d\n", "Error: ", Error);
 
     return Error;
 } // main

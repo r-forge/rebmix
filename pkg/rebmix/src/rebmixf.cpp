@@ -8465,7 +8465,7 @@ INT Rebmix::WriteDataFile()
                     if (length_pdf_ == 1)
                         sprintf(line, "%s", "y0");
                     else
-                        sprintf(line, "%s%ld", "y0", i + 1);
+                        sprintf(line, "%s%d", "y0", i + 1);
 
                     fprintf(fp0, "\t%s", line);
                 }
@@ -8474,7 +8474,7 @@ INT Rebmix::WriteDataFile()
                     if (length_pdf_ == 1)
                         sprintf(line, "%s", "h");
                     else
-                        sprintf(line, "%s%ld", "h", i + 1);
+                        sprintf(line, "%s%d", "h", i + 1);
 
                     fprintf(fp0, "\t%s", line);
                 }
@@ -8487,7 +8487,7 @@ INT Rebmix::WriteDataFile()
                     if (length_pdf_ == 1)
                         sprintf(line, "%s", "h");
                     else
-                        sprintf(line, "%s%ld", "h", i + 1);
+                        sprintf(line, "%s%d", "h", i + 1);
 
                     fprintf(fp0, "\t%s", line);
                 }
@@ -8500,7 +8500,7 @@ INT Rebmix::WriteDataFile()
                     if (length_pdf_ == 1)
                         sprintf(line, "%s", "h");
                     else
-                        sprintf(line, "%s%ld", "h", i + 1);
+                        sprintf(line, "%s%d", "h", i + 1);
 
                     fprintf(fp0, "\t%s", line);
                 }
@@ -8510,7 +8510,7 @@ INT Rebmix::WriteDataFile()
                 if (length_pdf_ == 1)
                     sprintf(line, "%s", "ymin");
                 else
-                    sprintf(line, "%s%ld", "ymin", i + 1);
+                    sprintf(line, "%s%d", "ymin", i + 1);
 
                 fprintf(fp0, "\t%s", line);
             }
@@ -8519,7 +8519,7 @@ INT Rebmix::WriteDataFile()
                 if (length_pdf_ == 1)
                     sprintf(line, "%s", "ymax");
                 else
-                    sprintf(line, "%s%ld", "ymax", i + 1);
+                    sprintf(line, "%s%d", "ymax", i + 1);
 
                 fprintf(fp0, "\t%s", line);
             }
@@ -8546,12 +8546,12 @@ INT Rebmix::WriteDataFile()
             if (length_pdf_ == 1)
                 fprintf(fp1, "\t%s", "pdf");
             else
-                fprintf(fp1, "\t%s%ld", "pdf", i + 1);
+                fprintf(fp1, "\t%s%d", "pdf", i + 1);
         }
 
         for (j = 0; j < Min(3, length_Theta_); j++) {
             for (k = 0; k < length_theta_[j]; k++) {
-                fprintf(fp1, "\t%s%ld%s%ld", "theta", j + 1, ".", k + 1);
+                fprintf(fp1, "\t%s%d%s%d", "theta", j + 1, ".", k + 1);
             }
         }
 
@@ -8597,9 +8597,9 @@ INT Rebmix::WriteDataFile()
 
     fprintf(fp0, "\t%s", line);
 
-    fprintf(fp0, "\t%ld", cmax_);
+    fprintf(fp0, "\t%d", cmax_);
 
-    fprintf(fp0, "\t%ld", cmin_);
+    fprintf(fp0, "\t%d", cmin_);
 
     switch (Criterion_) {
     case icAIC:
@@ -8681,12 +8681,12 @@ INT Rebmix::WriteDataFile()
 
     fprintf(fp0, "\t%s", line);
 
-    fprintf(fp0, "\t%ld", summary_.c);
+    fprintf(fp0, "\t%d", summary_.c);
 
     if (Y_type_ == 0) {
         switch (Preprocessing_) {
         case poHistogram:
-            fprintf(fp0, "\t%ld", summary_.k);
+            fprintf(fp0, "\t%d", summary_.k);
 
             for (i = 0; i < length_pdf_; i++) {
                 fprintf(fp0, "\t%E", summary_.y0[i]);
@@ -8698,7 +8698,7 @@ INT Rebmix::WriteDataFile()
 
             break;
         case poKDE:
-            fprintf(fp0, "\t%ld", summary_.k);
+            fprintf(fp0, "\t%d", summary_.k);
 
             for (i = 0; i < length_pdf_; i++) {
                 fprintf(fp0, "\t%E", summary_.h[i]);
@@ -8706,7 +8706,7 @@ INT Rebmix::WriteDataFile()
 
             break;
         case poKNearestNeighbour:
-            fprintf(fp0, "\t%ld", summary_.k);
+            fprintf(fp0, "\t%d", summary_.k);
 
             for (i = 0; i < length_pdf_; i++) {
                 fprintf(fp0, "\t%E", summary_.h[i]);
@@ -8765,7 +8765,7 @@ INT Rebmix::WriteDataFile()
         fprintf(fp0, "\t%s", "golden");
     }
     
-    fprintf(fp0, "\t%E\t%E\t%ld\t%ld\t%ld\n", EM_am_,
+    fprintf(fp0, "\t%E\t%E\t%d\t%d\t%d\n", EM_am_,
                                               EM_TOL_,
                                               EM_max_iter_,
                                               n_iter_,

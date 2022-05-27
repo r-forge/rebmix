@@ -44,7 +44,7 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
     colnames(x@Y) <- names    
   }
   else {
-    if (class(x) != "Histogram") {
+    if (as.character(class(x)) != "Histogram") {
       stop(sQuote("x"), " object of class Histogram is requested!", call. = FALSE)
     }
     
@@ -153,7 +153,7 @@ function(x, Dataset, K, ymin, ymax, ...)
     colnames(x@Y) <- names
   }
   else {
-    if (class(x) != "Histogram") {
+    if (as.character(class(x)) != "Histogram") {
       stop(sQuote("x"), " object of class Histogram is requested!", call. = FALSE)
     }
     

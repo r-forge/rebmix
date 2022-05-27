@@ -91,11 +91,11 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  if (class(x@Dataset) == "data.frame") {
+  if (as.character(class(x@Dataset)) == "data.frame") {
     ey <- as.matrix(x@Dataset)
   }
   else
-  if (class(x@Dataset) == "Histogram") {
+  if (as.character(class(x@Dataset)) == "Histogram") {
     ey <- as.matrix(x@Dataset@Y[, 1:d])
   }  
   
@@ -391,11 +391,11 @@ function(x,
 
   par(oma = c(1 + 0.2, 0.2, 0.2, 0.2))
 
-  if (class(x@Dataset) == "data.frame") {
+  if (as.character(class(x@Dataset)) == "data.frame") {
     ey <- as.matrix(x@Dataset)
   }
   else
-  if (class(x@Dataset) == "Histogram") {
+  if (as.character(class(x@Dataset)) == "Histogram") {
     ey <- as.matrix(x@Dataset@Y[, 1:d])
   }  
 

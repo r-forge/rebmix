@@ -24,13 +24,13 @@ function(x,
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
   
-  if (class(Dataset) == "data.frame") {
+  if (as.character(class(Dataset)) == "data.frame") {
     Y.type <- 0
     
     d <- ncol(Dataset)
   }  
   else
-  if (class(Dataset) == "Histogram") {
+  if (as.character(class(Dataset)) == "Histogram") {
     Y.type <- 1
     
     Dataset <- Dataset@Y
@@ -148,13 +148,13 @@ function(x,
 
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
   
-  if (class(Dataset) == "data.frame") {
+  if (as.character(class(Dataset)) == "data.frame") {
     Y.type <- 0
     
     d <- ncol(Dataset)
   }  
   else
-  if (class(Dataset) == "Histogram") {
+  if (as.character(class(Dataset)) == "Histogram") {
     Y.type <- 1
     
     Dataset <- Dataset@Y

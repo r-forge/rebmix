@@ -30,7 +30,7 @@ function(model, ...)
     dataset <- model@x@Dataset[[model@pos]]
   }
     
-  if (class(dataset) == "data.frame") {
+  if (as.character(class(dataset)) == "data.frame") {
     Y.type <- 0
     
     dataset <- as.matrix(dataset)
@@ -121,7 +121,7 @@ function(model, ...)
     }
   }  
   else
-  if (class(dataset) == "Histogram") {
+  if (as.character(class(dataset)) == "Histogram") {
     Y.type <- 1
     
     dataset <- as.matrix(dataset@Y)
@@ -228,7 +228,7 @@ function(model, ...)
     dataset <- model@x@Dataset[[model@pos]]
   }
     
-  if (class(dataset) == "data.frame") {
+  if (as.character(class(dataset)) == "data.frame") {
     Y.type <- 0
     
     dataset <- as.matrix(dataset)
@@ -236,7 +236,7 @@ function(model, ...)
     n <- nrow(dataset)
   }  
   else
-  if (class(dataset) == "Histogram") {
+  if (as.character(class(dataset)) == "Histogram") {
     Y.type <- 1
     
     dataset <- as.matrix(dataset@Y)

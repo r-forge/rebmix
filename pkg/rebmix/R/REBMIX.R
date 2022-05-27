@@ -9,7 +9,7 @@ function(model, ...)
 ### End  
 
   for (i in 1:length(model@Dataset)) {
-    if (class(model@Dataset[[i]]) == "data.frame") {
+    if (as.character(class(model@Dataset[[i]])) == "data.frame") {
       Y.type <- 0
       
       Dataset.name <- names(model@Dataset)[i]
@@ -21,7 +21,7 @@ function(model, ...)
       h <- NULL
     }
     else
-    if (class(model@Dataset[[i]]) == "Histogram") {
+    if (as.character(class(model@Dataset[[i]])) == "Histogram") {
       Y.type <- 1
       
       Dataset.name <- names(model@Dataset)[i]
@@ -369,7 +369,7 @@ function(model, ...)
 ### End  
 
   for (i in 1:length(model@Dataset)) {
-    if (class(model@Dataset[[i]]) == "data.frame") {
+    if (as.character(class(model@Dataset[[i]])) == "data.frame") {
       Y.type <- 0
       
       Dataset.name <- names(model@Dataset)[i]
@@ -381,7 +381,7 @@ function(model, ...)
       h <- NULL
     }
     else
-    if (class(model@Dataset[[i]]) == "Histogram") {
+    if (as.character(class(model@Dataset[[i]])) == "Histogram") {
       Y.type <- 1
       
       Dataset.name <- names(model@Dataset)[i]

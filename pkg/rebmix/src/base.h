@@ -23,7 +23,7 @@
 #endif
 
 #ifndef INT
-#define INT long
+#define INT int
 #endif
 
 #ifndef FLOAT_MIN

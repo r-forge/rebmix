@@ -89,7 +89,7 @@ INT Rngmix::WriteDataFile()
 
         for (j = 1; j < length_pdf_; j++) fprintf(fp, "\t%E", Y_[j][i]);
 
-        fprintf(fp, "\t%ld\n", Z_[i]);
+        fprintf(fp, "\t%d\n", Z_[i]);
     }
 
 E0: if (fp) fclose(fp);
@@ -141,7 +141,7 @@ INT Rngmix::WriteParameterFile()
 
     fprintf(fp, "%s\n", "rseed");
 
-    fprintf(fp, "%ld\n", IDum_);
+    fprintf(fp, "%d\n", IDum_);
 
 E0: if (fp) fclose(fp);
 

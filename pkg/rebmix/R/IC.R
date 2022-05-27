@@ -26,7 +26,7 @@ function(x, Criterion, pos, ...)
   
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
   
-  if (class(Dataset) == "data.frame") {
+  if (as.character(class(Dataset)) == "data.frame") {
     Y.type <- 0
     
     X <- as.matrix(Dataset)
@@ -35,7 +35,7 @@ function(x, Criterion, pos, ...)
     d <- ncol(X)    
   }
   else
-  if (class(Dataset) == "Histogram") {
+  if (as.character(class(Dataset)) == "Histogram") {
     Y.type <- 1
     
     X <- as.matrix(Dataset@Y)
@@ -218,7 +218,7 @@ function(x, Criterion, pos, ...)
   
   Dataset <- x@Dataset[[which(names(x@Dataset) == x@summary[pos, "Dataset"])]]
 
-  if (class(Dataset) == "data.frame") {
+  if (as.character(class(Dataset)) == "data.frame") {
     Y.type <- 0
     
     X <- as.matrix(Dataset)
@@ -227,7 +227,7 @@ function(x, Criterion, pos, ...)
     d <- ncol(X)    
   }
   else
-  if (class(Dataset) == "Histogram") {
+  if (as.character(class(Dataset)) == "Histogram") {
     Y.type <- 1
     
     X <- as.matrix(Dataset@Y)

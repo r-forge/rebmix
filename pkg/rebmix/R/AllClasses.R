@@ -149,7 +149,7 @@ function(object)
     stop(sQuote("object"), " object of class EM.Control is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"strategy\":", "\n", sep = "")
 
@@ -274,7 +274,7 @@ function(object)
     stop(sQuote("object"), " object of class RNGMIX.Theta is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"c\":", "\n", sep = "")
 
@@ -470,7 +470,7 @@ function(object)
     stop(sQuote("object"), " object of class EMMIX.Theta is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"c\":", "\n", sep = "")
 
@@ -591,7 +591,7 @@ function(object)
     stop(sQuote("object"), " object of class EMMVNORM.Theta is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"c\":", "\n", sep = "")
 
@@ -755,7 +755,7 @@ function(.Object, ...,
     stop(sQuote("theta2.l"), " in " , sQuote("Theta"), " and ", sQuote("n"), " must match!", call. = FALSE)
   }
   
-  if (class(.Object) == "RNGMIX") {
+  if (as.character(class(.Object)) == "RNGMIX") {
     if (length(grep("theta3", Names)) == 0) {
       stop(sQuote("theta3.1"), " in " , sQuote("Theta"), " numeric vector is requested!", call. = FALSE)
     }   
@@ -801,7 +801,7 @@ function(object)
     stop(sQuote("object"), " object of class RNGMIX is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"w\":", "\n", sep = "")
 
@@ -830,7 +830,7 @@ function(object)
     stop(sQuote("object"), " object of class RNGMVNORM is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"w\":", "\n", sep = "")
 
@@ -922,14 +922,14 @@ function(.Object, ...,
     names(Dataset) <- paste("dataset", 1:length(Dataset), sep = "")
   }
 
-  if (!all(unlist(lapply(Dataset, function(x) class(x) == "Histogram" || class(x) == "data.frame")))) {
+  if (!all(unlist(lapply(Dataset, function(x) as.character(class(x)) == "Histogram" || as.character(class(x)) == "data.frame")))) {
     stop(sQuote("Dataset"), " list of data frames or objects of class ", "Histogram", " is requested!", call. = FALSE)
   }
 
   d <- NULL;
   
   for (i in 1:length(Dataset)) {
-    if (class(Dataset[[i]]) == "data.frame") {
+    if (as.character(class(Dataset[[i]])) == "data.frame") {
       di <- ncol(Dataset[[i]])
     
       d <- c(d, di)
@@ -1218,7 +1218,7 @@ function(.Object, ...,
     EMcontrol <- new("EM.Control")
   }
 
-  if (class(EMcontrol) != "EM.Control") {
+  if (as.character(class(EMcontrol)) != "EM.Control") {
     stop(sQuote("EMcontrol"), " object of class EM.Control is requested!", call. = FALSE)
   }
 ### End  
@@ -1264,7 +1264,7 @@ function(object)
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"w\":", "\n", sep = "")
 
@@ -1309,7 +1309,7 @@ function(object)
     stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(object@summary), "!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"w\":", "\n", sep = "")
 
@@ -1379,7 +1379,7 @@ function(.Object, ...,
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
 
-  if (class(x) != model) {
+  if (as.character(class(x)) != model) {
     stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
   }
 
@@ -1499,7 +1499,7 @@ function(object)
     stop(sQuote("object"), " object of class REBMIX.boot is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"c\":", "\n", sep = "")
 
@@ -1536,7 +1536,7 @@ function(object)
     stop(sQuote("object"), " object of class REBMVNORM.boot is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"c\":", "\n", sep = "")
 
@@ -1600,7 +1600,7 @@ function(.Object, ...,
     stop(sQuote("x"), " must not be empty!", call. = FALSE)
   }
   
-  if (class(x) != model) {
+  if (as.character(class(x)) != model) {
     stop(sQuote("x"), " object of class ", model, " is requested!", call. = FALSE)
   }
 
@@ -1623,22 +1623,22 @@ function(.Object, ...,
   if (missing(Dataset) || (length(Dataset) == 0)) {
     Dataset <- x@Dataset[[pos]]
     
-    if (class(Dataset) == "data.frame") {
+    if (as.character(class(Dataset)) == "data.frame") {
       n <- nrow(Dataset)
     }
     else
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       n <- nrow(Dataset@Y)
     }     
   }
   else {
-    if ((class(Dataset) != "Histogram") && (class(Dataset) != "data.frame")) {
+    if ((as.character(class(Dataset)) != "Histogram") && (as.character(class(Dataset)) != "data.frame")) {
       stop(sQuote("Dataset"), " data frame or object of class Histogram is requested!", call. = FALSE)
     }
     
     d <- length(x@Variables)
 
-    if (class(Dataset) == "data.frame") {
+    if (as.character(class(Dataset)) == "data.frame") {
       if (ncol(Dataset) != d) {
         stop(sQuote("Dataset"), " number of columns in data frame must equal ", d, "!", call. = FALSE)
       }
@@ -1650,7 +1650,7 @@ function(.Object, ...,
       }      
     }
     else
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       if (length(Dataset@h) != d) {
         stop(sQuote("Dataset"), " number of variables in object of class Histogram must equal ", d, "!", call. = FALSE)
       }
@@ -1712,7 +1712,7 @@ function(object)
     stop(sQuote("object"), " object of class RCLRMIX is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"prob\":", "\n", sep = "")
 
@@ -1757,7 +1757,7 @@ function(object)
     stop(sQuote("object"), " object of class RCLRMVNORM is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"prob\":", "\n", sep = "")
 
@@ -1810,7 +1810,7 @@ function(object)
     stop(sQuote("object"), " object of class RCLS.chunk is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"s\":", "\n", sep = "")
 
@@ -1951,7 +1951,7 @@ function(object)
     stop(sQuote("object"), " object of class RCLSMIX is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"CM\":", "\n", sep = "")
 
@@ -2000,7 +2000,7 @@ function(object)
     stop(sQuote("object"), " object of class RCLSMVNORM is requested!", call. = FALSE)
   }
 
-  cat("An object of class ", "\"", class(object), "\"", "\n", sep = "")
+  cat("An object of class ", "\"", as.character(class(object)), "\"", "\n", sep = "")
 
   cat("Slot \"CM\":", "\n", sep = "")
 

@@ -34,7 +34,7 @@ function(model, Theta, ...)
     
     Dataset <- model@Dataset[[i]]
     
-    if (class(Dataset) == "data.frame") {
+    if (as.character(class(Dataset)) == "data.frame") {
       Y.type <- 0
     
       X <- as.matrix(model@Dataset[[i]])
@@ -43,7 +43,7 @@ function(model, Theta, ...)
       d <- ncol(X)    
     }
     else
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       Y.type <- 1
     
       X <- as.matrix(model@Dataset[[i]]@Y)
@@ -226,7 +226,7 @@ function(model, Theta, ...)
 
     Dataset <- model@Dataset[[i]]
     
-    if (class(Dataset) == "data.frame") {
+    if (as.character(class(Dataset)) == "data.frame") {
       Y.type <- 0
     
       X <- as.matrix(model@Dataset[[i]])
@@ -235,7 +235,7 @@ function(model, Theta, ...)
       d <- ncol(X)    
     }
     else
-    if (class(Dataset) == "Histogram") {
+    if (as.character(class(Dataset)) == "Histogram") {
       Y.type <- 1
     
       X <- as.matrix(model@Dataset[[i]]@Y)
@@ -395,7 +395,7 @@ function(model,
     stop(sQuote("Theta"), " must not be empty!", call. = FALSE)
   }
 
-  if (class(Theta) != Theta.model) {
+  if (as.character(class(Theta)) != Theta.model) {
     stop(sQuote("Theta"), " object of class ", Theta.model, " is requested!", call. = FALSE)
   }
 
