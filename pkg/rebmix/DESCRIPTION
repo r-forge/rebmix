@@ -12,8 +12,6 @@ Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
 Title: Finite Mixture Modeling, Clustering & Classification
 Description: Random univariate and multivariate finite mixture model generation, estimation, clustering, latent class analysis and classification. Variables can be continuous, discrete, independent or dependent and may follow normal, lognormal, Weibull, gamma, Gumbel, binomial, Poisson, Dirac, uniform or circular von Mises parametric families.
 Depends: R (>= 2.10.0)
-Suggests: knitr, rmarkdown
-VignetteBuilder: knitr
 Imports: methods, stats, utils, graphics, grDevices
 License: GPL (>= 2)
 Author: Marko Nagode [aut, cre] (<https://orcid.org/0000-0003-0637-3812>),
