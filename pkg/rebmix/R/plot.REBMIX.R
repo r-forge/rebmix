@@ -226,6 +226,10 @@ function(x,
 
   for (i in 1:d) {
     if (Y.type == 0) {
+      if (is.na(C)) {
+        lim[, i] <- range(ey[, i], finite = TRUE)
+      }
+      else    
       if (C == .rebmix$Preprocessing[1]) {
         k <- as.numeric(x@summary[pos, "v/k"])
         y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
@@ -245,9 +249,6 @@ function(x,
 
         h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
-        lim[, i] <- range(ey[, i], finite = TRUE)
-      }
-      else {
         lim[, i] <- range(ey[, i], finite = TRUE)
       }
     }
@@ -291,6 +292,10 @@ function(x,
           zlim <- range(pdens, finite = TRUE)
           
           if (Y.type == 0) {
+            if (is.na(C)) {
+              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
+            }
+            else          
             if (C == .rebmix$Preprocessing[1]) {
               edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
             }
@@ -301,9 +306,6 @@ function(x,
             else
             if (C == .rebmix$Preprocessing[3]) {
               edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
-            }
-            else {
-              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
             }
           }
           else
@@ -471,7 +473,11 @@ function(x,
     
       ylim <- range(pdens, finite = TRUE)
     
-      if (Y.type == 0) {    
+      if (Y.type == 0) { 
+        if (is.na(C)) {
+          edens <- .densSample.x(ey[, i], ylim[1], n)        
+        }
+        else
         if (C == .rebmix$Preprocessing[1]) {
           edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
         }
@@ -482,9 +488,6 @@ function(x,
         else
         if (C == .rebmix$Preprocessing[3]) {
           edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
-        }
-        else {
-          edens <- .densSample.x(ey[, i], ylim[1], n)
         }
       }
       else
@@ -1126,6 +1129,10 @@ function(x,
 
   for (i in 1:d) {
     if (Y.type == 0) {
+      if (is.na(C)) {
+        lim[, i] <- range(ey[, i], finite = TRUE)      
+      } 
+      else
       if (C == .rebmix$Preprocessing[1]) {
         k <- as.numeric(x@summary[pos, "v/k"])
         y0[i] <- as.numeric(x@summary[pos, paste("y0", if (d > 1) i, sep = "")])
@@ -1145,9 +1152,6 @@ function(x,
 
         h[i] <- as.numeric(x@summary[pos, paste("h", if (d > 1) i, sep = "")])
 
-        lim[, i] <- range(ey[, i], finite = TRUE)
-      }
-      else {
         lim[, i] <- range(ey[, i], finite = TRUE)
       }
     }
@@ -1185,7 +1189,11 @@ function(x,
           
           zlim <- range(pdens, finite = TRUE);
           
-          if (Y.type == 0) {      
+          if (Y.type == 0) {   
+            if (is.na(C)) {
+              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)    
+            }
+            else            
             if (C == .rebmix$Preprocessing[1]) {
               edens <- .densHistogram.xy(k, ey[, i], ey[, j], y0[i], lim[, i][1], lim[, i][2], y0[j], lim[, j][1], lim[, j][2], h[i], h[j], Variables[i], Variables[j], pdf[i], pdf[j])
             }
@@ -1196,9 +1204,6 @@ function(x,
             else
             if (C == .rebmix$Preprocessing[3]) {
               edens <- .densKNearestNeighbour.xy(ey[, i], ey[, j], k, h[i], h[j], n)
-            }
-            else {
-              edens <- .densSample.xy(ey[, i], ey[, j], zlim[1], n)
             }
           }
           else
@@ -1303,7 +1308,11 @@ function(x,
       
       ylim <- range(pdens, finite = TRUE)
       
-      if (Y.type == 0) {      
+      if (Y.type == 0) {  
+        if (is.na(C)) {
+          edens <- .densSample.x(ey[, i], ylim[1], n)   
+        }
+        else             
         if (C == .rebmix$Preprocessing[1]) {
           edens <- .densHistogram.x(k, ey[, i], y0[i], lim[, i][1], lim[, i][2], h[i], Variables[i], pdf[i])
         }
@@ -1314,9 +1323,6 @@ function(x,
         else
         if (C == .rebmix$Preprocessing[3]) {
           edens <- .densKNearestNeighbour.x(ey[, i], k, h[i], n)
-        }
-        else {
-          edens <- .densSample.x(ey[, i], ylim[1], n)
         }
       }
       else
