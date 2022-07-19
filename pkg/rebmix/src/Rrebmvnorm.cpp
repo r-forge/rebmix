@@ -1637,6 +1637,184 @@ E0: if (Y) {
     if (rebmvnorm) delete rebmvnorm;
 } // RInformationCriterionKMVNORM
 
+void RInformationCriterionMVNORM(char   **Criterion,   // Information criterion type.
+                                 INT    *c,            // Number of components.
+                                 double *W,            // Component weights.
+                                 INT    *length_pdf,   // Length of pdf.
+                                 INT    *length_Theta, // Length of Theta.
+                                 INT    *length_theta, // Length of Theta[i].
+                                 char   **pdf,         // Parametric family types.
+                                 double *Theta,        // Component parameters.
+                                 INT    *n,            // Number of observations.
+                                 double *x,            // Dataset.
+                                 double *IC,           // Information criterion.
+                                 double *logL,         // log-likelihood.
+                                 INT    *M,            // Degrees of freedom.
+                                 double *D,            // Total of positive relative deviations.
+                                 INT    *Error)        // Error code.
+{
+    Rebmvnorm *rebmvnorm = NULL;
+    INT       i, j, l, m;
+
+    rebmvnorm = new Rebmvnorm;
+
+    *Error = NULL == rebmvnorm; if (*Error) goto E0;
+
+    if (!strcmp(Criterion[0], "AIC"))
+        rebmvnorm->Criterion_ = icAIC;
+    else
+    if (!strcmp(Criterion[0], "AIC3"))
+        rebmvnorm->Criterion_ = icAIC3;
+    else
+    if (!strcmp(Criterion[0], "AIC4"))
+        rebmvnorm->Criterion_ = icAIC4;
+    else
+    if (!strcmp(Criterion[0], "AICc"))
+        rebmvnorm->Criterion_ = icAICc;
+    else
+    if (!strcmp(Criterion[0], "BIC"))
+        rebmvnorm->Criterion_ = icBIC;
+    else
+    if (!strcmp(Criterion[0], "CAIC"))
+        rebmvnorm->Criterion_ = icCAIC;
+    else
+    if (!strcmp(Criterion[0], "HQC"))
+        rebmvnorm->Criterion_ = icHQC;
+    else
+    if (!strcmp(Criterion[0], "MDL2"))
+        rebmvnorm->Criterion_ = icMDL2;
+    else
+    if (!strcmp(Criterion[0], "MDL5"))
+        rebmvnorm->Criterion_ = icMDL5;
+    else
+    if (!strcmp(Criterion[0], "AWE"))
+        rebmvnorm->Criterion_ = icAWE;
+    else
+    if (!strcmp(Criterion[0], "CLC"))
+        rebmvnorm->Criterion_ = icCLC;
+    else
+    if (!strcmp(Criterion[0], "ICL"))
+        rebmvnorm->Criterion_ = icICL;
+    else
+    if (!strcmp(Criterion[0], "PC"))
+        rebmvnorm->Criterion_ = icPC;
+    else
+    if (!strcmp(Criterion[0], "ICL-BIC"))
+        rebmvnorm->Criterion_ = icICLBIC;
+    else
+    if (!strcmp(Criterion[0], "D"))
+        rebmvnorm->Criterion_ = icD;
+    else
+    if (!strcmp(Criterion[0], "SSE"))
+        rebmvnorm->Criterion_ = icSSE;
+    else {
+        *Error = 1; goto E0;
+    }
+
+    rebmvnorm->W_ = (FLOAT*)malloc(*c * sizeof(FLOAT));
+
+    *Error = NULL == rebmvnorm->W_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) rebmvnorm->W_[i] = W[i];
+
+    rebmvnorm->IniTheta_ = new CompnentDistribution(rebmvnorm);
+
+    *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
+
+    rebmvnorm->length_pdf_ = *length_pdf;
+
+    rebmvnorm->length_Theta_ = *length_Theta;
+
+    rebmvnorm->length_theta_ = (INT*)malloc(rebmvnorm->length_Theta_ * sizeof(INT));
+
+    *Error = NULL == rebmvnorm->length_theta_; if (*Error) goto E0;
+
+    *Error = rebmvnorm->IniTheta_->Realloc(*length_pdf, *length_Theta, length_theta);
+
+    if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        if (!strcmp(pdf[i], "normal")) {
+            rebmvnorm->IniTheta_->pdf_[i] = pfNormal;
+        }
+        else {
+            *Error = 1; goto E0;
+        }
+    }
+
+    rebmvnorm->MixTheta_ = new CompnentDistribution* [(unsigned INT)(*c)];
+
+    *Error = NULL == rebmvnorm->MixTheta_; if (*Error) goto E0;
+
+    for (i = 0; i < *c; i++) {
+        rebmvnorm->MixTheta_[i] = new CompnentDistribution(rebmvnorm);
+
+        *Error = NULL == rebmvnorm->MixTheta_[i]; if (*Error) goto E0;
+
+        *Error = rebmvnorm->MixTheta_[i]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+
+        if (*Error) goto E0;
+    }
+
+    for (i = 0; i < *c; i++) {
+        for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+            rebmvnorm->MixTheta_[i]->pdf_[j] = rebmvnorm->IniTheta_->pdf_[j];
+        }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_Theta_; j++) if (rebmvnorm->IniTheta_->Theta_[j]) {
+        for (l = 0; l < *c; l++) {
+            for (m = 0; m < rebmvnorm->length_theta_[j]; m++) {
+                rebmvnorm->MixTheta_[l]->Theta_[j][m] = Theta[i];
+
+                i++;
+            }
+        }
+    }
+
+    rebmvnorm->n_ = rebmvnorm->nr_ = *n;
+
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+
+    *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
+
+    for (i = 0; i < rebmvnorm->length_pdf_; i++) {
+        rebmvnorm->Y_[i] = (FLOAT*)malloc(rebmvnorm->nr_ * sizeof(FLOAT));
+
+        *Error = NULL == rebmvnorm->Y_[i]; if (*Error) goto E0;
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmvnorm->length_pdf_; j++) {
+        for (l = 0; l < rebmvnorm->nr_; l++) {
+            rebmvnorm->Y_[j][l] = x[i]; i++;
+        }
+    }
+
+    rebmvnorm->cmax_ = *c;
+
+    for (i = 0; i < *c; i++) {
+        *Error = Cholinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
+
+        if (*Error) goto E0;
+    }
+
+    *Error = rebmvnorm->InformationCriterion(*c,
+                                             rebmvnorm->W_,
+                                             rebmvnorm->MixTheta_,
+                                             IC,
+                                             logL,
+                                             M,
+                                             D);
+
+    if (*Error) goto E0;
+
+E0: if (rebmvnorm) delete rebmvnorm;
+} // RInformationCriterionMVNORM
+
 void RCombineComponentsMVNORM(INT    *c,            // Number of components.
                               double *W,            // Component weights.
                               INT    *length_pdf,   // Length of pdf.

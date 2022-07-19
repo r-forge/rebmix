@@ -4906,6 +4906,142 @@ INT Rebmix::InformationCriterionH(FLOAT                logV,       // Logarithm 
 E0: return Error;
 } // InformationCriterionH
 
+// Returns information criterion for dataset.
+
+INT Rebmix::InformationCriterion(INT                  c,          // Number of components.
+                                 FLOAT                *W,         // Component weights.
+                                 CompnentDistribution **MixTheta, // Mixture parameters.
+                                 FLOAT                *IC,        // Information criterion.
+                                 FLOAT                *logL,      // log-likelihood.
+                                 INT                  *M,         // Degrees of freedom.
+                                 FLOAT                *D)         // Total of positive relative deviations.
+{
+    INT   i, j;
+    FLOAT SSE, EN, PW, K, PC, CmpDist, MixDist, tau;
+    INT   Error = 0;
+
+    Error = DegreesOffreedom(c, MixTheta, M);
+
+    if (Error) goto E0;
+
+    *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
+
+    if (Y_type_ == 0) {
+        for (i = 0; i < nr_; i++) {
+            Error = MixtureDist(i, Y_, c, W, MixTheta, &MixDist);
+
+            if (Error) goto E0;
+
+            if (MixDist > FLOAT_MIN) {
+                *logL += (FLOAT)log(MixDist);
+            }
+            else {
+                *logL += (FLOAT)log(FLOAT_MIN);
+            }
+
+            switch (Criterion_) {
+            case icAWE: case icCLC: case icICL: case icPC: case icICLBIC:
+                for (j = 0; j < c; j++) {
+                    Error = ComponentDist(i, Y_, MixTheta[j], &CmpDist, NULL);
+
+                    if (Error) goto E0;
+
+                    if (MixDist > FLOAT_MIN) {
+                        tau = W[j] * CmpDist / MixDist;
+                    }
+                    else {
+                        tau = (FLOAT)0.0;
+                    }
+
+                    EN -= xlogx(tau); PC += tau * tau;
+                }
+
+                break;
+            case icSSE:
+                break;
+            case icAIC: case icAIC3: case icAIC4: case icAICc: case icBIC: case icCAIC: case icHQC: case icMDL2: case icMDL5: case icD: default:
+                break;
+            }
+        }
+    }
+    else {
+      Error = 1; goto E0;
+    }
+
+    switch (Criterion_) {
+    case icAIC: // AIC - Akaike information criterion Akaike (1973).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M);
+
+        break;
+    case icAIC3: // AIC3 - Modified Akaike information criterion Smith & Spiegelhalter (1980).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)3.0 * (*M);
+
+        break;
+    case icAIC4: // AIC4 - Modified Akaike information criterion Smith & Spiegelhalter (1980).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)4.0 * (*M);
+
+        break;
+    case icAICc: // AICc - Akaike second-order corrected information criterion for small sample sizes Hurvich & Tsai (1989).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * ((FLOAT)1.0 + ((*M) + 1) / (n_ - (*M) - (FLOAT)1.0));
+
+        break;
+    case icBIC: // BIC - Bayesian information criterion Schwarz (1978).
+        *IC = -(FLOAT)2.0 * (*logL) + (*M) * (FLOAT)log((FLOAT)n_);
+
+        break;
+    case icCAIC: // CAIC - Consistent Akaike information criterion Bozdogan (1987).
+        *IC = -(FLOAT)2.0 * (*logL) + (*M) * ((FLOAT)log((FLOAT)n_) + (FLOAT)1.0);
+
+        break;
+    case icHQC: // HQC - Hannan-Quinn information criterion Hannan & Quinn (1979).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log((FLOAT)log((FLOAT)n_));
+
+        break;
+    case icMDL2: // MDL2 - Minimum description length Liang et al.(1992).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * (*M) * (FLOAT)log((FLOAT)n_);
+
+        break;
+    case icMDL5: // MDL5 - Minimum description length Liang et al.(1992).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)5.0 * (*M) * (FLOAT)log((FLOAT)n_);
+
+        break;
+    case icAWE: // AWE - Approximate weight of evidence criterion Banfield & Raftery (1993).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (FLOAT)2.0 * (*M) * ((FLOAT)3.0 / (FLOAT)2.0 + (FLOAT)log((FLOAT)n_));
+
+        break;
+    case icCLC: // CLC - Classification likelihood criterion Biernacki & Govaert (1997).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN;
+
+        break;
+    case icICL: // ICL - Integrated classification likelihood Biernacki et al.(1998).
+        for (j = 0; j < c; j++) {
+            PW += W[j] * (FLOAT)log(W[j]); K += (FLOAT)Gammaln(W[j] * n_ + (FLOAT)0.5);
+        }
+
+        K += Gammaln(c * (FLOAT)0.5) - c * Gammaln((FLOAT)0.5) - Gammaln(n_ + c * (FLOAT)0.5);
+
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (FLOAT)2.0 * n_ * PW - (FLOAT)2.0 * K + ((*M) - c + (FLOAT)1.0) * (FLOAT)log((FLOAT)n_);
+
+        break;
+    case icPC: // PC - Partition coeficient Bezdek (1981).
+        *IC = PC;
+
+        break;
+    case icICLBIC: // ICL-BIC - Integrated classification likelihood criterion Biernacki et al.(1998).
+        *IC = -(FLOAT)2.0 * (*logL) + (FLOAT)2.0 * EN + (*M) * (FLOAT)log((FLOAT)n_);
+
+        break;
+    case icD: // D - Total of positive relative deviations Nagode & Fajdiga (2011).
+        *IC = *D;
+
+        break;
+    case icSSE: // SSE - Sum of squares error Bishop (1998).
+        *IC = (FLOAT)0.5 * SSE;
+    }
+
+E0: return Error;
+} // InformationCriterion
+
 // Returns combined components.
 
 INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number of components.

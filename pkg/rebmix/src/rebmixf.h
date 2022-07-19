@@ -159,6 +159,7 @@ public:
     INT InformationCriterionKNN(INT k, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
     INT InformationCriterionKDE(FLOAT logV, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
     INT InformationCriterionH(FLOAT logV, INT k, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
+    INT InformationCriterion(INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
     INT CombineComponentsEntropy(INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, INT *F, INT *T, FLOAT *EN, FLOAT *ED);
 /// Panic Branislav
     INT CombineComponentsDemp(INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *tau, INT *F, INT *T, FLOAT *EN, FLOAT *ED);

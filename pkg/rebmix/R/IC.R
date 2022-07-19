@@ -70,9 +70,31 @@ function(x, Criterion, pos, ...)
 
   C <- x@summary[pos, "Preprocessing"]
   
-  if (is.na(C)) C <- "NA" 
-
   if (Y.type == 0) {
+    if (is.na(C)) {
+      output <- .C(C_RInformationCriterionMIX,
+        Criterion = as.character(Criterion),
+        c = as.integer(c),
+        w = as.double(x@w[[pos]]),
+        length.pdf = as.integer(d),
+        length.Theta = as.integer(3),
+        length.theta = as.integer(c(d, d, d)),
+        pdf = as.character(pdf),
+        Theta = as.double(c(theta1, theta2, theta3)),
+        n = as.integer(n),
+        x = as.double(X),
+        IC = double(1),
+        logL = double(1),
+        M = integer(1),
+        D = double(1),
+        error = integer(1),
+        PACKAGE = "rebmix")
+
+      if (output$error == 1) {
+        stop("in RInformationCriterionMIX!", call. = FALSE); return(NA)
+      }    
+    }
+    else
     if (C == .rebmix$Preprocessing[1]) {
       y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
       ymin <- as.double(x@summary[pos, paste("ymin", if (d > 1) 1:d else "", sep = "")])
@@ -258,9 +280,31 @@ function(x, Criterion, pos, ...)
 
   C <- x@summary[pos, "Preprocessing"]
   
-  if (is.na(C)) C <- "NA" 
-  
   if (Y.type == 0) {
+    if (is.na(C)) {
+      output <- .C(C_RInformationCriterionMVNORM,
+        Criterion = as.character(Criterion),
+        c = as.integer(c),
+        w = as.double(x@w[[pos]]),
+        length.pdf = as.integer(d),
+        length.Theta = as.integer(4),
+        length.theta = as.integer(c(d, d * d, -d * d, -1)),
+        pdf = as.character(pdf),
+        Theta = as.double(c(theta1, theta2)),
+        n = as.integer(n),
+        x = as.double(X),
+        IC = double(1),
+        logL = double(1),
+        M = integer(1),
+        D = double(1),
+        error = integer(1),
+        PACKAGE = "rebmix")
+
+      if (output$error == 1) {
+        stop("in RInformationCriterionMVNORM!", call. = FALSE); return(NA)
+      }    
+    }
+    else  
     if (C == .rebmix$Preprocessing[1]) {
       y0 <- as.double(x@summary[pos, paste("y0", if (d > 1) 1:d else "", sep = "")])
       ymin <- as.double(x@summary[pos, paste("ymin", if (d > 1) 1:d else "", sep = "")])
