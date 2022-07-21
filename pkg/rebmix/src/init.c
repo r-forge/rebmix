@@ -27,11 +27,11 @@ extern void RPreprocessingKDEMIX(void *, void *, void *, void *, void *, void *)
 extern void RPreprocessingHMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RPreprocessingKMIX(void *, void *, void *, void *, void *);
 
-extern void RInformationCriterionKNNMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void RInformationCriterionKDEMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void RInformationCriterionHMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void RInformationCriterionKMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void RInformationCriterionMIX(void *, void *, void *, void *, void *, void *,  void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RInformationCriterionKNNMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RInformationCriterionKDEMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RInformationCriterionHMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RInformationCriterionKMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RInformationCriterionMIX(void *, void *, void *, void *, void *, void *,  void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RCombineComponentsMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
@@ -99,11 +99,11 @@ static const R_CMethodDef CMethods[] = {
     {"RPreprocessingKNNMIX", (DL_FUNC) &RPreprocessingKNNMIX, 7},
     {"RPreprocessingKDEMIX", (DL_FUNC) &RPreprocessingKDEMIX, 6},
     {"RPreprocessingHMIX", (DL_FUNC) &RPreprocessingHMIX, 10},
-    {"RInformationCriterionKNNMIX", (DL_FUNC) &RInformationCriterionKNNMIX, 17},
-    {"RInformationCriterionKDEMIX", (DL_FUNC) &RInformationCriterionKDEMIX, 16},
-    {"RInformationCriterionHMIX", (DL_FUNC) &RInformationCriterionHMIX, 20},
-    {"RInformationCriterionKMIX", (DL_FUNC)&RInformationCriterionKMIX, 16},
-    {"RInformationCriterionMIX", (DL_FUNC)&RInformationCriterionMIX, 15},
+    {"RInformationCriterionKNNMIX", (DL_FUNC) &RInformationCriterionKNNMIX, 20},
+    {"RInformationCriterionKDEMIX", (DL_FUNC) &RInformationCriterionKDEMIX, 19},
+    {"RInformationCriterionHMIX", (DL_FUNC) &RInformationCriterionHMIX, 23},
+    {"RInformationCriterionKMIX", (DL_FUNC)&RInformationCriterionKMIX, 19},
+    {"RInformationCriterionMIX", (DL_FUNC)&RInformationCriterionMIX, 18},
     {"RCombineComponentsMIX", (DL_FUNC) &RCombineComponentsMIX, 17},
     {"RRNGMVNORM", (DL_FUNC) &RRNGMVNORM, 12},
     {"RREBMVNORM", (DL_FUNC) &RREBMVNORM, 54},

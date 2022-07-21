@@ -4927,7 +4927,7 @@ INT Rebmix::InformationCriterion(INT                  c,          // Number of c
     *IC = *logL = EN = *D = SSE = PW = K = PC = (FLOAT)0.0;
 
     if (Y_type_ == 0) {
-        for (i = 0; i < nr_; i++) {
+        for (i = 0; i < n_; i++) {
             Error = MixtureDist(i, Y_, c, W, MixTheta, &MixDist);
 
             if (Error) goto E0;

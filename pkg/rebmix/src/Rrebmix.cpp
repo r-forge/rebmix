@@ -1470,6 +1470,9 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
                                  char   **Criterion,   // Information criterion type.
                                  INT    *c,            // Number of components.
                                  double *W,            // Component weights.
+                                 double *Theta1,       // Input parameters theta 1.
+                                 double *Theta2,       // Input parameters theta 2.
+                                 double *Theta3,       // Input parameters theta 3. 
                                  INT    *length_pdf,   // Length of pdf.
                                  INT    *length_Theta, // Length of Theta.
                                  INT    *length_theta, // Length of Theta[i].
@@ -1609,6 +1612,16 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
         }
     }
 
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        rebmix->IniTheta_->Theta_[0][j] = Theta1[i];
+        rebmix->IniTheta_->Theta_[1][j] = Theta2[i];
+        rebmix->IniTheta_->Theta_[2][j] = Theta3[i];
+
+        i++;
+    }
+
     rebmix->MixTheta_ = new CompnentDistribution*[(unsigned INT)(*c)];
 
     *Error = NULL == rebmix->MixTheta_; if (*Error) goto E0;
@@ -1708,6 +1721,9 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
                                  char   **Criterion,   // Information criterion type.
                                  INT    *c,            // Number of components.
                                  double *W,            // Component weights.
+                                 double *Theta1,       // Input parameters theta 1.
+                                 double *Theta2,       // Input parameters theta 2.
+                                 double *Theta3,       // Input parameters theta 3. 
                                  INT    *length_pdf,   // Length of pdf.
                                  INT    *length_Theta, // Length of Theta.
                                  INT    *length_theta, // Length of Theta[i].
@@ -1846,6 +1862,16 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
         else {
             *Error = 1; goto E0;
         }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        rebmix->IniTheta_->Theta_[0][j] = Theta1[i];
+        rebmix->IniTheta_->Theta_[1][j] = Theta2[i];
+        rebmix->IniTheta_->Theta_[2][j] = Theta3[i];
+
+        i++;
     }
 
     rebmix->MixTheta_ = new CompnentDistribution*[(unsigned INT)(*c)];
@@ -1957,6 +1983,9 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
                                char   **Criterion,   // Information criterion type.
                                INT    *c,            // Number of components.
                                double *W,            // Component weights.
+                               double *Theta1,       // Input parameters theta 1.
+                               double *Theta2,       // Input parameters theta 2.
+                               double *Theta3,       // Input parameters theta 3. 
                                INT    *length_pdf,   // Length of pdf.
                                INT    *length_Theta, // Length of Theta.
                                INT    *length_theta, // Length of Theta[i].
@@ -2095,6 +2124,16 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
         else {
             *Error = 1; goto E0;
         }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        rebmix->IniTheta_->Theta_[0][j] = Theta1[i];
+        rebmix->IniTheta_->Theta_[1][j] = Theta2[i];
+        rebmix->IniTheta_->Theta_[2][j] = Theta3[i];
+
+        i++;
     }
 
     rebmix->MixTheta_ = new CompnentDistribution* [(unsigned INT)(*c)];
@@ -2199,6 +2238,9 @@ void RInformationCriterionKMIX(double *h,            // Sides of the hypersquare
                                char   **Criterion,   // Information criterion type.
                                INT    *c,            // Number of components.
                                double *W,            // Component weights.
+                               double *Theta1,       // Input parameters theta 1.
+                               double *Theta2,       // Input parameters theta 2.
+                               double *Theta3,       // Input parameters theta 3. 
                                INT    *length_pdf,   // Length of pdf.
                                INT    *length_Theta, // Length of Theta.
                                INT    *length_theta, // Length of Theta[i].
@@ -2339,6 +2381,16 @@ void RInformationCriterionKMIX(double *h,            // Sides of the hypersquare
         }
     }
 
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        rebmix->IniTheta_->Theta_[0][j] = Theta1[i];
+        rebmix->IniTheta_->Theta_[1][j] = Theta2[i];
+        rebmix->IniTheta_->Theta_[2][j] = Theta3[i];
+
+        i++;
+    }
+
     rebmix->MixTheta_ = new CompnentDistribution* [(unsigned INT)(*c)];
 
     *Error = NULL == rebmix->MixTheta_; if (*Error) goto E0;
@@ -2432,6 +2484,9 @@ E0: if (Y) {
 void RInformationCriterionMIX(char   **Criterion,   // Information criterion type.
                               INT    *c,            // Number of components.
                               double *W,            // Component weights.
+                              double *Theta1,       // Input parameters theta 1.
+                              double *Theta2,       // Input parameters theta 2.
+                              double *Theta3,       // Input parameters theta 3. 
                               INT    *length_pdf,   // Length of pdf.
                               INT    *length_Theta, // Length of Theta.
                               INT    *length_theta, // Length of Theta[i].
@@ -2568,6 +2623,16 @@ void RInformationCriterionMIX(char   **Criterion,   // Information criterion typ
         else {
             *Error = 1; goto E0;
         }
+    }
+
+    i = 0;
+
+    for (j = 0; j < rebmix->length_pdf_; j++) {
+        rebmix->IniTheta_->Theta_[0][j] = Theta1[i];
+        rebmix->IniTheta_->Theta_[1][j] = Theta2[i];
+        rebmix->IniTheta_->Theta_[2][j] = Theta3[i];
+
+        i++;
     }
 
     rebmix->MixTheta_ = new CompnentDistribution* [(unsigned INT)(*c)];
