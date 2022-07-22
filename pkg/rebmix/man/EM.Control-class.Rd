@@ -47,7 +47,7 @@ B. Panic, J. Klemenc, M. Nagode. Improved initialization of the EM algorithm for
 Mathematics, 8(3):373, 2020.
 \doi{10.3390/math8030373}.\cr\cr
 A. P. Dempster et al. Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society. Series B, 39(1):1-38, 1977.
-\url{https://www.jstor.org/stable/2984875}.\cr\cr
+https://www.jstor.org/stable/2984875.\cr\cr
 G. Celeux and G. Govaert. A classification EM algorithm for clustering and two stochastic versions, Computational Statistics & Data Analysis, 14(3):315:332, 1992.
 \doi{10.1016/0167-9473(92)90042-E}.
 }

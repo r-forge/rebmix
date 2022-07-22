@@ -109,7 +109,7 @@ Returns an object of class \code{REBMIX} or \code{REBMVNORM}.
 \author{Marko Nagode}
 \references{
 H. A. Sturges. The choice of a class interval. Journal of American Statistical Association, 21(153):
-65-66, 1926. \url{https://www.jstor.org/stable/2965501}.\cr\cr
+65-66, 1926. https://www.jstor.org/stable/2965501.\cr\cr
 P. F. Velleman. Interactive computing for exploratory data analysis I: display algorithms. Proceedings of the Statistical Computing Section,
 American Statistical Association, 1976.\cr\cr
 W. J. Dixon and R. A. Kronmal. The Choice of origin and scale for graphs. Journal of the ACM, 12(2):

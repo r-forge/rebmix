@@ -38,6 +38,6 @@ currently not used.
 \author{Marko Nagode}
 \references{
 M. H. Hansen and B. Yu. Model selection and the principle of minimum description
-length. Journal of the American Statistical Association, 96(454):746-774, 2001. \url{https://www.jstor.org/stable/2670311}.
+length. Journal of the American Statistical Association, 96(454):746-774, 2001. https://www.jstor.org/stable/2670311.
 }
 \keyword{information criterion}

@@ -561,7 +561,7 @@ void RdensKXY(INT    *v,     // Total number of bins.
 
         j = i + 1;
 
-        do {
+        if (j < *v) do {
             if ((x[j] < x[i] + rx) && (x[j] > x[i] - rx) && (y[j] < y[i] + ry) && (y[j] > y[i] - ry)) {
                 p[i] += k[j]; (*v)--; 
                 
@@ -779,7 +779,7 @@ void RdensKX(INT    *v,     // Total number of bins.
 
         j = i + 1;
 
-        do {
+        if (j < *v) do {
             if ((x[j] < x[i] + rx) && (x[j] > x[i] - rx)) {
                 p[i] += k[j]; (*v)--;
 
@@ -1372,9 +1372,9 @@ void RPreprocessingHMIX(double *h,          // Sides of the hypersquare.
     *Error = NULL == rebmix; if (*Error) goto E0;
 
     rebmix->n_ = rebmix->nr_ = *n;
-    rebmix->length_pdf_ = *d;
+    rebmix->nc_ = rebmix->length_pdf_ = *d;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -1555,7 +1555,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
 
     *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *length_pdf;
+    rebmix->nc_ = rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
 
@@ -1656,7 +1656,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -1807,7 +1807,7 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
 
     *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *length_pdf;
+    rebmix->nc_ = rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
 
@@ -1908,7 +1908,7 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -2069,7 +2069,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *length_pdf;
+    rebmix->nc_ = rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
 
@@ -2170,7 +2170,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -2568,7 +2568,7 @@ void RInformationCriterionMIX(char   **Criterion,   // Information criterion typ
 
     *Error = NULL == rebmix->IniTheta_; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *length_pdf;
+    rebmix->nc_ = rebmix->length_pdf_ = *length_pdf;
 
     rebmix->length_Theta_ = *length_Theta;
 
@@ -2669,7 +2669,7 @@ void RInformationCriterionMIX(char   **Criterion,   // Information criterion typ
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -2913,11 +2913,11 @@ void Roptbins(INT    *d,           // Number of independent random variables.
 
     *Error = NULL == rebmix; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *d;
+    rebmix->nc_ = rebmix->length_pdf_ = *d;
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 
@@ -3252,11 +3252,11 @@ void Rbins(INT    *d,           // Number of independent random variables.
 
     *Error = NULL == rebmix; if (*Error) goto E0;
 
-    rebmix->length_pdf_ = *d;
+    rebmix->nc_ = rebmix->length_pdf_ = *d;
 
     rebmix->n_ = rebmix->nr_ = *n;
 
-    rebmix->Y_ = (FLOAT**)malloc(rebmix->length_pdf_ * sizeof(FLOAT*));
+    rebmix->Y_ = (FLOAT**)malloc(rebmix->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmix->Y_; if (*Error) goto E0;
 

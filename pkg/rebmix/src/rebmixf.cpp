@@ -1,4 +1,5 @@
 #include "rebmixf.h"
+#include "rebmixf.h"
 
 #include <math.h>
 
@@ -9044,7 +9045,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     INT   Error = 0;
 
-    printf("REBMIX Version 2.14.1\n");
+    printf("REBMIX Version 2.14.2\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

@@ -740,9 +740,9 @@ void RPreprocessingHMVNORM(double *h,          // Sides of the hypersquare.
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
-    rebmvnorm->length_pdf_ = *d;
+    rebmvnorm->nc_ = rebmvnorm->length_pdf_ = *d;
 
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
@@ -880,7 +880,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
 
     *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
 
-    rebmvnorm->length_pdf_ = *length_pdf;
+    rebmvnorm->nc_ = rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
 
@@ -935,7 +935,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
 
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
@@ -1089,7 +1089,7 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
 
     *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
 
-    rebmvnorm->length_pdf_ = *length_pdf;
+    rebmvnorm->nc_ = rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
 
@@ -1144,7 +1144,7 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
 
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
@@ -1308,7 +1308,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
 
-    rebmvnorm->length_pdf_ = *length_pdf;
+    rebmvnorm->nc_ = rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
 
@@ -1363,7 +1363,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
 
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
@@ -1721,7 +1721,7 @@ void RInformationCriterionMVNORM(char   **Criterion,   // Information criterion 
 
     *Error = NULL == rebmvnorm->IniTheta_; if (*Error) goto E0;
 
-    rebmvnorm->length_pdf_ = *length_pdf;
+    rebmvnorm->nc_ = rebmvnorm->length_pdf_ = *length_pdf;
 
     rebmvnorm->length_Theta_ = *length_Theta;
 
@@ -1776,7 +1776,7 @@ void RInformationCriterionMVNORM(char   **Criterion,   // Information criterion 
 
     rebmvnorm->n_ = rebmvnorm->nr_ = *n;
 
-    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->length_pdf_ * sizeof(FLOAT*));
+    rebmvnorm->Y_ = (FLOAT**)malloc(rebmvnorm->nc_ * sizeof(FLOAT*));
 
     *Error = NULL == rebmvnorm->Y_; if (*Error) goto E0;
 
