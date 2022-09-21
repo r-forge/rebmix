@@ -1842,39 +1842,41 @@ void RCombineComponentsMVNORM(INT    *c,            // Number of components.
 
     *Error = NULL == rebmvnorm; if (*Error) goto E0;
 
-    rebmvnorm->Set(NULL,         // Preprocessing type.
-                   c,            // Maximum number of components.
-                   NULL,         // Minimum number of components.
-                   NULL,         // Information criterion type.
-                   length_pdf,   // Number of independent random variables.
-                   NULL,         // Types of variables.
-                   length_pdf,   // Length of pdf.
-                   pdf,          // Parametric family types.
-                   length_Theta, // Length of Theta.
-                   length_theta, // Length of Theta[i].
-                   NULL,         // Component parameters.
-                   NULL,         // Length of K.
-                   NULL,         // Numbers of bins v or numbers of nearest neighbours k.
-                   NULL,         // Length of ymin.
-                   NULL,         // Minimum observations.
-                   NULL,         // Length of ymax.
-                   NULL,         // Maximum observations.
-                   NULL,         // Length of h.
-                   NULL,         // Sides of the hypersquare.
-                   NULL,         // Acceleration rate.
-                   NULL,         // Restraints type.
-                   n,            // Number of observations.
-                   Y,            // Dataset.
-                   Y_type,       // Dataset type. 
-                   NULL,         // Strategy for EM algorithm.
-                   NULL,         // EM algorithm variant.
-                   NULL,         // Acceleration for the standard EM algorithm.
-                   NULL,         // Tolerance for EM algortihm.
-                   NULL,         // Acceleration rate for Em algorithm.
-                   NULL,         // Maximum number of iterations in EM algorithm.
-                   NULL,         // Number of bins for histogram EM algorithm.
-                   W,            // Component weights.
-                   MixTheta);    // Mixture parameters.
+    *Error = rebmvnorm->Set(NULL,         // Preprocessing type.
+                            c,            // Maximum number of components.
+                            NULL,         // Minimum number of components.
+                            NULL,         // Information criterion type.
+                            length_pdf,   // Number of independent random variables.
+                            NULL,         // Types of variables.
+                            length_pdf,   // Length of pdf.
+                            pdf,          // Parametric family types.
+                            length_Theta, // Length of Theta.
+                            length_theta, // Length of Theta[i].
+                            NULL,         // Component parameters.
+                            NULL,         // Length of K.
+                            NULL,         // Numbers of bins v or numbers of nearest neighbours k.
+                            NULL,         // Length of ymin.
+                            NULL,         // Minimum observations.
+                            NULL,         // Length of ymax.
+                            NULL,         // Maximum observations.
+                            NULL,         // Length of h.
+                            NULL,         // Sides of the hypersquare.
+                            NULL,         // Acceleration rate.
+                            NULL,         // Restraints type.
+                            n,            // Number of observations.
+                            Y,            // Dataset.
+                            Y_type,       // Dataset type. 
+                            NULL,         // Strategy for EM algorithm.
+                            NULL,         // EM algorithm variant.
+                            NULL,         // Acceleration for the standard EM algorithm.
+                            NULL,         // Tolerance for EM algortihm.
+                            NULL,         // Acceleration rate for Em algorithm.
+                            NULL,         // Maximum number of iterations in EM algorithm.
+                            NULL,         // Number of bins for histogram EM algorithm.
+                            W,            // Component weights.
+                            MixTheta);    // Mixture parameters.
+
+    if (*Error) goto E0;
 
     for (i = 0; i < rebmvnorm->cmax_; i++) {
         *Error = Cholinvdet(rebmvnorm->length_pdf_, rebmvnorm->MixTheta_[i]->Theta_[1], rebmvnorm->MixTheta_[i]->Theta_[2], rebmvnorm->MixTheta_[i]->Theta_[3]);
@@ -2145,6 +2147,8 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                            NULL,   // Length of all_K and all_IC.
                            NULL,   // All processed numbers of bins v or all processed numbers of nearest neighbours k.
                            NULL);  // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
+
+    if (error) goto E0;
 
 E0:
     if (rebmvnorm) delete rebmvnorm;

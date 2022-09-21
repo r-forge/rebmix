@@ -30,7 +30,7 @@ function(model, ...)
       
       d <- ncol(X) - 1
       
-      h <- model@Dataset[[i]]@h 
+      h <- model@Dataset[[i]]@h
     }
 
     message("Dataset = ", Dataset.name)

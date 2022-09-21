@@ -9685,8 +9685,8 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *ymin,              // Minimum observations.
                 INT   *length_ymax,       // Length of ymax.
                 FLOAT *ymax,              // Maximum observations.
-                INT   *length_h,         // Length of h.
-                FLOAT *h,                // Sides of the hypersquare.
+                INT   *length_h,          // Length of h.
+                FLOAT *h,                 // Sides of the hypersquare.
                 FLOAT *ar,                // Acceleration rate.
                 char  **Restraints,       // Restraints type.
                 INT   *n,                 // Number of observations.
@@ -9906,12 +9906,13 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
     }
 
-    if (length_h && length_pdf && h) {
-        h_ = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
+
+    if (length_h && h && (*length_h > 0)) {
+        h_ = (FLOAT*)malloc(*length_h * sizeof(FLOAT));
 
         Error = NULL == h_; if (Error) goto E0;
 
-        for (i = 0; i < length_pdf_; i++) {
+        for (i = 0; i < *length_h; i++) {
             h_[i] = h[i];
         }
     }
