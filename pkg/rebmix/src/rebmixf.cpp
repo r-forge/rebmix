@@ -5052,10 +5052,11 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
                                      INT                  *F,         // From components.
                                      INT                  *T,         // To components.
                                      FLOAT                *EN,        // Entropy.
-                                     FLOAT                *ED)        // Entropy decrease.
+                                     FLOAT                *ED,        // Entropy decrease.
+                                     FLOAT                *PSS)       // Pairwise similarity scores.
 {
     INT   *C = NULL, i, ii, j, jj, II, J, k, l;
-    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL;
+    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, Sum;
     INT   Error = 0;
 
     Tmp = (FLOAT*)malloc(nr_ * c * sizeof(FLOAT));
@@ -5107,7 +5108,7 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
         C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en;
     }
 
-    i = c;
+    i = c; Sum = (FLOAT)0.0;
 
     while (i > 1) {
         II = J = 0; ED[i - 2] = (FLOAT)0.0;
@@ -5130,6 +5131,12 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
 
                 if (ed >= ED[i - 2]) {
                     ED[i - 2] = ed; II = ii; J = j;
+                }
+
+                if (i == c) {
+                    ed = -ed / n_ / (W[ii] + W[j]) / (xlogx(W[ii] / (W[ii] + W[j])) + xlogx(W[j] / (W[ii] + W[j])));
+
+                    PSS[ii * c + j] = PSS[j * c + ii] = ed; Sum += ed;
                 }
             }
         }
@@ -5163,6 +5170,18 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
         i--;
     }
 
+    //  Normalized PSS calculation.
+
+    for (i = 0; i < c; i++) {
+        j = c * i;
+
+        for (k = i + 1; k < c; k++) {
+            ii = j + k;
+
+            PSS[ii] = PSS[i + c * k] = PSS[ii] / Sum;
+        }
+    }
+
 E0: if (C) free(C);
 
     if (Tmp) free(Tmp);
@@ -5178,10 +5197,11 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
                                   INT                  *F,         // From components.
                                   INT                  *T,         // To components.
                                   FLOAT                *EN,        // Entropy.
-                                  FLOAT                *ED)        // Entropy decrease.
+                                  FLOAT                *ED,        // Entropy decrease.
+                                  FLOAT                *PSS)       // Pairwise similarity scores.
 {
-    INT   *C = NULL, *L = NULL, i, ii, j, jj, II, J, k, l;
-    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, *TmpW = NULL;
+    INT   *C = NULL, i, ii, j, jj, II, J, k, l;
+    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, *TmpW = NULL, Sum;
     INT   Error = 0;
 
     Tmp = (FLOAT*)malloc(nr_ * c * sizeof(FLOAT));
@@ -5225,33 +5245,6 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
         }
     }
 
-    L = (INT*)malloc(nr_* c * sizeof(INT));
-    
-    Error = NULL == L; if (Error) goto E0;
-    
-    for (i = 0; i < nr_; i++) {
-        k = i * c; J = 0;
-        
-        L[k] = 0;
-                                              
-        CmpDist = tau[k];
-
-        for (j = 1; j < c; j++) {
-            l = k + j;
-
-            L[l] = 0;
-
-            if (tau[l] > CmpDist) {
-                J = j;
-
-                CmpDist = tau[l];
-            }
-        }
-
-        L[k + J] = 1;
-
-    }
-
     C = (INT*)malloc(c * sizeof(INT));
 
     Error = NULL == C; if (Error) goto E0;
@@ -5264,7 +5257,7 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
         C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en; TmpW[i] = W[i];
     }
 
-    i = c;
+    i = c; Sum = (FLOAT)0.0;
 
     while (i > 1) {
         II = J = 0; ED[i - 2] = (FLOAT)0.0;
@@ -5276,28 +5269,27 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
                 for (jj = 0; jj < nr_; jj++) {
                     k = jj * c + ii; l = jj * c + j;
 
-                    if (L[k]) {
+                    if (Tmp[l] > Tmp[k]) {
                         if (Y_type_ == 0) {
-                            ed += Tmp[l];
+                            ed += Tmp[k];
                         }
                         else
                         if (Y_type_ == 1) {
-                            ed += Y_[length_pdf_][jj] * Tmp[l];
+                            ed += Y_[length_pdf_][jj] * Tmp[k];
                         }
                     }
-                    else
-                    if (L[l]) {
-                        if (Y_type_ == 0){
-                            en += Tmp[k];
+                    else {
+                        if (Y_type_ == 0) {
+                            en += Tmp[l];
                         }
                         else
-                        if(Y_type_ == 1) {
-                            en += Y_[length_pdf_][jj] * Tmp[k];  
+                        if (Y_type_ == 1) {
+                            en += Y_[length_pdf_][jj] * Tmp[l];
                         }
                     }
                 }
 
-                ed /= n_ * TmpW[j]; en /= n_ * TmpW[ii];
+                ed /= n_ * TmpW[ii]; en /= n_ * TmpW[j];
 
                 if (ed < en) {
                     ed = en;
@@ -5305,6 +5297,10 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
 
                 if (ed >= ED[i - 2]) {
                     ED[i - 2] = ed; II = ii; J = j;
+                }
+
+                if (i == c) {
+                    PSS[ii * c + j] = PSS[j * c + ii] = ed; Sum += ed;
                 }
             }
         }
@@ -5318,12 +5314,8 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
 
             Tmp[k + II] += Tmp[k + J];
 
-            L[k + II] += L[k + J];
-
             for (ii = J; ii < i - 1; ii++) {
                 Tmp[k + ii] = Tmp[k + ii + 1];
-
-                L[k + ii] = L[k + ii + 1];
             }
 
             for (ii = 0; ii < i - 1; ii++) {
@@ -5340,11 +5332,21 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
         i--;
     }
 
+//  Normalized PSS calculation.
+
+    for (i = 0; i < c; i++) {
+        j = c * i;
+
+        for (k = i + 1; k < c; k++) {
+            ii = j + k;
+
+            PSS[ii] = PSS[i + c * k] = PSS[ii] / Sum;
+        }
+    }
+
 E0: if (TmpW) free(TmpW);
     
     if (C) free(C);
-
-    if (L) free(L);
 
     if (Tmp) free(Tmp);
 
@@ -9045,7 +9047,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     INT   Error = 0;
 
-    printf("REBMIX Version 2.14.2\n");
+    printf("REBMIX Version 2.15.1\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

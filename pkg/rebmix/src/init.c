@@ -33,7 +33,7 @@ extern void RInformationCriterionHMIX(void *, void *, void *, void *, void *, vo
 extern void RInformationCriterionKMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RInformationCriterionMIX(void *, void *, void *, void *, void *, void *,  void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
-extern void RCombineComponentsMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RCombineComponentsMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 /// Panic Branislav
 extern void REMMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
@@ -61,7 +61,7 @@ extern void RInformationCriterionHMVNORM(void *, void *, void *, void *, void *,
 extern void RInformationCriterionKMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RInformationCriterionMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
-extern void RCombineComponentsMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RCombineComponentsMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 /// Panic Branislav
 extern void REMMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
@@ -82,6 +82,9 @@ extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
 
 extern void Rfhistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void Rchistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+
+extern void RLabelMomentsXY(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RLabelMomentsXYZ(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 static const R_CMethodDef CMethods[] = {
     {"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
@@ -104,7 +107,7 @@ static const R_CMethodDef CMethods[] = {
     {"RInformationCriterionHMIX", (DL_FUNC) &RInformationCriterionHMIX, 23},
     {"RInformationCriterionKMIX", (DL_FUNC)&RInformationCriterionKMIX, 19},
     {"RInformationCriterionMIX", (DL_FUNC)&RInformationCriterionMIX, 18},
-    {"RCombineComponentsMIX", (DL_FUNC) &RCombineComponentsMIX, 17},
+    {"RCombineComponentsMIX", (DL_FUNC) &RCombineComponentsMIX, 18},
     {"RRNGMVNORM", (DL_FUNC) &RRNGMVNORM, 12},
     {"RREBMVNORM", (DL_FUNC) &RREBMVNORM, 54},
     {"RCLSMVNORM", (DL_FUNC) &RCLSMVNORM, 13},
@@ -118,7 +121,7 @@ static const R_CMethodDef CMethods[] = {
     {"RInformationCriterionHMVNORM", (DL_FUNC) &RInformationCriterionHMVNORM, 20},
     {"RInformationCriterionKMVNORM", (DL_FUNC)&RInformationCriterionKMVNORM, 16},
     {"RInformationCriterionMVNORM", (DL_FUNC)&RInformationCriterionMVNORM, 15},
-    {"RCombineComponentsMVNORM", (DL_FUNC) &RCombineComponentsMVNORM, 17},
+    {"RCombineComponentsMVNORM", (DL_FUNC) &RCombineComponentsMVNORM, 18},
     {"RvonMisesPdf", (DL_FUNC) &RvonMisesPdf, 5},
     {"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
     {"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 6},
@@ -133,6 +136,8 @@ static const R_CMethodDef CMethods[] = {
 /// End
     {"Rfhistogram", (DL_FUNC)&Rfhistogram, 10},
     {"Rchistogram", (DL_FUNC)&Rchistogram, 10},
+    {"RLabelMomentsXY", (DL_FUNC)&RLabelMomentsXY, 10},
+    {"RLabelMomentsXYZ", (DL_FUNC)&RLabelMomentsXYZ, 12},
     {NULL, NULL, 0}
 };
 

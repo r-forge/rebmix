@@ -32,7 +32,7 @@ a factor of true cluster membership.
 a factor of predictive cluster membership.
 }
 \item{\code{c}:}{
-number of clusters.
+number of nonempty clusters.
 }
 \item{\code{p}:}{
 a vector of length \eqn{c} containing prior probabilities of cluster memberships \eqn{p_{l}} summing to 1. The value is returned only if all variables in slot \code{x} follow either binomial or Dirac parametric families. The default value is \code{numeric()}.
@@ -70,12 +70,16 @@ a vector of length \eqn{c - 1} containing entropies for combined clusters.
 \item{\code{ED}:}{
 a vector of length \eqn{c - 1} containing decrease of entropies for combined clusters.
 }
+\item{\code{PSS}:}{
+a matrix of size \eqn{c \times c} containing normalized pairwise similarity scores between clusters.
 }
 }
-\author{Marko Nagode}
+}
+\author{Marko Nagode, Branislav Panic}
 \references{
 J. P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo. Combining mixture components for clustering.
-Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \doi{10.1198/jcgs.2010.08111}
+Journal of Computational and Graphical Statistics, 19(2):332-353, 2010. \doi{10.1198/jcgs.2010.08111} \cr\cr
+S. Kyoya and K. Yamanishi. Summarizing finite mixture model with overlapping quantification. Entropy, 23(11):1503, 2021. \doi{10.3390/e23111503}
 }
 \examples{
 devAskNewPage(ask = TRUE)

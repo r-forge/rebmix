@@ -2720,6 +2720,7 @@ void RCombineComponentsMIX(INT    *c,            // Number of components.
                            INT    *T,            // To components.
                            double *EN,           // Entropy.
                            double *ED,           // Entropy decrease.
+                           double *PSS,          // Pairwise similarity scores.
                            INT    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
@@ -2773,7 +2774,8 @@ void RCombineComponentsMIX(INT    *c,            // Number of components.
             F,
             T,
             EN,
-            ED);
+            ED,
+            PSS);
 
         if (*Error) goto E0;
     }
@@ -2786,7 +2788,8 @@ void RCombineComponentsMIX(INT    *c,            // Number of components.
             F,
             T,
             EN,
-            ED);
+            ED,
+            PSS);
 
         if (*Error) goto E0;
     }

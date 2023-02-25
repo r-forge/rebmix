@@ -1581,7 +1581,8 @@ slots = c(x = "ANY",
   from = "numeric",
   to = "numeric",
   EN = "numeric",
-  ED = "numeric"),
+  ED = "numeric",
+  PSS = "matrix"),
 prototype = list(pos = 1))
 
 setMethod("initialize", "RCLRMIX",

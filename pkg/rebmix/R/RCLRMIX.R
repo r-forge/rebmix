@@ -148,6 +148,7 @@ function(model, ...)
     T = integer(c),
     EN = double(c),
     ED = double(c),
+    PSS = double(c * c),
     error = integer(1),
     PACKAGE = "rebmix")
 
@@ -165,6 +166,10 @@ function(model, ...)
     model@to <- output$T[-c]
     model@EN <- output$EN[-c]
     model@ED <- output$ED[-c]
+    model@PSS = matrix(output$PSS, nrow = c, ncol = c)
+    
+    rownames(model@PSS) <- paste(1:c, sep = "")
+    colnames(model@PSS) <- paste(1:c, sep = "")    
   }
 
   output <- .C(C_RCLRMIX,
@@ -263,6 +268,7 @@ function(model, ...)
     T = integer(c),
     EN = double(c),
     ED = double(c),
+    PSS = double(c * c),    
     error = integer(1),
     PACKAGE = "rebmix")
 
@@ -280,6 +286,10 @@ function(model, ...)
     model@to <- output$T[-c]
     model@EN <- output$EN[-c]
     model@ED <- output$ED[-c]
+    model@PSS = matrix(output$PSS, nrow = c, ncol = c)
+    
+    rownames(model@PSS) <- paste(1:c, sep = "")
+    colnames(model@PSS) <- paste(1:c, sep = "")
   }
 
   output <- .C(C_RCLRMVNORM,
@@ -325,7 +335,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RCLRMIX Version 2.14.2")
+  message("RCLRMIX Version 2.15.1")
 
   flush.console()
 
