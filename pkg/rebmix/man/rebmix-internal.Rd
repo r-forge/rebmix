@@ -26,6 +26,7 @@
 \alias{chistogram,ANY-method}
 \alias{mapclusters,ANY-method}
 \alias{labelmoments,ANY-method}
+\alias{mergelabels,ANY-method}
 
 \alias{a.d}
 \alias{a.theta1<-}

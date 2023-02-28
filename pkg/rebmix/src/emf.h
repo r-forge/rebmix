@@ -27,7 +27,7 @@ public:
     EmVariantType_e      variant_;         // Type of EM variant algorithm.
     EmAccelerationType_e accel_;           // Type of acceleration of standard EM algorithm.
 /// Panic Branislav
-    EmMergeCompsType_e   merge_;           // Merge components with zero weight.s
+    EmMergeCompsType_e   merge_;           // Merge components with zero weights.
 /// End
     INT                  n_iter_;          // Number of iterations.
     INT                  c_;               // Number of components.

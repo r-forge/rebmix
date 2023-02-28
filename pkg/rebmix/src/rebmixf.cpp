@@ -5053,10 +5053,10 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
                                      INT                  *T,         // To components.
                                      FLOAT                *EN,        // Entropy.
                                      FLOAT                *ED,        // Entropy decrease.
-                                     FLOAT                *PSS)       // Pairwise similarity scores.
+                                     FLOAT                *A)         // Adjacency matrix.
 {
     INT   *C = NULL, i, ii, j, jj, II, J, k, l;
-    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, Sum;
+    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL;
     INT   Error = 0;
 
     Tmp = (FLOAT*)malloc(nr_ * c * sizeof(FLOAT));
@@ -5108,7 +5108,7 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
         C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en;
     }
 
-    i = c; Sum = (FLOAT)0.0;
+    i = c;
 
     while (i > 1) {
         II = J = 0; ED[i - 2] = (FLOAT)0.0;
@@ -5136,7 +5136,7 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
                 if (i == c) {
                     ed = -ed / n_ / (W[ii] + W[j]) / (xlogx(W[ii] / (W[ii] + W[j])) + xlogx(W[j] / (W[ii] + W[j])));
 
-                    PSS[ii * c + j] = PSS[j * c + ii] = ed; Sum += ed;
+                    A[ii * c + j] = A[j * c + ii] = ed;
                 }
             }
         }
@@ -5170,18 +5170,6 @@ INT Rebmix::CombineComponentsEntropy(INT                  c,          // Number 
         i--;
     }
 
-    //  Normalized PSS calculation.
-
-    for (i = 0; i < c; i++) {
-        j = c * i;
-
-        for (k = i + 1; k < c; k++) {
-            ii = j + k;
-
-            PSS[ii] = PSS[i + c * k] = PSS[ii] / Sum;
-        }
-    }
-
 E0: if (C) free(C);
 
     if (Tmp) free(Tmp);
@@ -5198,10 +5186,10 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
                                   INT                  *T,         // To components.
                                   FLOAT                *EN,        // Entropy.
                                   FLOAT                *ED,        // Entropy decrease.
-                                  FLOAT                *PSS)       // Pairwise similarity scores.
+                                  FLOAT                *A)         // Adjacency matrix.
 {
     INT   *C = NULL, i, ii, j, jj, II, J, k, l;
-    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, *TmpW = NULL, Sum;
+    FLOAT CmpDist, ed, en, MixDist, *Tmp = NULL, *TmpW = NULL;
     INT   Error = 0;
 
     Tmp = (FLOAT*)malloc(nr_ * c * sizeof(FLOAT));
@@ -5257,7 +5245,7 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
         C[i] = i; F[i] = T[i] = 0; ED[i] = (FLOAT)0.0; EN[i] = en; TmpW[i] = W[i];
     }
 
-    i = c; Sum = (FLOAT)0.0;
+    i = c;
 
     while (i > 1) {
         II = J = 0; ED[i - 2] = (FLOAT)0.0;
@@ -5300,7 +5288,7 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
                 }
 
                 if (i == c) {
-                    PSS[ii * c + j] = PSS[j * c + ii] = ed; Sum += ed;
+                    A[ii * c + j] = A[j * c + ii] = ed;
                 }
             }
         }
@@ -5330,18 +5318,6 @@ INT Rebmix::CombineComponentsDemp(INT                  c,          // Number of 
         }
 
         i--;
-    }
-
-//  Normalized PSS calculation.
-
-    for (i = 0; i < c; i++) {
-        j = c * i;
-
-        for (k = i + 1; k < c; k++) {
-            ii = j + k;
-
-            PSS[ii] = PSS[i + c * k] = PSS[ii] / Sum;
-        }
     }
 
 E0: if (TmpW) free(TmpW);

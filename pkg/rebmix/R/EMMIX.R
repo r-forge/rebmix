@@ -63,7 +63,7 @@ function(model, Theta, ...)
       Y.type = as.integer(Y.type),
       pdf = as.character(model@pdf),
       c = as.integer(c),
-      W = as.double(w),
+      w = as.double(w),
       Theta1 = as.double(theta1),
       Theta2 = as.double(theta2),
       Theta3 = as.double(theta3),
@@ -84,13 +84,13 @@ function(model, Theta, ...)
       stop("in REMMIX!", call. = FALSE); return(NA) #
     }
 
-    if (all(output$W == 0.0)) {
+    if (all(output$w == 0.0)) {
       warning("EM did not converge for ", Dataset.name, " dataset!")
     }
 
     c <- output$c
 
-    length(output$W) <- c
+    length(output$w) <- c
 
     length(output$Theta1) <- c * d
 
@@ -98,7 +98,7 @@ function(model, Theta, ...)
 
     length(output$Theta3) <- c * d
 
-    model@w[[i]] <- output$W
+    model@w[[i]] <- output$w
 
     model@Theta[[i]] <- list()
 
@@ -255,7 +255,7 @@ function(model, Theta, ...)
       Y.type = as.integer(Y.type),
       pdf = as.character(model@pdf),
       c = as.integer(c),
-      W = as.double(w),
+      w = as.double(w),
       Theta1 = as.double(theta1),
       Theta2 = as.double(theta2),
       EMVariant = as.character(model@EMcontrol@variant),
@@ -277,9 +277,9 @@ function(model, Theta, ...)
 
     c <- output$c
 
-    length(output$W) <- c
+    length(output$w) <- c
 
-    if (all(output$W == 0.0)) {
+    if (all(output$w == 0.0)) {
       warning("EM did not converge for ", Dataset.name, " dataset!")
     }
 
@@ -287,7 +287,7 @@ function(model, Theta, ...)
 
     length(output$Theta2) <- c * d * d
 
-    model@w[[i]] <- output$W
+    model@w[[i]] <- output$w
 
     model@Theta[[i]] <- list()
 

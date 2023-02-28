@@ -148,7 +148,7 @@ function(model, ...)
     T = integer(c),
     EN = double(c),
     ED = double(c),
-    PSS = double(c * c),
+    A = double(c * c),
     error = integer(1),
     PACKAGE = "rebmix")
 
@@ -166,10 +166,10 @@ function(model, ...)
     model@to <- output$T[-c]
     model@EN <- output$EN[-c]
     model@ED <- output$ED[-c]
-    model@PSS = matrix(output$PSS, nrow = c, ncol = c)
+    model@A = matrix(output$A, nrow = c, ncol = c)
     
-    rownames(model@PSS) <- paste(1:c, sep = "")
-    colnames(model@PSS) <- paste(1:c, sep = "")    
+    rownames(model@A) <- paste(1:c, sep = "")
+    colnames(model@A) <- paste(1:c, sep = "")    
   }
 
   output <- .C(C_RCLRMIX,
@@ -268,7 +268,7 @@ function(model, ...)
     T = integer(c),
     EN = double(c),
     ED = double(c),
-    PSS = double(c * c),    
+    A = double(c * c),    
     error = integer(1),
     PACKAGE = "rebmix")
 
@@ -286,10 +286,10 @@ function(model, ...)
     model@to <- output$T[-c]
     model@EN <- output$EN[-c]
     model@ED <- output$ED[-c]
-    model@PSS = matrix(output$PSS, nrow = c, ncol = c)
+    model@A = matrix(output$A, nrow = c, ncol = c)
     
-    rownames(model@PSS) <- paste(1:c, sep = "")
-    colnames(model@PSS) <- paste(1:c, sep = "")
+    rownames(model@A) <- paste(1:c, sep = "")
+    colnames(model@A) <- paste(1:c, sep = "")
   }
 
   output <- .C(C_RCLRMVNORM,

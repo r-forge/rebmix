@@ -1,6 +1,6 @@
 setMethod("labelmoments",
           signature(Zp = "array"),
-function(Zp, ...)
+function(Zp, Sigma, ...)
 {
   digits <- getOption("digits"); options(digits = 15)
   
@@ -20,7 +20,33 @@ function(Zp, ...)
     stop(sQuote("Zp"), " two or three dimensional array is requested!", call. = FALSE)
   }
   
-  c <- max(Zp)
+  # cmax.
+  
+  if (missing(cmax) || (length(cmax) == 0)) {
+    stop(sQuote("cmax"), " must not be empty!", call. = FALSE)
+  }  
+  
+  if (!is.wholenumber(cmax) || (length(cmax) > 1)) {
+    stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
+  }
+
+  if (cmax < 1) {
+    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
+  }  
+  
+  c <- max(cmax, Zp)
+  
+  # Sigma.
+  
+  if (!is.numeric(Sigma)) {
+    stop(sQuote("Sigma"), " numeric is requested!", call. = FALSE)
+  }
+
+  length(Sigma) <- 1
+
+  if (Sigma <= 0.0) {
+    stop(sQuote("Sigma"), " must be greater than 0.0!", call. = FALSE)
+  }
   
   if (d == 2) {
     output <- .C(C_RLabelMomentsXY,
@@ -32,7 +58,8 @@ function(Zp, ...)
       Mx = double(c),
       My = double(c),
       Mxy = double(c),
-      Eud = double(c * c),
+      A = double(c * c),
+      Sigma = as.double(Sigma),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -40,19 +67,21 @@ function(Zp, ...)
       stop("in RLabelMomentsXY!", call. = FALSE); return(NA)
     }
     
-    output$Eud <- matrix(output$Eud, nrow = c, ncol = c)
+    output$A <- matrix(output$A, nrow = c, ncol = c)
     
-    rownames(output$Eud) <- paste(1:c, sep = "")
-    colnames(output$Eud) <- paste(1:c, sep = "")
+    rownames(output$A) <- paste(1:c, sep = "")
+    colnames(output$A) <- paste(1:c, sep = "")
     
-    clusters <- which(output$N != 0)
+    clusters <- which(output$N != 0.0)
+    
+    set <- 1:c; set <- set[-clusters]; output$A[set, ] <- output$A[, set] <- NA
     
     output <- list(Mij = data.frame(l = clusters, 
       n = output$N[clusters], 
       M10 = output$Mx[clusters], 
       M01 = output$My[clusters], 
       M11 = output$Mxy[clusters]),
-      Eud = output$Eud[clusters, clusters])
+      A = output$A)
   }
   else {
     output <- .C(C_RLabelMomentsXYZ,
@@ -66,7 +95,8 @@ function(Zp, ...)
       My = double(c),
       Mz = double(c),
       Mxyz = double(c),
-      Eud = double(c * c),
+      A = double(c * c),
+      Sigma = as.double(Sigma),
       error = integer(1),
       PACKAGE = "rebmix")
 
@@ -74,20 +104,22 @@ function(Zp, ...)
       stop("in RLabelMomentsXYZ!", call. = FALSE); return(NA)
     }
     
-    output$Eud <- matrix(output$Eud, nrow = c, ncol = c)
+    output$A <- matrix(output$A, nrow = c, ncol = c)
     
-    rownames(output$Eud) <- paste(1:c, sep = "")
-    colnames(output$Eud) <- paste(1:c, sep = "")
+    rownames(output$A) <- paste(1:c, sep = "")
+    colnames(output$A) <- paste(1:c, sep = "")
     
-    clusters <- which(output$N != 0)   
+    clusters <- which(output$N != 0.0)
     
-    output <- list(Mij = data.frame(l = clusters, 
+    set <- 1:c; set <- set[-clusters]; output$A[set, ] <- output$A[, set] <- NA
+
+    output <- list(Mijk = data.frame(l = clusters, 
       n = output$N[clusters], 
       M100 = output$Mx[clusters], 
       M010 = output$My[clusters], 
       M001 = output$Mz[clusters], 
       M111 = output$Mxyz[clusters]),
-      Eud = output$Eud[clusters, clusters])  
+      A = output$A)
   }
   
   options(digits = digits)

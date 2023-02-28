@@ -169,4 +169,5 @@ exportMethods("RNGMIX",
               "fhistogram",
               "chistogram",
               "mapclusters",
-              "labelmoments")
+              "labelmoments",
+              "mergelabels")

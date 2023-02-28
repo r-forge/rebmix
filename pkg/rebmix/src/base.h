@@ -228,7 +228,7 @@ public:
 }; // CompnentDistribution
 
 typedef struct mixtureparametertype {
-    FLOAT                *W;          // Pointer to weight.
+    FLOAT                *W;          // Pointer to weights.
     CompnentDistribution **MixTheta;  // Pointer to mixture parameters.
     INT                  c;           // Number of components in mixture.
     FLOAT                logL;        // Estimated value of log likelihood.

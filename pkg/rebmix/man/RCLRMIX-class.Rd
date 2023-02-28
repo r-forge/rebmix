@@ -70,8 +70,8 @@ a vector of length \eqn{c - 1} containing entropies for combined clusters.
 \item{\code{ED}:}{
 a vector of length \eqn{c - 1} containing decrease of entropies for combined clusters.
 }
-\item{\code{PSS}:}{
-a matrix of size \eqn{c \times c} containing normalized pairwise similarity scores between clusters.
+\item{\code{A}:}{
+an adjacency matrix of size \eqn{c_{\mathrm{max}} \times c_{\mathrm{max}}}, where \eqn{c_{\mathrm{max}} \geq c}.
 }
 }
 }

@@ -83,8 +83,9 @@ extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
 extern void Rfhistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void Rchistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
-extern void RLabelMomentsXY(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
-extern void RLabelMomentsXYZ(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RLabelMomentsXY(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RLabelMomentsXYZ(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+extern void RMergeLabels(void *, void *, void *, void *, void *, void *);
 
 static const R_CMethodDef CMethods[] = {
     {"RRNGMIX", (DL_FUNC) &RRNGMIX, 13},
@@ -136,8 +137,9 @@ static const R_CMethodDef CMethods[] = {
 /// End
     {"Rfhistogram", (DL_FUNC)&Rfhistogram, 10},
     {"Rchistogram", (DL_FUNC)&Rchistogram, 10},
-    {"RLabelMomentsXY", (DL_FUNC)&RLabelMomentsXY, 10},
-    {"RLabelMomentsXYZ", (DL_FUNC)&RLabelMomentsXYZ, 12},
+    {"RLabelMomentsXY", (DL_FUNC)&RLabelMomentsXY, 11},
+    {"RLabelMomentsXYZ", (DL_FUNC)&RLabelMomentsXYZ, 13},
+    {"RMergeLabels", (DL_FUNC)&RMergeLabels, 6},
     {NULL, NULL, 0}
 };
 

@@ -3,7 +3,8 @@
 \section{Changes in version 2.15.1}{ 
 \itemize{
 \item Method \code{"labelmoments"} is added.
-\item Normalized pairwise similarity scores between clusters \code{PSS} slot is added to \code{"RCLRMIX"} class.
+\item Method \code{"mergelabels"} is added.
+\item Adjacency matrix \code{A} slot is added to \code{"RCLRMIX"} class.
 \item Improved C++ functions \code{CombineComponentsEntropy()} and \code{CombineComponentsDemp()}.
 }
 }

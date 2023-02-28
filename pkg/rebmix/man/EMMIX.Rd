@@ -32,7 +32,7 @@ an object of class \code{EMMIX.Theta} or \code{EMMVNORM.Theta}.
 an object of class \code{EM.Control}.
 }
 \item{\dots}{
-Currently not used.  
+currently not used.  
 }
 }
 \value{

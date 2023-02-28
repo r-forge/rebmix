@@ -286,6 +286,14 @@ setGeneric("mapclusters",
   standardGeneric("mapclusters"))
 
 setGeneric("labelmoments",
-  function(Zp = array(), ...)
+  function(Zp = array(),
+    cmax = integer(), 
+    Sigma = 1.0, ...)
   standardGeneric("labelmoments"))
+  
+setGeneric("mergelabels",
+  function(A = list(),
+    w = numeric(), 
+    k = 2, ...)
+  standardGeneric("mergelabels"))  
 
