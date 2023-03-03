@@ -8,7 +8,7 @@ Fast Histogram Calculation
 \description{
 Returns an object of class \code{Histogram}. The method can be called recursively.
 This way more than one dataset can be binned into one histogram. Set \code{shrink} 
-to \code{TRUE} only when the function is called for the last time to optimize the size of the object.
+to \code{TRUE} only when the method is called for the last time to optimize the size of the object.
 The method is memory consuming.
 }
 \usage{

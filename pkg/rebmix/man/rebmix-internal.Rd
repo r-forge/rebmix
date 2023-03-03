@@ -370,7 +370,7 @@
 \alias{a.n,Histogram-method}
 \alias{a.ns,Histogram-method}
 
-\title{Internal rebmix Functions}
+\title{Internal rebmix Functions, Methods and Classes}
 \description{
 Internal rebmix functions, methods and classes.
 }

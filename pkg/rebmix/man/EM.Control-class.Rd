@@ -52,7 +52,7 @@ G. Celeux and G. Govaert. A classification EM algorithm for clustering and two s
 \doi{10.1016/0167-9473(92)90042-E}.
 }
 \examples{
-# Inline creation by function new call.
+# Inline creation by new call.
 
 EM <- new("EM.Control", strategy = "exhaustive", 
   variant = "EM", acceleration = "fixed", 
@@ -61,7 +61,7 @@ EM <- new("EM.Control", strategy = "exhaustive",
 
 EM
 
-# Creation of EM object with setter functions.
+# Creation of EM object with setter method.
 
 EM <- new("EM.Control")
 

@@ -30,8 +30,8 @@ function(Zp, Sigma, ...)
     stop(sQuote("cmax"), " integer is requested!", call. = FALSE)
   }
 
-  if (cmax < 1) {
-    stop(sQuote("cmax"), " must be greater than 0!", call. = FALSE)
+  if (cmax < 2) {
+    stop(sQuote("cmax"), " must be greater than 1!", call. = FALSE)
   }  
   
   c <- max(cmax, Zp)
@@ -52,7 +52,7 @@ function(Zp, Sigma, ...)
     output <- .C(C_RLabelMomentsXY,
       nx = as.integer(nd[2]),
       ny = as.integer(nd[1]),
-      Zp = as.integer(Zp),    
+      Zp = as.double(Zp),    
       c = as.integer(c),
       N = double(c),
       Mx = double(c),
@@ -88,7 +88,7 @@ function(Zp, Sigma, ...)
       nx = as.integer(nd[2]),
       ny = as.integer(nd[1]),
       nz = as.integer(nd[3]),
-      Zp = as.integer(Zp),    
+      Zp = as.double(Zp),    
       c = as.integer(c),
       N = double(c),
       Mx = double(c),

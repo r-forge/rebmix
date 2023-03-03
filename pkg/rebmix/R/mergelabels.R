@@ -66,6 +66,10 @@ function(A, w, k, ...)
   
   c <- nrow
   
+  if (c < 2) {
+    stop(sQuote("c"), " must be greater than 1!", call. = FALSE)
+  }    
+  
   # w.
   
   if (length(w) != n) {

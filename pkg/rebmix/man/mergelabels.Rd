@@ -3,11 +3,13 @@
 \alias{mergelabels-methods}
 \alias{mergelabels,list-method}
 \title{
-Merge Labels Based on Composed Adjacency Matrix
+Merge Labels Based on Probability Adjacency Matrix
 }
 \description{
-Returns the list with the normalised adjacency matrix \code{L} of size \eqn{c \times c}. The normalised adjacency matrix \eqn{L = \sum_{l = 1}^{n} w_{l} D_{l}^{-1/2} A_{l} D_{l}^{-1/2}} depends on the adjacency matrices \eqn{A_{l}}
-and the degree matrices \eqn{D_{l}(i,j) = \sum_{j} A_{l}(i,j)}. The \eqn{A_{l}} matrices may have some \code{NA} rows and columns. The list also contains the vector of integers \code{cluster} of length \eqn{k}, which indicates the cluster to which each image moment \eqn{\bm{M}} is assigned.
+Returns the list with the normalised adjacency matrix \code{L} of size \eqn{c \times c}. The normalised adjacency matrix
+\eqn{L = D^{-1/2} P D^{-1/2}} depends on the probability adjacency matrix \eqn{P(i,j) = \sum_{l = 1}^{n} p_{l} A_{l}(i,j)}, where \eqn{p_{l} = w_{l} / \sum_{i = 1}^{c}\sum_{j = i + 1}^{c} A_{l}(i,j)}
+and the degree matrix \eqn{D(i,i) = \sum_{j = 1}^{c} P(i,j)}. The \eqn{A_{l}} matrices may contain some \code{NA} rows and columns, which are eliminated by the method. 
+The list also contains the vector of integers \code{cluster} of length \eqn{k}, which indicates the cluster to which each label is assigned.
 }
 \usage{
 \S4method{mergelabels}{list}(A = list(), w = numeric(), k = 2, ...)
@@ -37,6 +39,24 @@ further arguments to \code{\link[stats]{kmeans}}.
 A. Ng, M. Jordan and Y. Weiss. On spectral clustering: Analysis and an algorithm. Advances in Neural Information Processing Systems 14 (NIPS 2001).
 }
 \examples{
-i <- 1
+Zp <- array(0, dim = c(10, 10, 2))
+
+Zp[ , ,1][10, 1:4] <- 1
+Zp[ , ,1][1:4, 10] <- 2
+
+Zp[ , ,2][9, 1:5] <- 3
+Zp[ , ,2][1:6, 9] <- 4
+
+labelmoments <- labelmoments(Zp, cmax = 4, Sigma = 1.0)
+
+labelmoments
+
+set.seed(3)
+
+mergelabels <- mergelabels(list(labelmoments$A), w = 1.0, k = 2, nstart = 5)
+
+Zp
+
+mergelabels
 }
 \keyword{auxiliary}
