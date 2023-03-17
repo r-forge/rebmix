@@ -39,7 +39,13 @@ function(A, w, k, ...)
   set = rep(TRUE, c)
 
   for (i in 1:n) {
-    set <- set & complete.cases(A[[i]][, 1])
+    for (j in 1:ncol) {
+      tmp <- complete.cases(A[[i]][, j])
+      
+      if (any(tmp)) {
+        set <- set & tmp; break
+      }
+    }  
   }
   
   nrow <- sum(set, na.rm = TRUE)
@@ -51,7 +57,13 @@ function(A, w, k, ...)
   set = rep(TRUE, c)
 
   for (i in 1:n) {
-    set <- set & complete.cases(A[[i]][1, ])
+    for (j in 1:nrow) {
+      tmp <- complete.cases(A[[i]][j, ])
+      
+      if (any(tmp)) {
+        set <- set & tmp; break
+      }
+    }
   }
   
   ncol <- sum(set, na.rm = TRUE)
