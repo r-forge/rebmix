@@ -9023,7 +9023,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FILE  *fp = NULL;
     INT   Error = 0;
 
-    printf("REBMIX Version 2.15.1\n");
+    printf("REBMIX Version 2.15.0\n");
 
     if ((fp = fopen(file, "r")) == NULL) {
         Error = 1; goto E0;

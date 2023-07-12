@@ -35,15 +35,17 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018, Panic_2020a, Panic_2020b, Panic_2020c}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.14.2}}
+\section{What's new in version \texttt{2.15.0}}
+
+Version \texttt{2.15.0} introduces several auxiliary methods and some improvements to the core methods of the package. Two new auxiliary methods have been added primarily for dealing with digital images and other datasets of spatial interest that are initially processed by flattening or similarly removing spatial information. The newly added \texttt{"labelmoments"} method estimates spatial moments for clustering solutions obtained using either the \texttt{RCLRMIX} or the \texttt{mapclusters} method. Of course, the output of the \texttt{RCLRMIX} method or the \texttt{mapclusters} method must first be converted into a two-dimensional spatial matrix or a three-dimensional spatial matrix. Then the spatial moments are estimated similarly to widely used image moments \cite{liao1996image}. The \texttt{"labelmoments"} method also estimates the adjacency matrix between different labels in clustering using already estimated spatial moments. See the manual for more information. The second added method, \texttt{"mergelabels"}, uses the spectral clustering described in \cite{ng2001spectral} to propose another clustering solution that merges the most similar labels from the previous clustering solution. \texttt{"mergelabels"} accepts two adjacency matrices. The first one can be created using the method \texttt{"labelmoments"} for spatial similarity, and the second can be, for example, the similarity matrix of the different mixture components. Therefore, version \texttt{2.15.0} also introduces an improvement to the class \texttt{RCLRMIX}, which now also has a slot \texttt{A} representing an adjacency matrix (i.e., a similarity matrix) between different mixture components. The adjacency matrix is computed according to the given argument \texttt{Rule} in the method \texttt{RCLRMIX}. Finally, the C++ functions \texttt{CombineComponentsEntropy()} and \texttt{CombineComponentsDemp()} are improved and further tested.
+
+\section{Previous versions}
 
 Version \texttt{2.14.2} introduces several important improvements to the package. Estimation of mixture parameters can now be performed using the object of class \texttt{"Histogram"}. Objects of class \texttt{"Histogram"} represent the data with bins and bin counts. The object \texttt{"Histogram"} is best suited for discrete datasets, such as digital images. The image resolution can be quite high, but there is a finite number of realizations of the image pixel intensity. Often the number of realizations is much smaller than the number of observations. Therefore, it is more useful to represent the original dataset as an ordered pair $(\bar{y}_j, k_j)$, where $\bar{y}_j$ is the $j$th possible realization and $k_j$ is its count. The continuous datasets can also be shrunk, but some bias may occur. When the number of observations is large, the bias is usually small and vice versa, and when time and memory efficiency is desired, shrinking the dataset is recommended. The original dataset (object of class \texttt{data.frame}) is transformed with the newly added methods \texttt{"chistogram"}, \texttt{"fhistogram"} into a \texttt{"Histogram"}. The method \texttt{"fhistogram"} is memory intensive, but very fast. It is best suited for one-dimensional datasets. Since it precomputes all possible realizations, even if some of them are not in the dataset, the argument \texttt{shrink= TRUE } should be added. The method \texttt{"chistogram"} is slower, but memory efficient. When a new realization $y_j$ is found, it is appended. The two methods \texttt{"chistogram"} and \texttt{"fhistogram"} can be chained in a for loop so that multiple datasets can be shrunk into one \texttt{"Histogram"} object. This can be used when, for example, multiple images are to be loaded. Also, if for example a large dataset is to be processed, only parts of it can be loaded at a time to avoid large memory overhead.
 
 The \texttt{mapclusters} method is added for maximum a posteriori estimation of cluster membership. This method was added to complement the \texttt{RCLRMIX} method. The \texttt{RCLRMIX} method performs clustering and cluster membership prediction as well as cluster merging using different estimators. For large datasets, this can be very time consuming. Using objects of class \texttt{"histogram"} speeds up the \texttt{RCLRMIX} method enormously, but the cluster membership is only determined of the realizations $\bar{y}_j$ and the order is often not preserved either. Thus, we can use the \texttt{mapclusters} method to get the cluster membership on the original dataset of the object of the \texttt{"data.frame"} class.
 
 Finally, all density estimation methods (\texttt{"demix"}, \texttt{"dfmix"}, \texttt{"pemix"}, \texttt{"pfmix"}) are modified to include estimation for objects of class \texttt{"Histogram"}.
-
-\section{Previous versions}
 
 Version \texttt{2.14.0} introduces three parametric variant of the Gumbel parametric family
 
@@ -207,7 +209,7 @@ gamma3est <- REBMIX(Dataset = a.Dataset(gamma3),
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<gamma3-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 3.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(gamma3est, pos = 1, what = c("pdf", "marginal cdf"), ncol = 2, npts = 1000)
+plot(gamma3est, pos = 1, what = c("pdf", "marginal cdf"), ncol = 2, npts = 1000, family = "sans")
 @
 \caption{Gamma 3 dataset. Empirical density (circles) and predictive gamma mixture density in black solid line.}
 \end{figure}
@@ -321,7 +323,7 @@ poissonest <- REBMIX(Dataset = a.Dataset(poisson),
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<poisson-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 6.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000)
+plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nrow = 2, ncol = 3, npts = 1000, family = "sans")
 @
 \caption{Poisson dataset. Empirical densities (coloured large circles), predictive multivariate Poisson-Poisson mixture density (coloured small circles), empirical densities (circles), predictive univariate marginal Poisson mixture densities and progress charts (solid line).}
 \end{figure}
@@ -331,7 +333,7 @@ plot(poissonest, pos = 1, what = c("pdf", "marginal pdf", "IC", "D", "logL"), nr
 <<poisson-clu-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 poissonclu <- RCLRMIX(x = poissonest, pos = 1, Zt = a.Zt(poisson))
 
-plot(poissonclu)
+plot(poissonclu, family = "sans")
 @
 \caption{Poisson dataset. Predictive cluster membership (coloured circles), error (black circles).}
 \end{figure}
@@ -427,7 +429,7 @@ mvnormest <- REBMIX(model = "REBMVNORM",
 \subsubsection{Plot method}
 \begin{figure}[htb]\centering
 <<mvnorm-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.0, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(mvnormest)
+plot(mvnormest, family = "sans")
 @
 \caption{Dataset \texttt{mvnorm}. Empirical densities (coloured circles), predictive multivariate normal mixture density (coloured lines).}
 \end{figure}
@@ -437,7 +439,7 @@ plot(mvnormest)
 <<mvnorm-clu-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 4.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 mvnormclu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest)
 
-plot(mvnormclu)
+plot(mvnormclu, family = "sans")
 @
 \caption{Dataset \texttt{mvnorm}. Predictive cluster membership (coloured circles).}
 \end{figure}
@@ -511,7 +513,7 @@ mvnorm.clu <- RCLRMIX(model = "RCLRMVNORM", x = mvnormest.cem)
 
 \begin{figure}[htb]\centering
 <<mvnorm-clu-fig-cem, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
-plot(mvnorm.clu)
+plot(mvnorm.clu, family = "sans")
 @
 \caption{Dataset \texttt{mvnorm}. Predictive cluster membership (coloured circles) for exhaustive REBMIX\&ECM strategy and ICL criterion.}
 \end{figure}
@@ -676,7 +678,7 @@ summary(drivecla)
 <<drive-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 # Plot selected features.
 
-plot(drivecla, nrow = 3, ncol = 2)
+plot(drivecla, nrow = 3, ncol = 2, family = "sans")
 @
 \caption{Dataset \texttt{iris}. Predictive class membership (coloured circles), error (black circles).}
 \end{figure}
@@ -791,7 +793,7 @@ summary(adultcla)
 <<adult-cla-fig, fig = TRUE, pdf = FALSE, png = TRUE, eps = FALSE, height = 5.5, width = 5.5, echo = TRUE, results = hide, keep.source = FALSE>>=
 ## Plot selected chunks.
 
-plot(adultcla, nrow = 5, ncol = 2)
+plot(adultcla, nrow = 5, ncol = 2, family = "sans")
 @
 \caption{Dataset \texttt{adult}. Predictive class membership (coloured circles), error (black circles).}
 \end{figure}

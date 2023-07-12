@@ -1,6 +1,6 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.15.1}{ 
+\section{Changes in version 2.15.0}{ 
 \itemize{
 \item Method \code{"labelmoments"} is added.
 \item Method \code{"mergelabels"} is added.
