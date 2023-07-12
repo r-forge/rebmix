@@ -53,7 +53,7 @@ Version \texttt{2.14.0} introduces three parametric variant of the Gumbel parame
 f(y) = \frac{1}{\sigma}\exp\left(\frac{y - \mu}{\xi \sigma} - \exp\left(\frac{y - \mu}{\xi \sigma}\right)\right),
 \end{equation}
 
-where $\xi \in \{-1, \textrm{NA}, 1\}$. If initially $\xi$ is set to $\textrm{NA}$, the package estimates $\xi$. Otherwise the  estimated $\xi$ equals initial $\xi$. The package was extended to handle three parameter parametric families. Class \texttt{"EMMIX.Theta"} and method \texttt{EMMIX} are added. They enable parameter estimation for all parametric families available in the package by using the EM algorithm only.
+where $\xi \in \{-1, \text{NA}, 1\}$. If initially $\xi$ is set to $\text{NA}$, the package estimates $\xi$. Otherwise the  estimated $\xi$ equals initial $\xi$. The package was extended to handle three parameter parametric families. Class \texttt{"EMMIX.Theta"} and method \texttt{EMMIX} are added. They enable parameter estimation for all parametric families available in the package by using the EM algorithm only.
 
 Version \texttt{2.13.1} introduces Gumbel probability density
 \begin{equation}

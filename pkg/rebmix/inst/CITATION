@@ -1,140 +1,79 @@
-citHeader("To cite rebmix in publications use:")
+citHeader(sprintf("To cite rebmix in publications use:"))
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "Modelling of Load Spectra Containing Clusters of Less Probable Load Cycles",
-  author  = personList(as.person("Marko Nagode"),
-                       as.person("Jernej Klemenc")),
+  author  = c(person(given = "Marko", family = "Nagode"),
+              person(given = "Jernej", family = "Klemenc")),
   journal  = "International Journal of Fatigue",
   year = "2021",
   volume = "143",
   pages = "106006",
-  doi = "10.1016/j.ijfatigue.2020.106006",
-  url = "https://doi.org/10.1016/j.ijfatigue.2020.106006",
+  doi = "10.1016/j.ijfatigue.2020.106006")
 
-  textVersion  =
-  paste("Marko Nagode, Jernej Klemenc (2021).",
-        "Modelling of Load Spectra Containing Clusters of Less Probable Load Cycles.",
-        "International Journal of Fatigue, 143, 106006.",
-        "doi: 10.1016/j.ijfatigue.2020.106006",
-        "url: https://doi.org/10.1016/j.ijfatigue.2020.106006.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "Optimizing the Estimation of a Histogram-Bin Width-Application to the Multivariate Mixture-Model Estimation",
-  author  = personList(as.person("Branislav Panic"),
-                              as.person("Jernej Klemenc"),
-                              as.person("Marko Nagode")),
+  author  = c(person(given = "Branislav", family = "Panic"),
+              person(given = "Jernej", family = "Klemenc"),
+              person(given = "Marko", family = "Nagode")),
   journal  = "Mathematics",
   year = "2020",
   volume = "8",
   number = "7",
   pages = "1090",
-  doi = "10.3390/math8071090",
-  url = "https://www.mdpi.com/2227-7390/8/7/1090",
+  doi = "10.3390/math8071090")
 
-  textVersion  =
-  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
-        "Optimizing the Estimation of a Histogram-Bin Width-Application to the Multivariate Mixture-Model Estimation.",
-        "Mathematics, 8(7), 1090.",
-        "doi: 10.3390/math8071090",
-        "url: https://www.mdpi.com/2227-7390/8/7/1090.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation",
-  author  = personList(as.person("Branislav Panic"),
-                              as.person("Jernej Klemenc"),
-                              as.person("Marko Nagode")),
+  author  = c(person(given = "Branislav", family = "Panic"),
+              person(given = "Jernej", family = "Klemenc"),
+              person(given = "Marko", family = "Nagode")),
   journal  = "Mathematics",
   year = "2020",
   volume = "8",
   number = "3",
   pages = "373",
-  doi = "10.3390/math8030373",
-  url = "https://www.mdpi.com/2227-7390/8/3/373/htm",
+  doi = "10.3390/math8030373")
 
-  textVersion  =
-  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
-        "Improved Initialization of the EM Algorithm for Mixture Model Parameter Estimation.",
-        "Mathematics, 8(3), 373.",
-        "doi: 10.3390/math8030373",
-        "url: https://www.mdpi.com/2227-7390/8/3/373/htm.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification",
-  author  = personList(as.person("Branislav Panic"),
-                              as.person("Jernej Klemenc"),
-                              as.person("Marko Nagode")),
+  author  = c(person(given = "Branislav", family = "Panic"),
+              person(given = "Jernej", family = "Klemenc"),
+              person(given = "Marko", family = "Nagode")),
   journal  = "Journal of Mechanical Engineering",
   year = "2020",
   volume = "66",
   number = "4",
   pages = "215-226",
-  doi = "10.5545/sv-jme.2020.6563",
-  url = "https://www.sv-jme.eu/article/gaussian-mixture-model-based-classification-revisited-application-to-the-bearing-fault-classification/",
+  doi = "10.5545/sv-jme.2020.6563")
 
-  textVersion  =
-  paste("Branislav Panic, Jernej Klemenc, Marko Nagode (2020).",
-        "Gaussian Mixture Model Based Classification Revisited: Application to the Bearing Fault Classification.",
-        "Journal of Mechanical Engineering, 66(4), 215-226.",
-        "doi: 10.5545/sv-jme.2020.6563",
-        "url: https://www.sv-jme.eu/article/gaussian-mixture-model-based-classification-revisited-application-to-the-bearing-fault-classification/.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "The REBMIX Algorithm for the Univariate Finite Mixture Estimation",
-  author  = personList(as.person("Marko Nagode"),
-                              as.person("Matija Fajdiga")),
+  author  = c(person(given = "Marko", family = "Nagode"),
+              person(given = "Matija", family = "Fajdiga")),
   journal  = "Communications in Statistics - Theory and Methods",
   year = "2011",
   volume = "40",
   number = "5",
   pages = "876-892",
-  doi = "10.1080/03610920903480890",
-  url = "https://www.tandfonline.com/doi/abs/10.1080/03610920903480890",
+  doi = "10.1080/03610920903480890")
 
-  textVersion  =
-  paste("Marko Nagode, Matija Fajdiga (2011).",
-        "The REBMIX Algorithm for the Univariate Finite Mixture Estimation.",
-        "Communications in Statistics - Theory and Methods, 40(5), 876-892.",
-        "doi: 10.1080/03610920903480890",
-        "url: https://www.tandfonline.com/doi/abs/10.1080/03610920903480890.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "The REBMIX Algorithm for the Multivariate Finite Mixture Estimation",
-  author  = personList(as.person("Marko Nagode"),
-                              as.person("Matija Fajdiga")),
+  author  = c(person(given = "Marko", family = "Nagode"),
+              person(given = "Matija", family = "Fajdiga")),
   journal  = "Communications in Statistics - Theory and Methods",
   year = "2011",
   volume = "40",
   number = "11",
   pages = "2022-2034",
-  doi = "10.1080/03610921003725788",
-  url = "https://www.tandfonline.com/doi/abs/10.1080/03610921003725788",
+  doi = "10.1080/03610921003725788")
 
-  textVersion  =
-  paste("Marko Nagode, Matija Fajdiga (2011).",
-        "The REBMIX Algorithm for the Multivariate Finite Mixture Estimation.",
-        "Communications in Statistics - Theory and Methods, 40(11), 2022-2034.",
-        "doi: 10.1080/03610921003725788",
-        "url: https://www.tandfonline.com/doi/abs/10.1080/03610921003725788.")
-)
-
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title = "Finite Mixture Modeling via REBMIX",
-  author  = personList(as.person("Marko Nagode")),
+  author  = c(person(given = "Marko", family = "Nagode")),
   journal  = "Journal of Algorithms and Optimization",
   year = "2015",
   volume = "3",
   number = "2",
   pages = "14-28",
-  url = "https://repozitorij.uni-lj.si/Dokument.php?id=127674&lang=eng",
-
-  textVersion  =
-  paste("Marko Nagode (2015).",
-        "Finite Mixture Modeling via REBMIX.",
-        "Journal of Algorithms and Optimization, 3(2), 14-28.",
-        "url: https://repozitorij.uni-lj.si/Dokument.php?id=127674&lang=eng.")
-)
+  doi = "10.5963/JAO0302001")
