@@ -10,7 +10,7 @@ Objects can be created by calls of the form \code{new("REBMIX", ...)}. Accessor 
 \code{a.pdf(x = NULL)}, \code{a.theta1(x = NULL)}, \code{a.theta2(x = NULL)}, \code{a.theta3(x = NULL)}, \code{a.K(x = NULL)}, \code{a.ymin(x = NULL)},
 \code{a.ymax(x = NULL)}, \code{a.ar(x = NULL)}, \code{a.Restraints(x = NULL)}, \code{a.w(x = NULL, pos = 0)}, \code{a.Theta(x = NULL, pos = 0)}, \code{a.summary(x = NULL, col.name = character(), pos = 0)},
 \code{a.summary.EM(x = NULL, col.name = character(), pos = 0)}, \code{a.pos(x = NULL)},
-\code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
+\code{a.opt.c(x = NULL)}, \code{a.opt.IC(x = NULL)}, \code{a.opt.logL(x = NULL)}, \code{a.opt.Dmin(x = NULL)}, \code{a.opt.D(x = NULL)}, \code{a.all.K(x = NULL)}, \code{a.all.IC(x = NULL)},
 \code{a.theta1.all(x = NULL, pos = 1)}, \code{a.theta2.all(x = NULL, pos = 1)} and \code{a.theta3.all(x = NULL, pos = 1)}, where \code{x}, \code{pos} and \code{col.name} stand for an object of class \code{REBMIX},
 a desired slot item and a desired column name, respectively.
 }
@@ -106,6 +106,10 @@ neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{opt.logL}:}{
 a list of vectors containing log likelihoods for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
+neighbours \eqn{k} for the \emph{k}-nearest neighbour.
+}
+\item{\code{opt.Dmin}:}{
+a list of vectors containing \eqn{D_{\mathrm{min}}} values for optimal \eqn{v} for the histogram and the kernel density estimation or for optimal number of nearest
 neighbours \eqn{k} for the \emph{k}-nearest neighbour.
 }
 \item{\code{opt.D}:}{

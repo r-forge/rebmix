@@ -6,7 +6,8 @@
 
 class Rebmvnorm : public Rebmix {
 private:
-    INT ComponentConditionalDist(INT i, INT j, FLOAT **Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpMrgDist);
+    INT ComponentConditionalDist(INT i, FLOAT Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpConDist);
+    INT ComponentConditionalCdf(INT i, FLOAT Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpConCdf);
 public:
     // Methods.
     INT Initialize();

@@ -1,5 +1,8 @@
 #include "base.h"
 
+#include <stdio.h>
+
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,7 +60,7 @@ FLOAT Ran1(INT *IDum)
 
     j = IY / NDIV; IY = IV[j]; IV[j] = *IDum;
 
-    if ((Tmp = AM * IY) > RNMX) return (RNMX); else return (Tmp);
+    if ((Tmp = AM * IY) > RNMX) return RNMX; else return Tmp;
 } // Ran1
 
 // Inserts y into ascending list Y of length n.Set n = 0 initially.
@@ -124,7 +127,7 @@ INT Digamma(FLOAT y, FLOAT *Psi)
     FLOAT d2;
     FLOAT w, z;
     FLOAT den, aug, sgn, ymy0, ymax, upper, ymin;
-    INT Error = 0;
+    INT   Error = 0;
 
     ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
 
@@ -200,41 +203,95 @@ INT Digamma(FLOAT y, FLOAT *Psi)
         *Psi = aug + (FLOAT)log(y);
     }
 
-E0: return (Error);
+E0: return Error;
 } // Digamma
 
-// Returns the inverse of the binomial c.d.f. for the specified n and p.
+// Returns binomial c.d.f. for the specified n and p. See http://www.nr.com/.
 
-FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p)
+FLOAT BinomialCdf(INT k, INT n, FLOAT p)
 {
-    FLOAT Sum, y, ypb;
+    FLOAT Fy, ypb;
+    INT   y;
 
-    Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n); y = (FLOAT)0.0;
+    if (k < 0)
+        Fy = (FLOAT)0.0;
+    else
+    if (k == 0)
+        Fy = (FLOAT)pow((FLOAT)1.0 - p, n);
+    else
+    if (k == n)
+        Fy = (FLOAT)1.0;
+    else
+    if (k > n)
+        Fy = (FLOAT)0.0;
+    else {
+        Fy = ypb = (FLOAT)pow((FLOAT)1.0 - p, n); y = 0;
+
+        while ((y < k) && (ypb > FLOAT_MIN)) {
+            y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Fy += ypb;
+        }
+    }
+
+    return Fy;
+} // BinomialCdf
+
+// Returns the inverse of the binomial c.d.f. for the specified n and p. See http://www.nr.com/.
+
+INT BinomialInv(FLOAT Fy, INT n, FLOAT p)
+{
+    FLOAT Sum, ypb;
+    INT   y;
+
+    Sum = ypb = (FLOAT)pow((FLOAT)1.0 - p, n); y = 0;
 
     while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
         y++; ypb *= (n - y + (FLOAT)1.0) * p / y / ((FLOAT)1.0 - p); Sum += ypb;
     }
 
-    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
+    if ((Fy < (FLOAT)0.5) && (y > 0)) y--;
 
-    return (y);
+    return y;
 } // BinomialInv
+
+// Returns the Poisson c.d.f. for the specified Theta.
+
+FLOAT PoissonCdf(INT k, FLOAT Theta)
+{
+    FLOAT Fy, ypb;
+    INT   y;
+
+    if (k < 0)
+        Fy = (FLOAT)0.0;
+    else
+    if (k == 0)
+        Fy = (FLOAT)exp(-Theta);
+    else {
+        Fy = ypb = (FLOAT)exp(-Theta); y = 0;
+
+        while ((y < k) && (ypb > FLOAT_MIN)) {
+            y++; ypb *= Theta / y; Fy += ypb;
+        }
+    }
+
+    return Fy;
+} // PoissonCdf
 
 // Returns the inverse of the Poisson c.d.f. for the specified Theta.
 
-FLOAT PoissonInv(FLOAT Fy, FLOAT Theta)
+INT PoissonInv(FLOAT Fy, FLOAT Theta)
 {
-    FLOAT Sum, y, ypb;
+    FLOAT Sum, ypb;
+    INT   y;
 
-    Sum = ypb = (FLOAT)exp(-Theta); y = (FLOAT)0.0;
+    Sum = ypb = (FLOAT)exp(-Theta); y = 0;
 
     while ((Sum < Fy) && (ypb > FLOAT_MIN)) {
         y++; ypb *= Theta / y; Sum += ypb;
     }
 
-    if ((Fy < (FLOAT)0.5) && (y > (FLOAT)0.0)) y--;
+    if ((Fy < (FLOAT)0.5) && (y > 0)) y--;
 
-    return (y);
+    return y;
 } // PoissonInv
 
 // Returns the incomplete gamma function P(a, y) evaluated by its series
@@ -270,7 +327,7 @@ INT GammaSer(FLOAT a,       // Constant a > 0.
         *GamSer = Sum * (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln);
     }
 
-    return (Error);
+    return Error;
 } // GammaSer
 
 // Returns the incomplete gamma function Q(a, y) evaluated by its continued
@@ -318,7 +375,7 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
         *GamCfg = (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln) * G;
     }
 
-    return (Error);
+    return Error;
 } // GammaCfg
 
 // Returns the incomplete gamma function P(a, y). Also returns log(Gamma(a)) as Gamln. See http://www.nr.com/.
@@ -350,7 +407,7 @@ INT GammaP(FLOAT a,       // Constant a > 0.
         *GamP = (FLOAT)1.0 - GamCfg;
     }
 
-E0: return (Error);
+E0: return Error;
 } // GammaP
 
 // Returns the inverse of the gamma c.d.f. for the specified Theta and Beta. See http://www.nr.com/.
@@ -392,7 +449,7 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 
     if (Error) Error = 0; // ItMax too small.
 
-E0: return (Error);
+E0: return Error;
 } // GammaInv
 
 // Returns the inverse of the Weibull c.d.f. for the specified Theta and Beta.
@@ -403,7 +460,7 @@ FLOAT WeibullInv(FLOAT Fy, FLOAT Theta, FLOAT Beta)
 
     y = Theta * (FLOAT)pow(-(FLOAT)log((FLOAT)1.0 - Fy), (FLOAT)1.0 / Beta);
 
-    return (y);
+    return y;
 } // WeibullInv
 
 // Returns the inverse of the Gumbel c.d.f. for the specified Mean, Sigma and Xi.
@@ -419,7 +476,7 @@ FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Sigma, FLOAT Xi)
         y = Mean - Sigma * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Fy));
     }
 
-    return (y);
+    return y;
 } // GumbelInv
 
 // Returns the error function erf(y). See http://www.nr.com/.
@@ -439,7 +496,7 @@ INT ErrorF(FLOAT y,     // Variable y.
     else
         *ErF = +GamP;
 
-E0: return (Error);
+E0: return Error;
 } // ErrorF
 
 // Returns the LU decomposition of matrix A. See http://www.nr.com/
@@ -512,7 +569,7 @@ INT LUdcmp(INT   n,     // Size of square matrix.
 
 E0: if (V) free(V);
 
-    return (Error);
+    return Error;
 } // LUdcmp
 
 // Solves the set of n linear equations A x = b. See See http://www.nr.com/
@@ -548,7 +605,7 @@ INT LUbksb(INT   n,     // Size of square matrix.
         b[i] = Sum / A[i * n + i];
     }
 
-    return (Error);
+    return Error;
 } // LUbksb
 
 // Returns the determinant and the inverse matrix of A. See http://www.nr.com/
@@ -598,7 +655,7 @@ E0: if (B) free(B);
 
     if (indx) free(indx);
 
-    return (Error);
+    return Error;
 } // LUinvdet
 
 // Returns the Cholesky decomposition of matrix A. See http://www.nr.com/
@@ -643,10 +700,10 @@ INT Choldc(INT   n,   // Size of square matrix.
 
     if (p) free(p);
 
-E0: return (Error);
+E0: return Error;
 } // Choldc
 
-// Returns the determinant and the inverse matrix of A. See http ://www.nr.com/
+// Returns the determinant and the inverse matrix of A. See http://www.nr.com/.
 
 INT Cholinvdet(INT   n,         // Size of square matrix.
                FLOAT *A,        // Pointer to the symmetric square matrix A.
@@ -717,95 +774,66 @@ E0: if (p) free(p);
 
     if (L) free(L);
 
-    return (Error);
+    return Error;
 } // Cholinvdet
 
-// Returns modified Bessel function of order 0. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
+// Returns modified Bessel function of order 0. See http://www.nr.com/.
 
-FLOAT BesselI0(FLOAT y)
+FLOAT BesselI0(FLOAT x)
 {
-    FLOAT t, I0;
+    FLOAT I0, y;
 
-    y = (FLOAT)fabs(y); t =  y / (FLOAT)3.75;
-
-    if (y <= FLOAT_MIN) {
-        I0 = (FLOAT)1.0;
-    }
-    else
-    if (y <= (FLOAT)3.75) {
-        I0 = (FLOAT)1.0 +
-              (FLOAT)3.5156229 * (FLOAT)pow(t, 2) +
-             (FLOAT)3.0899424 * (FLOAT)pow(t, 4) +
-             (FLOAT)1.2067492 * (FLOAT)pow(t, 6) +
-             (FLOAT)0.2659732 * (FLOAT)pow(t, 8) +
-             (FLOAT)0.0360768 * (FLOAT)pow(t, 10) +
-             (FLOAT)0.0045813 * (FLOAT)pow(t, 12);
+    if (x < (FLOAT)3.75) {
+        y = x / (FLOAT)3.75; y *= y;
+        
+        I0 = (FLOAT)1.0 + y * ((FLOAT)3.5156229 + y * ((FLOAT)3.0899424 + y * ((FLOAT)1.2067492
+            + y * ((FLOAT)0.2659732 + y * ((FLOAT)0.360768e-1 + y * (FLOAT)0.45813e-2)))));
     }
     else {
-        I0 = (FLOAT)0.39894228 +
-             (FLOAT)0.01328592 * (FLOAT)pow(t, -1) +
-             (FLOAT)0.00225319 * (FLOAT)pow(t, -2) -
-             (FLOAT)0.00157565 * (FLOAT)pow(t, -3) +
-             (FLOAT)0.00916281 * (FLOAT)pow(t, -4) -
-             (FLOAT)0.02057706 * (FLOAT)pow(t, -5) +
-             (FLOAT)0.02635537 * (FLOAT)pow(t, -6) -
-             (FLOAT)0.01647633 * (FLOAT)pow(t, -7) +
-             (FLOAT)0.00392377 * (FLOAT)pow(t, -8);
+        y = 3.75 / x;
 
-        I0 *= (FLOAT)exp(y) / (FLOAT)sqrt(y);
+        I0 = ((FLOAT)exp(x) / (FLOAT)sqrt(x)) * ((FLOAT)0.39894228 + y * ((FLOAT)0.1328592e-1
+             + y * ((FLOAT)0.225319e-2 + y * (-(FLOAT)0.157565e-2 + y * ((FLOAT)0.916281e-2
+             + y * (-(FLOAT)0.2057706e-1 + y * ((FLOAT)0.2635537e-1 + y * (-(FLOAT)0.1647633e-1
+             + y * (FLOAT)0.392377e-2))))))));
     }
 
-    return (I0);
+    return I0;
 } // BesselI0
 
-// Returns modified Bessel function of order 1. See http://people.math.sfu.ca/~cbm/aands/page_378.htm
+// Returns modified Bessel function of order 1. See http://www.nr.com/.
 
-FLOAT BesselI1(FLOAT y)
+FLOAT BesselI1(FLOAT x)
 {
-    FLOAT t, I1, sgn;
+    FLOAT I1, y;
+    INT   sgn = 1;
 
-    if (y < (FLOAT)0.0) {
-        sgn = -(FLOAT)1.0; y = -y;
+    if (x < (FLOAT)0.0) {
+        sgn = -1; x = -x;
     }
     else {
-        sgn = (FLOAT)1.0;
+        sgn = +1;
     }
 
-    t = y / (FLOAT)3.75;
+    if (x < (FLOAT)3.75) {
+        y = x / (FLOAT)3.75; y *= y;
 
-    if (y <= FLOAT_MIN) {
-        I1 = (FLOAT)0.0;
-    }
-    else
-    if (y <= (FLOAT)3.75) {
-        I1 = (FLOAT)0.5 +
-             (FLOAT)0.87890594 * (FLOAT)pow(t, 2) +
-             (FLOAT)0.51498869 * (FLOAT)pow(t, 4) +
-             (FLOAT)0.15084934 * (FLOAT)pow(t, 6) +
-             (FLOAT)0.02658733 * (FLOAT)pow(t, 8) +
-             (FLOAT)0.00301532 * (FLOAT)pow(t, 10) +
-             (FLOAT)0.00032411 * (FLOAT)pow(t, 12);
-
-        I1 *= sgn * y;
+        I1 = x * ((FLOAT)0.5 + y * ((FLOAT)0.87890594 + y * ((FLOAT)0.51498869 + y * ((FLOAT)0.15084934
+             + y * ((FLOAT)0.2658733e-1 + y * ((FLOAT)0.301532e-2 + y * (FLOAT)0.32411e-3))))));
     }
     else {
-        I1 = (FLOAT)0.39894228 -
-             (FLOAT)0.03988024 * (FLOAT)pow(t, -1) -
-             (FLOAT)0.00362018 * (FLOAT)pow(t, -2) +
-             (FLOAT)0.00163801 * (FLOAT)pow(t, -3) -
-             (FLOAT)0.01031555 * (FLOAT)pow(t, -4) +
-             (FLOAT)0.02282967 * (FLOAT)pow(t, -5) -
-             (FLOAT)0.02895312 * (FLOAT)pow(t, -6) +
-             (FLOAT)0.01787654 * (FLOAT)pow(t, -7) -
-             (FLOAT)0.00420059 * (FLOAT)pow(t, -8);
+        y = (FLOAT)3.75 / x;
 
-        I1 *= sgn * (FLOAT)exp(y) / (FLOAT)sqrt(y);
+        I1 = (FLOAT)0.2282967e-1 + y * (-(FLOAT)0.2895312e-1 + y * ((FLOAT)0.1787654e-1
+             - y * (FLOAT)0.420059e-2));
+
+        I1 = (FLOAT)0.39894228 + y * (-(FLOAT)0.3988024e-1 + y * (-(FLOAT)0.362018e-2
+             + y * ((FLOAT)0.163801e-2 + y * (-(FLOAT)0.1031555e-1 + y * I1))));
+
+        I1 *= ((FLOAT)exp(I1) / sqrt(x));
     }
-
-    return (I1);
+    return sgn < 0 ? -I1 : I1;
 } // BesselI1
-
-// Returns the von Mises c.d.f. for the specified Mean and Kappa.
 
 FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa)
 {
@@ -828,15 +856,15 @@ FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa)
         while ((i <= ItMax) && Error) {
             Fy += A[1] * In * ((FLOAT)sin(i * (y - Mean)) + (FLOAT)sin(i * Mean)) / i;
 
-            if (In < Eps) Error = 0;
-
             A[2] = Io - (FLOAT)2.0 * i * In / Kappa; Io = In; In = A[2];
+
+            if (In < Eps) Error = 0;
 
             i++;
         }
 
         if (Fy > (FLOAT)1.0) {
-            Fy = (FLOAT)1.0;
+             Fy = (FLOAT)1.0;
         }
         else
         if (Fy < (FLOAT)0.0) {
@@ -844,7 +872,7 @@ FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa)
         }
     }
 
-    return (Fy);
+    return Fy;
 } // vonMisesCdf
 
 // Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
@@ -888,7 +916,7 @@ FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa)
         }
     }
 
-    return (ym);
+    return ym;
 } // vonMisesInv
 
 FLOAT xlogx(FLOAT x)
@@ -900,5 +928,41 @@ FLOAT xlogx(FLOAT x)
         x = (FLOAT)0.0;
     }
 
-    return(x);
+    return x;
 } // xlogx
+
+// Returns merged intervals.
+
+void MergeIntervals(INT      *n,  // Total number of intervals.
+                    Interval *X)  // Pointer to the intervals.
+{
+    Interval Tmp;
+    INT      i, j, k;
+
+    if (*n <= 1) return;
+
+    // Bubble sort.
+
+    for (i = 0; i < *n - 1; i++) {
+        for (j = 0; j < *n - i - 1; j++) {
+            if (X[j].a > X[j + 1].a) {
+                Tmp = X[j]; X[j] = X[j + 1]; X[j + 1] = Tmp;
+            }
+        }
+    }
+
+    // Merge intervals.
+
+    k = 0;
+
+    for (i = 1; i < *n; i++) {
+        if (X[i].a <= X[k].b) {
+            if (X[i].b > X[k].b) X[k].b = X[i].b;
+        }
+        else {
+            k++; X[k] = X[i];
+        }
+    }
+
+    *n = k + 1;
+} // MergeIntervals

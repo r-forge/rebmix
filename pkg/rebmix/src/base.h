@@ -15,7 +15,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 0
+#define _MAINTAIN_SWITCH 1
 #endif
 
 #ifndef FLOAT
@@ -80,6 +80,10 @@
 
 #ifndef Phi
 #define Phi (FLOAT)1.6180339887498948482045868343656
+#endif
+
+#ifndef GoldR
+#define GoldR (FLOAT)0.6180339887498948482045868343656
 #endif
 
 #ifndef Eps
@@ -199,6 +203,11 @@ typedef struct additinalparametertype {
     INT d;       // Golden section constant.
 } AdditionalParameterType;
 
+typedef struct interval {
+    FLOAT a; // Infimum.
+    FLOAT b; // Supremum.
+} Interval;
+
 class Base {
 public:
     // Members.
@@ -258,13 +267,21 @@ FLOAT Gammaln(FLOAT y);
 
 INT Digamma(FLOAT y, FLOAT *Psi);
 
+// Returns binomial c.d.f. for the specified n and p. See http://www.nr.com/.
+
+FLOAT BinomialCdf(INT y, INT n, FLOAT p);
+
 // Returns the inverse of the binomial c.d.f. for the specified n and p.
 
-FLOAT BinomialInv(FLOAT Fy, FLOAT n, FLOAT p);
+INT BinomialInv(FLOAT Fy, INT n, FLOAT p);
+
+// Returns the Poisson c.d.f. for the specified Theta.
+
+FLOAT PoissonCdf(INT k, FLOAT Theta);
 
 // Returns the inverse of the Poisson c.d.f. for the specified Theta.
 
-FLOAT PoissonInv(FLOAT Fy, FLOAT Theta);
+INT PoissonInv(FLOAT Fy, FLOAT Theta);
 
 // Returns the incomplete gamma function P(a, y) evaluated by its series
 // representation as GamSer. Also returns log(Gamma(a)) as Gamln. See http://www.nr.com/.
@@ -334,6 +351,10 @@ FLOAT BesselI0(FLOAT y);
 
 FLOAT BesselI1(FLOAT y);
 
+// Returns the von Mises c.d.f. for the specified Mean and Kappa.
+
+FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa);
+
 // Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
 
 FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa);
@@ -341,5 +362,10 @@ FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa);
 // Returns x * log(x).
 
 FLOAT xlogx(FLOAT x);
+
+// Returns merged intervals.
+
+void MergeIntervals(INT      *n,  // Total number of intervals.
+                    Interval *X); // Pointer to the intervals.
 
 #endif

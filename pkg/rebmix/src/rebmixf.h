@@ -113,10 +113,11 @@ public:
     FLOAT                      *W_;            // Component weights.
     CompnentDistribution       **MixTheta_;    // Mixture parameters.
     SummaryParameterType       summary_;       // Summary.
-    INT                        opt_length_;    // Length of opt_c_, opt_IC_, opt_logL_ and opt_D_.
+    INT                        opt_length_;    // Length of opt_c_, opt_IC_, opt_logL_, opt_Dmin_ and opt_D_.
     INT                        *opt_c_;        // Numbers of components for optimal v or for optimal k.
     FLOAT                      *opt_IC_;       // Information criteria for optimal v or for optimal k.
     FLOAT                      *opt_logL_;     // Log-likelihoods for optimal v or for optimal k.
+    FLOAT                      *opt_Dmin_;     // Dmin for optimal v or for optimal k.
     FLOAT                      *opt_D_;        // Totals of positive relative deviations for optimal v or for optimal k.
     INT                        all_length_;    // Length of all_K_ and all_IC_.
     INT                        *all_I_;        // Information on processed numbers of bins v or processed numbers of nearest neighbours k. 0 if not processed, 1 if processed, 2 if error.
@@ -220,6 +221,7 @@ public:
             INT   *opt_c,          // Numbers of components for optimal v or for optimal k.
             FLOAT *opt_IC,         // Information criteria for optimal v or for optimal k.
             FLOAT *opt_logL,       // Log-likelihoods for optimal v or for optimal k.
+            FLOAT *opt_Dmin,       // Dmin for optimal v or for optimal k.
             FLOAT *opt_D,          // Totals of positive relative deviations for optimal v or for optimal k.
             INT   *all_length,     // Length of all_K and all_IC.
             INT   *all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.

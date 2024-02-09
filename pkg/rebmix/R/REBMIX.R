@@ -148,6 +148,7 @@ function(model, ...)
       opt.c = integer(1000), # 1000 = ItMax see rebmixf.h
       opt.IC = double(1000),
       opt.logL = double(1000),
+      opt.Dmin = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
       all.K = integer(dK),
@@ -170,6 +171,7 @@ function(model, ...)
     length(output$opt.c) <- output$opt.length
     length(output$opt.IC) <- output$opt.length
     length(output$opt.logL) <- output$opt.length
+    length(output$opt.Dmin) <- output$opt.length
     length(output$opt.D) <- output$opt.length
 
     j <- order(output$opt.c, output$opt.logL)
@@ -177,6 +179,7 @@ function(model, ...)
     output$opt.c <- output$opt.c[j]
     output$opt.IC <- output$opt.IC[j]
     output$opt.logL <- output$opt.logL[j]
+    output$opt.Dmin <- output$opt.Dmin[j]
     output$opt.D <- output$opt.D[j]
 
     j <- !duplicated(output$opt.c, fromLast = TRUE)
@@ -184,6 +187,7 @@ function(model, ...)
     output$opt.c <- output$opt.c[j]
     output$opt.IC <- output$opt.IC[j]
     output$opt.logL <- output$opt.logL[j]
+    output$opt.Dmin <- output$opt.Dmin[j]
     output$opt.D <- output$opt.D[j]
 
     length(output$all.K) <- output$all.length
@@ -312,6 +316,7 @@ function(model, ...)
     model@opt.c[[i]] <- output$opt.c
     model@opt.IC[[i]] <- output$opt.IC
     model@opt.logL[[i]] <- output$opt.logL
+    model@opt.Dmin[[i]] <- output$opt.Dmin
     model@opt.D[[i]] <- output$opt.D
     model@all.K[[i]] <- output$all.K
     model@all.IC[[i]] <- output$all.IC
@@ -500,6 +505,7 @@ function(model, ...)
       opt.c = integer(1000), # 1000 = ItMax see rebmixf.h
       opt.IC = double(1000),
       opt.logL = double(1000),
+      opt.Dmin = double(1000),
       opt.D = double(1000),
       all.length = integer(1),
       all.K = integer(dK),
@@ -521,6 +527,7 @@ function(model, ...)
     length(output$opt.c) <- output$opt.length
     length(output$opt.IC) <- output$opt.length
     length(output$opt.logL) <- output$opt.length
+    length(output$opt.Dmin) <- output$opt.length
     length(output$opt.D) <- output$opt.length
 
     j <- order(output$opt.c, output$opt.logL)
@@ -528,6 +535,7 @@ function(model, ...)
     output$opt.c <- output$opt.c[j]
     output$opt.IC <- output$opt.IC[j]
     output$opt.logL <- output$opt.logL[j]
+    output$opt.Dmin <- output$opt.Dmin[j]
     output$opt.D <- output$opt.D[j]
 
     j <- !duplicated(output$opt.c, fromLast = TRUE)
@@ -535,6 +543,7 @@ function(model, ...)
     output$opt.c <- output$opt.c[j]
     output$opt.IC <- output$opt.IC[j]
     output$opt.logL <- output$opt.logL[j]
+    output$opt.Dmin <- output$opt.Dmin[j]
     output$opt.D <- output$opt.D[j]
 
     length(output$all.K) <- output$all.length
@@ -660,6 +669,7 @@ function(model, ...)
     model@opt.c[[i]] <- output$opt.c
     model@opt.IC[[i]] <- output$opt.IC
     model@opt.logL[[i]] <- output$opt.logL
+    model@opt.Dmin[[i]] <- output$opt.Dmin
     model@opt.D[[i]] <- output$opt.D
     model@all.K[[i]] <- output$all.K
     model@all.IC[[i]] <- output$all.IC
@@ -729,7 +739,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.15.0")
+  message("REBMIX Version 2.16.0")
 
   flush.console()
 
@@ -779,6 +789,7 @@ function(model,
     model@opt.c[[length(model@opt.c) + 1]] <- output@opt.c[[k]]
     model@opt.IC[[length(model@opt.IC) + 1]] <- output@opt.IC[[k]]
     model@opt.logL[[length(model@opt.logL) + 1]] <- output@opt.logL[[k]]
+    model@opt.Dmin[[length(model@opt.Dmin) + 1]] <- output@opt.Dmin[[k]]
     model@opt.D[[length(model@opt.D) + 1]] <- output@opt.D[[k]]
     model@all.K[[length(model@all.K) + 1]] <- output@all.K[[k]]
     model@all.IC[[length(model@all.IC) + 1]] <- output@all.IC[[k]]

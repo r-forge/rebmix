@@ -1,5 +1,5 @@
 Package: rebmix
-Version: 2.15.0
+Version: 2.16.0
 Authors@R: c(person("Marko", "Nagode", role = c("aut", "cre"),
                      email = "marko.nagode@fs.uni-lj.si",
                      comment = c(ORCID = "0000-0003-0637-3812")),

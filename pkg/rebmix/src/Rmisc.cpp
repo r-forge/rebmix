@@ -91,16 +91,16 @@ void RLabelMomentsXY(INT    *nx,     // Image width.
         Stdev[i] = (FLOAT)sqrt(Stdev[i] / (n - (FLOAT)1.0)); if (Stdev[i] < Eps) Stdev[i] = Eps;
     }
 
+    for (i = 0; i < *c; i++) {
+        Mx[i] = Mij[1][i]; My[i] = Mij[2][i]; Mxy[i] = Mij[3][i] / N[i] - Mx[i] * My[i];
+    }
+
     //  Z-scores calculation.
 
     for (i = 1; i < 4; i++) {
         for (j = 0; j < *c; j++) if (N[j] > FLOAT_MIN) {
             Mij[i][j] = (Mij[i][j] - Mean[i]) / Stdev[i];
         }
-    }
-
-    for (i = 0; i < *c; i++) {
-        Mx[i] = Mij[1][i]; My[i] = Mij[2][i]; Mxy[i] = Mij[3][i];
     }
 
     // Adjacency matrix calculation based on Gaussian kernel function.
@@ -225,16 +225,16 @@ void RLabelMomentsXYZ(INT    *nx,     // Image width.
         Stdev[i] = (FLOAT)sqrt(Stdev[i] / (n - (FLOAT)1.0)); if (Stdev[i] < Eps) Stdev[i] = Eps;
     }
 
+    for (i = 0; i < *c; i++) {
+        Mx[i] = Mijk[1][i]; My[i] = Mijk[2][i]; Mz[i] = Mijk[3][i]; Mxyz[i] = Mijk[4][i];
+    }
+
     //  Z-scores calculation.
 
     for (i = 1; i < 5; i++) {
         for (j = 0; j < *c; j++) if (N[j] > FLOAT_MIN) {
             Mijk[i][j] = (Mijk[i][j] - Mean[i]) / Stdev[i];
         }
-    }
-
-    for (i = 0; i < *c; i++) {
-        Mx[i] = Mijk[1][i]; My[i] = Mijk[2][i]; Mz[i] = Mijk[3][i]; Mxyz[i] = Mijk[4][i];
     }
 
     // Adjacency matrix calculation based on Gaussian kernel function.

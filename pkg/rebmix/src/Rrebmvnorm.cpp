@@ -157,10 +157,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *W,              // Component weights.
                 double *theta1,         // Component parameters.
                 double *theta2,         // Component parameters.
-                INT    *opt_length,     // Length of opt_c, opt_IC, opt_logL and opt_D.
+                INT    *opt_length,     // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
                 INT    *opt_c,          // Numbers of components for optimal v or for optimal k.
                 double *opt_IC,         // Information criteria for optimal v or for optimal k.
                 double *opt_logL,       // Log-likelihoods for optimal v or for optimal k.
+                double *opt_Dmin,       // Dmin for optimal v or for optimal k.
                 double *opt_D,          // Totals of positive relative deviations for optimal v or for optimal k.
                 INT    *all_length,     // Length of all_K and all_IC.
                 INT    *all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
@@ -230,10 +231,11 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                             theta1,       // Component parameters.
                             theta2,       // Component parameters.
                             NULL,         // Component parameters.
-                            opt_length,   // Length of opt_c, opt_IC, opt_logL and opt_D.
+                            opt_length,   // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
                             opt_c,        // Numbers of components for optimal v or for optimal k.
                             opt_IC,       // Information criteria for optimal v or for optimal k.
                             opt_logL,     // Log-likelihoods for optimal v or for optimal k.
+                            opt_Dmin,     // Dmin for optimal v or for optimal k.
                             opt_D,        // Totals of positive relative deviations for optimal v or for optimal k.
                             all_length,   // Length of all_K and all_IC.
                             all_K,        // All processed numbers of bins v or all processed numbers of nearest neighbours k.
@@ -2142,10 +2144,11 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                            Theta1, // Component parameters.
                            Theta2, // Component parameters.
                            NULL,   // Component parameters.
-                           NULL,   // Length of opt_c, opt_IC, opt_logL and opt_D.
+                           NULL,   // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
                            NULL,   // Numbers of components for optimal v or for optimal k.
                            NULL,   // Information criteria for optimal v or for optimal k.
                            NULL,   // Log-likelihoods for optimal v or for optimal k.
+                           NULL,   // Dmin for optimal v or for optimal k.
                            NULL,   // Totals of positive relative deviations for optimal v or for optimal k.
                            NULL,   // Length of all_K and all_IC.
                            NULL,   // All processed numbers of bins v or all processed numbers of nearest neighbours k.
