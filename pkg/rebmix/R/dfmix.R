@@ -253,7 +253,12 @@ function(x,
         Mean = as.double(mean),
         Sigma = as.double(sigma),
         f = double(n),
+        error = integer(1),
         PACKAGE = "rebmix")
+        
+      if (output$error == 1) {
+        stop("in RMvtNormalPdf!", call. = FALSE); return(NA)
+      }        
 
       fi <- output$f        
     }

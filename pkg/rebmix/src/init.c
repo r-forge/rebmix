@@ -78,7 +78,7 @@ extern void Roptbins(void *, void *, void *, void *, void *, void *, void *, voi
 extern void Rbins(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RTvtNormalPdf(void *, void *, void *, void *, void *, void *);
-extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *);
+extern void RMvtNormalPdf(void *, void *, void *, void *, void *, void *, void *);
 
 extern void Rfhistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 extern void Rchistogram(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -130,7 +130,7 @@ static const R_CMethodDef CMethods[] = {
     {"Roptbins", (DL_FUNC) &Roptbins, 12},
     {"Rbins", (DL_FUNC) &Rbins, 11},
     {"RTvtNormalPdf", (DL_FUNC) &RTvtNormalPdf, 6},
-    {"RMvtNormalPdf", (DL_FUNC) &RMvtNormalPdf, 6},
+    {"RMvtNormalPdf", (DL_FUNC) &RMvtNormalPdf, 7},
 /// Panic Branislav
     {"REMMIX", (DL_FUNC)&REMMIX, 21},
     {"REMMVNORM", (DL_FUNC)&REMMVNORM, 20},

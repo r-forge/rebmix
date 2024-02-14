@@ -25,6 +25,13 @@ if (expression) { \
 
 #define E_RETURN(error)	return (error)
 
+#define R_CHECK(expression, error) \
+if (expression) { \
+   *Error = (error); goto EEXIT; \
+}
+
+#define R_RETURN(error)	*Error = (error)
+
 #define EOK                             0x000000
 #define ECompnentDistributionRealloc    0x100001
 #define ECompnentDistributionMemmove    0x100002
@@ -89,6 +96,24 @@ if (expression) { \
 #define ERngmixWriteParameterFile       0x10003E
 #define ERngmixRNGMIX                   0x10003F
 #define ERngmixRunTemplateFile          0x100040
+#define ERLabelMomentsXY                0x100041
+#define ERLabelMomentsXYZ               0x100042
+#define ERMergeLabels                   0x100043
+#define ERRNGMVNORM                     0x100044
+#define ERREBMVNORM                     0x100045
+#define ERCLSMVNORM                     0x100046
+#define ERCLRMVNORM                     0x100047
+#define ERPreprocessingKNNMVNORM        0x100048
+#define ERPreprocessingKDEMVNORM        0x100049
+#define ERPreprocessingHMVNORM          0x10004A
+#define ERInformationCriterionKNNMVNORM 0x10004B
+#define ERInformationCriterionKDEMVNORM 0x10004C
+#define ERInformationCriterionHMVNORM   0x10004D
+#define ERInformationCriterionKMVNORM   0x10004E
+#define ERInformationCriterionMVNORM    0x10004F
+#define ERCombineComponentsMVNORM       0x100050
+#define ERMvtNormalPdf                  0x100051
+#define EREMMVNORM                      0x100052
 
 #ifndef FLOAT
 #define FLOAT double
