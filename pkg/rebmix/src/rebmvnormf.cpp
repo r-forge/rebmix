@@ -6,7 +6,7 @@
 
 INT Rebmvnorm::Initialize()
 {
-    INT Error = 0;
+    INT Error = EOK;
 
     p_value_ = (FLOAT)0.0001;
 
@@ -18,7 +18,11 @@ INT Rebmvnorm::Initialize()
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
 
-    return Error;
+    E_CHECK(Error != EOK, Error);
+
+EEXIT:
+
+    E_RETURN(Error);
 } // Initialize
 
 INT Rebmvnorm::ComponentConditionalDist(INT                  i,           // Index of variable y.
@@ -29,7 +33,7 @@ INT Rebmvnorm::ComponentConditionalDist(INT                  i,           // Ind
 {
     INT   o;
     FLOAT y, Mean, Stdev;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     Mean = CmpTheta->Theta_[0][i];
 
@@ -41,7 +45,7 @@ INT Rebmvnorm::ComponentConditionalDist(INT                  i,           // Ind
 
     *CmpConDist = (FLOAT)exp(-y) / (SqrtPi2 * Stdev);
 
-    return Error;
+    E_RETURN(Error);
 } // ComponentConditionalDist
 
 INT Rebmvnorm::ComponentConditionalCdf(INT                  i,           // Index of variable y.
@@ -52,7 +56,7 @@ INT Rebmvnorm::ComponentConditionalCdf(INT                  i,           // Inde
 {
     INT   o;
     FLOAT y, Mean, Stdev;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     Mean = CmpTheta->Theta_[0][i];
 
@@ -64,11 +68,13 @@ INT Rebmvnorm::ComponentConditionalCdf(INT                  i,           // Inde
 
     Error = ErrorF(y, CmpConCdf);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
     *CmpConCdf = (FLOAT)0.5 * ((FLOAT)1.0 + *CmpConCdf);
 
-E0: return Error;
+EEXIT:
+
+    E_RETURN(Error);
 } // ComponentConditionalCdf
 
 // Rough component parameter estimation for k-nearest neighbours.
@@ -86,21 +92,21 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
     Interval           *X = NULL;
     FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, Dlm, Dlmin, Sum, Stdev, *D = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = 0, Stop;
+    INT                Error = EOK, Stop;
 
     // Global mode.
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
-    Error = NULL == Mode; if (Error) goto E0;
+    E_CHECK(NULL == Mode, ERebmvnormRoughEstimationKNN);
 
     N = (INT*)malloc(length_pdf_ * sizeof(INT));
 
-    Error = NULL == N; if (Error) goto E0;
+    E_CHECK(NULL == N, ERebmvnormRoughEstimationKNN);
 
     D = (FLOAT*)malloc(length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == D; if (Error) goto E0;
+    E_CHECK(NULL == D, ERebmvnormRoughEstimationKNN);
 
     for (i = 0; i < length_pdf_; i++) {
         N[i] = 0; D[i] = (FLOAT)2.0 * Y[length_pdf_ + 2][m] * h[i];
@@ -132,11 +138,11 @@ S0:;
 
     C = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == C; if (Error) goto E0;
+    E_CHECK(NULL == C, ERebmvnormRoughEstimationKNN);
 
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == Cinv; if (Error) goto E0;
+    E_CHECK(NULL == Cinv, ERebmvnormRoughEstimationKNN);
 
     if (nl > length_pdf_) {
         for (i = 0; i < length_pdf_; i++) {
@@ -181,7 +187,7 @@ S0:;
 
         Error = Cholinvdet(length_pdf_, C, Cinv, &logCdet);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
     else {
         for (i = 0; i < length_pdf_; i++) {
@@ -243,16 +249,16 @@ S0:;
 
     Error = LooseTheta->Memmove(RigidTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto EEXIT;
 
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         X = (Interval*)malloc(N[i] * sizeof(Interval));
 
-        Error = NULL == X; if (Error) goto E0;
+        E_CHECK(NULL == X, ERebmvnormRoughEstimationKNN);
 
         // Bracketing.
 
@@ -270,11 +276,11 @@ S0:;
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Dlm -= CmpConCdf[1] - CmpConCdf[0];
         }
@@ -301,11 +307,11 @@ S0:;
             for (j = 0; j < I; j++) {
                 Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -345,7 +351,9 @@ E1:;
         }
     }
 
-E0: if (Cinv) free(Cinv);
+EEXIT:
+
+    if (Cinv) free(Cinv);
 
     if (C) free(C);
 
@@ -355,7 +363,7 @@ E0: if (Cinv) free(Cinv);
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationKNN
 
 // Rough component parameter estimation for kernel density estimation.
@@ -372,17 +380,17 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
     Interval           *X = NULL;
     FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = 0, Stop;
+    INT                Error = EOK, Stop;
 
     // Global mode.
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
-    Error = NULL == Mode; if (Error) goto E0;
+    E_CHECK(NULL == Mode, ERebmvnormRoughEstimationKDE);
 
     N = (INT*)malloc(length_pdf_ * sizeof(INT));
 
-    Error = NULL == N; if (Error) goto E0;
+    E_CHECK(NULL == N, ERebmvnormRoughEstimationKDE);
 
     logV = (FLOAT)0.0;
 
@@ -416,11 +424,11 @@ S0:;
 
     C = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == C; if (Error) goto E0;
+    E_CHECK(NULL == C, ERebmvnormRoughEstimationKDE);
 
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == Cinv; if (Error) goto E0;
+    E_CHECK(NULL == Cinv, ERebmvnormRoughEstimationKDE);
 
     if (nl > length_pdf_) {
         for (i = 0; i < length_pdf_; i++) {
@@ -465,7 +473,7 @@ S0:;
 
         Error = Cholinvdet(length_pdf_, C, Cinv, &logCdet);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
     else {
         for (i = 0; i < length_pdf_; i++) {
@@ -527,16 +535,16 @@ S0:;
 
     Error = LooseTheta->Memmove(RigidTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto EEXIT;
 
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         X = (Interval*)malloc(N[i] * sizeof(Interval));
 
-        Error = NULL == X; if (Error) goto E0;
+        E_CHECK(NULL == X, ERebmvnormRoughEstimationKDE);
 
         // Bracketing.
 
@@ -554,11 +562,11 @@ S0:;
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Dlm -= CmpConCdf[1] - CmpConCdf[0];
         }
@@ -585,11 +593,11 @@ S0:;
             for (j = 0; j < I; j++) {
                 Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -629,7 +637,9 @@ E1:;
         }
     }
 
-E0: if (Cinv) free(Cinv);
+EEXIT:
+
+    if (Cinv) free(Cinv);
 
     if (C) free(C);
 
@@ -637,7 +647,7 @@ E0: if (Cinv) free(Cinv);
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationKDE
 
 // Rough component parameter estimation for histogram.
@@ -655,17 +665,17 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
     Interval           *X = NULL;
     FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
     FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = 0, Stop;
+    INT                Error = EOK, Stop;
 
     // Global mode.
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
-    Error = NULL == Mode; if (Error) goto E0;
+    E_CHECK(NULL == Mode, ERebmvnormRoughEstimationH);
 
     N = (INT*)malloc(length_pdf_ * sizeof(INT));
 
-    Error = NULL == N; if (Error) goto E0;
+    E_CHECK(NULL == N, ERebmvnormRoughEstimationH);
 
     logV = (FLOAT)0.0;
 
@@ -699,11 +709,11 @@ S0:;
 
     C = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == C; if (Error) goto E0;
+    E_CHECK(NULL == C, ERebmvnormRoughEstimationH);
 
     Cinv = (FLOAT*)malloc(length_pdf_ * length_pdf_ * sizeof(FLOAT));
 
-    Error = NULL == Cinv; if (Error) goto E0;
+    E_CHECK(NULL == Cinv, ERebmvnormRoughEstimationH);
 
     if (nl > length_pdf_) {
         for (i = 0; i < length_pdf_; i++) {
@@ -748,7 +758,7 @@ S0:;
 
         Error = Cholinvdet(length_pdf_, C, Cinv, &logCdet);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
     else {
         for (i = 0; i < length_pdf_; i++) {
@@ -810,16 +820,16 @@ S0:;
     
     Error = LooseTheta->Memmove(RigidTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto E0;
+    if ((Restraints_ == rtRigid) || (nl <= length_pdf_)) goto EEXIT;
 
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
         X = (Interval*)malloc(N[i] * sizeof(Interval));
 
-        Error = NULL == X; if (Error) goto E0;
+        E_CHECK(NULL == X, ERebmvnormRoughEstimationH);
 
         // Bracketing.
 
@@ -837,11 +847,11 @@ S0:;
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Dlm -= CmpConCdf[1] - CmpConCdf[0];
         }
@@ -868,11 +878,11 @@ S0:;
             for (j = 0; j < I; j++) {
                 Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -912,7 +922,9 @@ E1:;
         }
     }
 
-E0: if (Cinv) free(Cinv);
+EEXIT:
+
+    if (Cinv) free(Cinv);
 
     if (C) free(C);
 
@@ -920,7 +932,7 @@ E0: if (Cinv) free(Cinv);
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationH
 
 // Enhanced component parameter estimation for k-nearest neighbours.
@@ -933,19 +945,17 @@ INT Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     INT                  i, ii, j, o;
-    INT                  Error = 0;
+    INT                  Error = EOK;
 
     EnhanTheta = new CompnentDistribution(this);
 
-    Error = NULL == EnhanTheta; if (Error) goto E0;
+    E_CHECK(NULL == EnhanTheta, ERebmvnormEnhancedEstimationKNN);
 
     Error = EnhanTheta->Realloc(length_pdf_, length_Theta_, length_theta_);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (nl <= (FLOAT)1.0) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(nl <= (FLOAT)1.0, ERebmvnormEnhancedEstimationKNN);
 
     for (i = 0; i < length_pdf_; i++) {
         EnhanTheta->pdf_[i] = pfNormal;
@@ -981,19 +991,19 @@ INT Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 
     Error = Cholinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_)) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_), ERebmvnormEnhancedEstimationKNN);
 
     Error = LooseTheta->Memmove(EnhanTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-E0: if (EnhanTheta) delete EnhanTheta;
+EEXIT:
 
-    return Error;
+    if (EnhanTheta) delete EnhanTheta;
+
+    E_RETURN(Error);
 } // EnhancedEstimationKNN
 
 // Enhanced component parameter estimation for kernel density estimation.
@@ -1006,19 +1016,17 @@ INT Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     INT                  i, ii, j, o;
-    INT                  Error = 0;
+    INT                  Error = EOK;
 
     EnhanTheta = new CompnentDistribution(this);
 
-    Error = NULL == EnhanTheta; if (Error) goto E0;
+    E_CHECK(NULL == EnhanTheta, ERebmvnormEnhancedEstimationKDE);
 
     Error = EnhanTheta->Realloc(length_pdf_, length_Theta_, length_theta_);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (nl <= (FLOAT)1.0) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(nl <= (FLOAT)1.0, ERebmvnormEnhancedEstimationKDE);
 
     for (i = 0; i < length_pdf_; i++) {
         EnhanTheta->pdf_[i] = pfNormal;
@@ -1054,19 +1062,19 @@ INT Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
 
     Error = Cholinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_)) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_), ERebmvnormEnhancedEstimationKDE);
 
     Error = LooseTheta->Memmove(EnhanTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-E0: if (EnhanTheta) delete EnhanTheta;
+EEXIT:
 
-    return Error;
+    if (EnhanTheta) delete EnhanTheta;
+
+    E_RETURN(Error);
 } // EnhancedEstimationKDE
 
 // Enhanced component parameter estimation for histogram.
@@ -1081,21 +1089,19 @@ INT Rebmvnorm::EnhancedEstimationH(INT                  k,           // Total nu
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
     INT                  i, ii, j, o;
-    INT                  Error = 0;
+    INT                  Error = EOK;
 
     (void)h;
 
     EnhanTheta = new CompnentDistribution(this);
 
-    Error = NULL == EnhanTheta; if (Error) goto E0;
+    E_CHECK(NULL == EnhanTheta, ERebmvnormEnhancedEstimationH);
 
     Error = EnhanTheta->Realloc(length_pdf_, length_Theta_, length_theta_);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (nl <= (FLOAT)1.0) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(nl <= (FLOAT)1.0, ERebmvnormEnhancedEstimationH);
 
     for (i = 0; i < length_pdf_; i++) {
         EnhanTheta->pdf_[i] = pfNormal;
@@ -1131,19 +1137,19 @@ INT Rebmvnorm::EnhancedEstimationH(INT                  k,           // Total nu
 
     Error = Cholinvdet(length_pdf_, EnhanTheta->Theta_[1], EnhanTheta->Theta_[2], EnhanTheta->Theta_[3]);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-    if (*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_)) {
-        Error = 1; goto E0;
-    }
+    E_CHECK(*EnhanTheta->Theta_[3] < *RigidTheta->Theta_[3] + (FLOAT)log(var_mul_), ERebmvnormEnhancedEstimationH);
 
     Error = LooseTheta->Memmove(EnhanTheta);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-E0: if (EnhanTheta) delete EnhanTheta;
+EEXIT:
 
-    return Error;
+    if (EnhanTheta) delete EnhanTheta;
+
+    E_RETURN(Error);
 } // EnhancedEstimationH
 
 // Moments calculation.
@@ -1153,7 +1159,7 @@ INT Rebmvnorm::MomentsCalculation(CompnentDistribution *CmpTheta, // Component p
                                   FLOAT                *SecondM)  // Second moment.
 {
     INT i, ii, o, p, q;
-    INT Error = 0;
+    INT Error = EOK;
 
     for (i = 0; i < length_pdf_; i++) {
         FirstM[i] = CmpTheta->Theta_[0][i];
@@ -1169,7 +1175,7 @@ INT Rebmvnorm::MomentsCalculation(CompnentDistribution *CmpTheta, // Component p
         }
     }
 
-    return Error;
+    E_RETURN(Error);
 } // MomentsCalculation
 
 // Bayes classification of the remaining observations for k-nearest neighbour.
@@ -1183,7 +1189,7 @@ INT Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
 {
     INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1191,14 +1197,14 @@ INT Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
 
             Error = ComponentDist(i, Y, MixTheta[l], &CmpDist, &outlier);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
                 Error = ComponentDist(i, Y, MixTheta[j], &CmpDist, &outlier);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Tmp = W[j] * CmpDist;
 
@@ -1249,10 +1255,12 @@ INT Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
 
         Error = Cholinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
 
-E0: return Error;
+EEXIT:
+
+    E_RETURN(Error);
 } // BayesClassificationKNN
 
 // Bayes classification of the remaining observations for kernel density estimation.
@@ -1266,7 +1274,7 @@ INT Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
 {
     INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1274,14 +1282,14 @@ INT Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
 
             Error = ComponentDist(i, Y, MixTheta[l], &CmpDist, &outlier);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
                 Error = ComponentDist(i, Y, MixTheta[j], &CmpDist, &outlier);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Tmp = W[j] * CmpDist;
 
@@ -1332,10 +1340,12 @@ INT Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
 
         Error = Cholinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
 
-E0: return Error;
+EEXIT:
+
+    E_RETURN(Error);
 } // BayesClassificationKDE
 
 // Bayes classification of the remaining observations for histogram.
@@ -1350,7 +1360,7 @@ INT Rebmvnorm::BayesClassificationH(INT                  k,          // Total nu
 {
     INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
     FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     for (i = 0; i < k; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1358,14 +1368,14 @@ INT Rebmvnorm::BayesClassificationH(INT                  k,          // Total nu
 
             Error = ComponentDist(i, Y, MixTheta[l], &CmpDist, &outlier);
 
-            if (Error) goto E0;
+            E_CHECK(Error != EOK, Error);
 
             Max = W[l] * CmpDist; Outlier = outlier;
 
             for (j = 1; j < c; j++) {
                 Error = ComponentDist(i, Y, MixTheta[j], &CmpDist, &outlier);
 
-                if (Error) goto E0;
+                E_CHECK(Error != EOK, Error);
 
                 Tmp = W[j] * CmpDist;
 
@@ -1416,10 +1426,12 @@ INT Rebmvnorm::BayesClassificationH(INT                  k,          // Total nu
 
         Error = Cholinvdet(length_pdf_, MixTheta[i]->Theta_[1], MixTheta[i]->Theta_[2], MixTheta[i]->Theta_[3]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
 
-E0: return Error;
+EEXIT:
+
+    E_RETURN(Error);
 } // BayesClassificationH
 
 // Returns component p.d.f..
@@ -1432,7 +1444,7 @@ INT Rebmvnorm::ComponentDist(INT                  j,         // Indey of observa
 {
     FLOAT y, yi, yk;
     INT   i, k;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     y = (FLOAT)0.0;
 
@@ -1450,7 +1462,7 @@ INT Rebmvnorm::ComponentDist(INT                  j,         // Indey of observa
 
     *CmpDist = (FLOAT)exp(-y - CmpTheta->length_pdf_ * LogSqrtPi2 - (FLOAT)0.5 * CmpTheta->Theta_[3][0]);
 
-    return Error;
+    E_RETURN(Error);
 } // ComponentDist
 
 // Returns logarithm of component p.d.f..
@@ -1463,7 +1475,7 @@ INT Rebmvnorm::LogComponentDist(INT                  j,         // Indey of obse
 {
     FLOAT y, yi, yk;
     INT   i, k;
-    INT   Error = 0;
+    INT   Error = EOK;
 
     y = (FLOAT)0.0;
 
@@ -1481,15 +1493,14 @@ INT Rebmvnorm::LogComponentDist(INT                  j,         // Indey of obse
 
     *CmpDist = -y - CmpTheta->length_pdf_ * LogSqrtPi2 - (FLOAT)0.5 * CmpTheta->Theta_[3][0];
 
-    return Error;
+    E_RETURN(Error);
 } // LogComponentDist
 
 INT Rebmvnorm::DegreesOffreedom(INT c,                  // Number of components.
                                 CompnentDistribution**, // Mixture parameters.
                                 INT *M)                 // Degrees of freedom.
 {
-    INT i;
-    INT Error = 0;
+    INT i, Error = EOK;
 
     *M = c - 1;
 
@@ -1497,7 +1508,7 @@ INT Rebmvnorm::DegreesOffreedom(INT c,                  // Number of components.
         *M += length_pdf_ + (length_pdf_ + 1) * length_pdf_ / 2;
     }
 
-    return Error;
+    E_RETURN(Error);
 } // DegreesOffreedom
 
 /// Panic Branislav
@@ -1505,11 +1516,11 @@ INT Rebmvnorm::DegreesOffreedom(INT c,                  // Number of components.
 
 INT Rebmvnorm::EMInitialize()
 {
-    INT Error = 0;
+    INT Error = EOK;
 
     EM_ = new Emmvnorm();
 
-    Error = EM_ == NULL; if (Error) goto E0;
+    E_CHECK(NULL == EM_, ERebmvnormEMInitialize);
 
     Error = EM_->Initialize(n_,
         nr_,
@@ -1527,9 +1538,11 @@ INT Rebmvnorm::EMInitialize()
         EM_variant_,
         EM_accel_);
 
-    if (Error) goto E0;
+    E_CHECK(Error != EOK, Error);
 
-E0: return Error;
+EEXIT:
+
+    E_RETURN(Error);
 } // EMInitialize
 /// End
 

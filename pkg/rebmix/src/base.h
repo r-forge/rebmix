@@ -15,8 +15,80 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
+
+#define E_CHECK(expression, error) \
+if (expression) { \
+   Error = (error); goto EEXIT; \
+}
+
+#define E_RETURN(error)	return (error)
+
+#define EOK                             0x000000
+#define ECompnentDistributionRealloc    0x100001
+#define ECompnentDistributionMemmove    0x100002
+#define EGammaInv                       0x100003
+#define ERebmixPreprocessingKNN         0x100004
+#define ERebmixPreprocessingKDE         0x100005
+#define ERebmixPreprocessingH           0x100006
+#define ERoughLognormalParameters       0x100008
+#define ERoughWeibullParameters         0x100009
+#define ERoughGammaParameters           0x10000A
+#define ERoughvonMisesParameters        0x10000B
+#define ERoughBinomialParameters        0x10000C
+#define ERoughPoissonParameters         0x10000D
+#define EDigamma                        0x10000E
+#define EGammaSer                       0x10000F
+#define EGammaCfg                       0x100010
+#define ELUdcmp                         0x100011
+#define ELUinvdet                       0x100012
+#define ECholdc                         0x100013
+#define ECholinvdet                     0x100014
+#define EvonMisesCdf                    0x100015
+#define EvonMisesInv                    0x100016
+#define ERebmixRoughEstimationKNN       0x100017
+#define ERebmixRoughEstimationKDE       0x100018
+#define ERebmixRoughEstimationH         0x100019
+#define ERebmixEnhancedEstimationKNN    0x10001A
+#define ERebmixEnhancedEstimationKDE    0x10001B
+#define ERebmixEnhancedEstimationH      0x10001C
+#define EBayesWeibullParameters         0x10001D
+#define EBayesvonMisesParameters        0x10001E
+#define ERebmixEMInitialize             0x10001F
+#define ERebmixEMRun                    0x100020
+#define ERebmixInformationCriterionH    0x100021
+#define ERebmixInformationCriterion     0x100022
+#define ERebmixCombineComponentsEntropy 0x100023
+#define ERebmixCombineComponentsDemp    0x100024
+#define ERebmixREBMIXKNN                0x100025
+#define ERebmixREBMIXKDE                0x100026
+#define ERebmixREBMIXH                  0x100027
+#define ERebmixREBMIXK                  0x100028
+#define EEmmixInitialize                0x100029
+#define EEmmixTransform                 0x10002A
+#define ERebmvnormEMInitialize          0x10002B
+#define EEmmixExpectationStep           0x10002C
+#define EEmmixGoldenRatioSearch         0x10002D
+#define EEmmixLineSearch                0x10002E
+#define EEmmixMaximizationStep          0x10002F
+#define EEmmvnormMaximizationStep       0x100030
+#define ERebmixREBMIX                   0x100031
+#define ERebmixReadDataFile             0x100032
+#define ERebmixWriteDataFile            0x100033
+#define ERebmixRunTemplateFile          0x100034
+#define ERebmixSet                      0x100035
+#define ERebmixGet                      0x100036
+#define ERebmvnormRoughEstimationKNN    0x100037
+#define ERebmvnormRoughEstimationKDE    0x100038
+#define ERebmvnormRoughEstimationH      0x100039
+#define ERebmvnormEnhancedEstimationKNN 0x10003A
+#define ERebmvnormEnhancedEstimationKDE 0x10003B
+#define ERebmvnormEnhancedEstimationH   0x10003C
+#define ERngmixWriteDataFile            0x10003D
+#define ERngmixWriteParameterFile       0x10003E
+#define ERngmixRNGMIX                   0x10003F
+#define ERngmixRunTemplateFile          0x100040
 
 #ifndef FLOAT
 #define FLOAT double
@@ -353,11 +425,11 @@ FLOAT BesselI1(FLOAT y);
 
 // Returns the von Mises c.d.f. for the specified Mean and Kappa.
 
-FLOAT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa);
+INT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa, FLOAT *Fy);
 
 // Returns the inverse of the von Mises c.d.f. for the specified Mean and Kappa.
 
-FLOAT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa);
+INT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa, FLOAT *y);
 
 // Returns x * log(x).
 
