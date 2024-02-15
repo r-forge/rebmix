@@ -69,7 +69,7 @@ extern void REMMVNORM(void *, void *, void *, void *, void *, void *, void *, vo
 /// End
 
 extern void RvonMisesPdf(void *, void *, void *, void *, void *);
-extern void RvonMisesCdf(void *, void *, void *, void *, void *);
+extern void RvonMisesCdf(void *, void *, void *, void *, void *, void *);
 
 extern void RGumbelPdf(void *, void *, void *, void *, void *, void *);
 extern void RGumbelCdf(void *, void *, void *, void *, void *, void *);
@@ -124,7 +124,7 @@ static const R_CMethodDef CMethods[] = {
     {"RInformationCriterionMVNORM", (DL_FUNC)&RInformationCriterionMVNORM, 15},
     {"RCombineComponentsMVNORM", (DL_FUNC) &RCombineComponentsMVNORM, 18},
     {"RvonMisesPdf", (DL_FUNC) &RvonMisesPdf, 5},
-    {"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 5},
+    {"RvonMisesCdf", (DL_FUNC) &RvonMisesCdf, 6},
     {"RGumbelPdf", (DL_FUNC) &RGumbelPdf, 6},
     {"RGumbelCdf", (DL_FUNC) &RGumbelCdf, 6},
     {"Roptbins", (DL_FUNC) &Roptbins, 12},

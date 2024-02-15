@@ -21,41 +21,43 @@ int main(int argc, char* argv[])
     Rebmix    *rebmix = NULL;
     Rngmvnorm *rngmvnorm = NULL;
     Rebmvnorm *rebmvnorm = NULL;
-    INT       Error = 0;
+    INT       Error = EOK;
 
-    if (argc != 3) goto E0;
+    if (argc != 3) goto EEXIT;
 
     if (!strcmp(argv[2], "RNGMIX")) {
         rngmix = new Rngmix;
 
-        Error = NULL == rngmix; if (Error) goto E0;
+        E_CHECK(NULL == rngmix, Emain);
 
         Error = rngmix->RunTemplateFile(argv[1]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
     else
     if (!strcmp(argv[2], "REBMIX")) {
         rebmix = new Rebmix;
 
-        Error = NULL == rebmix; if (Error) goto E0;
+        E_CHECK(NULL == rebmix, Emain);
 
         Error = rebmix->RunTemplateFile(argv[1]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
     else
     if (!strcmp(argv[2], "REBMVNORM")) {
         rebmvnorm = new Rebmvnorm;
 
-        Error = NULL == rebmvnorm; if (Error) goto E0;
+        E_CHECK(NULL == rebmvnorm, Emain);
 
         Error = rebmvnorm->RunTemplateFile(argv[1]);
 
-        if (Error) goto E0;
+        E_CHECK(Error != EOK, Error);
     }
 
-E0: if (rngmix) delete rngmix;
+EEXIT: 
+    
+    if (rngmix) delete rngmix;
     if (rebmix) delete rebmix;
 
     if (rngmvnorm) delete rngmvnorm;
@@ -69,7 +71,7 @@ E0: if (rngmix) delete rngmix;
 
     printf("\n%s%d\n", "Error: ", Error);
 
-    return Error;
+    E_RETURN(Error);
 } // main
 #else
 int main()

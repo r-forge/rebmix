@@ -44,7 +44,12 @@
         Mean = as.double(xTheta[[i]]$theta1),
         Kappa = as.double(xTheta[[i]]$theta2),
         F = double(n),
+        error = integer(1),
         PACKAGE = "rebmix")
+        
+      if (output$error == 1) {
+        stop("in .pfmix.xy!", call. = FALSE); return(NA)
+      }        
 
       fix <- output$F
     }
@@ -101,7 +106,12 @@
         Mean = as.double(yTheta[[i]]$theta1),
         Kappa = as.double(yTheta[[i]]$theta2),
         F = double(n),
+        error = integer(1),
         PACKAGE = "rebmix")
+        
+      if (output$error == 1) {
+        stop("in .pfmix.xy!", call. = FALSE); return(NA)
+      }        
 
       fiy <- output$F
     }

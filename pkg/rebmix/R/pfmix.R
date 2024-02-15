@@ -133,7 +133,12 @@ function(x,
           Mean = as.double(theta1[[i]][j]),
           Kappa = as.double(theta2[[i]][j]),
           F = double(n),
+          error = integer(1),
           PACKAGE = "rebmix")
+          
+        if (output$error == 1) {
+          stop("in pfmix!", call. = FALSE); return(NA)
+        }          
 
         fi <- fi * output$F
       }

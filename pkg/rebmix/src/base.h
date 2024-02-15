@@ -114,6 +114,35 @@ if (expression) { \
 #define ERCombineComponentsMVNORM       0x100050
 #define ERMvtNormalPdf                  0x100051
 #define EREMMVNORM                      0x100052
+#define ERRNGMIX                        0x100053
+#define ERREBMIX                        0x100054
+#define ERdensKNearestNeighbourXY       0x100055
+#define ERdensKDEXY                     0x100056
+#define ERdensHistogramXY               0x100057
+#define ERdensKXY                       0x100058
+#define ERdensKNearestNeighbourX        0x100059
+#define ERdensKDEX                      0x10005A
+#define ERdensHistogramX                0x10005B
+#define ERdensKX                        0x10005C
+#define ERCLSMIX                        0x10005D
+#define ERCLRMIX                        0x10005E
+#define ERPreprocessingKNNMIX           0x10005F
+#define ERPreprocessingKDEMIX           0x100060
+#define ERPreprocessingHMIX             0x100061
+#define ERPreprocessingKMIX             0x100062
+#define ERInformationCriterionKNNMIX    0x100063
+#define ERInformationCriterionKDEMIX    0x100064
+#define ERInformationCriterionHMIX      0x100065
+#define ERInformationCriterionKMIX      0x100066
+#define ERInformationCriterionMIX       0x100067
+#define ERCombineComponentsMIX          0x100068
+#define ERvonMisesCdf                   0x100069
+#define ERoptbins                       0x10006A
+#define ERbins                          0x10006B
+#define EREMMIX                         0x10006C
+#define ERfhistogram                    0x10006D
+#define ERchistogram                    0x10006E
+#define Emain                           0x10006F
 
 #ifndef FLOAT
 #define FLOAT double
