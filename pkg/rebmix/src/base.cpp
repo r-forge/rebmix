@@ -405,7 +405,7 @@ EEXIT:
 
 INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 {
-    FLOAT dy, GamP, Gamln, Tmp;
+    FLOAT dx, dy, GamP, Gamln, Tmp;
     INT   i;
     INT   Error = EOK;
 
@@ -415,7 +415,7 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
     else
         *y = Eps;
 
-    i = 1; Error = EGammaInv;
+    i = 1; dx = (FLOAT)0.0; Error = EGammaInv;
 
     while ((i <= ItMax) && (Error != EOK)) {
         if (GammaP(Beta, *y / Theta, &GamP, &Gamln) != EOK) goto EEXIT;
@@ -432,7 +432,7 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
             *y = Eps; Error = EOK;
         }
 
-        if ((FLOAT)fabs(dy) < Eps) Error = EOK;
+        if (((FLOAT)fabs(dy) < Eps) || ((FLOAT)fabs(dx + dy) < Eps)) Error = EOK; dx = dy;
 
         i++;
     }
