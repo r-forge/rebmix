@@ -32,8 +32,8 @@ static INT IV[NTAB];
 
 FLOAT Ran1(INT *IDum)
 {
-    INT   j, k;
     FLOAT Tmp;
+    INT   j, k;
 
     if (*IDum <= 0 || !IY) {
         *IDum = (-(*IDum) < 1) ? 1 : -(*IDum);
@@ -87,14 +87,13 @@ void Insert(FLOAT y,   // Inserted value.
 
 FLOAT Gammaln(FLOAT y)
 {
-    FLOAT x, z, Tmp, Ser;
-    INT   j;
-
-    static FLOAT Cof[6] = {(FLOAT)76.18009172947146, -(FLOAT)86.50532032941677,
+    static FLOAT Cof[6] = { (FLOAT)76.18009172947146, -(FLOAT)86.50532032941677,
         (FLOAT)24.01409824083091, -(FLOAT)1.231739572450155,
-        (FLOAT)0.1208650973866179E-2, -(FLOAT)0.5395239384953E-5};
-
+        (FLOAT)0.1208650973866179E-2, -(FLOAT)0.5395239384953E-5 };
     static FLOAT Stp = (FLOAT)2.5066282746310005;
+
+    FLOAT Ser, Tmp, x, z;
+    INT   j;
 
     z = x = y; Tmp = x + (FLOAT)5.5; Tmp -= (x + (FLOAT)0.5) * (FLOAT)log(Tmp);
 
@@ -115,16 +114,14 @@ INT Digamma(FLOAT y, FLOAT *Psi)
         (FLOAT)1186.45200713425, (FLOAT)3633.51846806499, (FLOAT)4138.10161269013,
         (FLOAT)1305.60269827897};
     static FLOAT q1[6] = {(FLOAT)44.8452573429826, (FLOAT)520.752771467162, (FLOAT)2210.0079924783,
-        (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6};
+        (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6 };
     static FLOAT p2[4] = {-(FLOAT)2.12940445131011, -(FLOAT)7.01677227766759,
-        -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
+       -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
     static FLOAT q2[4] = {(FLOAT)32.2703493791143, (FLOAT)89.2920700481861,
         (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
-    INT   i, m, n, nq;
-    FLOAT d2;
-    FLOAT w, z;
-    FLOAT den, aug, sgn, ymy0, ymax, upper, ymin;
-    INT   Error = EOK;
+
+    FLOAT d2, den, aug, sgn, ymy0, ymax, upper, w, ymin, z;
+    INT   i, m, n, nq, Error = EOK;
 
     ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
 
@@ -295,9 +292,8 @@ INT GammaSer(FLOAT a,       // Constant a > 0.
              FLOAT *GamSer, // Incomplete gamma function.
              FLOAT *Gamln)  // Log(Gamma(a)).
 {
-    INT   i;
-    FLOAT Sum, Del, ap;
-    INT   Error = EOK;
+    FLOAT ap, Del, Sum;
+    INT   i, Error = EOK;
 
     *Gamln = Gammaln(a);
 
@@ -315,6 +311,8 @@ INT GammaSer(FLOAT a,       // Constant a > 0.
             i++;
         }
 
+        if (Error != EOK) Error = EOK; // ItMax too small.
+
         *GamSer = Sum * (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln);
     }
 
@@ -329,9 +327,8 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
              FLOAT *GamCfg, // Incomplete gamma function.
              FLOAT *Gamln)  // Log(Gamma(a)).
 {
-    INT   i;
-    FLOAT Gold, G, Fac, a0, a1, b0, b1, aif, aia, ai;
-    INT   Error = EOK;
+    FLOAT a0, a1, ai, aia, aif, b0, b1, Fac, G, Gold;
+    INT   i, Error = EOK;
 
     *Gamln = Gammaln(a);
 
@@ -341,7 +338,7 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
     else {
         G = (FLOAT)0.0; Gold = (FLOAT)0.0; Fac = (FLOAT)1.0;
 
-        a0 = (FLOAT)1.0; a1 = y; b0 = (FLOAT)0.0; b1 = (FLOAT)1.0; Error = EGammaCfg; i = 1;
+        i = 1; a0 = (FLOAT)1.0; a1 = y; b0 = (FLOAT)0.0; b1 = (FLOAT)1.0; Error = EGammaCfg;
 
         while ((i <= ItMax) && (Error != EOK)) {
             ai = (FLOAT)1.0 * i; aia = ai - a; aif = ai * Fac;
@@ -360,6 +357,8 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
 
             i++;
         }
+
+        if (Error != EOK) Error = EOK; // ItMax too small.
 
         *GamCfg = (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln) * G;
     }
@@ -405,9 +404,8 @@ EEXIT:
 
 INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 {
-    FLOAT dx, dy, GamP, Gamln, Tmp;
-    INT   i;
-    INT   Error = EOK;
+    FLOAT Gamln, GamP, Tmp, dx, dy;
+    INT   i, Error = EOK;
 
     if (Beta > (FLOAT)1.0) {
         *y = (Beta - (FLOAT)1.0) * Theta + Eps;
@@ -432,7 +430,9 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
             *y = Eps; Error = EOK;
         }
 
-        if (((FLOAT)fabs(dy) < Eps) || ((FLOAT)fabs(dx + dy) < Eps)) Error = EOK; dx = dy;
+        if (((FLOAT)fabs(dy) < Eps) || ((FLOAT)fabs(dx + dy) < Eps)) Error = EOK; 
+        
+        dx = dy;
 
         i++;
     }
@@ -498,10 +498,8 @@ INT LUdcmp(INT   n,     // Size of square matrix.
            INT   *indx, // Pointer to the permutation vector.
            FLOAT *det)  // Determinant.
 {
-    INT   i, imax, j, k;
-    FLOAT Big, Tmp;
-    FLOAT *V;
-    INT   Error = EOK;
+    FLOAT Big, Tmp, *V = NULL;
+    INT   i, imax, j, k, Error = EOK;
 
     V = (FLOAT*)malloc(n * sizeof(FLOAT));
 
@@ -569,9 +567,8 @@ INT LUbksb(INT   n,     // Size of square matrix.
            INT   *indx, // Pointer to the permutation vector.
            FLOAT *b)    // Pointer to the solution vector.
 {
-    INT   i, ii = 0, ip, j;
     FLOAT Sum;
-    INT   Error = EOK;
+    INT   i, ii = 0, ip, j, Error = EOK;
 
     for (i = 0; i < n; i++) {
         ip = indx[i]; Sum = b[ip]; b[ip] = b[i];
@@ -605,9 +602,8 @@ INT LUinvdet(INT   n,     // Size of square matrix.
              FLOAT *Ainv, // Pointer to the inverse matrix of A.
              FLOAT *Adet) // Pointer to the determinant of A.
 {
-    INT   i, *indx = NULL, j;
     FLOAT *b = NULL, *B = NULL;
-    INT   Error = EOK;
+    INT   i, *indx = NULL, j, Error = EOK;
 
     indx = (INT*)calloc((size_t)n, sizeof(INT));
 
@@ -656,10 +652,8 @@ INT Choldc(INT   n,   // Size of square matrix.
            FLOAT *A,  // Pointer to the square matrix A.
            FLOAT *L)  // Lower triangular factors.
 {
-    INT   i, j, k;
-    FLOAT Sum;
-    FLOAT *p = NULL;
-    INT   Error = EOK;
+    FLOAT *p = NULL, Sum;
+    INT   i, j, k, Error = EOK;
 
     memmove(L, A, n * n * sizeof(FLOAT));
 
@@ -690,9 +684,9 @@ INT Choldc(INT   n,   // Size of square matrix.
         L[i * n + i] = p[i]; for (j = 0; j < i; j++) L[j * n + i] = (FLOAT)0.0;
     }
 
-    if (p) free(p);
-
 EEXIT:
+
+    if (p) free(p);
 
     E_RETURN(Error);
 } // Choldc
@@ -704,10 +698,8 @@ INT Cholinvdet(INT   n,         // Size of square matrix.
                FLOAT *Ainv,     // Pointer to the inverse matrix of A.
                FLOAT *logAdet)  // Pointer to the logarithm of determinant of A.
 {
-    INT   i, j, k;
-    FLOAT *L = NULL, Sum;
-    FLOAT *p = NULL;
-    INT   Error = EOK;
+    FLOAT *L = NULL, *p = NULL, Sum;
+    INT   i, j, k, Error = EOK;
 
     L = (FLOAT*)malloc(n * n * sizeof(FLOAT));
 
@@ -826,7 +818,7 @@ FLOAT BesselI1(FLOAT x)
         I1 = (FLOAT)0.39894228 + y * (-(FLOAT)0.3988024e-1 + y * (-(FLOAT)0.362018e-2
              + y * ((FLOAT)0.163801e-2 + y * (-(FLOAT)0.1031555e-1 + y * I1))));
 
-        I1 *= ((FLOAT)exp(I1) / sqrt(x));
+        I1 *= ((FLOAT)exp(I1) / (FLOAT)sqrt(x));
     }
 
     return sgn < 0 ? -I1 : I1;
@@ -877,7 +869,7 @@ INT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa, FLOAT *Fy)
 
 INT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa, FLOAT *y)
 {
-    FLOAT yl, yh, fl, fm, Fyt;
+    FLOAT fl, fm, Fyt, yl, yh;
     INT   i, Error = EOK;
 
     if (Fy >= (FLOAT)1.0) {

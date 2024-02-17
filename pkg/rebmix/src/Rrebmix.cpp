@@ -312,8 +312,7 @@ void RdensKNearestNeighbourXY(INT    *n,     // Total number of independent obse
                               double *hy,    // Normalizing vector.
                               INT    *Error) // Error code.
 {
-    FLOAT *Dk = NULL;
-    FLOAT Dc, R, C;
+    FLOAT C, Dc, *Dk = NULL, R;
     INT   i, j, K, l, m, q;
 
     *Error = EOK;
@@ -372,8 +371,8 @@ void RdensKDEXY(INT    *n,     // Total number of independent observations.
                 double *hy,    // Side of the hypersquare.
                 INT    *Error) // Error code.
 {
-    INT   i, j;
     FLOAT C, rx, ry;
+    INT   i, j;
 
     *Error = EOK;
 
@@ -417,9 +416,9 @@ void RdensHistogramXY(INT    *k,     // Total number of bins.
                       char   **py,   // Parametric family type.
                       INT    *Error) // Error code.
 {
-    INT                    i, j;
     ParametricFamilyType_e pdfx, pdfy;
     FLOAT                  C, rx, ry;
+    INT                    i, j;
 
     *Error = EOK;
 
@@ -579,8 +578,8 @@ void RdensKXY(INT    *v,     // Total number of bins.
               double *hy,    // Side of the hypersquare.
               INT    *Error) // Error code.
 {
-    INT   i, j, n;
     FLOAT C, rx, ry;
+    INT   i, j, n;
 
     *Error = EOK;
 
@@ -627,8 +626,7 @@ void RdensKNearestNeighbourX(INT    *n,     // Total number of independent obser
                              double *hx,    // Normalizing vector.
                              INT    *Error) // Error code.
 {
-    FLOAT *Dk = NULL;
-    FLOAT Dc, R, C;
+    FLOAT Dc, *Dk = NULL, R, C;
     INT   i, j, K, l, m, q;
 
     *Error = EOK;
@@ -684,8 +682,8 @@ void RdensKDEX(INT    *n,     // Total number of independent observations.
                double *hx,    // Side of the hypersquare.
                INT    *Error) // Error code.
 {
-    INT   i, j;
     FLOAT C, rx;
+    INT   i, j;
 
     *Error = EOK;
 
@@ -723,9 +721,9 @@ void RdensHistogramX(INT    *k,     // Total number of bins.
                      char   **px,   // Parametric family type.
                      INT    *Error) // Error code.
 {
-    INT                    i, j;
     ParametricFamilyType_e pdfx;
     FLOAT                  C, rx;
+    INT                    i, j;
 
     *Error = EOK;
 
@@ -821,8 +819,8 @@ void RdensKX(INT    *v,     // Total number of bins.
              double *hx,    // Side of the hypersquare.
              INT    *Error) // Error code.
 {
-    INT   i, j, n;
     FLOAT C, rx;
+    INT   i, j, n;
 
     *Error = EOK;
 
@@ -878,13 +876,9 @@ void RCLSMIX(INT    *n,      // Total number of independent observations.
              INT    *Error)  // Error code.
 {
     Rebmix               *rebmix = NULL;
-    INT                  **C = NULL;
-    INT                  A[3];
-    FLOAT                ***Q = NULL;
-    FLOAT                **Y = NULL;
     CompnentDistribution ****Theta = NULL;
-    FLOAT                CmpDist, MixDist, MaxMixDist;
-    INT                  i, j, k, l, m, dmax = 0;
+    FLOAT                CmpDist, MixDist, MaxMixDist, ***Q = NULL, **Y = NULL;
+    INT                  A[3], **C = NULL, i, j, k, l, m, dmax = 0;
 
     *Error = EOK;
 
@@ -1145,11 +1139,9 @@ void RCLRMIX(INT    *n,      // Total number of independent observations.
              INT    *Error)  // Error code.
 {
     Rebmix               *rebmix = NULL;
-    FLOAT                **Y = NULL;
-    INT                  A[3];
     CompnentDistribution **Theta = NULL;
-    FLOAT                CmpDist, MaxCmpDist;
-    INT                  i, j, k;
+    FLOAT                CmpDist, MaxCmpDist, **Y = NULL;
+    INT                  A[3], i, j, k;
 
     *Error = EOK;
 
@@ -1839,8 +1831,7 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
                                  INT    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
-    FLOAT  **Y = NULL;
-    FLOAT  logV;
+    FLOAT  logV, **Y = NULL;
     INT    i, j, l, m;
 
     *Error = EOK;
@@ -2107,8 +2098,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
                                INT    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
-    FLOAT  **Y = NULL;
-    FLOAT  logV;
+    FLOAT  logV, **Y = NULL;
     INT    i, j, l, m;
 
     *Error = EOK;
@@ -2368,8 +2358,7 @@ void RInformationCriterionKMIX(double *h,            // Sides of the hypersquare
                                INT    *Error)        // Error code.
 {
     Rebmix *rebmix = NULL;
-    FLOAT  **Y = NULL;
-    FLOAT  logV;
+    FLOAT  logV, **Y = NULL;
     INT    i, j, l, m;
 
     *Error = EOK;
@@ -3047,8 +3036,7 @@ void Roptbins(INT    *d,           // Number of independent random variables.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
-    INT    *opt_k_tmp = NULL;
-    INT    i, j, l;
+    INT    i, j, l, *opt_k_tmp = NULL;
 
     *Error = EOK;
 
@@ -3539,7 +3527,7 @@ void REMMIX(INT    *d,                 // Number of independent random variables
             INT    *Error)             // Error number.
 {
     Rebmix *rebmix = NULL;
-    INT i = 0, j = 0, l = 0, length_Theta = 3, A[3];
+    INT    A[3], i = 0, j = 0, l = 0, length_Theta = 3;
 
     *Error = EOK;
 
@@ -3701,7 +3689,7 @@ void Rfhistogram(INT    *K,      // Numbers of bins.
                  INT    *shrink, // If 1 the output array is shrinked.
                  INT    *Error)  // Error code.
 {
-    INT   i, j, k, *l = NULL, *m = NULL, dny;
+    INT i, j, k, *l = NULL, *m = NULL, dny;
 
     *Error = EOK;
 
@@ -3773,7 +3761,7 @@ void Rchistogram(INT    *K,      // Numbers of bins.
                  double *y,      // Pointer to the output array y.
                  INT    *Error)  // Error code.
 {
-    INT   i, j, k, dny, kny;
+    INT i, j, k, dny, kny;
 
     *Error = EOK;
 

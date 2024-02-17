@@ -174,9 +174,9 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *all_IC,         // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
                 INT    *Error)          // Error code.
 {
-    *Error = EOK;
-
     Rebmvnorm *rebmvnorm = NULL;
+
+    *Error = EOK;
 
     rebmvnorm = new Rebmvnorm;
 
@@ -275,13 +275,9 @@ void RCLSMVNORM(INT    *n,      // Total number of independent observations.
                 INT    *Error)  // Error code.
 {
     Rebmvnorm            *rebmvnorm = NULL;
-    INT                  **C = NULL;
-    INT                  A[4];
-    FLOAT                ***Q = NULL;
-    FLOAT                **Y = NULL;
     CompnentDistribution ****Theta = NULL;
-    FLOAT                CmpDist, MixDist, MaxMixDist;
-    INT                  i, j, k, l, m, dmax = 0;
+    FLOAT                CmpDist, MixDist, MaxMixDist, ***Q = NULL , **Y = NULL;
+    INT                  A[4], **C = NULL, i, j, k, l, m, dmax = 0;
 
     *Error = EOK;
 
@@ -509,11 +505,9 @@ void RCLRMVNORM(INT    *n,      // Total number of independent observations.
                 INT    *Error)  // Error code.
 {
     Rebmvnorm            *rebmvnorm = NULL;
-    FLOAT                **Y = NULL;
-    INT                  A[4];
     CompnentDistribution **Theta = NULL;
-    FLOAT                CmpDist, MaxCmpDist;
-    INT                  i, j, k;
+    FLOAT                CmpDist, MaxCmpDist, **Y = NULL;
+    INT                  A[4], i, j, k;
 
     *Error = EOK;
 
@@ -1070,8 +1064,7 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
                                     INT    *Error)        // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    FLOAT     **Y = NULL;
-    FLOAT     logV;
+    FLOAT     logV, **Y = NULL;
     INT       i, j, l, m;
 
     *Error = EOK;
@@ -1295,8 +1288,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
                                   INT    *Error)        // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    FLOAT     **Y = NULL;
-    FLOAT     logV;
+    FLOAT     logV, **Y = NULL;
     INT       i, j, l, m;
 
     *Error = EOK;
@@ -1513,8 +1505,7 @@ void RInformationCriterionKMVNORM(double *h,            // Sides of the hypersqu
                                   INT    *Error)        // Error code.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    FLOAT     **Y = NULL;
-    FLOAT     logV;
+    FLOAT     logV, **Y = NULL;
     INT       i, j, l, m;
 
     *Error = EOK;
@@ -2003,8 +1994,8 @@ EEXIT:
 
 void RTvtNormalPdf(INT *n, double *x, double *y, double *Mean, double *Sigma, double *f)
 {
-    INT   j;
     FLOAT Adet, Ainv[4], xi, yi, z;
+    INT   j;
 
     Adet = Sigma[0] * Sigma[3] - Sigma[1] * Sigma[2];
 
@@ -2028,8 +2019,8 @@ void RTvtNormalPdf(INT *n, double *x, double *y, double *Mean, double *Sigma, do
 
 void RMvtNormalPdf(INT *n, double *X, INT *d, double *Mean, double *Sigma, double *f, INT *Error)
 {
-    INT   i, j, k;
     FLOAT logAdet, *Ainv, y, yi, yk;
+    INT   i, j, k;
 
     *Error = EOK;
 
@@ -2089,17 +2080,12 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                INT    *summary_M,         // Degrees of freedom.
                INT    *Error)             // Error number.)
 {
-
-    INT i = 0, j = 0, l = 0, length_Theta = 4;
-    INT A[4];
-
-    A[0] = *d;
-    A[1] = A[2] = (*d) * (*d);
-    A[3] = 1;
+    Rebmvnorm *rebmvnorm = NULL;
+    INT       A[4], i = 0, j = 0, l = 0, length_Theta = 4;
 
     *Error = EOK;
 
-    Rebmvnorm *rebmvnorm = NULL;
+    A[0] = *d; A[1] = A[2] = (*d) * (*d); A[3] = 1;
 
     rebmvnorm = new Rebmvnorm;
 

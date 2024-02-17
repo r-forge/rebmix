@@ -157,7 +157,7 @@ void RLabelMomentsXYZ(INT    *nx,     // Image width.
                       INT    *Error)  // Error code.
 {
     FLOAT **Mijk = NULL, *Mean = NULL, Mul, *Stdev = NULL, Tmp;
-    INT i, ii, j, k, kk, l, m, mm, n = 0;
+    INT   i, ii, j, k, kk, l, m, mm, n = 0;
 
     *Error = EOK;
 
