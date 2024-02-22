@@ -31,9 +31,8 @@ INT Rebmvnorm::ComponentConditionalDist(INT                  i,           // Ind
                                         CompnentDistribution *CmpTheta,   // Component distribution type.
                                         FLOAT                *CmpConDist) // Component conditional distribution.
 {
-    INT   o;
-    FLOAT y, Mean, Stdev;
-    INT   Error = EOK;
+    FLOAT Mean, Stdev, y;
+    INT   o, Error = EOK;
 
     Mean = CmpTheta->Theta_[0][i];
 
@@ -54,9 +53,8 @@ INT Rebmvnorm::ComponentConditionalCdf(INT                  i,           // Inde
                                        CompnentDistribution *CmpTheta,   // Component distribution type.
                                        FLOAT                *CmpConCdf)  // Component conditional cumulative distribution.
 {
-    INT   o;
-    FLOAT y, Mean, Stdev;
-    INT   Error = EOK;
+    FLOAT Mean, Stdev, y;
+    INT   o, Error = EOK;
 
     Mean = CmpTheta->Theta_[0][i];
 
@@ -87,12 +85,10 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
                                   CompnentDistribution *RigidTheta, // Rigid parameters.
                                   CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    INT                i, I, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, Dlm, Dlmin, Sum, Stdev, *D = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = EOK, Stop;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, Stdev, Sum;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = EOK;
 
     // Global mode.
 
@@ -291,9 +287,9 @@ S0:;
 
         // Bisection.
 
-        Stop = 0;
+        ii = 1; Error = ERebmvnormRoughEstimationKNN;
 
-        while (!Stop) {
+        while ((ii <= ItMax) && (Error != EOK)) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
             Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
@@ -317,7 +313,7 @@ S0:;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
-                Stop = 1;
+                Error = EOK;
             }
             else {
                 if (Dlm * Dlmin > (FLOAT)0.0) {
@@ -327,6 +323,8 @@ S0:;
                     flmax = flm;
                 }
             }
+
+            ii++;
         }
 
         if (X) free(X);
@@ -375,12 +373,10 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
                                   CompnentDistribution *RigidTheta, // Rigid parameters.
                                   CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    INT                i, I, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
-    FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = EOK, Stop;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = EOK;
 
     // Global mode.
 
@@ -577,9 +573,9 @@ S0:;
 
         // Bisection.
 
-        Stop = 0;
+        ii = 1; Error = ERebmvnormRoughEstimationKDE;
 
-        while (!Stop) {
+        while ((ii <= ItMax) && (Error != EOK)) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
             Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
@@ -603,7 +599,7 @@ S0:;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
-                Stop = 1;
+                Error = EOK;
             }
             else {
                 if (Dlm * Dlmin > (FLOAT)0.0) {
@@ -613,6 +609,8 @@ S0:;
                     flmax = flm;
                 }
             }
+
+            ii++;
         }
 
         if (X) free(X);
@@ -660,12 +658,10 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
                                 CompnentDistribution *RigidTheta, // Rigid parameters.
                                 CompnentDistribution *LooseTheta) // Loose parameters.
 {
-    INT                i, I, ii, j, l, o, p, q, r, *N = NULL;
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              CmpConCdf[2], epsilon, logflm, flm, flmin, flmax, logV, Dlm, Dlmin, Sum, Stdev;
-    FLOAT              *C = NULL, *Cinv = NULL, logCdet;
-    INT                Error = EOK, Stop;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = EOK;
 
     // Global mode.
 
@@ -862,9 +858,9 @@ S0:;
 
         // Bisection.
 
-        Stop = 0;
+        ii = 1; Error = ERebmvnormRoughEstimationH;
 
-        while (!Stop) {
+        while ((ii <= ItMax) && (Error != EOK)) {
             flm = (flmax + flmin) / (FLOAT)2.0;
 
             Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
@@ -888,7 +884,7 @@ S0:;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
-                Stop = 1;
+                Error = EOK;
             }
             else {
                 if (Dlm * Dlmin > (FLOAT)0.0) {
@@ -898,6 +894,8 @@ S0:;
                     flmax = flm;
                 }
             }
+
+            ii++;
         }
 
         if (X) free(X);
@@ -944,8 +942,7 @@ INT Rebmvnorm::EnhancedEstimationKNN(FLOAT                **Y,         // Pointe
 {
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
-    INT                  i, ii, j, o;
-    INT                  Error = EOK;
+    INT                  i, ii, j, o, Error = EOK;
 
     EnhanTheta = new CompnentDistribution(this);
 
@@ -1015,8 +1012,7 @@ INT Rebmvnorm::EnhancedEstimationKDE(FLOAT                **Y,         // Pointe
 {
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
-    INT                  i, ii, j, o;
-    INT                  Error = EOK;
+    INT                  i, ii, j, o, Error = EOK;
 
     EnhanTheta = new CompnentDistribution(this);
 
@@ -1088,8 +1084,7 @@ INT Rebmvnorm::EnhancedEstimationH(INT                  k,           // Total nu
 {
     CompnentDistribution *EnhanTheta = NULL;
     FLOAT                Sum;
-    INT                  i, ii, j, o;
-    INT                  Error = EOK;
+    INT                  i, ii, j, o, Error = EOK;
 
     (void)h;
 
@@ -1158,8 +1153,7 @@ INT Rebmvnorm::MomentsCalculation(CompnentDistribution *CmpTheta, // Component p
                                   FLOAT                *FirstM,   // First moment.
                                   FLOAT                *SecondM)  // Second moment.
 {
-    INT i, ii, o, p, q;
-    INT Error = EOK;
+    INT i, ii, o, p, q, Error = EOK;
 
     for (i = 0; i < length_pdf_; i++) {
         FirstM[i] = CmpTheta->Theta_[0][i];
@@ -1187,9 +1181,8 @@ INT Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
                                       FLOAT                **FirstM,   // First moments.
                                       FLOAT                **SecondM)  // Second moments.
 {
-    INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
-    FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = EOK;
+    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = EOK;
 
     for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1272,9 +1265,8 @@ INT Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
                                       FLOAT                **FirstM,   // First moments.
                                       FLOAT                **SecondM)  // Second moments.
 {
-    INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
-    FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = EOK;
+    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = EOK;
 
     for (i = 0; i < nr_; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1358,9 +1350,8 @@ INT Rebmvnorm::BayesClassificationH(INT                  k,          // Total nu
                                     FLOAT                **FirstM,   // First moments.
                                     FLOAT                **SecondM)  // Second moments.
 {
-    INT   i, j, jj, l, o, p, q, outlier, Outlier = 0;
-    FLOAT CmpDist, Max, Tmp, dW, N = (FLOAT)0.0;
-    INT   Error = EOK;
+    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = EOK;
 
     for (i = 0; i < k; i++) {
         if (Y[length_pdf_][i] > FLOAT_MIN) {
@@ -1443,8 +1434,7 @@ INT Rebmvnorm::ComponentDist(INT                  j,         // Indey of observa
                              INT                  *Outlier)  // 1 if outlier otherwise 0.
 {
     FLOAT y, yi, yk;
-    INT   i, k;
-    INT   Error = EOK;
+    INT   i, k, Error = EOK;
 
     y = (FLOAT)0.0;
 
@@ -1474,8 +1464,7 @@ INT Rebmvnorm::LogComponentDist(INT                  j,         // Indey of obse
                                 INT                  *Outlier)  // 1 if outlier otherwise 0.
 {
     FLOAT y, yi, yk;
-    INT   i, k;
-    INT   Error = EOK;
+    INT   i, k, Error = EOK;
 
     y = (FLOAT)0.0;
 

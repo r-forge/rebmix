@@ -76,9 +76,8 @@ Rngmix::~Rngmix()
 
 INT Rngmix::WriteDataFile()
 {
-    INT  i, j;
     FILE *fp = NULL;
-    INT  Error = EOK;
+    INT  i, j, Error = EOK;
 
     fp = fopen(curr_, "w");
 
@@ -155,10 +154,8 @@ EEXIT:
 
 INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
 {
-    FLOAT C[8];
-    FLOAT y, p;
-    INT   i, k;
-    INT   Error = EOK;
+    FLOAT C[8], y, p;
+    INT   i, k, Error = EOK;
 
     for (i = 0; i < length_pdf_; i++) {
         switch (CmpDist->pdf_[i]) {
@@ -297,9 +294,9 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
                     C[6] = (FLOAT)floor(C[6]);
 
                     C[7] = (FLOAT)1.2 * C[3] * ((FLOAT)1.0 + C[5] * C[5]) *
-                        (FLOAT)exp(Bg - Gammaln(C[6] + (FLOAT)1.0) -
-                        Gammaln(Be - C[6] + (FLOAT)1.0) +
-                        C[6] * Bplog + (Be - C[6]) * Bpclog);
+                           (FLOAT)exp(Bg - Gammaln(C[6] + (FLOAT)1.0) -
+                           Gammaln(Be - C[6] + (FLOAT)1.0) +
+                           C[6] * Bplog + (Be - C[6]) * Bpclog);
 
                 } while (Ran1(&IDum_) > C[7]);
 
@@ -373,8 +370,7 @@ EEXIT:
 
 INT Rngmix::RNGMIX()
 {
-    INT i, j, k;
-    INT Error = EOK;
+    INT i, j, k, Error = EOK;
 
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
 
@@ -418,12 +414,11 @@ EEXIT:
 
 INT Rngmix::RunTemplateFile(char *file)
 {
-    INT                  i, imin, imax, j, k, isI;
     char                 line[65536], ident[65536], list[65536];
     char                 *pchar = NULL;
     FILE                 *fp = NULL;
     CompnentDistribution **MixTheta = NULL;
-    INT                  Error = EOK;
+    INT                  i, imin, imax, isI, j, k, Error = EOK;
 
     fp = fopen(file, "r");
 
