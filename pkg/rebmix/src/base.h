@@ -20,129 +20,38 @@
 
 #define E_CHECK(expression, error) \
 if (expression) { \
+   Print_e_line_(__FILE__, __LINE__, (error)); \
    Error = (error); goto EEXIT; \
+}
+
+#define W_CHECK(expression) \
+if (expression) { \
+   Print_w_line_(); Error = E_OK; \
 }
 
 #define E_RETURN(error)	return (error)
 
 #define R_CHECK(expression, error) \
 if (expression) { \
+   Print_e_line_(__FILE__, __LINE__, (error)); \
    *Error = (error); goto EEXIT; \
 }
 
 #define R_RETURN(error)	*Error = (error)
-
-#define EOK                             0x000000
-#define ECompnentDistributionRealloc    0x100001
-#define ECompnentDistributionMemmove    0x100002
-#define EGammaInv                       0x100003
-#define ERebmixPreprocessingKNN         0x100004
-#define ERebmixPreprocessingKDE         0x100005
-#define ERebmixPreprocessingH           0x100006
-#define ERoughLognormalParameters       0x100008
-#define ERoughWeibullParameters         0x100009
-#define ERoughGammaParameters           0x10000A
-#define ERoughvonMisesParameters        0x10000B
-#define ERoughBinomialParameters        0x10000C
-#define ERoughPoissonParameters         0x10000D
-#define EDigamma                        0x10000E
-#define EGammaSer                       0x10000F
-#define EGammaCfg                       0x100010
-#define ELUdcmp                         0x100011
-#define ELUinvdet                       0x100012
-#define ECholdc                         0x100013
-#define ECholinvdet                     0x100014
-#define EvonMisesCdf                    0x100015
-#define EvonMisesInv                    0x100016
-#define ERebmixRoughEstimationKNN       0x100017
-#define ERebmixRoughEstimationKDE       0x100018
-#define ERebmixRoughEstimationH         0x100019
-#define ERebmixEnhancedEstimationKNN    0x10001A
-#define ERebmixEnhancedEstimationKDE    0x10001B
-#define ERebmixEnhancedEstimationH      0x10001C
-#define EBayesWeibullParameters         0x10001D
-#define EBayesvonMisesParameters        0x10001E
-#define ERebmixEMInitialize             0x10001F
-#define ERebmixEMRun                    0x100020
-#define ERebmixInformationCriterionH    0x100021
-#define ERebmixInformationCriterion     0x100022
-#define ERebmixCombineComponentsEntropy 0x100023
-#define ERebmixCombineComponentsDemp    0x100024
-#define ERebmixREBMIXKNN                0x100025
-#define ERebmixREBMIXKDE                0x100026
-#define ERebmixREBMIXH                  0x100027
-#define ERebmixREBMIXK                  0x100028
-#define EEmmixInitialize                0x100029
-#define EEmmixTransform                 0x10002A
-#define ERebmvnormEMInitialize          0x10002B
-#define EEmmixExpectationStep           0x10002C
-#define EEmmixGoldenRatioSearch         0x10002D
-#define EEmmixLineSearch                0x10002E
-#define EEmmixMaximizationStep          0x10002F
-#define EEmmvnormMaximizationStep       0x100030
-#define ERebmixREBMIX                   0x100031
-#define ERebmixReadDataFile             0x100032
-#define ERebmixWriteDataFile            0x100033
-#define ERebmixRunTemplateFile          0x100034
-#define ERebmixSet                      0x100035
-#define ERebmixGet                      0x100036
-#define ERebmvnormRoughEstimationKNN    0x100037
-#define ERebmvnormRoughEstimationKDE    0x100038
-#define ERebmvnormRoughEstimationH      0x100039
-#define ERebmvnormEnhancedEstimationKNN 0x10003A
-#define ERebmvnormEnhancedEstimationKDE 0x10003B
-#define ERebmvnormEnhancedEstimationH   0x10003C
-#define ERngmixWriteDataFile            0x10003D
-#define ERngmixWriteParameterFile       0x10003E
-#define ERngmixRNGMIX                   0x10003F
-#define ERngmixRunTemplateFile          0x100040
-#define ERLabelMomentsXY                0x100041
-#define ERLabelMomentsXYZ               0x100042
-#define ERMergeLabels                   0x100043
-#define ERRNGMVNORM                     0x100044
-#define ERREBMVNORM                     0x100045
-#define ERCLSMVNORM                     0x100046
-#define ERCLRMVNORM                     0x100047
-#define ERPreprocessingKNNMVNORM        0x100048
-#define ERPreprocessingKDEMVNORM        0x100049
-#define ERPreprocessingHMVNORM          0x10004A
-#define ERInformationCriterionKNNMVNORM 0x10004B
-#define ERInformationCriterionKDEMVNORM 0x10004C
-#define ERInformationCriterionHMVNORM   0x10004D
-#define ERInformationCriterionKMVNORM   0x10004E
-#define ERInformationCriterionMVNORM    0x10004F
-#define ERCombineComponentsMVNORM       0x100050
-#define ERMvtNormalPdf                  0x100051
-#define EREMMVNORM                      0x100052
-#define ERRNGMIX                        0x100053
-#define ERREBMIX                        0x100054
-#define ERdensKNearestNeighbourXY       0x100055
-#define ERdensKDEXY                     0x100056
-#define ERdensHistogramXY               0x100057
-#define ERdensKXY                       0x100058
-#define ERdensKNearestNeighbourX        0x100059
-#define ERdensKDEX                      0x10005A
-#define ERdensHistogramX                0x10005B
-#define ERdensKX                        0x10005C
-#define ERCLSMIX                        0x10005D
-#define ERCLRMIX                        0x10005E
-#define ERPreprocessingKNNMIX           0x10005F
-#define ERPreprocessingKDEMIX           0x100060
-#define ERPreprocessingHMIX             0x100061
-#define ERPreprocessingKMIX             0x100062
-#define ERInformationCriterionKNNMIX    0x100063
-#define ERInformationCriterionKDEMIX    0x100064
-#define ERInformationCriterionHMIX      0x100065
-#define ERInformationCriterionKMIX      0x100066
-#define ERInformationCriterionMIX       0x100067
-#define ERCombineComponentsMIX          0x100068
-#define ERvonMisesCdf                   0x100069
-#define ERoptbins                       0x10006A
-#define ERbins                          0x10006B
-#define EREMMIX                         0x10006C
-#define ERfhistogram                    0x10006D
-#define ERchistogram                    0x10006E
-#define Emain                           0x10006F
+/*
+#define ERR_OK               0
+#define ERR_MEM_ERROR        1
+#define ERR_ARG_ERROR        2
+#define ERR_FILE_ERROR       3
+#define ERR_FALORD_ERROR     4
+#define ERR_PREP_ERROR       5
+#define ERR_TMD_ERROR        6
+#define ERR_NOT_YET_IMPLEMENTED -1L
+*/
+#define E_OK                             0
+#define E_MEM                            1
+#define E_ARG                            2
+#define E_CON                            3
 
 #ifndef FLOAT
 #define FLOAT double
@@ -376,6 +285,9 @@ typedef struct mixtureparametertype {
     INT                  n_iter_em;   // Number of performed iterations of EM algorithm.
     INT                  initialized; // Boolean indicator if struct contains mixture model parameters. 
 } MixtureParameterType;
+
+void Print_e_line_(const char *file, INT line, INT error);
+void Print_w_line_();
 
 FLOAT Ran1(INT *IDum);
 

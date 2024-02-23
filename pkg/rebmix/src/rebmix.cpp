@@ -21,38 +21,38 @@ int main(int argc, char* argv[])
     Rebmix    *rebmix = NULL;
     Rngmvnorm *rngmvnorm = NULL;
     Rebmvnorm *rebmvnorm = NULL;
-    INT       Error = EOK;
+    INT       Error = E_OK;
 
     if (argc != 3) goto EEXIT;
 
     if (!strcmp(argv[2], "RNGMIX")) {
         rngmix = new Rngmix;
 
-        E_CHECK(NULL == rngmix, Emain);
+        E_CHECK(NULL == rngmix, E_MEM);
 
         Error = rngmix->RunTemplateFile(argv[1]);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
     }
     else
     if (!strcmp(argv[2], "REBMIX")) {
         rebmix = new Rebmix;
 
-        E_CHECK(NULL == rebmix, Emain);
+        E_CHECK(NULL == rebmix, E_MEM);
 
         Error = rebmix->RunTemplateFile(argv[1]);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
     }
     else
     if (!strcmp(argv[2], "REBMVNORM")) {
         rebmvnorm = new Rebmvnorm;
 
-        E_CHECK(NULL == rebmvnorm, Emain);
+        E_CHECK(NULL == rebmvnorm, E_MEM);
 
         Error = rebmvnorm->RunTemplateFile(argv[1]);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
     }
 
 EEXIT: 

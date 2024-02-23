@@ -77,11 +77,11 @@ Rngmix::~Rngmix()
 INT Rngmix::WriteDataFile()
 {
     FILE *fp = NULL;
-    INT  i, j, Error = EOK;
+    INT  i, j, Error = E_OK;
 
     fp = fopen(curr_, "w");
 
-    E_CHECK(NULL == fp, ERngmixWriteDataFile);
+    E_CHECK(NULL == fp, E_MEM);
 
     for (i = 0; i < n_; i++) {
         fprintf(fp, "%E", Y_[0][i]);
@@ -121,7 +121,7 @@ INT Rngmix::WriteParameterFile()
     char ext[FILENAME_MAX];
     char *pchar = NULL;
     FILE *fp = NULL;
-    INT  Error = EOK;
+    INT  Error = E_OK;
 
     strcpy(path, save_);
 
@@ -138,7 +138,7 @@ INT Rngmix::WriteParameterFile()
 
     fp = fopen(line, "w");
 
-    E_CHECK(NULL == fp, ERngmixWriteParameterFile);
+    E_CHECK(NULL == fp, E_MEM);
 
     fprintf(fp, "%s\n", "rseed");
 
@@ -155,7 +155,7 @@ EEXIT:
 INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
 {
     FLOAT C[8], y, p;
-    INT   i, k, Error = EOK;
+    INT   i, k, Error = E_OK;
 
     for (i = 0; i < length_pdf_; i++) {
         switch (CmpDist->pdf_[i]) {
@@ -212,7 +212,7 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
         case pfGamma:
             Error = GammaInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i], &y);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             Y[i][j] = y;
 
@@ -231,7 +231,7 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
 
             Error = vonMisesInv(Ran1(&IDum_), CmpDist->Theta_[0][i], CmpDist->Theta_[1][i], &Y[i][j]);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             break;
         case pfBinomial:
@@ -370,23 +370,23 @@ EEXIT:
 
 INT Rngmix::RNGMIX()
 {
-    INT i, j, k, Error = EOK;
+    INT i, j, k, Error = E_OK;
 
     n_ = 0; for (i = 0; i < c_; i++) n_ += N_[i];
 
     Y_ = (FLOAT**)malloc(length_pdf_ * sizeof(FLOAT*));
 
-    E_CHECK(NULL == Y_, ERngmixRNGMIX);
+    E_CHECK(NULL == Y_, E_MEM);
 
     for (i = 0; i < length_pdf_; i++) {
         Y_[i] = (FLOAT*)malloc(n_ * sizeof(FLOAT));
 
-        E_CHECK(NULL == Y_[i], ERngmixRNGMIX);
+        E_CHECK(NULL == Y_[i], E_MEM);
     }
 
     Z_ = (INT*)malloc(n_ * sizeof(INT));
 
-    E_CHECK(NULL == Z_, ERngmixRNGMIX);
+    E_CHECK(NULL == Z_, E_MEM);
 
     k = 0;
 
@@ -398,7 +398,7 @@ INT Rngmix::RNGMIX()
 
             Error = InvComponentDist(MixTheta_[i], k, Y_);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             k++;
         }
@@ -418,11 +418,11 @@ INT Rngmix::RunTemplateFile(char *file)
     char                 *pchar = NULL;
     FILE                 *fp = NULL;
     CompnentDistribution **MixTheta = NULL;
-    INT                  i, imin, imax, isI, j, k, Error = EOK;
+    INT                  i, imin, imax, isI, j, k, Error = E_OK;
 
     fp = fopen(file, "r");
 
-    E_CHECK(NULL == fp, ERngmixRunTemplateFile);
+    E_CHECK(NULL == fp, E_MEM);
 
     printf("RNGMIX Version 2.16.0\n");
 
@@ -481,7 +481,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         if (!strcmp(ident, "RUN")) {
             Error = WriteParameterFile();
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             for (k = 0; k < o_; k++) {
                 curr_ = open_[k];
@@ -490,11 +490,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
                 Error = RNGMIX();
 
-                E_CHECK(Error != EOK, Error);
+                E_CHECK(Error != E_OK, Error);
 
                 Error = WriteDataFile();
 
-                E_CHECK(Error != EOK, Error);
+                E_CHECK(Error != E_OK, Error);
 
                 IDum_--;
             }
@@ -503,11 +503,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         if (!strcmp(ident, "DATASET")) {
             open_ = (char**)realloc(open_, (o_ + 1) * sizeof(char*));
 
-            E_CHECK(NULL == open_, ERngmixRunTemplateFile);
+            E_CHECK(NULL == open_, E_MEM);
 
             open_[o_] = (char*)malloc((strlen(pchar) + 1) * sizeof(char));
 
-            E_CHECK(NULL == open_[o_], ERngmixRunTemplateFile);
+            E_CHECK(NULL == open_[o_], E_MEM);
 
             strcpy(open_[o_], pchar); o_++;
         }
@@ -515,13 +515,13 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         if (!strcmp(ident, "RSEED")) {
             IDum_ = isI = (INT)atol(pchar);
 
-            E_CHECK(isI >= 0, ERngmixRunTemplateFile);
+            E_CHECK(isI >= 0, E_ARG);
         }
         else
         if (!strcmp(ident, "LENGTHPDF")) {
             length_pdf_ = isI = (INT)atol(pchar);
 
-            E_CHECK(isI < 1, ERngmixRunTemplateFile);
+            E_CHECK(isI < 1, E_ARG);
         }
         else
         if (!strcmp(ident, "LENGTHTHETA")) {
@@ -530,11 +530,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             while (pchar) {
                 length_theta_ = (INT*)realloc(length_theta_, (i + 1) * sizeof(INT));
 
-                E_CHECK(NULL == length_theta_, ERngmixRunTemplateFile);
+                E_CHECK(NULL == length_theta_, E_MEM);
 
                 length_theta_[i] = isI = (INT)atol(pchar);
 
-                E_CHECK(isI == 0, ERngmixRunTemplateFile);
+                E_CHECK(isI == 0, E_ARG);
 
                 pchar = strtok(NULL, "\t"); ++i;
             }
@@ -543,11 +543,11 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
             IniTheta_ = new CompnentDistribution(this);
 
-            E_CHECK(NULL == IniTheta_, ERngmixRunTemplateFile);
+            E_CHECK(NULL == IniTheta_, E_MEM);
 
             Error = IniTheta_->Realloc(length_pdf_, length_Theta_, length_theta_);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
         }
         else
         if (!strcmp(ident, "PDF")) {
@@ -584,31 +584,31 @@ S0: while (fgets(line, 2048, fp) != NULL) {
                 if (!strcmp(pchar, "UNIFORM"))
                     IniTheta_->pdf_[i] = pfUniform;
                 else {
-                    E_CHECK(1, ERngmixRunTemplateFile);
+                    E_CHECK(1, E_ARG);
                 }
 
                 pchar = strtok(NULL, "\t"); ++i;
             }
 
-            E_CHECK((length_pdf_ > 0) && (length_pdf_ != i), ERngmixRunTemplateFile);
+            E_CHECK((length_pdf_ > 0) && (length_pdf_ != i), E_ARG);
         }
         else
         if (!strcmp(ident, "NTHETA")) {
             N_ = (INT*)realloc(N_, (c_ + 1) * sizeof(INT));
 
-            E_CHECK(NULL == N_, ERngmixRunTemplateFile);
+            E_CHECK(NULL == N_, E_MEM);
 
             N_[c_] = isI = (INT)atol(pchar);
 
-            E_CHECK(isI < 1, ERngmixRunTemplateFile);
+            E_CHECK(isI < 1, E_ARG);
 
             MixTheta = new CompnentDistribution* [(unsigned INT)(c_ + 1)];
 
-            E_CHECK(NULL == MixTheta, ERngmixRunTemplateFile);
+            E_CHECK(NULL == MixTheta, E_MEM);
 
             MixTheta[c_] = new CompnentDistribution(this);
 
-            E_CHECK(NULL == MixTheta[c_], ERngmixRunTemplateFile);
+            E_CHECK(NULL == MixTheta[c_], E_MEM);
 
             for (i = 0; i < c_; i++) {
                 MixTheta[i] = MixTheta_[i];
@@ -620,7 +620,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
 
             Error = MixTheta_[c_]->Realloc(length_pdf_, length_Theta_, length_theta_);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             for (i = 0; i < length_pdf_; i++) {
                 MixTheta_[c_]->pdf_[i] = IniTheta_->pdf_[i];
@@ -640,7 +640,7 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         if (!strcmp(ident, "SAVE")) {
             save_ = (char*)realloc(save_, (strlen(pchar) + 1) * sizeof(char));
 
-            E_CHECK(NULL == save_, ERngmixRunTemplateFile);
+            E_CHECK(NULL == save_, E_MEM);
 
             strcpy(save_, pchar);
         }

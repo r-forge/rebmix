@@ -23,27 +23,27 @@ void RLabelMomentsXY(INT    *nx,     // Image width.
     FLOAT **Mij = NULL, *Mean = NULL, Mul, *Stdev = NULL, Tmp;
     INT   i, ii, j, k, kk, l, n = 0;
 
-    *Error = EOK;
+    *Error = E_OK;
 
-    R_CHECK(*c < 2, ERLabelMomentsXY);
+    R_CHECK(*c < 2, E_ARG);
 
     Mij = (FLOAT**)malloc(4 * sizeof(FLOAT*));
 
-    R_CHECK(NULL == Mij, ERLabelMomentsXY);
+    R_CHECK(NULL == Mij, E_MEM);
 
     for (i = 0; i < 4; i++) {
         Mij[i] = (FLOAT*)calloc((size_t)(*c), sizeof(FLOAT));
 
-        R_CHECK(NULL == Mij[i], ERLabelMomentsXY);
+        R_CHECK(NULL == Mij[i], E_MEM);
     }
 
     Mean = (FLOAT*)calloc((size_t)4, sizeof(FLOAT));
 
-    R_CHECK(NULL == Mean, ERLabelMomentsXY);
+    R_CHECK(NULL == Mean, E_MEM);
 
     Stdev = (FLOAT*)calloc((size_t)4, sizeof(FLOAT));
 
-    R_CHECK(NULL == Stdev, ERLabelMomentsXY);
+    R_CHECK(NULL == Stdev, E_MEM);
 
     // Numbers of pixels and raw clustered image moments calculation.   
 
@@ -159,27 +159,27 @@ void RLabelMomentsXYZ(INT    *nx,     // Image width.
     FLOAT **Mijk = NULL, *Mean = NULL, Mul, *Stdev = NULL, Tmp;
     INT   i, ii, j, k, kk, l, m, mm, n = 0;
 
-    *Error = EOK;
+    *Error = E_OK;
 
-    R_CHECK(*c < 2, ERLabelMomentsXYZ);
+    R_CHECK(*c < 2, E_ARG);
 
     Mijk = (FLOAT**)malloc(5 * sizeof(FLOAT*));
 
-    R_CHECK(NULL == Mijk, ERLabelMomentsXYZ);
+    R_CHECK(NULL == Mijk, E_MEM);
 
     for (i = 0; i < 5; i++) {
         Mijk[i] = (FLOAT*)calloc((size_t)(*c), sizeof(FLOAT));
 
-        R_CHECK(NULL == Mijk[i], ERLabelMomentsXYZ);
+        R_CHECK(NULL == Mijk[i], E_MEM);
     }
 
     Mean = (FLOAT*)calloc((size_t)5, sizeof(FLOAT));
 
-    R_CHECK(NULL == Mean, ERLabelMomentsXYZ);
+    R_CHECK(NULL == Mean, E_MEM);
 
     Stdev = (FLOAT*)calloc((size_t)5, sizeof(FLOAT));
 
-    R_CHECK(NULL == Stdev, ERLabelMomentsXYZ);
+    R_CHECK(NULL == Stdev, E_MEM);
 
     //  Numbers of voxels and raw clustered image moments calculation.   
 
@@ -292,15 +292,13 @@ void RMergeLabels(INT    *n,      // Number of adjacency matrices.
     FLOAT *D = NULL, p;
     INT   i, ii, j, k, kk, l, m;
 
-    *Error = EOK;
+    *Error = E_OK;
 
-    R_CHECK(*n < 1, ERMergeLabels);
-    
-    R_CHECK(*c < 2, ERMergeLabels);
-
+    R_CHECK((*n < 1) || (*c < 2), E_ARG);
+ 
     D = (FLOAT*)malloc(*c * sizeof(FLOAT));
 
-    R_CHECK(NULL == D, ERMergeLabels);
+    R_CHECK(NULL == D, E_MEM);
 
     // Adjacency matrix calculation.
 

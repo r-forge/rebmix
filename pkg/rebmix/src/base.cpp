@@ -3,6 +3,22 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
+char _e_line_[65536] = "";
+char _w_line_[65536] = "";
+
+void Print_e_line_(const char *file, INT line, INT error)
+{
+    sprintf(_e_line_, "File = %s; line = %d; error = %d.", file, line, error);
+} // Print_e_line_
+
+void Print_w_line_()
+{
+    if (!strcmp(_w_line_, "")) strcpy(_w_line_, _e_line_);
+    
+    strcpy(_e_line_, "");
+} // Print_w_line_
 
 // Base constructor.
 
@@ -121,13 +137,13 @@ INT Digamma(FLOAT y, FLOAT *Psi)
         (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
 
     FLOAT d2, den, aug, sgn, ymy0, ymax, upper, w, ymin, z;
-    INT   i, m, n, nq, Error = EOK;
+    INT   i, m, n, nq, Error = E_OK;
 
     ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
 
     if (y < (FLOAT)0.5) {
         if ((FLOAT)fabs(y) <= ymin) {
-            E_CHECK(y == (FLOAT)0.0, EDigamma);
+            E_CHECK(y == (FLOAT)0.0, E_ARG);
 
             aug = -(FLOAT)1.0 / y;
         }
@@ -138,7 +154,7 @@ INT Digamma(FLOAT y, FLOAT *Psi)
                 w = -w; sgn = -sgn;
             }
 
-            E_CHECK(w >= ymax, EDigamma);
+            E_CHECK(w >= ymax, E_ARG);
 
             nq = (INT)w; w -= (FLOAT)nq; nq = (INT)(w * (FLOAT)4.0); w = (w - (FLOAT)nq * (FLOAT)0.25) * (FLOAT)4.0; n = nq / 2;
 
@@ -155,7 +171,7 @@ INT Digamma(FLOAT y, FLOAT *Psi)
             n = (nq + 1) / 2; m = n / 2; m += m;
 
             if (m == n) {
-                E_CHECK(z == (FLOAT)0.0, EDigamma);
+                E_CHECK(z == (FLOAT)0.0, E_ARG);
 
                 aug = sgn * ((FLOAT)cos(z) / (FLOAT)sin(z) * (FLOAT)4.0);
             }
@@ -293,7 +309,7 @@ INT GammaSer(FLOAT a,       // Constant a > 0.
              FLOAT *Gamln)  // Log(Gamma(a)).
 {
     FLOAT ap, Del, Sum;
-    INT   i, Error = EOK;
+    INT   i, Error = E_OK;
 
     *Gamln = Gammaln(a);
 
@@ -301,17 +317,17 @@ INT GammaSer(FLOAT a,       // Constant a > 0.
         *GamSer = (FLOAT)0.0;
     }
     else {
-        ap = a; Sum = (FLOAT)1.0 / a; Del = Sum; Error = EGammaSer; i = 1;
+        i = 1; Error = E_CON; ap = a; Sum = (FLOAT)1.0 / a; Del = Sum;
 
-        while ((i <= ItMax) && (Error != EOK)) {
+        while ((i <= ItMax) && (Error != E_OK)) {
             ap += (FLOAT)1.0; Del *= y / ap; Sum += Del;
 
-            if ((FLOAT)fabs(Del) < Eps) Error = EOK;
+            if ((FLOAT)fabs(Del) < Eps) Error = E_OK;
 
             i++;
         }
 
-        if (Error != EOK) Error = EOK; // ItMax too small.
+        if (Error != E_OK) Error = E_OK; // ItMax too small.
 
         *GamSer = Sum * (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln);
     }
@@ -328,7 +344,7 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
              FLOAT *Gamln)  // Log(Gamma(a)).
 {
     FLOAT a0, a1, ai, aia, aif, b0, b1, Fac, G, Gold;
-    INT   i, Error = EOK;
+    INT   i, Error = E_OK;
 
     *Gamln = Gammaln(a);
 
@@ -338,9 +354,9 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
     else {
         G = (FLOAT)0.0; Gold = (FLOAT)0.0; Fac = (FLOAT)1.0;
 
-        i = 1; a0 = (FLOAT)1.0; a1 = y; b0 = (FLOAT)0.0; b1 = (FLOAT)1.0; Error = EGammaCfg;
+        i = 1; Error = E_CON; a0 = (FLOAT)1.0; a1 = y; b0 = (FLOAT)0.0; b1 = (FLOAT)1.0;
 
-        while ((i <= ItMax) && (Error != EOK)) {
+        while ((i <= ItMax) && (Error != E_OK)) {
             ai = (FLOAT)1.0 * i; aia = ai - a; aif = ai * Fac;
 
             a0 = (a1 + a0 * aia) * Fac;
@@ -352,13 +368,13 @@ INT GammaCfg(FLOAT a,       // Constant a > 0.
             if (a1 != (FLOAT)0.0) {
                 Fac = (FLOAT)1.0 / a1; G = b1 * Fac;
 
-                if ((FLOAT)fabs(G - Gold) < Eps) Error = EOK; else Gold = G;
+                if ((FLOAT)fabs(G - Gold) < Eps) Error = E_OK; else Gold = G;
             }
 
             i++;
         }
 
-        if (Error != EOK) Error = EOK; // ItMax too small.
+        if (Error != E_OK) Error = E_OK; // ItMax too small.
 
         *GamCfg = (FLOAT)exp(-y + a * (FLOAT)log(y) - *Gamln) * G;
     }
@@ -374,7 +390,7 @@ INT GammaP(FLOAT a,       // Constant a > 0.
            FLOAT *Gamln)  // Log(Gamma(a)).
 {
     FLOAT GamSer, GamCfg;
-    INT   Error = EOK;
+    INT   Error = E_OK;
 
     if ((y <= FLOAT_MIN) || (a <= FLOAT_MIN)) {
         *GamP = (FLOAT)0.0;
@@ -383,14 +399,14 @@ INT GammaP(FLOAT a,       // Constant a > 0.
     if (y < a + (FLOAT)1.0) {
         Error = GammaSer(a, y, &GamSer, Gamln);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
 
         *GamP = GamSer;
     }
     else {
         Error = GammaCfg(a, y, &GamCfg, Gamln);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
 
         *GamP = (FLOAT)1.0 - GamCfg;
     }
@@ -405,7 +421,7 @@ EEXIT:
 INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 {
     FLOAT Gamln, GamP, Tmp, dx, dy;
-    INT   i, Error = EOK;
+    INT   i, error, Error = E_OK;
 
     if (Beta > (FLOAT)1.0) {
         *y = (Beta - (FLOAT)1.0) * Theta + Eps;
@@ -413,10 +429,12 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
     else
         *y = Eps;
 
-    i = 1; dx = (FLOAT)0.0; Error = EGammaInv;
+    i = 1; Error = E_CON; dx = (FLOAT)0.0; 
 
-    while ((i <= ItMax) && (Error != EOK)) {
-        if (GammaP(Beta, *y / Theta, &GamP, &Gamln) != EOK) goto EEXIT;
+    while ((i <= ItMax) && (Error != E_OK)) {
+        error = GammaP(Beta, *y / Theta, &GamP, &Gamln);
+
+        E_CHECK(error != E_OK, error);
 
         Tmp = *y / Theta;
 
@@ -424,13 +442,13 @@ INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 
         *y -= dy;
 
-        E_CHECK(IsNan(dy) || IsInf(dy), EGammaInv);
+        E_CHECK(IsNan(dy) || IsInf(dy), E_CON);
 
         if (*y < Eps) {
-            *y = Eps; Error = EOK;
+            *y = Eps; Error = E_OK;
         }
 
-        if (((FLOAT)fabs(dy) < Eps) || ((FLOAT)fabs(dx + dy) < Eps)) Error = EOK; 
+        if (((FLOAT)fabs(dy) < Eps) || ((FLOAT)fabs(dx + dy) < Eps)) Error = E_OK; 
         
         dx = dy;
 
@@ -475,11 +493,11 @@ INT ErrorF(FLOAT y,     // Variable y.
            FLOAT *ErF)  // Error function.
 {
     FLOAT GamP, Gamln;
-    INT   Error = EOK;
+    INT   Error = E_OK;
 
     Error = GammaP((FLOAT)0.5, y * y, &GamP, &Gamln);
 
-    E_CHECK(Error != EOK, Error);
+    E_CHECK(Error != E_OK, Error);
 
     if (y < (FLOAT)0.0)
         *ErF = -GamP;
@@ -499,11 +517,11 @@ INT LUdcmp(INT   n,     // Size of square matrix.
            FLOAT *det)  // Determinant.
 {
     FLOAT Big, Tmp, *V = NULL;
-    INT   i, imax, j, k, Error = EOK;
+    INT   i, imax, j, k, Error = E_OK;
 
     V = (FLOAT*)malloc(n * sizeof(FLOAT));
 
-    E_CHECK(NULL == V, ELUdcmp);
+    E_CHECK(NULL == V, E_MEM);
 
     for (i = 0; i < n; i++) {
         Big = (FLOAT)0.0;
@@ -512,7 +530,7 @@ INT LUdcmp(INT   n,     // Size of square matrix.
             if ((Tmp = (FLOAT)fabs(A[i * n + j])) > Big) Big = Tmp;
         }
 
-        E_CHECK((FLOAT)fabs(Big) <= FLOAT_MIN, ELUdcmp);
+        E_CHECK((FLOAT)fabs(Big) <= FLOAT_MIN, E_CON);
 
         V[i] = (FLOAT)1.0 / Big;
     }
@@ -551,7 +569,7 @@ INT LUdcmp(INT   n,     // Size of square matrix.
 
     for (i = 0; i < n; i++) *det *= A[i * n + i];
 
-    E_CHECK(IsNan(*det) || ((FLOAT)fabs(*det) <= FLOAT_MIN), ELUdcmp);
+    E_CHECK(IsNan(*det) || ((FLOAT)fabs(*det) <= FLOAT_MIN), E_CON);
 
 EEXIT:
 
@@ -568,7 +586,7 @@ INT LUbksb(INT   n,     // Size of square matrix.
            FLOAT *b)    // Pointer to the solution vector.
 {
     FLOAT Sum;
-    INT   i, ii = 0, ip, j, Error = EOK;
+    INT   i, ii = 0, ip, j, Error = E_OK;
 
     for (i = 0; i < n; i++) {
         ip = indx[i]; Sum = b[ip]; b[ip] = b[i];
@@ -603,25 +621,25 @@ INT LUinvdet(INT   n,     // Size of square matrix.
              FLOAT *Adet) // Pointer to the determinant of A.
 {
     FLOAT *b = NULL, *B = NULL;
-    INT   i, *indx = NULL, j, Error = EOK;
+    INT   i, *indx = NULL, j, Error = E_OK;
 
     indx = (INT*)calloc((size_t)n, sizeof(INT));
 
-    E_CHECK(NULL == indx, ELUinvdet);
+    E_CHECK(NULL == indx, E_MEM);
 
     b = (FLOAT*)malloc(n * sizeof(FLOAT));
 
-    E_CHECK(NULL == b, ELUinvdet);
+    E_CHECK(NULL == b, E_MEM);
 
     B = (FLOAT*)malloc(n * n * sizeof(FLOAT));
 
-    E_CHECK(NULL == B, ELUinvdet);
+    E_CHECK(NULL == B, E_MEM);
 
     memmove(B, A, n * n * sizeof(FLOAT));
 
     Error = LUdcmp(n, B, indx, Adet);
 
-    E_CHECK(Error != EOK, Error);
+    E_CHECK(Error != E_OK, Error);
 
     for (j = 0; j < n; j++) {
         memset(b, 0, n * sizeof(FLOAT));
@@ -630,7 +648,7 @@ INT LUinvdet(INT   n,     // Size of square matrix.
 
         Error = LUbksb(n, B, indx, b);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
 
         for (i = 0; i < n; i++) Ainv[i * n + j] = b[i];
     }
@@ -653,13 +671,13 @@ INT Choldc(INT   n,   // Size of square matrix.
            FLOAT *L)  // Lower triangular factors.
 {
     FLOAT *p = NULL, Sum;
-    INT   i, j, k, Error = EOK;
+    INT   i, j, k, Error = E_OK;
 
     memmove(L, A, n * n * sizeof(FLOAT));
 
     p = (FLOAT*)malloc(n * sizeof(FLOAT));
 
-    E_CHECK(NULL == p, ECholdc);
+    E_CHECK(NULL == p, E_MEM);
 
     for (i = 0; i < n; i++) {
         for (j = i; j < n; j++) {
@@ -699,17 +717,17 @@ INT Cholinvdet(INT   n,         // Size of square matrix.
                FLOAT *logAdet)  // Pointer to the logarithm of determinant of A.
 {
     FLOAT *L = NULL, *p = NULL, Sum;
-    INT   i, j, k, Error = EOK;
+    INT   i, j, k, Error = E_OK;
 
     L = (FLOAT*)malloc(n * n * sizeof(FLOAT));
 
-    E_CHECK(NULL == L, ECholinvdet);
+    E_CHECK(NULL == L, E_MEM);
 
     memmove(L, A, n * n * sizeof(FLOAT));
 
     p = (FLOAT*)malloc(n * sizeof(FLOAT));
 
-    E_CHECK(NULL == p, ECholinvdet);
+    E_CHECK(NULL == p, E_MEM);
 
     for (i = 0; i < n; i++) {
         for (j = i; j < n; j++) {
@@ -827,7 +845,7 @@ FLOAT BesselI1(FLOAT x)
 INT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa, FLOAT *Fy)
 {
     FLOAT A[3], Io, In;
-    INT   i, Error = EOK;
+    INT   i, Error = E_OK;
 
     if (y > Pi2) {
         *Fy = (FLOAT)1.0;
@@ -841,14 +859,14 @@ INT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa, FLOAT *Fy)
 
         A[0] = (FLOAT)1.0 / Pi2; A[1] = (FLOAT)2.0 * A[0] / Io;
 
-        i = 1; *Fy = A[0] * y; Error = EvonMisesCdf;
+        i = 1; Error = E_CON; *Fy = A[0] * y;
 
-        while ((i <= ItMax) && (Error != EOK)) {
+        while ((i <= ItMax) && (Error != E_OK)) {
             *Fy += A[1] * In * ((FLOAT)sin(i * (y - Mean)) + (FLOAT)sin(i * Mean)) / i;
 
             A[2] = Io - (FLOAT)2.0 * i * In / Kappa; Io = In; In = A[2];
 
-            if (In < Eps) Error = EOK;
+            if (In < Eps) Error = E_OK;
 
             i++;
         }
@@ -870,7 +888,7 @@ INT vonMisesCdf(FLOAT y, FLOAT Mean, FLOAT Kappa, FLOAT *Fy)
 INT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa, FLOAT *y)
 {
     FLOAT fl, fm, Fyt, yl, yh;
-    INT   i, Error = EOK;
+    INT   i, Error = E_OK;
 
     if (Fy >= (FLOAT)1.0) {
         *y = Pi2;
@@ -884,25 +902,25 @@ INT vonMisesInv(FLOAT Fy, FLOAT Mean, FLOAT Kappa, FLOAT *y)
 
         Error = vonMisesCdf(yl, Mean, Kappa, &Fyt);
 
-        E_CHECK(Error != EOK, Error);
+        E_CHECK(Error != E_OK, Error);
 
         fl = Fy - Fyt; yh = Pi2;
 
         // Bisection.
 
-        i = 1; Error = EvonMisesInv;
+        i = 1; Error = E_CON;
 
-        while ((i <= ItMax) && (Error != EOK)) {
+        while ((i <= ItMax) && (Error != E_OK)) {
             *y = (yh + yl) / (FLOAT)2.0;
 
             Error = vonMisesCdf(*y, Mean, Kappa, &Fyt);
 
-            E_CHECK(Error != EOK, Error);
+            E_CHECK(Error != E_OK, Error);
 
             fm = Fy - Fyt;
 
             if (((FLOAT)fabs(fm) < Eps) || (yh - yl < Eps)) {
-                Error = EOK;
+                Error = E_OK;
             }
             else {
                 if (fm * fl > (FLOAT)0.0) {
