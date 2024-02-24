@@ -52,6 +52,7 @@ if (expression) { \
 #define E_MEM                            1
 #define E_ARG                            2
 #define E_CON                            3
+#define E_FILE                           4
 
 #ifndef FLOAT
 #define FLOAT double

@@ -304,11 +304,8 @@ INT Rebmix::Initialize()
     INT Error = E_OK;
 
     p_value_ = (FLOAT)0.0001;
-
     min_dist_mul_ = (FLOAT)2.5;
-
     var_mul_ = (FLOAT)0.0625;
-
     kmax_ = (INT)floor(((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_)));
 
     Error = GammaInv((FLOAT)1.0 - (FLOAT)2.0 * p_value_, (FLOAT)2.0, length_pdf_ / (FLOAT)2.0, &ChiSqr_);
@@ -716,8 +713,6 @@ INT RoughWeibullParameters(FLOAT ym,
         }
     }
 
-    E_CHECK(Error != E_OK, E_CON);
-
     *Beta = Alpha + Euler + (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
 
     *Theta = ym * (FLOAT)pow(Alpha / (Alpha - (FLOAT)1.0), (FLOAT)1.0 / (*Beta));
@@ -768,8 +763,6 @@ INT RoughGammaParameters(FLOAT ym,
             i++;
         }
     }
-
-    E_CHECK(Error != E_OK, E_CON);
 
     *Beta = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha));
 
@@ -958,9 +951,7 @@ INT RoughPoissonParameters(FLOAT ym,
             while ((i <= ItMax) && (Error != E_OK)) {
                 dTheta = *Theta * (ym * (FLOAT)log(*Theta) - *Theta - A) / (ym - *Theta);
 
-                if (IsNan(dTheta) || IsInf(dTheta)) {
-                    break;
-                }
+                E_CHECK(IsNan(dTheta) || IsInf(dTheta), E_CON);
 
                 *Theta -= dTheta;
 
@@ -973,6 +964,8 @@ INT RoughPoissonParameters(FLOAT ym,
             *Theta = ymean;
         }
     }
+
+EEXIT:
 
     E_RETURN(Error);
 } // RoughPoissonParameters
@@ -1060,7 +1053,7 @@ INT ComponentMarginalDist(INT                  i,           // Index of variable
             *CmpMrgDist = (FLOAT)0.0;
         else
             *CmpMrgDist = (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
-                          (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
+                (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
         break;
     case pfPoisson:
@@ -1175,7 +1168,7 @@ INT LogComponentMarginalDist(INT                  i,           // Index of varia
         }
         else
             *CmpMrgDist = Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
-                          k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
+                k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
 
         break;
     case pfPoisson:
@@ -1333,7 +1326,7 @@ INT Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              CmpMrgCdf[2], *D = NULL, Dc, Dlm, Dlmin, epsilon, flm, flmax, flmin, logflm, R;
-    INT                i, I, ii, j, l, *N = NULL, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, error, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -1582,35 +1575,35 @@ S0:;
 
             switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfTNormal:
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGumbel:
-                Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 if ((FLOAT)fabs(IniTheta_->Theta_[2][i]) < Eps) {
                     if (Mode[i].ym > Mode[i].ymean) {
@@ -1623,21 +1616,21 @@ S0:;
 
                 break;
             case pfvonMises:
-                Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
+                error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfDirac: case pfUniform:
@@ -1647,13 +1640,13 @@ S0:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
+                error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
+                error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpMrgCdf[1] - CmpMrgCdf[0];
             }
@@ -1700,7 +1693,7 @@ INT Rebmix::RoughEstimationKDE(FLOAT                **Y,         // Pointer to t
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              CmpMrgCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logflm, logV;
-    INT                i, I, ii, j, l, *N = NULL, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, error, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -1931,35 +1924,35 @@ S2:;
 
             switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfTNormal:
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGumbel:
-                Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 if ((FLOAT)fabs(IniTheta_->Theta_[2][i]) < Eps) {
                     if (Mode[i].ym > Mode[i].ymean) {
@@ -1972,21 +1965,21 @@ S2:;
 
                 break;
             case pfvonMises:
-                Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
+                error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfDirac: case pfUniform:
@@ -1996,13 +1989,13 @@ S2:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
+                error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
+                error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpMrgCdf[1] - CmpMrgCdf[0];
             }
@@ -2048,7 +2041,7 @@ INT Rebmix::RoughEstimationH(INT                  k,           // Total number o
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              CmpMrgCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logflm, logV;
-    INT                i, I, ii, j, l, *N = NULL, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, error, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -2285,35 +2278,35 @@ S2:;
 
             switch (LooseTheta->pdf_[i]) {
             case pfNormal:
-                Error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfTNormal:
                 break;
             case pfLognormal:
-                Error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfWeibull:
-                Error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGamma:
-                Error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfGumbel:
-                Error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 if ((FLOAT)fabs(IniTheta_->Theta_[2][i]) < Eps) {
                     if (Mode[i].ym > Mode[i].ymean) {
@@ -2326,21 +2319,21 @@ S2:;
 
                 break;
             case pfvonMises:
-                Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfBinomial:
-                Error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfPoisson:
-                Error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
+                error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 break;
             case pfDirac: case pfUniform:
@@ -2350,13 +2343,13 @@ S2:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
+                error = ComponentMarginalCdf(i, X[j].a, LooseTheta, &CmpMrgCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
+                error = ComponentMarginalCdf(i, X[j].b, LooseTheta, &CmpMrgCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpMrgCdf[1] - CmpMrgCdf[0];
             }
@@ -2544,7 +2537,7 @@ INT Rebmix::ComponentDist(INT                  j,         // Indey of observatio
             }
             else
                 *CmpDist *= (FLOAT)exp(Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0)) *
-                            (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
+                    (FLOAT)pow(p, k) * (FLOAT)pow((FLOAT)1.0 - p, n - k);
 
             break;
         case pfPoisson:
@@ -2742,7 +2735,7 @@ INT Rebmix::LogComponentDist(INT                  j,         // Indey of observa
             }
             else
                 *CmpDist += Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
-                            k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
+                    k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
 
             break;
         case pfPoisson:
@@ -2900,8 +2893,6 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
@@ -2955,8 +2946,6 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
@@ -3001,8 +2990,6 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             A[1] /= nl;
 
@@ -3064,8 +3051,6 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -3267,8 +3252,6 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
@@ -3322,8 +3305,6 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
@@ -3368,8 +3349,6 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             A[1] /= nl;
 
@@ -3431,8 +3410,6 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -3636,8 +3613,6 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = (FLOAT)exp((FLOAT)log(A[2]) / EnhanTheta->Theta_[1][i]);
@@ -3691,8 +3666,6 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
                 j++;
             }
 
-            E_CHECK(Error != E_OK, Error);
-
             A[2] /= nl;
 
             EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
@@ -3737,8 +3710,6 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             A[1] /= nl;
 
@@ -3800,8 +3771,6 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
 
                 j++;
             }
-
-            E_CHECK(Error != E_OK, Error);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -4027,8 +3996,6 @@ INT BayesWeibullParameters(FLOAT FirstM,  // First moment.
         i++;
     }
 
-    E_CHECK(Error != E_OK, Error);
-
     *Theta2 = xm;
 
     *Theta1 = FirstM / (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)1.0 / xm));
@@ -4086,8 +4053,6 @@ INT BayesvonMisesParameters(FLOAT FirstM,  // First moment.
 
         i++;
     }
-
-    E_CHECK(Error != E_OK, Error);
 
     *Theta1 = theta1; *Theta2 = theta2;
 
@@ -8633,7 +8598,7 @@ INT Rebmix::ReadDataFile()
 
     fp = fopen(curr_, "r");
 
-    E_CHECK(NULL == fp, E_MEM);
+    E_CHECK(NULL == fp, E_FILE);
 
     if (Y_type_ == 0) {
         nc_ = length_pdf_;
@@ -8770,7 +8735,7 @@ INT Rebmix::WriteDataFile()
 
     fp0 = fopen(line, mode);
 
-    E_CHECK(NULL == fp0, E_MEM);
+    E_CHECK(NULL == fp0, E_FILE);
 
     strcpy(path, save_);
 
@@ -8787,7 +8752,7 @@ INT Rebmix::WriteDataFile()
 
     fp1 = fopen(line, mode);
 
-    E_CHECK(NULL == fp1, E_MEM);
+    E_CHECK(NULL == fp1, E_FILE);
 
     if (!strcmp(mode, "w")) {
         fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", "Dataset",
@@ -9258,7 +9223,7 @@ INT Rebmix::RunTemplateFile(char *file)
 
     fp = fopen(file, "r");
 
-    E_CHECK(NULL == fp, E_MEM);
+    E_CHECK(NULL == fp, E_FILE);
 
 S0: while (fgets(line, 2048, fp) != NULL) {
         pchar = strtok(line, "\n");

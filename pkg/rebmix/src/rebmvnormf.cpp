@@ -88,7 +88,7 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -301,13 +301,13 @@ S0:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -376,7 +376,7 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -587,13 +587,13 @@ S0:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -661,7 +661,7 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -872,13 +872,13 @@ S0:;
             Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
             for (j = 0; j < I; j++) {
-                Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
-                Error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                E_CHECK(Error != E_OK, Error);
+                E_CHECK(error != E_OK, error);
 
                 Dlm -= CmpConCdf[1] - CmpConCdf[0];
             }
@@ -1181,7 +1181,7 @@ INT Rebmvnorm::BayesClassificationKNN(FLOAT                **Y,        // Pointe
                                       FLOAT                **FirstM,   // First moments.
                                       FLOAT                **SecondM)  // Second moments.
 {
-    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    FLOAT CmpDist, dW, Max, N = (FLOAT)0.0, Tmp;
     INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = E_OK;
 
     for (i = 0; i < nr_; i++) {
@@ -1265,7 +1265,7 @@ INT Rebmvnorm::BayesClassificationKDE(FLOAT                **Y,        // Pointe
                                       FLOAT                **FirstM,   // First moments.
                                       FLOAT                **SecondM)  // Second moments.
 {
-    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    FLOAT CmpDist, dW, Max, N = (FLOAT)0.0, Tmp;
     INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = E_OK;
 
     for (i = 0; i < nr_; i++) {
@@ -1350,7 +1350,7 @@ INT Rebmvnorm::BayesClassificationH(INT                  k,          // Total nu
                                     FLOAT                **FirstM,   // First moments.
                                     FLOAT                **SecondM)  // Second moments.
 {
-    FLOAT CmpDist, Max, N = (FLOAT)0.0, Tmp, dW;
+    FLOAT CmpDist, dW, Max, N = (FLOAT)0.0, Tmp;
     INT   i, j, jj, l, o, outlier, Outlier = 0, p, q, Error = E_OK;
 
     for (i = 0; i < k; i++) {

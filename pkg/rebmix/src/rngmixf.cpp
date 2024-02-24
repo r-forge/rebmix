@@ -81,7 +81,7 @@ INT Rngmix::WriteDataFile()
 
     fp = fopen(curr_, "w");
 
-    E_CHECK(NULL == fp, E_MEM);
+    E_CHECK(NULL == fp, E_FILE);
 
     for (i = 0; i < n_; i++) {
         fprintf(fp, "%E", Y_[0][i]);
@@ -138,7 +138,7 @@ INT Rngmix::WriteParameterFile()
 
     fp = fopen(line, "w");
 
-    E_CHECK(NULL == fp, E_MEM);
+    E_CHECK(NULL == fp, E_FILE);
 
     fprintf(fp, "%s\n", "rseed");
 
@@ -294,9 +294,9 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
                     C[6] = (FLOAT)floor(C[6]);
 
                     C[7] = (FLOAT)1.2 * C[3] * ((FLOAT)1.0 + C[5] * C[5]) *
-                           (FLOAT)exp(Bg - Gammaln(C[6] + (FLOAT)1.0) -
-                           Gammaln(Be - C[6] + (FLOAT)1.0) +
-                           C[6] * Bplog + (Be - C[6]) * Bpclog);
+                        (FLOAT)exp(Bg - Gammaln(C[6] + (FLOAT)1.0) -
+                        Gammaln(Be - C[6] + (FLOAT)1.0) +
+                        C[6] * Bplog + (Be - C[6]) * Bpclog);
 
                 } while (Ran1(&IDum_) > C[7]);
 
@@ -422,7 +422,7 @@ INT Rngmix::RunTemplateFile(char *file)
 
     fp = fopen(file, "r");
 
-    E_CHECK(NULL == fp, E_MEM);
+    E_CHECK(NULL == fp, E_FILE);
 
     printf("RNGMIX Version 2.16.0\n");
 

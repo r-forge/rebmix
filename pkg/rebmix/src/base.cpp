@@ -132,11 +132,11 @@ INT Digamma(FLOAT y, FLOAT *Psi)
     static FLOAT q1[6] = {(FLOAT)44.8452573429826, (FLOAT)520.752771467162, (FLOAT)2210.0079924783,
         (FLOAT)3641.27349079381, (FLOAT)1908.310765963, (FLOAT)6.91091682714533e-6 };
     static FLOAT p2[4] = {-(FLOAT)2.12940445131011, -(FLOAT)7.01677227766759,
-       -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
+        -(FLOAT)4.48616543918019, -(FLOAT)0.648157123766197};
     static FLOAT q2[4] = {(FLOAT)32.2703493791143, (FLOAT)89.2920700481861,
         (FLOAT)54.6117738103215, (FLOAT)7.77788548522962};
 
-    FLOAT d2, den, aug, sgn, ymy0, ymax, upper, w, ymin, z;
+    FLOAT aug, d2, den, sgn, upper, w, ymax, ymin, ymy0, z;
     INT   i, m, n, nq, Error = E_OK;
 
     ymax = (FLOAT)INT_MAX; d2 = (FLOAT)1.0 / FLOAT_EPSILON; if (ymax > d2) ymax = d2; ymin = (FLOAT)1E-9; aug = (FLOAT)0.0;
@@ -389,7 +389,7 @@ INT GammaP(FLOAT a,       // Constant a > 0.
            FLOAT *GamP,   // Incomplete gamma function.
            FLOAT *Gamln)  // Log(Gamma(a)).
 {
-    FLOAT GamSer, GamCfg;
+    FLOAT GamCfg, GamSer;
     INT   Error = E_OK;
 
     if ((y <= FLOAT_MIN) || (a <= FLOAT_MIN)) {
@@ -420,7 +420,7 @@ EEXIT:
 
 INT GammaInv(FLOAT Fy, FLOAT Theta, FLOAT Beta, FLOAT *y)
 {
-    FLOAT Gamln, GamP, Tmp, dx, dy;
+    FLOAT dx, dy, Gamln, GamP, Tmp;
     INT   i, error, Error = E_OK;
 
     if (Beta > (FLOAT)1.0) {
@@ -492,7 +492,7 @@ FLOAT GumbelInv(FLOAT Fy, FLOAT Mean, FLOAT Sigma, FLOAT Xi)
 INT ErrorF(FLOAT y,     // Variable y.
            FLOAT *ErF)  // Error function.
 {
-    FLOAT GamP, Gamln;
+    FLOAT Gamln, GamP;
     INT   Error = E_OK;
 
     Error = GammaP((FLOAT)0.5, y * y, &GamP, &Gamln);
@@ -799,9 +799,9 @@ FLOAT BesselI0(FLOAT x)
         y = 3.75 / x;
 
         I0 = ((FLOAT)exp(x) / (FLOAT)sqrt(x)) * ((FLOAT)0.39894228 + y * ((FLOAT)0.1328592e-1
-             + y * ((FLOAT)0.225319e-2 + y * (-(FLOAT)0.157565e-2 + y * ((FLOAT)0.916281e-2
-             + y * (-(FLOAT)0.2057706e-1 + y * ((FLOAT)0.2635537e-1 + y * (-(FLOAT)0.1647633e-1
-             + y * (FLOAT)0.392377e-2))))))));
+            + y * ((FLOAT)0.225319e-2 + y * (-(FLOAT)0.157565e-2 + y * ((FLOAT)0.916281e-2
+            + y * (-(FLOAT)0.2057706e-1 + y * ((FLOAT)0.2635537e-1 + y * (-(FLOAT)0.1647633e-1
+            + y * (FLOAT)0.392377e-2))))))));
     }
 
     return I0;
@@ -825,16 +825,16 @@ FLOAT BesselI1(FLOAT x)
         y = x / (FLOAT)3.75; y *= y;
 
         I1 = x * ((FLOAT)0.5 + y * ((FLOAT)0.87890594 + y * ((FLOAT)0.51498869 + y * ((FLOAT)0.15084934
-             + y * ((FLOAT)0.2658733e-1 + y * ((FLOAT)0.301532e-2 + y * (FLOAT)0.32411e-3))))));
+            + y * ((FLOAT)0.2658733e-1 + y * ((FLOAT)0.301532e-2 + y * (FLOAT)0.32411e-3))))));
     }
     else {
         y = (FLOAT)3.75 / x;
 
         I1 = (FLOAT)0.2282967e-1 + y * (-(FLOAT)0.2895312e-1 + y * ((FLOAT)0.1787654e-1
-             - y * (FLOAT)0.420059e-2));
+            - y * (FLOAT)0.420059e-2));
 
         I1 = (FLOAT)0.39894228 + y * (-(FLOAT)0.3988024e-1 + y * (-(FLOAT)0.362018e-2
-             + y * ((FLOAT)0.163801e-2 + y * (-(FLOAT)0.1031555e-1 + y * I1))));
+            + y * ((FLOAT)0.163801e-2 + y * (-(FLOAT)0.1031555e-1 + y * I1))));
 
         I1 *= ((FLOAT)exp(I1) / (FLOAT)sqrt(x));
     }
