@@ -6,19 +6,24 @@
 #include <stdio.h>
 
 char _e_line_[65536] = "";
-char _w_line_[65536] = "";
+char _w_line_[2][65536] = { "", "" };
 
 void Print_e_line_(const char *file, INT line, INT error)
 {
     sprintf(_e_line_, "File = %s; line = %d; error = %d.", file, line, error);
 } // Print_e_line_
 
-void Print_w_line_()
+void Print_w_line_(INT idx)
 {
-    if (!strcmp(_w_line_, "")) strcpy(_w_line_, _e_line_);
+    if (!strcmp(_w_line_[idx], "")) strcpy(_w_line_[idx], _e_line_);
     
     strcpy(_e_line_, "");
 } // Print_w_line_
+
+void Print_e_list_(char *elist)
+{
+    sprintf(elist, "%s\n%s\n%s\n", _e_line_, _w_line_[0], _w_line_[1]);
+} // Print_e_list_
 
 // Base constructor.
 

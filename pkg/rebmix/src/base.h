@@ -9,6 +9,7 @@
 #endif
 
 #include <float.h>
+#include <stdio.h>
 
 #ifndef _MEMORY_LEAK_SWITCH
 #define _MEMORY_LEAK_SWITCH 0
@@ -20,39 +21,34 @@
 
 #define E_CHECK(expression, error) \
 if (expression) { \
-   Print_e_line_(__FILE__, __LINE__, (error)); \
-   Error = (error); goto EEXIT; \
-}
+    Print_e_line_(__FILE__, __LINE__, (error)); \
+    Error = (error); goto EEXIT; \
+} // E_CHECK
 
-#define W_CHECK(expression) \
+#define W_CHECK(expression, idx) \
 if (expression) { \
-   Print_w_line_(); Error = E_OK; \
-}
+    Print_w_line_(idx); Error = E_OK; \
+} // W_CHECK
 
 #define E_RETURN(error)	return (error)
 
+#define E_LIST(elist) { \
+    Print_e_list_(elist); \
+} // E_LIST
+
 #define R_CHECK(expression, error) \
 if (expression) { \
-   Print_e_line_(__FILE__, __LINE__, (error)); \
-   *Error = (error); goto EEXIT; \
-}
+    Print_e_line_(__FILE__, __LINE__, (error)); \
+    *Error = (error); goto EEXIT; \
+} // R_CHECK
 
 #define R_RETURN(error)	*Error = (error)
-/*
-#define ERR_OK               0
-#define ERR_MEM_ERROR        1
-#define ERR_ARG_ERROR        2
-#define ERR_FILE_ERROR       3
-#define ERR_FALORD_ERROR     4
-#define ERR_PREP_ERROR       5
-#define ERR_TMD_ERROR        6
-#define ERR_NOT_YET_IMPLEMENTED -1L
-*/
-#define E_OK                             0
-#define E_MEM                            1
-#define E_ARG                            2
-#define E_CON                            3
-#define E_FILE                           4
+
+#define E_OK   0
+#define E_MEM  1
+#define E_ARG  2
+#define E_CON  3
+#define E_FILE 4
 
 #ifndef FLOAT
 #define FLOAT double
@@ -288,7 +284,10 @@ typedef struct mixtureparametertype {
 } MixtureParameterType;
 
 void Print_e_line_(const char *file, INT line, INT error);
-void Print_w_line_();
+
+void Print_w_line_(INT idx);
+
+void Print_e_list_(char *elist);
 
 FLOAT Ran1(INT *IDum);
 

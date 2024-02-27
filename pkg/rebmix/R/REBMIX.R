@@ -153,12 +153,22 @@ function(model, ...)
       all.length = integer(1),
       all.K = integer(dK),
       all.IC = double(dK),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
-
-    if (output$error == 1) {
-      stop("in RREBMIX!", call. = FALSE); return(NA) #
+      
+    error <- unlist(strsplit(output$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[2], call. = FALSE); return(NA)
     }
+    
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
+    }  
 
     c <- output$summary.c
 

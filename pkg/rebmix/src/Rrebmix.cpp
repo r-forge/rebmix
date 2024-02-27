@@ -214,91 +214,91 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              INT    *all_length,     // Length of all_K and all_IC.
              INT    *all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
              double *all_IC,         // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
-             INT    *Error)          // Error code.
+             char   **EList)         // Error list.
 {
     Rebmix *rebmix = NULL;
+    INT    Error;
 
-    *Error = E_OK;
+    Error = E_OK;
 
     rebmix = new Rebmix;
 
-    R_CHECK(NULL == rebmix, E_MEM);
+    E_CHECK(NULL == rebmix, E_MEM);
 
-    *Error = rebmix->Set(Preprocessing,     // Preprocessing type.
-                         cmax,              // Maximum number of components.
-                         cmin,              // Minimum number of components.
-                         Criterion,         // Information criterion type.
-                         d,                 // Number of independent random variables.
-                         Variables,         // Types of variables.
-                         length_pdf,        // Length of pdf.
-                         pdf,               // Parametric family types.
-                         length_Theta,      // Length of Theta.
-                         length_theta,      // Length of Theta[i].
-                         Theta,             // Component parameters.
-                         length_K,          // Length of K.
-                         K,                 // Numbers of bins v or numbers of nearest neighbours k.
-                         length_ymin,       // Length of ymin.
-                         ymin,              // Minimum observations.
-                         length_ymax,       // Length of ymax.
-                         ymax,              // Maximum observations.
-                         length_h,          // Length of h.
-                         h,                 // Sides of the hypersquare.
-                         ar,                // Acceleration rate.
-                         Restraints,        // Restraints type.
-                         n,                 // Number of observations.
-                         Y,                 // Dataset.
-                         Y_type,            // Dataset type. 
-                         EMStrategy,        // Strategy for EM algorithm.
-                         EMVariant,         // EM algorithm variant.
-                         EMAcceleration,    // Acceleration for the standard EM algorithm.
-                         EMTolerance,       // Tolerance for EM algortihm.
-                         EMAccelerationMul, // Acceleration rate for Em algorithm.
-                         EMMaxIter,         // Maximum number of iterations in EM algorithm.
-                         EMK,               // Number of bins for histogram EM algorithm.
-                         NULL,              // Component weights.
-                         NULL);             // Mixture parameters.
+    Error = rebmix->Set(Preprocessing,     // Preprocessing type.
+                        cmax,              // Maximum number of components.
+                        cmin,              // Minimum number of components.
+                        Criterion,         // Information criterion type.
+                        d,                 // Number of independent random variables.
+                        Variables,         // Types of variables.
+                        length_pdf,        // Length of pdf.
+                        pdf,               // Parametric family types.
+                        length_Theta,      // Length of Theta.
+                        length_theta,      // Length of Theta[i].
+                        Theta,             // Component parameters.
+                        length_K,          // Length of K.
+                        K,                 // Numbers of bins v or numbers of nearest neighbours k.
+                        length_ymin,       // Length of ymin.
+                        ymin,              // Minimum observations.
+                        length_ymax,       // Length of ymax.
+                        ymax,              // Maximum observations.
+                        length_h,          // Length of h.
+                        h,                 // Sides of the hypersquare.
+                        ar,                // Acceleration rate.
+                        Restraints,        // Restraints type.
+                        n,                 // Number of observations.
+                        Y,                 // Dataset.
+                        Y_type,            // Dataset type. 
+                        EMStrategy,        // Strategy for EM algorithm.
+                        EMVariant,         // EM algorithm variant.
+                        EMAcceleration,    // Acceleration for the standard EM algorithm.
+                        EMTolerance,       // Tolerance for EM algortihm.
+                        EMAccelerationMul, // Acceleration rate for Em algorithm.
+                        EMMaxIter,         // Maximum number of iterations in EM algorithm.
+                        EMK,               // Number of bins for histogram EM algorithm.
+                        NULL,              // Component weights.
+                        NULL);             // Mixture parameters.
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
-    *Error = rebmix->REBMIX();
+    Error = rebmix->REBMIX();
 
-    R_CHECK(*Error != E_OK, *Error);
-
+    E_CHECK(Error != E_OK, Error);
 
 /// Panic Branislav
-    *Error = rebmix->Get(n_iter,         // Number of iterations for optimal case.
-                         n_iter_sum,     // Number of iterations in whole run.
+    Error = rebmix->Get(n_iter,         // Number of iterations for optimal case.
+                        n_iter_sum,     // Number of iterations in whole run.
 /// End
-                         summary_k,      // Optimal v or optimal k.
-                         summary_h,      // Optimal class widths of length d.
-                         summary_y0,     // Optimal origins of length d.
-                         summary_ymin,   // Optimal minimum observations of length d.
-                         summary_ymax,   // Optimal maximum observations of length d.
-                         summary_IC,     // Optimal information criterion.
-                         summary_logL,   // Log-likelihood.
-                         summary_M,      // Degrees of freedom.
-                         summary_c,      // Optimal number of components.
-                         W,              // Component weights.
-                         theta1,         // Component parameters.
-                         theta2,         // Component parameters.
-                         theta3,         // Component parameters.
-                         opt_length,     // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
-                         opt_c,          // Numbers of components for optimal v or for optimal k.
-                         opt_IC,         // Information criteria for optimal v or for optimal k.
-                         opt_logL,       // Log-likelihoods for optimal v or for optimal k.
-                         opt_Dmin,       // Dmin for optimal v or for optimal k.
-                         opt_D,          // Totals of positive relative deviations for optimal v or for optimal k.
-                         all_length,     // Length of all_K and all_IC.
-                         all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
-                         all_IC);        // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
-
-    R_CHECK(*Error != E_OK, *Error);
+                        summary_k,      // Optimal v or optimal k.
+                        summary_h,      // Optimal class widths of length d.
+                        summary_y0,     // Optimal origins of length d.
+                        summary_ymin,   // Optimal minimum observations of length d.
+                        summary_ymax,   // Optimal maximum observations of length d.
+                        summary_IC,     // Optimal information criterion.
+                        summary_logL,   // Log-likelihood.
+                        summary_M,      // Degrees of freedom.
+                        summary_c,      // Optimal number of components.
+                        W,              // Component weights.
+                        theta1,         // Component parameters.
+                        theta2,         // Component parameters.
+                        theta3,         // Component parameters.
+                        opt_length,     // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
+                        opt_c,          // Numbers of components for optimal v or for optimal k.
+                        opt_IC,         // Information criteria for optimal v or for optimal k.
+                        opt_logL,       // Log-likelihoods for optimal v or for optimal k.
+                        opt_Dmin,       // Dmin for optimal v or for optimal k.
+                        opt_D,          // Totals of positive relative deviations for optimal v or for optimal k.
+                        all_length,     // Length of all_K and all_IC.
+                        all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
+                        all_IC);        // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
+    
+    E_CHECK(Error != E_OK, Error);
 
 EEXIT:
 
     if (rebmix) delete rebmix;
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 } // RREBMIX
 
 // Returns k-nearest neighbour empirical densities in R.
@@ -3299,7 +3299,7 @@ void Roptbins(INT    *d,           // Number of independent random variables.
 
         lim_broken = 0; M_broken = (FLOAT)0.0;
 
-        R_CHECK(*kmax == *kmin, E_CON);
+        R_CHECK(*kmax == *kmin, E_ARG);
 
         for (i = 0; i < num_r; i++) {
             for (j = rebmix->length_pdf_ - 1; j >= 0; j--) {

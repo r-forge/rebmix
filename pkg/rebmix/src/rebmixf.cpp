@@ -5909,7 +5909,7 @@ INT Rebmix::REBMIXKNN()
 
                         Error = EnhancedEstimationKNN(Y, nl, RigidTheta[l], LooseTheta[l]);
 
-                        W_CHECK(Error != E_OK);
+                        W_CHECK(Error != E_OK, 0);
 
                         break;
                     }
@@ -6042,7 +6042,9 @@ INT Rebmix::REBMIXKNN()
 
             for (j = 0; j < all_c; j++) {
                 if (OptMixTheta_[j].initialized) {
-                    if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                    Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                    if (Error == E_OK) {
                         n_iter_sum_ += EM_->n_iter_;
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -6056,6 +6058,8 @@ INT Rebmix::REBMIXKNN()
                         }
                     }
                     else {
+                        W_CHECK(1, 1);
+
                         n_iter_sum_ += EM_->n_iter_;
                     }
                 }
@@ -6131,7 +6135,9 @@ INT Rebmix::REBMIXKNN()
 
                 opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-                if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                if (Error == E_OK) {
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -6145,6 +6151,8 @@ INT Rebmix::REBMIXKNN()
                     }
                 }
                 else {
+                    W_CHECK(1, 1);
+
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
@@ -6692,7 +6700,7 @@ INT Rebmix::REBMIXKDE()
 
                         Error = EnhancedEstimationKDE(Y, nl, RigidTheta[l], LooseTheta[l]);
 
-                        W_CHECK(Error != E_OK);
+                        W_CHECK(Error != E_OK, 0);
 
                         break;
                     }
@@ -6827,7 +6835,9 @@ INT Rebmix::REBMIXKDE()
 
             for (j = 0; j < all_c; j++) {
                 if (OptMixTheta_[j].initialized) {
-                    if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                    Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                    if (Error == E_OK) {
                         n_iter_sum_ += EM_->n_iter_;
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -6841,6 +6851,8 @@ INT Rebmix::REBMIXKDE()
                         }
                     }
                     else {
+                        W_CHECK(1, 1);
+
                         n_iter_sum_ += EM_->n_iter_;
                     }
                 }
@@ -6916,7 +6928,9 @@ INT Rebmix::REBMIXKDE()
 
                 opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-                if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                if (Error == E_OK) {
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -6930,6 +6944,8 @@ INT Rebmix::REBMIXKDE()
                     }
                 }
                 else {
+                    W_CHECK(1, 1);
+
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
@@ -7499,7 +7515,7 @@ INT Rebmix::REBMIXH()
 
                         Error = EnhancedEstimationH(all_K_[i], Y, nl, h, RigidTheta[l], LooseTheta[l]);
 
-                        W_CHECK(Error != E_OK);
+                        W_CHECK(Error != E_OK, 0);
 
                         break;
                     }
@@ -7638,7 +7654,9 @@ INT Rebmix::REBMIXH()
 
             for (j = 0; j < all_c; j++) {
                 if (OptMixTheta_[j].initialized) {
-                    if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                    Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                    if (Error == E_OK) {
                         n_iter_sum_ += EM_->n_iter_;
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -7652,6 +7670,8 @@ INT Rebmix::REBMIXH()
                         }
                     }
                     else {
+                        W_CHECK(1, 1);
+
                         n_iter_sum_ += EM_->n_iter_;
                     }
                 }
@@ -7735,7 +7755,9 @@ E1:     all_K_[i] = k;
 
                 opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-                if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                if (Error == E_OK) {
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -7749,6 +7771,8 @@ E1:     all_K_[i] = k;
                     }
                 }
                 else {
+                    W_CHECK(1, 1);
+
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
@@ -8240,7 +8264,7 @@ INT Rebmix::REBMIXK()
 
                     Error = EnhancedEstimationH(nr_, Y, nl, h_, RigidTheta[l], LooseTheta[l]);
 
-                    W_CHECK(Error != E_OK);
+                    W_CHECK(Error != E_OK, 0);
 
                     break;
                 }
@@ -8363,7 +8387,9 @@ INT Rebmix::REBMIXK()
 
         for (j = 0; j < all_c; j++) {
             if (OptMixTheta_[j].initialized) {
-                if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                if (Error == E_OK) {
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -8377,6 +8403,8 @@ INT Rebmix::REBMIXK()
                     }
                 }
                 else {
+                    W_CHECK(1, 1);
+
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
@@ -8444,7 +8472,9 @@ INT Rebmix::REBMIXK()
 
                 opt_c[j] = OptMixTheta_[j].c; opt_IC[j] = IC; opt_logL[j] = logL; opt_D[j] = D;
 
-                if (EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta) == E_OK) {
+                Error = EMRun(&OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta);
+
+                if (Error == E_OK) {
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
@@ -8458,6 +8488,8 @@ INT Rebmix::REBMIXK()
                     }
                 }
                 else {
+                    W_CHECK(1, 1);
+
                     n_iter_sum_ += EM_->n_iter_;
                 }
             }
