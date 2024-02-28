@@ -16,8 +16,12 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
+
+#define E_BEGIN() { \
+    Error = E_OK; E_begin(); \
+} // E_BEGIN
 
 #define E_CHECK(expression, error) \
 if (expression) { \
@@ -282,6 +286,8 @@ typedef struct mixtureparametertype {
     INT                  n_iter_em;   // Number of performed iterations of EM algorithm.
     INT                  initialized; // Boolean indicator if struct contains mixture model parameters. 
 } MixtureParameterType;
+
+void E_begin();
 
 void Print_e_line_(const char *file, INT line, INT error);
 

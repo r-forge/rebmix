@@ -82,11 +82,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingHMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -107,11 +117,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingKDEMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       dim(output$y) <- c(n, d + 2)
@@ -133,11 +153,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingKNNMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       dim(output$y) <- c(n, d + 3)
@@ -160,11 +190,21 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")    
     
-    if (output$error == 1) {
-      stop("in RPreprocessingKMIX!", call. = FALSE); return(NA)
+    error <- unlist(strsplit(output$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+    
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
     }
     
     dim(output$x) <- c(n, d + 1); 
@@ -269,11 +309,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingHMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       length(output$y) <- output$k * (output$d + 1); dim(output$y) <- c(output$k, output$d + 1)
@@ -294,11 +344,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingKDEMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       dim(output$y) <- c(n, d + 2)
@@ -320,11 +380,21 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RPreprocessingKNNMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }
 
       dim(output$y) <- c(n, d + 3)
@@ -347,11 +417,21 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")    
     
-    if (output$error == 1) {
-      stop("in RPreprocessingKMIX!", call. = FALSE); return(NA)
+    error <- unlist(strsplit(output$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+    
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
     }
     
     dim(output$x) <- c(n, d + 1); 

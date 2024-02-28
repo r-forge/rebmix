@@ -77,11 +77,21 @@ function(x,
     theta2 = as.double(unlist(theta2)),
     theta3 = as.double(unlist(theta3)),
     Z = integer(n),
-    error = integer(1),
+    error = character(1),
     PACKAGE = "rebmix")
 
-  if (output$error == 1) {
-    stop("in RCLRMIX!", call. = FALSE); return(NA)
+  error <- unlist(strsplit(output$error, "\n"));
+      
+  if (error[1] != "") {
+    stop(error[1], call. = FALSE); return(NA)
+  }
+    
+  if (error[2] != "") {
+    warning(error[2], call. = FALSE, immediate. = TRUE)
+  }  
+    
+  if (error[3] != "") {
+    warning(error[3], call. = FALSE, immediate. = TRUE)
   }
   
   output <- output$Z
@@ -194,11 +204,21 @@ function(x,
     theta1 = as.double(unlist(theta1)),
     theta2 = as.double(unlist(theta2)),
     Z = integer(n),
-    error = integer(1),
+    error = character(1),
     PACKAGE = "rebmix")
 
-  if (output$error == 1) {
-    stop("in RCLRMVNORM!", call. = FALSE); return(NA)
+  error <- unlist(strsplit(output$error, "\n"));
+      
+  if (error[1] != "") {
+    stop(error[1], call. = FALSE); return(NA)
+  }
+    
+  if (error[2] != "") {
+    warning(error[2], call. = FALSE, immediate. = TRUE)
+  }  
+    
+  if (error[3] != "") {
+    warning(error[3], call. = FALSE, immediate. = TRUE)
   }
   
   output <- output$Z

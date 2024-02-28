@@ -8,6 +8,11 @@
 char _e_line_[65536] = "";
 char _w_line_[2][65536] = { "", "" };
 
+void E_begin()
+{
+    strcpy(_e_line_, ""); strcpy(_w_line_[0], ""); strcpy(_w_line_[1], "");
+} // E_begin
+
 void Print_e_line_(const char *file, INT line, INT error)
 {
     sprintf(_e_line_, "File = %s; line = %d; error = %d.", file, line, error);
