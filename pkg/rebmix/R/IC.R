@@ -90,11 +90,21 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
       }    
     }
     else
@@ -126,12 +136,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionHMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }   
     }
     else
     if (C == .rebmix$Preprocessing[2]) {
@@ -154,12 +174,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionKDEMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }   
     }
     else
     if (C == .rebmix$Preprocessing[3]) {
@@ -185,12 +215,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionKNNMIX!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }   
     }
   }  
   else
@@ -214,12 +254,22 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
 
-    if (output$error == 1) {
-      stop("in RInformationCriterionKMIX!", call. = FALSE); return(NA)
+    error <- unlist(strsplit(output$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+   
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
     }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
+    }    
   }  
 
   rm(list = ls()[!(ls() %in% c("output"))])
@@ -312,12 +362,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionMVNORM!", call. = FALSE); return(NA)
-      }    
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
+      }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }       
     }
     else  
     if (C == .rebmix$Preprocessing[1]) {
@@ -345,12 +405,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionHMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }   
     }
     else
     if (C == .rebmix$Preprocessing[2]) {
@@ -370,12 +440,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionKDEMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+    
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      }   
     }
     else
     if (C == .rebmix$Preprocessing[3]) {
@@ -398,12 +478,22 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = integer(1),
+        error = character(1),
         PACKAGE = "rebmix")
 
-      if (output$error == 1) {
-        stop("in RInformationCriterionKNNMVNORM!", call. = FALSE); return(NA)
+      error <- unlist(strsplit(output$error, "\n"));
+      
+      if (error[1] != "") {
+        stop(error[1], call. = FALSE); return(NA)
       }
+   
+      if (error[2] != "") {
+        warning(error[2], call. = FALSE, immediate. = TRUE)
+      }  
+    
+      if (error[3] != "") {
+        warning(error[3], call. = FALSE, immediate. = TRUE)
+      } 
     }
   }
   else
@@ -424,12 +514,22 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
 
-    if (output$error == 1) {
-      stop("in RInformationCriterionKMVNORM!", call. = FALSE); return(NA)
+    error <- unlist(strsplit(output$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+   
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
     }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
+    } 
   }    
 
   rm(list = ls()[!(ls() %in% c("output"))])

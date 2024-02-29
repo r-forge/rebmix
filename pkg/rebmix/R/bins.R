@@ -119,11 +119,21 @@ function(Dataset, K, ymin, ymax, ...)
       k = as.integer(K[i, ]),
       length.y = integer(1),
       y = double(n * (d + 1)),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
 
-    if (temp$error == 1) {
-      stop("in Rbins!", call. = FALSE); return(NA)
+    error <- unlist(strsplit(temp$error, "\n"));
+      
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+   
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
     }
     
     length(temp$y) <- temp$length.y * (d + 1); dim(temp$y) <- c(temp$length.y, temp$d + 1)

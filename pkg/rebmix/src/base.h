@@ -20,7 +20,7 @@
 #endif
 
 #define E_BEGIN() { \
-    Error = E_OK; E_begin(); \
+    Error = E_OK; if (Error) {}; E_begin(); \
 } // E_BEGIN
 
 #define E_CHECK(expression, error) \
