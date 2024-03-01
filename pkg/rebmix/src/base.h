@@ -40,14 +40,6 @@ if (expression) { \
     Print_e_list_(elist); \
 } // E_LIST
 
-#define R_CHECK(expression, error) \
-if (expression) { \
-    Print_e_line_(__FILE__, __LINE__, (error)); \
-    *Error = (error); goto EEXIT; \
-} // R_CHECK
-
-#define R_RETURN(error)	*Error = (error)
-
 #define E_OK   0
 #define E_MEM  1
 #define E_ARG  2

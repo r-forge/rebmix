@@ -60,11 +60,21 @@ function(Zp, Sigma, ...)
       Mxy = double(c),
       A = double(c * c),
       Sigma = as.double(Sigma),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
+      
+    error <- unlist(strsplit(output$error, "\n"));
 
-    if (output$error == 1) {
-      stop("in RLabelMomentsXY!", call. = FALSE); return(NA)
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+   
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
     }
     
     output$A <- matrix(output$A, nrow = c, ncol = c)
@@ -97,11 +107,21 @@ function(Zp, Sigma, ...)
       Mxyz = double(c),
       A = double(c * c),
       Sigma = as.double(Sigma),
-      error = integer(1),
+      error = character(1),
       PACKAGE = "rebmix")
+      
+    error <- unlist(strsplit(output$error, "\n"));      
 
-    if (output$error == 1) {
-      stop("in RLabelMomentsXYZ!", call. = FALSE); return(NA)
+    if (error[1] != "") {
+      stop(error[1], call. = FALSE); return(NA)
+    }
+   
+    if (error[2] != "") {
+      warning(error[2], call. = FALSE, immediate. = TRUE)
+    }  
+    
+    if (error[3] != "") {
+      warning(error[3], call. = FALSE, immediate. = TRUE)
     }
     
     output$A <- matrix(output$A, nrow = c, ncol = c)

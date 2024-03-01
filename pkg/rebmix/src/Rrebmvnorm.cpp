@@ -2016,20 +2016,20 @@ void RTvtNormalPdf(INT *n, double *x, double *y, double *Mean, double *Sigma, do
     }
 } // RTvtNormalPdf
 
-void RMvtNormalPdf(INT *n, double *X, INT *d, double *Mean, double *Sigma, double *f, INT *Error)
+void RMvtNormalPdf(INT *n, double *X, INT *d, double *Mean, double *Sigma, double *f, char **EList)
 {
     FLOAT logAdet, *Ainv, y, yi, yk;
-    INT   i, j, k;
+    INT   i, j, k, Error;
 
-    *Error = E_OK;
+    E_BEGIN();
 
     Ainv = (FLOAT*)malloc(*d * *d * sizeof(FLOAT));
 
-    R_CHECK(NULL == Ainv, E_MEM);
+    E_CHECK(NULL == Ainv, E_MEM);
 
-    *Error = Cholinvdet(*d, Sigma, Ainv, &logAdet);
+    Error = Cholinvdet(*d, Sigma, Ainv, &logAdet);
 
-    if (*Error != E_OK) {
+    if (Error != E_OK) {
         for (j = 0; j < *n; j++) {
             f[j] = (FLOAT)0.0;
         }
@@ -2054,7 +2054,7 @@ EEXIT:
 
     if (Ainv) free(Ainv);
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 } // RMvtNormalPdf
 
 /// Panic Branislav
@@ -2077,67 +2077,67 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                INT    *n_iter,            // Number of iterations for optimal case.
                double *summary_logL,      // Log-likelihood.
                INT    *summary_M,         // Degrees of freedom.
-               INT    *Error)             // Error number.)
+               char   **EList)            // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    INT       A[4], i = 0, j = 0, l = 0, length_Theta = 4;
+    INT       A[4], i = 0, j = 0, l = 0, length_Theta = 4, Error;
 
-    *Error = E_OK;
+    E_BEGIN();
 
     A[0] = *d; A[1] = A[2] = (*d) * (*d); A[3] = 1;
 
     rebmvnorm = new Rebmvnorm;
 
-    R_CHECK(NULL == rebmvnorm, E_MEM);
+    E_CHECK(NULL == rebmvnorm, E_MEM);
 
-    *Error = rebmvnorm->Set(NULL,              // Preprocessing type.
-                            c,                 // Maximum number of components.
-                            c,                 // Minimum number of components.
-                            NULL,              // Information criterion type.
-                            d,                 // Number of independent random variables.
-                            NULL,              // Types of variables.
-                            d,                 // Length of pdf.
-                            pdf,               // Parametric family types.
-                            &length_Theta,     // Length of Theta.
-                            A,                 // Length of Theta[i].
-                            NULL,              // Component parameters.
-                            NULL,              // Length of K.
-                            NULL,              // Numbers of bins v or numbers of nearest neighbours k.
-                            NULL,              // Length of ymin.
-                            NULL,              // Minimum observations.
-                            NULL,              // Length of ymax.
-                            NULL,              // Maximum observations.
-                            NULL,              // Length of h.
-                            NULL,              // Sides of the hypersquare.
-                            NULL,              // Acceleration rate.
-                            NULL,              // Restraints type.
-                            n,                 // Number of observations.
-                            Y,                 // Dataset.
-                            Y_type,            // Dataset type.
-                            NULL,              // Strategy for EM algorithm.
-                            EMVariant,         // EM algorithm variant.
-                            EMAcceleration,    // Acceleration for the standard EM algorithm.
-                            EMTolerance,       // Tolerance for EM algortihm.
-                            EMAccelerationMul, // Acceleration rate for Em algorithm.
-                            EMMaxIter,         // Maximum number of iterations in EM algorithm.
-                            EMK,               // Number of bins for histogram EM algorithm.
-                            NULL,              // Component weights.
-                            NULL);             // Mixture parameters.
+    Error = rebmvnorm->Set(NULL,              // Preprocessing type.
+                           c,                 // Maximum number of components.
+                           c,                 // Minimum number of components.
+                           NULL,              // Information criterion type.
+                           d,                 // Number of independent random variables.
+                           NULL,              // Types of variables.
+                           d,                 // Length of pdf.
+                           pdf,               // Parametric family types.
+                           &length_Theta,     // Length of Theta.
+                           A,                 // Length of Theta[i].
+                           NULL,              // Component parameters.
+                           NULL,              // Length of K.
+                           NULL,              // Numbers of bins v or numbers of nearest neighbours k.
+                           NULL,              // Length of ymin.
+                           NULL,              // Minimum observations.
+                           NULL,              // Length of ymax.
+                           NULL,              // Maximum observations.
+                           NULL,              // Length of h.
+                           NULL,              // Sides of the hypersquare.
+                           NULL,              // Acceleration rate.
+                           NULL,              // Restraints type.
+                           n,                 // Number of observations.
+                           Y,                 // Dataset.
+                           Y_type,            // Dataset type.
+                           NULL,              // Strategy for EM algorithm.
+                           EMVariant,         // EM algorithm variant.
+                           EMAcceleration,    // Acceleration for the standard EM algorithm.
+                           EMTolerance,       // Tolerance for EM algortihm.
+                           EMAccelerationMul, // Acceleration rate for Em algorithm.
+                           EMMaxIter,         // Maximum number of iterations in EM algorithm.
+                           EMK,               // Number of bins for histogram EM algorithm.
+                           NULL,              // Component weights.
+                           NULL);             // Mixture parameters.
 
     rebmvnorm->EM_strategy_ = strategy_single;
 
     rebmvnorm->MixTheta_ = new CompnentDistribution*[(unsigned INT)(rebmvnorm->cmax_)];
 
-    R_CHECK(NULL == rebmvnorm->MixTheta_, E_MEM);
+    E_CHECK(NULL == rebmvnorm->MixTheta_, E_MEM);
 
     for (l = 0; l < rebmvnorm->cmax_; l++) {
         rebmvnorm->MixTheta_[l] = new CompnentDistribution(rebmvnorm);
 
-        R_CHECK(NULL == rebmvnorm->MixTheta_[l], E_MEM);
+        E_CHECK(NULL == rebmvnorm->MixTheta_[l], E_MEM);
 
-        *Error = rebmvnorm->MixTheta_[l]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
+        Error = rebmvnorm->MixTheta_[l]->Realloc(rebmvnorm->length_pdf_, rebmvnorm->length_Theta_, rebmvnorm->length_theta_);
 
-        R_CHECK(*Error != E_OK, *Error);
+        E_CHECK(Error != E_OK, Error);
 
         for (i = 0; i < rebmvnorm->length_pdf_; i++) {
             rebmvnorm->MixTheta_[l]->pdf_[i] = rebmvnorm->IniTheta_->pdf_[i];
@@ -2166,71 +2166,71 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
 
     rebmvnorm->W_ = (double*)malloc(rebmvnorm->cmax_ * sizeof(double));
 
-    R_CHECK(NULL == rebmvnorm->W_, E_MEM);
+    E_CHECK(NULL == rebmvnorm->W_, E_MEM);
 
     for (l = 0; l < *c; l++) {
         rebmvnorm->W_[l] = W[l];
 
-        *Error = Cholinvdet(*d, rebmvnorm->MixTheta_[l]->Theta_[1], rebmvnorm->MixTheta_[l]->Theta_[2], rebmvnorm->MixTheta_[l]->Theta_[3]);
+        Error = Cholinvdet(*d, rebmvnorm->MixTheta_[l]->Theta_[1], rebmvnorm->MixTheta_[l]->Theta_[2], rebmvnorm->MixTheta_[l]->Theta_[3]);
 
-        R_CHECK(*Error != E_OK, *Error);
+        E_CHECK(Error != E_OK, Error);
 
     }
 
-    *Error = rebmvnorm->EMInitialize();
+    Error = rebmvnorm->EMInitialize();
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
     if (*EMMerge) {
         rebmvnorm->EM_->merge_ = merge_naive;
     }
 
-    *Error = rebmvnorm->EMRun(c, rebmvnorm->W_, rebmvnorm->MixTheta_);
+    Error = rebmvnorm->EMRun(c, rebmvnorm->W_, rebmvnorm->MixTheta_);
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
-    *Error = rebmvnorm->EM_->LogLikelihood(*c, rebmvnorm->W_, rebmvnorm->MixTheta_, summary_logL);
+    Error = rebmvnorm->EM_->LogLikelihood(*c, rebmvnorm->W_, rebmvnorm->MixTheta_, summary_logL);
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
-    *Error = rebmvnorm->DegreesOffreedom(*c, rebmvnorm->MixTheta_, summary_M);
+    Error = rebmvnorm->DegreesOffreedom(*c, rebmvnorm->MixTheta_, summary_M);
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
     rebmvnorm->summary_.c = *c;
 
-    *Error = rebmvnorm->Get(n_iter, // Number of iterations for optimal case.
-                            NULL,   // Number of iterations in whole run.
-                            NULL,   // Optimal v or optimal k.
-                            NULL,   // Optimal class widths of length d.
-                            NULL,   // Optimal origins of length d.
-                            NULL,   // Optimal minimum observations of length d.
-                            NULL,   // Optimal maximum observations of length d.
-                            NULL,   // Optimal information criterion.
-                            NULL,   // Log-likelihood.
-                            NULL,   // Degrees of freedom.
-                            c,      // Optimal number of components.
-                            W,      // Component weights.
-                            Theta1, // Component parameters.
-                            Theta2, // Component parameters.
-                            NULL,   // Component parameters.
-                            NULL,   // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
-                            NULL,   // Numbers of components for optimal v or for optimal k.
-                            NULL,   // Information criteria for optimal v or for optimal k.
-                            NULL,   // Log-likelihoods for optimal v or for optimal k.
-                            NULL,   // Dmin for optimal v or for optimal k.
-                            NULL,   // Totals of positive relative deviations for optimal v or for optimal k.
-                            NULL,   // Length of all_K and all_IC.
-                            NULL,   // All processed numbers of bins v or all processed numbers of nearest neighbours k.
-                            NULL);  // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
+    Error = rebmvnorm->Get(n_iter, // Number of iterations for optimal case.
+                           NULL,   // Number of iterations in whole run.
+                           NULL,   // Optimal v or optimal k.
+                           NULL,   // Optimal class widths of length d.
+                           NULL,   // Optimal origins of length d.
+                           NULL,   // Optimal minimum observations of length d.
+                           NULL,   // Optimal maximum observations of length d.
+                           NULL,   // Optimal information criterion.
+                           NULL,   // Log-likelihood.
+                           NULL,   // Degrees of freedom.
+                           c,      // Optimal number of components.
+                           W,      // Component weights.
+                           Theta1, // Component parameters.
+                           Theta2, // Component parameters.
+                           NULL,   // Component parameters.
+                           NULL,   // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
+                           NULL,   // Numbers of components for optimal v or for optimal k.
+                           NULL,   // Information criteria for optimal v or for optimal k.
+                           NULL,   // Log-likelihoods for optimal v or for optimal k.
+                           NULL,   // Dmin for optimal v or for optimal k.
+                           NULL,   // Totals of positive relative deviations for optimal v or for optimal k.
+                           NULL,   // Length of all_K and all_IC.
+                           NULL,   // All processed numbers of bins v or all processed numbers of nearest neighbours k.
+                           NULL);  // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
 
-    R_CHECK(*Error != E_OK, *Error);
+    E_CHECK(Error != E_OK, Error);
 
 EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 }
 /// End
 }

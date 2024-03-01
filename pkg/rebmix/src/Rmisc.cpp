@@ -18,32 +18,32 @@ void RLabelMomentsXY(INT    *nx,     // Image width.
                      double *Mxy,    // Raw moments Mxy.
                      double *A,      // Adjacency matrix.
                      double *Sigma,  // Scaling factor.
-                     INT    *Error)  // Error code.
+                     char   **EList) // Error list.
 {
     FLOAT **Mij = NULL, *Mean = NULL, Mul, *Stdev = NULL, Tmp;
-    INT   i, ii, j, k, kk, l, n = 0;
+    INT   i, ii, j, k, kk, l, n = 0, Error;
 
-    *Error = E_OK;
+    E_BEGIN();
 
-    R_CHECK(*c < 2, E_ARG);
+    E_CHECK(*c < 2, E_ARG);
 
     Mij = (FLOAT**)malloc(4 * sizeof(FLOAT*));
 
-    R_CHECK(NULL == Mij, E_MEM);
+    E_CHECK(NULL == Mij, E_MEM);
 
     for (i = 0; i < 4; i++) {
         Mij[i] = (FLOAT*)calloc((size_t)(*c), sizeof(FLOAT));
 
-        R_CHECK(NULL == Mij[i], E_MEM);
+        E_CHECK(NULL == Mij[i], E_MEM);
     }
 
     Mean = (FLOAT*)calloc((size_t)4, sizeof(FLOAT));
 
-    R_CHECK(NULL == Mean, E_MEM);
+    E_CHECK(NULL == Mean, E_MEM);
 
     Stdev = (FLOAT*)calloc((size_t)4, sizeof(FLOAT));
 
-    R_CHECK(NULL == Stdev, E_MEM);
+    E_CHECK(NULL == Stdev, E_MEM);
 
     // Numbers of pixels and raw clustered image moments calculation.   
 
@@ -137,7 +137,7 @@ EEXIT:
         free(Mij);
     }
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 } // RLabelMomentsXY
 
 // Returns numbers of voxels, label moments for clustered image and adjacency matrix in R.
@@ -154,32 +154,32 @@ void RLabelMomentsXYZ(INT    *nx,     // Image width.
                       double *Mxyz,   // Raw moments Mxyz.  
                       double *A,      // Adjacency matrix.
                       double *Sigma,  // Scaling factor.
-                      INT    *Error)  // Error code.
+                      char   **EList) // Error list.
 {
     FLOAT **Mijk = NULL, *Mean = NULL, Mul, *Stdev = NULL, Tmp;
-    INT   i, ii, j, k, kk, l, m, mm, n = 0;
+    INT   i, ii, j, k, kk, l, m, mm, n = 0, Error;
 
-    *Error = E_OK;
+    E_BEGIN();
 
-    R_CHECK(*c < 2, E_ARG);
+    E_CHECK(*c < 2, E_ARG);
 
     Mijk = (FLOAT**)malloc(5 * sizeof(FLOAT*));
 
-    R_CHECK(NULL == Mijk, E_MEM);
+    E_CHECK(NULL == Mijk, E_MEM);
 
     for (i = 0; i < 5; i++) {
         Mijk[i] = (FLOAT*)calloc((size_t)(*c), sizeof(FLOAT));
 
-        R_CHECK(NULL == Mijk[i], E_MEM);
+        E_CHECK(NULL == Mijk[i], E_MEM);
     }
 
     Mean = (FLOAT*)calloc((size_t)5, sizeof(FLOAT));
 
-    R_CHECK(NULL == Mean, E_MEM);
+    E_CHECK(NULL == Mean, E_MEM);
 
     Stdev = (FLOAT*)calloc((size_t)5, sizeof(FLOAT));
 
-    R_CHECK(NULL == Stdev, E_MEM);
+    E_CHECK(NULL == Stdev, E_MEM);
 
     //  Numbers of voxels and raw clustered image moments calculation.   
 
@@ -277,7 +277,7 @@ EEXIT:
         free(Mijk);
     }
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 } // RLabelMomentsXYZ
 
 // Returns normalised adjacency muatrix in R.
@@ -287,18 +287,18 @@ void RMergeLabels(INT    *n,      // Number of adjacency matrices.
                   INT    *c,      // Number of clusters.
                   double *W,      // Weights.
                   double *L,      // Normalised adjacency matrix.
-                  INT    *Error)  // Error code.
+                  char   **EList) // Error list.
 {
     FLOAT *D = NULL, p;
-    INT   i, ii, j, k, kk, l, m;
+    INT   i, ii, j, k, kk, l, m, Error;
 
-    *Error = E_OK;
+    E_BEGIN();
 
-    R_CHECK((*n < 1) || (*c < 2), E_ARG);
+    E_CHECK((*n < 1) || (*c < 2), E_ARG);
  
     D = (FLOAT*)malloc(*c * sizeof(FLOAT));
 
-    R_CHECK(NULL == D, E_MEM);
+    E_CHECK(NULL == D, E_MEM);
 
     // Adjacency matrix calculation.
 
@@ -350,7 +350,7 @@ EEXIT:
 
     if (D) free(D);
 
-    R_RETURN(*Error);
+    E_LIST(*EList);
 } // RMergeLabels
 
 }
