@@ -512,7 +512,7 @@ INT ErrorF(FLOAT y,     // Variable y.
     if (y < (FLOAT)0.0)
         *ErF = -GamP;
     else
-        *ErF = +GamP;
+        *ErF = GamP;
 
 EEXIT:
 
@@ -828,7 +828,7 @@ FLOAT BesselI1(FLOAT x)
         sgn = -1; x = -x;
     }
     else {
-        sgn = +1;
+        sgn = 1;
     }
 
     if (x < (FLOAT)3.75) {
@@ -964,7 +964,8 @@ FLOAT xlogx(FLOAT x)
 
 // Returns merged intervals.
 
-void MergeIntervals(INT      *n,  // Total number of intervals.
+void MergeIntervals(FLOAT    ym,  // Mode position. 
+                    INT      *n,  // Total number of intervals.
                     Interval *X)  // Pointer to the intervals.
 {
     Interval Tmp;
@@ -994,6 +995,25 @@ void MergeIntervals(INT      *n,  // Total number of intervals.
             k++; X[k] = X[i];
         }
     }
+    
+    *n = ++k;
 
-    *n = k + 1;
+    // Side of interval.
+
+    for (i = 0; i < *n; i++) {
+        if (X[i].b <= ym) {
+            X[i].s = 0;
+        }
+        else
+        if (X[i].a >= ym) {
+            X[i].s = 1;
+        }
+        else {
+            X[k].b = X[i].b; X[i].b = X[k].a = ym; X[i].s = 0; X[k].s = 1;
+            
+            k++;
+        }
+    }
+
+    *n = k;
 } // MergeIntervals

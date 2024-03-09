@@ -232,6 +232,7 @@ typedef struct additinalparametertype {
 } AdditionalParameterType;
 
 typedef struct interval {
+    INT   s; // 0 for left side and 1 for right side.
     FLOAT a; // Infimum.
     FLOAT b; // Supremum.
 } Interval;
@@ -401,7 +402,8 @@ FLOAT xlogx(FLOAT x);
 
 // Returns merged intervals.
 
-void MergeIntervals(INT      *n,  // Total number of intervals.
+void MergeIntervals(FLOAT    ym,  // Mode position.
+                    INT      *n,  // Total number of intervals.
                     Interval *X); // Pointer to the intervals.
 
 #endif

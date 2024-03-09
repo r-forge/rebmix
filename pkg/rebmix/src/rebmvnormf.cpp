@@ -265,7 +265,7 @@ S0:;
             X[j].b = Y[i][l] + Y[length_pdf_ + 2][l] * h[i];
         }
 
-        I = N[i]; MergeIntervals(&I, X);
+        I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
         Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
@@ -551,7 +551,7 @@ S0:;
             X[j].b = Y[i][l] + (FLOAT)0.5 * h[i];
         }
 
-        I = N[i]; MergeIntervals(&I, X);
+        I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
         Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
@@ -836,7 +836,7 @@ S0:;
             X[j].b = Y[i][l] + (FLOAT)0.5 * h[i];
         }
 
-        I = N[i]; MergeIntervals(&I, X);
+        I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
         Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
 
