@@ -15,7 +15,7 @@ void E_begin()
 
 void Print_e_line_(const char *file, INT line, INT error)
 {
-    sprintf(_e_line_, "File = %s; line = %d; error = %d.", file, line, error);
+    sprintf(_e_line_, "File = %s; line = %d; code = %d.", file, line, error);
 } // Print_e_line_
 
 void Print_w_line_(INT idx)

@@ -87,8 +87,8 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dll, Dlm, Dlmin, Dlr, epsilon, flm, flmax, flmin, logCdet, logflm, Mean, Stdev, Sum, Tmp, ym;
+    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
 
     // Global mode.
 
@@ -252,22 +252,28 @@ S0:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        X = (Interval*)malloc(N[i] * sizeof(Interval));
+        X = (Interval*)malloc((N[i] + 1) * sizeof(Interval));
 
         E_CHECK(NULL == X, E_MEM);
 
         // Bracketing.
 
+        Tmp = ((FLOAT)1.0 + Eps) * h[i];
+
         for (j = 0; j < N[i]; j++) {
             l = (INT)X_[i][j];
 
-            X[j].a = Y[i][l] - Y[length_pdf_ + 2][l] * h[i];
-            X[j].b = Y[i][l] + Y[length_pdf_ + 2][l] * h[i];
+            X[j].a = Y[i][l] - Y[length_pdf_ + 2][l] * Tmp;
+            X[j].b = Y[i][l] + Y[length_pdf_ + 2][l] * Tmp;
         }
 
         I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
-        Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+        Error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+
+        E_CHECK(Error != E_OK, Error);
+
+        Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
@@ -278,38 +284,65 @@ S0:;
 
             E_CHECK(Error != E_OK, Error);
 
-            Dlm -= CmpConCdf[1] - CmpConCdf[0];
+            Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+            if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
         }
+
+        Dlm = Dll + Dlr;
 
         if (Dlm > (FLOAT)0.0) goto E1;
 
-        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0 - (FLOAT)2.0 * p_value_; flmax = Mode[i].flm;
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0; flmax = Mode[i].flm;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            flm = (flmax + flmin) / (FLOAT)2.0;
+            ym = Mode[i].ym; flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
+            jj = 1; s = 0;
 
-            o = i * length_pdf_ + i;
+            while (jj <= ItMax) {
+                Mean = ym;
 
-            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+                LooseTheta->Theta_[0][i] = Mean;
 
-            Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+                Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
-            for (j = 0; j < I; j++) {
-                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                o = i * length_pdf_ + i;
+
+                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+
+                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
                 E_CHECK(error != E_OK, error);
 
-                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
-                E_CHECK(error != E_OK, error);
+                for (j = 0; j < I; j++) {
+                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                Dlm -= CmpConCdf[1] - CmpConCdf[0];
+                    E_CHECK(error != E_OK, error);
+
+                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+
+                    E_CHECK(error != E_OK, error);
+
+                    Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+                    if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
+                }
+
+                if (Dll < Dlr) {
+                    if (s < 0) break; else s = 1; ym -= Mode[i].h;
+                }
+                else {
+                    if (s > 0) break; else s = -1; ym += Mode[i].h;
+                }
+
+                jj++;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
@@ -327,8 +360,7 @@ S0:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
     LooseTheta->Theta_[3][0] = logCdet;
@@ -375,8 +407,8 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dll, Dlm, Dlmin, Dlr, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Mean, Stdev, Sum, Tmp, ym;
+    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
 
     // Global mode.
 
@@ -538,22 +570,28 @@ S0:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        X = (Interval*)malloc(N[i] * sizeof(Interval));
+        X = (Interval*)malloc((N[i] + 1) * sizeof(Interval));
 
         E_CHECK(NULL == X, E_MEM);
 
         // Bracketing.
 
+        Tmp = (FLOAT)0.5 * h[i] * ((FLOAT)1.0 + Eps);
+
         for (j = 0; j < N[i]; j++) {
             l = (INT)X_[i][j];
 
-            X[j].a = Y[i][l] - (FLOAT)0.5 * h[i];
-            X[j].b = Y[i][l] + (FLOAT)0.5 * h[i];
+            X[j].a = Y[i][l] - Tmp;
+            X[j].b = Y[i][l] + Tmp;
         }
 
         I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
-        Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+        Error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+
+        E_CHECK(Error != E_OK, Error);
+
+        Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
@@ -564,38 +602,65 @@ S0:;
 
             E_CHECK(Error != E_OK, Error);
 
-            Dlm -= CmpConCdf[1] - CmpConCdf[0];
+            Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+            if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
         }
+
+        Dlm = Dll + Dlr;
 
         if (Dlm > (FLOAT)0.0) goto E1;
 
-        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0 - (FLOAT)2.0 * p_value_; flmax = Mode[i].flm;
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0; flmax = Mode[i].flm;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            flm = (flmax + flmin) / (FLOAT)2.0;
+            ym = Mode[i].ym; flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
+            jj = 1; s = 0;
 
-            o = i * length_pdf_ + i;
+            while (jj <= ItMax) {
+                Mean = ym;
 
-            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+                LooseTheta->Theta_[0][i] = Mean;
 
-            Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+                Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
-            for (j = 0; j < I; j++) {
-                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                o = i * length_pdf_ + i;
+
+                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+
+                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
                 E_CHECK(error != E_OK, error);
 
-                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
-                E_CHECK(error != E_OK, error);
+                for (j = 0; j < I; j++) {
+                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                Dlm -= CmpConCdf[1] - CmpConCdf[0];
+                    E_CHECK(error != E_OK, error);
+
+                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+
+                    E_CHECK(error != E_OK, error);
+
+                    Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+                    if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
+                }
+
+                if (Dll < Dlr) {
+                    if (s < 0) break; else s = 1; ym -= Mode[i].h;
+                }
+                else {
+                    if (s > 0) break; else s = -1; ym += Mode[i].h;
+                }
+
+                jj++;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
@@ -613,8 +678,7 @@ S0:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
     LooseTheta->Theta_[3][0] = logCdet;
@@ -660,8 +724,8 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dlm, Dlmin, epsilon, flm, flmax, flmin, logCdet, logflm, logV, Stdev, Sum;
-    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dll, Dlm, Dlmin, Dlr, epsilon, flm, flmax, flmin, logCdet, logflm, Mean, logV, Stdev, Sum, Tmp, ym;
+    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
 
     // Global mode.
 
@@ -823,22 +887,28 @@ S0:;
     // Loose restraints.
 
     for (i = 0; i < length_pdf_; i++) if (N[i] > 1) {
-        X = (Interval*)malloc(N[i] * sizeof(Interval));
+        X = (Interval*)malloc((N[i] + 1) * sizeof(Interval));
 
         E_CHECK(NULL == X, E_MEM);
 
         // Bracketing.
 
+        Tmp = (FLOAT)0.5 * h[i] * ((FLOAT)1.0 + Eps);
+
         for (j = 0; j < N[i]; j++) {
             l = (INT)X_[i][j];
 
-            X[j].a = Y[i][l] - (FLOAT)0.5 * h[i];
-            X[j].b = Y[i][l] + (FLOAT)0.5 * h[i];
+            X[j].a = Y[i][l] - Tmp;
+            X[j].b = Y[i][l] + Tmp;
         }
 
         I = N[i]; MergeIntervals(Mode[i].ym, &I, X);
 
-        Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+        Error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+
+        E_CHECK(Error != E_OK, Error);
+
+        Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
         for (j = 0; j < I; j++) {
             Error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
@@ -849,38 +919,65 @@ S0:;
 
             E_CHECK(Error != E_OK, Error);
 
-            Dlm -= CmpConCdf[1] - CmpConCdf[0];
+            Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+            if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
         }
+
+        Dlm = Dll + Dlr;
 
         if (Dlm > (FLOAT)0.0) goto E1;
 
-        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0 - (FLOAT)2.0 * p_value_; flmax = Mode[i].flm;
+        flmin = (FLOAT)0.0; Dlmin = (FLOAT)1.0; flmax = Mode[i].flm;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            flm = (flmax + flmin) / (FLOAT)2.0;
+            ym = Mode[i].ym; flm = (flmax + flmin) / (FLOAT)2.0;
 
-            Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
+            jj = 1; s = 0;
 
-            o = i * length_pdf_ + i;
+            while (jj <= ItMax) {
+                Mean = ym;
 
-            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+                LooseTheta->Theta_[0][i] = Mean;
 
-            Dlm = (FLOAT)1.0 - (FLOAT)2.0 * p_value_;
+                Stdev = (FLOAT)1.0 / (SqrtPi2 * flm); Stdev *= Stdev;
 
-            for (j = 0; j < I; j++) {
-                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                o = i * length_pdf_ + i;
+
+                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+
+                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
                 E_CHECK(error != E_OK, error);
 
-                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+                Dll = Tmp; Dlr = (FLOAT)1.0 - Tmp;
 
-                E_CHECK(error != E_OK, error);
+                for (j = 0; j < I; j++) {
+                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
-                Dlm -= CmpConCdf[1] - CmpConCdf[0];
+                    E_CHECK(error != E_OK, error);
+
+                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
+
+                    E_CHECK(error != E_OK, error);
+
+                    Tmp = CmpConCdf[1] - CmpConCdf[0];
+
+                    if (X[j].s == 1) Dlr -= Tmp; else Dll -= Tmp;
+                }
+
+                if (Dll < Dlr) {
+                    if (s < 0) break; else s = 1; ym -= Mode[i].h;
+                }
+                else {
+                    if (s > 0) break; else s = -1; ym += Mode[i].h;
+                }
+
+                jj++;
             }
 
             if (((FLOAT)fabs(Dlm) < Eps) || (flmax - flmin < Eps)) {
@@ -898,8 +995,7 @@ S0:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
     LooseTheta->Theta_[3][0] = logCdet;

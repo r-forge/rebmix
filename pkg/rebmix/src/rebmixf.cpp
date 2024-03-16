@@ -1588,7 +1588,7 @@ S0:;
             while (jj <= ItMax) {
                 switch (LooseTheta->pdf_[i]) {
                 case pfNormal:
-                    error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughNormalParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
@@ -1596,30 +1596,30 @@ S0:;
                 case pfTNormal:
                     break;
                 case pfLognormal:
-                    error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughLognormalParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfWeibull:
-                    error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughWeibullParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfGamma:
-                    error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughGammaParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfGumbel:
-                    error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughGumbelParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     if ((FLOAT)fabs(IniTheta_->Theta_[2][i]) < Eps) {
-                        if (Mode[i].ym > Mode[i].ymean) {
+                        if (ym > Mode[i].ymean) {
                             LooseTheta->Theta_[2][i] = (FLOAT)1.0;
                         }
                         else {
@@ -1629,19 +1629,19 @@ S0:;
 
                     break;
                 case pfvonMises:
-                    error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughvonMisesParameters(Mode[i].h, ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfBinomial:
-                    error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughBinomialParameters(ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfPoisson:
-                    error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
+                    error = RoughPoissonParameters(ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
                     E_CHECK(error != E_OK, error);
 
@@ -1695,8 +1695,7 @@ S0:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
 EEXIT:
@@ -1966,7 +1965,7 @@ S2:;
             while (jj <= ItMax) {
                 switch (LooseTheta->pdf_[i]) {
                 case pfNormal:
-                    error = RoughNormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughNormalParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
@@ -1974,30 +1973,30 @@ S2:;
                 case pfTNormal:
                     break;
                 case pfLognormal:
-                    error = RoughLognormalParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughLognormalParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfWeibull:
-                    error = RoughWeibullParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughWeibullParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfGamma:
-                    error = RoughGammaParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughGammaParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfGumbel:
-                    error = RoughGumbelParameters(Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughGumbelParameters(ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     if ((FLOAT)fabs(IniTheta_->Theta_[2][i]) < Eps) {
-                        if (Mode[i].ym > Mode[i].ymean) {
+                        if (ym > Mode[i].ymean) {
                             LooseTheta->Theta_[2][i] = (FLOAT)1.0;
                         }
                         else {
@@ -2007,19 +2006,19 @@ S2:;
 
                     break;
                 case pfvonMises:
-                    error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughvonMisesParameters(Mode[i].h, ym, flm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfBinomial:
-                    error = RoughBinomialParameters(Mode[i].ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+                    error = RoughBinomialParameters(ym, Mode[i].ymean, flm, LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
                     E_CHECK(error != E_OK, error);
 
                     break;
                 case pfPoisson:
-                    error = RoughPoissonParameters(Mode[i].ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
+                    error = RoughPoissonParameters(ym, Mode[i].ymean, flm, &LooseTheta->Theta_[0][i]);
 
                     E_CHECK(error != E_OK, error);
 
@@ -2075,8 +2074,7 @@ S2:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
 EEXIT:
@@ -2460,8 +2458,7 @@ S2:;
             ii++;
         }
 
-        if (X) free(X);
-E1:;
+E1:     if (X) free(X);
     }
 
 EEXIT:

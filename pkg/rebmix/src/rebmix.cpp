@@ -66,7 +66,9 @@ EEXIT:
     #if (_MEMORY_LEAK_SWITCH)
     _CrtMemCheckpoint(&s2);
 
-    if (_CrtMemDifference(&s3, &s1, &s2)) _CrtMemDumpStatistics(&s3);
+    if (_CrtMemDifference(&s3, &s1, &s2)) {
+        _CrtMemDumpStatistics(&s3);
+    }
     #endif
 
     printf("\n%s%d\n", "Error: ", Error);
