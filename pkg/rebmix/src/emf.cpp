@@ -311,30 +311,30 @@ EEXIT:
 
 // Returns mixture p.d.f..
 
-INT Emmix::MixtureDist(INT                  j,          // Indey of observation.  
+INT Emmix::MixturePdf(INT                  j,           // Indey of observation.  
                        FLOAT                **Y,        // Pointer to the input array [y0,...,yd-1,...]
                        INT                  c,          // Number of components.
                        FLOAT                *W,         // Component weights.
                        CompnentDistribution **MixTheta, // Mixture parameters.
-                       FLOAT                *MixDist)   // Mixture distribution.
+                       FLOAT                *MixPdf)    // Mixture probability density.
 {
-    FLOAT CmpDist;
+    FLOAT CmpPdf;
     INT   i, Error = E_OK;
 
-    *MixDist = (FLOAT)0.0;
+    *MixPdf = (FLOAT)0.0;
 
     for (i = 0; i < c; i++) {
-        Error = LogComponentDist(j, Y, MixTheta[i], &CmpDist);
+        Error = LogComponentPdf(j, Y, MixTheta[i], &CmpPdf);
 
         E_CHECK(Error != E_OK, Error);
 
-        *MixDist += W[i] * (FLOAT)exp(CmpDist);
+        *MixPdf += W[i] * (FLOAT)exp(CmpPdf);
     }
 
 EEXIT:
 
     E_RETURN(Error);
-} // MixtureDist
+} // MixturePdf
 
 // Calculates the log likelihood value of current mixture model parameters. 
 
@@ -343,18 +343,18 @@ INT Emmix::LogLikelihood(INT                  c,          // Number of component
                          CompnentDistribution **MixTheta, // Mixture parameters.    
                          FLOAT                *LogL)      // Value of log likelihood.
 {
-    FLOAT MixDist;
+    FLOAT MixPdf;
     INT   i, Error = E_OK;
 
     *LogL = (FLOAT)0.0;
 
     for (i = 0; i < nr_; i++) {
-        Error = MixtureDist(i, Y_, c, W, MixTheta, &MixDist);
+        Error = MixturePdf(i, Y_, c, W, MixTheta, &MixPdf);
 
         E_CHECK(Error != E_OK, Error);
 
-        if (MixDist > FLOAT_MIN) {
-            *LogL += Y_[length_pdf_][i] * (FLOAT)log(MixDist);
+        if (MixPdf > FLOAT_MIN) {
+            *LogL += Y_[length_pdf_][i] * (FLOAT)log(MixPdf);
         }
         else {
             *LogL += Y_[length_pdf_][i] * (FLOAT)log(FLOAT_MIN);
@@ -370,36 +370,36 @@ EEXIT:
 
 INT Emmix::ExpectationStep()
 {
-    FLOAT CmpDist, *CmpDistArr = NULL, PostProb;
+    FLOAT CmpPdf, *CmpPdfArr = NULL, PostProb;
     INT   i, j, Error = E_OK;
 
-    CmpDistArr = (FLOAT*)malloc(c_ * sizeof(FLOAT));
+    CmpPdfArr = (FLOAT*)malloc(c_ * sizeof(FLOAT));
 
-    E_CHECK(NULL == CmpDistArr, E_MEM);
+    E_CHECK(NULL == CmpPdfArr, E_MEM);
 
     for (i = 0; i < nr_; i++) {
         PostProb = (FLOAT)0.0;
 
         for (j = 0; j < c_; j++) {
-            Error = LogComponentDist(i, Y_, MixTheta_[j], &CmpDist);
+            Error = LogComponentPdf(i, Y_, MixTheta_[j], &CmpPdf);
 
             E_CHECK(Error != E_OK, Error);
 
-            CmpDist = (FLOAT)exp(CmpDist);
+            CmpPdf = (FLOAT)exp(CmpPdf);
 
-            CmpDistArr[j] = W_[j] * CmpDist;
+            CmpPdfArr[j] = W_[j] * CmpPdf;
 
-            PostProb += CmpDistArr[j];
+            PostProb += CmpPdfArr[j];
         }
 
         for (j = 0; j < c_; j++) {
-            P_[j][i] = CmpDistArr[j] / (PostProb + FLOAT_MIN);
+            P_[j][i] = CmpPdfArr[j] / (PostProb + FLOAT_MIN);
         }
     }
 
 EEXIT:
 
-    if (CmpDistArr) free(CmpDistArr);
+    if (CmpPdfArr) free(CmpPdfArr);
 
     E_RETURN(Error);
 } // ExpectationStep
@@ -748,22 +748,22 @@ EEXIT:
 
 // Returns logarithm of component p.d.f..
 
-INT Emmix::LogComponentDist(INT                  j,         // Indey of observation.  
-                            FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
-                            CompnentDistribution *CmpTheta, // Component parameters.
-                            FLOAT                *CmpDist)  // Component distribution value.
+INT Emmix::LogComponentPdf(INT                  j,         // Indey of observation.  
+                           FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
+                           CompnentDistribution *CmpTheta, // Component parameters.
+                           FLOAT                *CmpPdf)   // Logarithm of component probability density.
 {
     FLOAT p, Theta, y, ypb;
     INT   i, k, n, Error = E_OK;
 
-    *CmpDist = (FLOAT)0.0;
+    *CmpPdf = (FLOAT)0.0;
 
     for (i = 0; i < CmpTheta->length_pdf_; i++) {
         switch (CmpTheta->pdf_[i]) {
         case pfNormal:
             y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
-            *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
+            *CmpPdf += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
             break;
         case pfTNormal:
@@ -772,10 +772,10 @@ INT Emmix::LogComponentDist(INT                  j,         // Indey of observat
             if (Y[i][j] > FLOAT_MIN) {
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
-                *CmpDist += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
+                *CmpPdf += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
 
             break;
@@ -783,10 +783,10 @@ INT Emmix::LogComponentDist(INT                  j,         // Indey of observat
             if (Y[i][j] > FLOAT_MIN) {
                 ypb = (FLOAT)exp(CmpTheta->Theta_[1][i] * (FLOAT)log(Y[i][j] / CmpTheta->Theta_[0][i]));
 
-                *CmpDist += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - (FLOAT)log(Y[i][j]);
+                *CmpPdf += (FLOAT)log(CmpTheta->Theta_[1][i]) + (FLOAT)log(ypb) - ypb - (FLOAT)log(Y[i][j]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
 
             break;
@@ -794,25 +794,25 @@ INT Emmix::LogComponentDist(INT                  j,         // Indey of observat
             if (Y[i][j] > FLOAT_MIN) {
                 ypb = Y[i][j] / CmpTheta->Theta_[0][i];
 
-                *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
+                *CmpPdf += CmpTheta->Theta_[1][i] * (FLOAT)log(ypb) - ypb - Gammaln(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
             }
             else {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
 
             break;
         case pfGumbel:
             ypb = CmpTheta->Theta_[2][i] * (Y[i][j] - CmpTheta->Theta_[0][i]) / CmpTheta->Theta_[1][i];
 
-            *CmpDist += ypb - (FLOAT)exp(ypb) - (FLOAT)log(CmpTheta->Theta_[1][i]);
+            *CmpPdf += ypb - (FLOAT)exp(ypb) - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
             break;
         case pfvonMises:
             if ((Y[i][j] < (FLOAT)0.0) || (Y[i][j] > Pi2)) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
             else {
-                *CmpDist += CmpTheta->Theta_[1][i] * (FLOAT)cos(Y[i][j] - CmpTheta->Theta_[0][i]) - LogPi2 - (FLOAT)log(BesselI0(CmpTheta->Theta_[1][i]));
+                *CmpPdf += CmpTheta->Theta_[1][i] * (FLOAT)cos(Y[i][j] - CmpTheta->Theta_[0][i]) - LogPi2 - (FLOAT)log(BesselI0(CmpTheta->Theta_[1][i]));
             }
 
             break;
@@ -820,50 +820,50 @@ INT Emmix::LogComponentDist(INT                  j,         // Indey of observat
             k = (INT)Y[i][j]; n = (INT)CmpTheta->Theta_[0][i]; p = CmpTheta->Theta_[1][i];
 
             if (k < 0) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
             else
             if (k == 0)
-                *CmpDist += n * (FLOAT)log((FLOAT)1.0 - p);
+                *CmpPdf += n * (FLOAT)log((FLOAT)1.0 - p);
             else
             if (k == n)
-                *CmpDist += n * (FLOAT)log(p);
+                *CmpPdf += n * (FLOAT)log(p);
             else
             if (k > n) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
             else
-               *CmpDist += Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
+               *CmpPdf += Gammaln(n + (FLOAT)1.0) - Gammaln(k + (FLOAT)1.0) - Gammaln(n - k + (FLOAT)1.0) +
                    k * (FLOAT)log(p) + (n - k) * (FLOAT)log((FLOAT)1.0 - p);
 
             break;
         case pfPoisson:
             k = (INT)Y[i][j]; Theta = CmpTheta->Theta_[0][i];
 
-            *CmpDist += k * (FLOAT)log(Theta) - Theta - Gammaln(k + (FLOAT)1.0);
+            *CmpPdf += k * (FLOAT)log(Theta) - Theta - Gammaln(k + (FLOAT)1.0);
 
             break;
         case pfDirac:
             if ((FLOAT)fabs(Y[i][j] - CmpTheta->Theta_[0][i]) > FLOAT_MIN) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
             else {
-                *CmpDist += (FLOAT)0.0;
+                *CmpPdf += (FLOAT)0.0;
             }
 
             break;
         case pfUniform:
             if ((Y[i][j] > CmpTheta->Theta_[1][i]) || (Y[i][j] < CmpTheta->Theta_[0][i])) {
-                *CmpDist = -FLOAT_MAX;
+                *CmpPdf = -FLOAT_MAX;
             }
             else {
-                *CmpDist -= (FLOAT)log(CmpTheta->Theta_[1][i] - CmpTheta->Theta_[0][i]);
+                *CmpPdf -= (FLOAT)log(CmpTheta->Theta_[1][i] - CmpTheta->Theta_[0][i]);
             }
         }
     }
 
     E_RETURN(Error);
-} // LogComponentDist
+} // LogComponentPdf
 
 // Updates mixture model parameters with appropriate increment.
 
@@ -1400,10 +1400,10 @@ EEXIT:
 
 // Returns logarithm of component p.d.f..
 
-INT Emmvnorm::LogComponentDist(INT                  j,         // Indey of observation.  
-                               FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
-                               CompnentDistribution *CmpTheta, // Component parameters.
-                               FLOAT                *CmpDist)  // Component distribution value.
+INT Emmvnorm::LogComponentPdf(INT                  j,         // Indey of observation.  
+                              FLOAT                **Y,       // Pointer to the input array [y0,...,yd-1,...]
+                              CompnentDistribution *CmpTheta, // Component parameters.
+                              FLOAT                *CmpPdf)   // Logarithm of component probability density.
 {
     FLOAT y, yi, yk;
     INT   i, k, Error = E_OK;
@@ -1418,10 +1418,10 @@ INT Emmvnorm::LogComponentDist(INT                  j,         // Indey of obser
         }
     }
     
-    *CmpDist = -y - CmpTheta->length_pdf_ * LogSqrtPi2 - (FLOAT)0.5 * CmpTheta->Theta_[3][0];
+    *CmpPdf = -y - CmpTheta->length_pdf_ * LogSqrtPi2 - (FLOAT)0.5 * CmpTheta->Theta_[3][0];
 
     E_RETURN(Error);
-} // LogComponentDist
+} // LogComponentPdf
 
 // Updates mixture model parameters with appropriate increment.
 

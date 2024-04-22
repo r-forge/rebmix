@@ -10,7 +10,7 @@
 static INT   NDevISet = 0;
 static FLOAT NDevVSet = (FLOAT)0.0;
 
-INT Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
+INT Rngmvnorm::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
 {
     FLOAT C[4];
     FLOAT *y, Sum;
@@ -25,7 +25,7 @@ INT Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
         if (Trigger_) {
             Trigger_ = 0;
 
-            Error = Choldc(length_pdf_, CmpDist->Theta_[1], CmpDist->Theta_[2]);
+            Error = Choldc(length_pdf_, CmpPdf->Theta_[1], CmpPdf->Theta_[2]);
 
             if (Error) goto E0;
         }
@@ -53,10 +53,10 @@ INT Rngmvnorm::InvComponentDist(CompnentDistribution *CmpDist, INT j, FLOAT **Y)
         Sum = (FLOAT)0.0;
 
         for (k = 0; k <= i; k++) {
-            Sum += CmpDist->Theta_[2][i * length_pdf_ + k] * y[k];
+            Sum += CmpPdf->Theta_[2][i * length_pdf_ + k] * y[k];
         }
 
-        Y[i][j] = Sum + CmpDist->Theta_[0][i];
+        Y[i][j] = Sum + CmpPdf->Theta_[0][i];
     }
 
 E0: if (y) free(y);

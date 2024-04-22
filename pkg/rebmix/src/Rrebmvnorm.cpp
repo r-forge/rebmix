@@ -277,7 +277,7 @@ void RCLSMVNORM(INT    *n,      // Total number of independent observations.
 {
     Rebmvnorm            *rebmvnorm = NULL;
     CompnentDistribution ****Theta = NULL;
-    FLOAT                CmpDist, MixDist, MaxMixDist, ***Q = NULL , **Y = NULL;
+    FLOAT                CmpPdf, MixPdf, MaxMixPdf, ***Q = NULL , **Y = NULL;
     INT                  A[4], **C = NULL, i, j, k, l, m, dmax = 0, Error;
 
     E_BEGIN();
@@ -412,27 +412,27 @@ void RCLSMVNORM(INT    *n,      // Total number of independent observations.
     }
 
     for (i = 0; i < *n; i++) {
-        Z[i] = 1; MaxMixDist = (FLOAT)0.0;
+        Z[i] = 1; MaxMixPdf = (FLOAT)0.0;
 
         for (j = 0; j < *s; j++) {
-            k = 0; MixDist = (FLOAT)1.0;
+            k = 0; MixPdf = (FLOAT)1.0;
 
             for (l = 0; l < *o; l++) {
                 for (m = 0; m < d[l]; m++) {
                     Y[m][0] = X[i + (*n) * (m + k)];
                 }
 
-                Error = rebmvnorm->MixtureDist(0, Y, C[j][l], Q[j][l], Theta[j][l], &CmpDist);
+                Error = rebmvnorm->MixturePdf(0, Y, C[j][l], Q[j][l], Theta[j][l], &CmpPdf);
 
                 E_CHECK(Error != E_OK, Error);
 
-                k += d[l]; MixDist *= CmpDist;
+                k += d[l]; MixPdf *= CmpPdf;
             }
 
-            MixDist *= P[j];
+            MixPdf *= P[j];
 
-            if (MixDist > MaxMixDist) {
-                Z[i] = j + 1; MaxMixDist = MixDist;
+            if (MixPdf > MaxMixPdf) {
+                Z[i] = j + 1; MaxMixPdf = MixPdf;
             }
         }
     }
@@ -507,7 +507,7 @@ void RCLRMVNORM(INT    *n,      // Total number of independent observations.
 {
     Rebmvnorm            *rebmvnorm = NULL;
     CompnentDistribution **Theta = NULL;
-    FLOAT                CmpDist, MaxCmpDist, **Y = NULL;
+    FLOAT                CmpPdf, MaxCmpPdf, **Y = NULL;
     INT                  A[4], i, j, k, Error;
 
     E_BEGIN();
@@ -584,17 +584,17 @@ void RCLRMVNORM(INT    *n,      // Total number of independent observations.
             Y[j][0] = X[i + (*n) * j];
         }
 
-        Z[i] = 1; MaxCmpDist = (FLOAT)0.0;
+        Z[i] = 1; MaxCmpPdf = (FLOAT)0.0;
 
         for (j = 0; j < *c; j++) {
-            Error = rebmvnorm->ComponentDist(0, Y, Theta[j], &CmpDist, NULL);
+            Error = rebmvnorm->ComponentPdf(0, Y, Theta[j], &CmpPdf, NULL);
 
             E_CHECK(Error != E_OK, Error);
 
-            CmpDist *= W[j];
+            CmpPdf *= W[j];
 
-            if (CmpDist > MaxCmpDist) {
-                Z[i] = j + 1; MaxCmpDist = CmpDist;
+            if (CmpPdf > MaxCmpPdf) {
+                Z[i] = j + 1; MaxCmpPdf = CmpPdf;
             }
         }
     }

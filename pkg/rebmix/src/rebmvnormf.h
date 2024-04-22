@@ -6,7 +6,7 @@
 
 class Rebmvnorm : public Rebmix {
 private:
-    INT ComponentConditionalDist(INT i, FLOAT Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpConDist);
+    INT ComponentConditionalPdf(INT i, FLOAT Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpConPdf);
     INT ComponentConditionalCdf(INT i, FLOAT Y, FLOAT *Cinv, CompnentDistribution *CmpTheta, FLOAT *CmpConCdf);
 public:
     // Methods.
@@ -14,8 +14,8 @@ public:
     INT RoughEstimationKNN(FLOAT **Y, INT k, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     INT RoughEstimationKDE(FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     INT RoughEstimationH(INT k, FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
-    INT ComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, INT *Outlier);
-    INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, INT *Outlier);
+    INT ComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf, INT *Outlier);
+    INT LogComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf, INT *Outlier);
     INT EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     INT EnhancedEstimationKDE(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     INT EnhancedEstimationH(INT k, FLOAT **Y, FLOAT nl, FLOAT *h, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);

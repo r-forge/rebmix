@@ -48,8 +48,8 @@ typedef struct roughparametertype {
     FLOAT ymean; // Mean position.
     FLOAT ymin;  // Minimum position.
     FLOAT ymax;  // Maximum position.
-    FLOAT flm;   // Component conditional empirical density.
-    FLOAT klm;   // Component conditional total number of observations.
+    FLOAT fm;    // Component conditional empirical density.
+    FLOAT km;    // Component conditional total number of observations.
 } RoughParameterType;
 
 class Rebmix : public Base {
@@ -141,8 +141,8 @@ public:
     virtual INT RoughEstimationKNN(FLOAT **Y, INT k, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT RoughEstimationKDE(FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT RoughEstimationH(INT k, FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
-    virtual INT ComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, INT *Outlier);
-    virtual INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist, INT *Outlier);
+    virtual INT ComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf, INT *Outlier);
+    virtual INT LogComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf, INT *Outlier);
     virtual INT EnhancedEstimationKNN(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT EnhancedEstimationKDE(FLOAT **Y, FLOAT nl, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT EnhancedEstimationH(INT k, FLOAT **Y, FLOAT nl, FLOAT *h, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
@@ -155,8 +155,8 @@ public:
     virtual INT EMInitialize();
     virtual INT EMRun(INT *c, FLOAT *W, CompnentDistribution **MixTheta);
 /// End 
-    INT MixtureDist(INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
-    INT MixtureDist(FLOAT logV, INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    INT MixturePdf(INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixPdf);
+    INT MixturePdf(FLOAT logV, INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixPdf);
     INT InformationCriterionKNN(INT k, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
     INT InformationCriterionKDE(FLOAT logV, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);
     INT InformationCriterionH(FLOAT logV, INT k, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *IC, FLOAT *logL, INT *M, FLOAT *D);

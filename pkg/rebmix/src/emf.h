@@ -43,7 +43,7 @@ public:
     virtual ~Emmix();
     INT Initialize(INT n, INT nr, INT nc, FLOAT **Y, INT cmax, INT length_pdf, INT length_Theta, INT *length_theta, FLOAT TOL, FLOAT am, INT max_iter, INT EM_K, EmStrategyType_e strategy, EmVariantType_e variant, EmAccelerationType_e accel);
     INT Transform(FLOAT **Y);
-    INT MixtureDist(INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixDist);
+    INT MixturePdf(INT j, FLOAT **Y, INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *MixPdf);
     INT LogLikelihood(INT c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *LogL);
     INT ExpectationStep();
     INT ConditionalStep();
@@ -52,7 +52,7 @@ public:
     INT EM();
     INT ECM();
     INT Run(INT *c, FLOAT *W, CompnentDistribution **MixTheta);
-    virtual INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    virtual INT LogComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf);
     virtual INT UpdateMixtureParameters(INT *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
     virtual INT MaximizationStep();
 }; // Emmix
@@ -60,7 +60,7 @@ public:
 class Emmvnorm : public Emmix {
 public:
     // Constructor.
-    INT LogComponentDist(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpDist);
+    INT LogComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf);
     INT UpdateMixtureParameters(INT *c, FLOAT *W, CompnentDistribution **MixTheta, FLOAT *dW, CompnentDistribution **dMixTheta, FLOAT am);
     INT MaximizationStep();
 }; // Emmvnorm
