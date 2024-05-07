@@ -152,13 +152,13 @@ EEXIT:
 } // WriteParameterFile
 #endif
 
-INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
+INT Rngmix::ComponentInv(CompnentDistribution *CmpCdf, INT j, FLOAT **Y)
 {
     FLOAT C[8], y, p;
     INT   i, k, Error = E_OK;
 
     for (i = 0; i < length_pdf_; i++) {
-        switch (CmpPdf->pdf_[i]) {
+        switch (CmpCdf->pdf_[i]) {
         case pfNormal:
             if (NDevISet == 0) {
                 do {
@@ -178,7 +178,7 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
                 y = NDevVSet; NDevISet = 0;
             }
 
-            Y[i][j] = CmpPdf->Theta_[1][i] * y + CmpPdf->Theta_[0][i];
+            Y[i][j] = CmpCdf->Theta_[1][i] * y + CmpCdf->Theta_[0][i];
 
             break;
         case pfTNormal:
@@ -202,15 +202,15 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
                 y = LDevVSet; LDevISet = 0;
             }
 
-            Y[i][j] = (FLOAT)exp(CmpPdf->Theta_[1][i] * y + CmpPdf->Theta_[0][i]);
+            Y[i][j] = (FLOAT)exp(CmpCdf->Theta_[1][i] * y + CmpCdf->Theta_[0][i]);
 
             break;
         case pfWeibull:
-            Y[i][j] = CmpPdf->Theta_[0][i] * (FLOAT)exp((FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_))) / CmpPdf->Theta_[1][i]);
+            Y[i][j] = CmpCdf->Theta_[0][i] * (FLOAT)exp((FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_))) / CmpCdf->Theta_[1][i]);
 
             break;
         case pfGamma:
-            Error = GammaInv(Ran1(&IDum_), CmpPdf->Theta_[0][i], CmpPdf->Theta_[1][i], &y);
+            Error = GammaInv(Ran1(&IDum_), CmpCdf->Theta_[0][i], CmpCdf->Theta_[1][i], &y);
 
             E_CHECK(Error != E_OK, Error);
 
@@ -218,35 +218,35 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
 
             break;
         case pfGumbel:
-            if (CmpPdf->Theta_[2][i] > Eps) {
-                Y[i][j] = CmpPdf->Theta_[0][i] + CmpPdf->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Ran1(&IDum_))));
+            if (CmpCdf->Theta_[2][i] > Eps) {
+                Y[i][j] = CmpCdf->Theta_[0][i] + CmpCdf->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / ((FLOAT)1.0 - Ran1(&IDum_))));
             }
             else {
-                Y[i][j] = CmpPdf->Theta_[0][i] - CmpPdf->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_)));
+                Y[i][j] = CmpCdf->Theta_[0][i] - CmpCdf->Theta_[1][i] * (FLOAT)log((FLOAT)log((FLOAT)1.0 / Ran1(&IDum_)));
             }
 
             break;
         case pfvonMises:
-            CmpPdf->Theta_[0][i] -= Pi2 * INT(CmpPdf->Theta_[0][i] / Pi2);
+            CmpCdf->Theta_[0][i] -= Pi2 * INT(CmpCdf->Theta_[0][i] / Pi2);
 
-            Error = vonMisesInv(Ran1(&IDum_), CmpPdf->Theta_[0][i], CmpPdf->Theta_[1][i], &Y[i][j]);
+            Error = vonMisesInv(Ran1(&IDum_), CmpCdf->Theta_[0][i], CmpCdf->Theta_[1][i], &Y[i][j]);
 
             E_CHECK(Error != E_OK, Error);
 
             break;
         case pfBinomial:
-            if (CmpPdf->Theta_[1][i] < (FLOAT)0.5) {
-                p = CmpPdf->Theta_[1][i];
+            if (CmpCdf->Theta_[1][i] < (FLOAT)0.5) {
+                p = CmpCdf->Theta_[1][i];
             }
             else {
-                p = (FLOAT)1.0 - CmpPdf->Theta_[1][i];
+                p = (FLOAT)1.0 - CmpCdf->Theta_[1][i];
             }
 
-            C[0] = CmpPdf->Theta_[0][i] * p;
-            if ((INT)CmpPdf->Theta_[0][i] < 25) {
+            C[0] = CmpCdf->Theta_[0][i] * p;
+            if ((INT)CmpCdf->Theta_[0][i] < 25) {
                 Y[i][j] = (FLOAT)0.0;
 
-                for (k = 0; k < (INT)CmpPdf->Theta_[0][i]; k++) {
+                for (k = 0; k < (INT)CmpCdf->Theta_[0][i]; k++) {
                     if (Ran1(&IDum_) < p) ++Y[i][j];
                 }
             }
@@ -254,22 +254,22 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
             if (C[0] < (FLOAT)1.0) {
                 C[1] = (FLOAT)exp(-C[0]); C[2] = (FLOAT)1.0;
 
-                for (k = 0; k < (INT)CmpPdf->Theta_[0][i]; k++) {
+                for (k = 0; k < (INT)CmpCdf->Theta_[0][i]; k++) {
                     C[2] *= Ran1(&IDum_); if (C[2] < C[1]) break;
                 }
 
-                if (k > (INT)CmpPdf->Theta_[0][i]) {
-                    Y[i][j] = CmpPdf->Theta_[0][i];
+                if (k > (INT)CmpCdf->Theta_[0][i]) {
+                    Y[i][j] = CmpCdf->Theta_[0][i];
                 }
                 else {
                     Y[i][j] = k;
                 }
             }
             else {
-                if (CmpPdf->Theta_[0][i] != Bn) {
-                    Be = CmpPdf->Theta_[0][i];
+                if (CmpCdf->Theta_[0][i] != Bn) {
+                    Be = CmpCdf->Theta_[0][i];
                     Bg = Gammaln(Be + (FLOAT)1.0);
-                    Bn = CmpPdf->Theta_[0][i];
+                    Bn = CmpCdf->Theta_[0][i];
                 }
 
                 if (p != Bp) {
@@ -303,17 +303,17 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
                 Y[i][j] = C[6];
             }
 
-            if (p != CmpPdf->Theta_[1][i]) {
-                Y[i][j] = CmpPdf->Theta_[0][i] - Y[i][j];
+            if (p != CmpCdf->Theta_[1][i]) {
+                Y[i][j] = CmpCdf->Theta_[0][i] - Y[i][j];
             }
 
             break;
         case pfPoisson:
-            if (CmpPdf->Theta_[0][i] < (FLOAT)12.0) {
-                if (CmpPdf->Theta_[0][i] != PTheta) {
-                    PTheta = CmpPdf->Theta_[0][i];
+            if (CmpCdf->Theta_[0][i] < (FLOAT)12.0) {
+                if (CmpCdf->Theta_[0][i] != PTheta) {
+                    PTheta = CmpCdf->Theta_[0][i];
 
-                    Pg = (FLOAT)exp(-CmpPdf->Theta_[0][i]);
+                    Pg = (FLOAT)exp(-CmpCdf->Theta_[0][i]);
                 }
 
                 C[0] = -(FLOAT)1.0; C[1] = (FLOAT)1.0;
@@ -323,21 +323,21 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
                 } while (C[1] > Pg);
             }
             else {
-                if (CmpPdf->Theta_[0][i] != PTheta) {
-                    PTheta = CmpPdf->Theta_[0][i];
+                if (CmpCdf->Theta_[0][i] != PTheta) {
+                    PTheta = CmpCdf->Theta_[0][i];
 
-                    Psq = (FLOAT)sqrt((FLOAT)2.0 * CmpPdf->Theta_[0][i]);
+                    Psq = (FLOAT)sqrt((FLOAT)2.0 * CmpCdf->Theta_[0][i]);
 
-                    PalTheta = (FLOAT)log(CmpPdf->Theta_[0][i]);
+                    PalTheta = (FLOAT)log(CmpCdf->Theta_[0][i]);
 
-                    Pg = CmpPdf->Theta_[0][i] * PalTheta - Gammaln(CmpPdf->Theta_[0][i] + (FLOAT)1.0);
+                    Pg = CmpCdf->Theta_[0][i] * PalTheta - Gammaln(CmpCdf->Theta_[0][i] + (FLOAT)1.0);
                 }
 
                 do {
                     do {
                         C[2] = (FLOAT)tan(Pi * Ran1(&IDum_));
 
-                        C[0] = Psq * C[2] + CmpPdf->Theta_[0][i];
+                        C[0] = Psq * C[2] + CmpCdf->Theta_[0][i];
                     } while (C[0] < (FLOAT)0.0);
 
                     C[0] = (FLOAT)floor(C[0]);
@@ -350,11 +350,11 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
 
             break;
         case pfDirac:
-            Y[i][j] = CmpPdf->Theta_[0][i];
+            Y[i][j] = CmpCdf->Theta_[0][i];
 
             break;
         case pfUniform:
-            Y[i][j] = CmpPdf->Theta_[0][i] + Ran1(&IDum_) * (CmpPdf->Theta_[1][i] - CmpPdf->Theta_[0][i]);
+            Y[i][j] = CmpCdf->Theta_[0][i] + Ran1(&IDum_) * (CmpCdf->Theta_[1][i] - CmpCdf->Theta_[0][i]);
 
             break;
         default:;
@@ -364,7 +364,7 @@ INT Rngmix::InvComponentDist(CompnentDistribution *CmpPdf, INT j, FLOAT **Y)
 EEXIT:
 
     E_RETURN(Error);
-} // InvComponentDist
+} // ComponentInv
 
 // Returns random sample of independent observations.
 
@@ -396,7 +396,7 @@ INT Rngmix::RNGMIX()
         for (j = 0; j < N_[i]; j++) {
             Z_[k] = i + 1;
 
-            Error = InvComponentDist(MixTheta_[i], k, Y_);
+            Error = ComponentInv(MixTheta_[i], k, Y_);
 
             E_CHECK(Error != E_OK, Error);
 

@@ -2,6 +2,8 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \section{Changes in version 2.16.0}{ 
 \itemize{
+\item Some minor changes and bug fixes in C++ and R codes.
+\item Improved C++ code for handling warnings and errors.
 \item Improved C++ functions \code{RoughEstimationKNN()}, \code{RoughEstimationKDE()} and \code{RoughEstimationH()}.
 }
 }

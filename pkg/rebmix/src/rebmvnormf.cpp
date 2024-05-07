@@ -87,8 +87,8 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dl, Dr, epsilon, fm, fmax, fmin, Hm, Hmin = (FLOAT)0.0, logCdet, logfm, Mean, Stdev, Sum, Tmp, Vm, Vmin, ym, ymax, ymin;
-    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], *D = NULL, Dl, Dr, epsilon, fm, fmax, fmin, logCdet, logfm, Mean, Stdev, Sum, Tmp, Vm, Vmin;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -289,104 +289,52 @@ S0:;
             if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
         }
 
-        Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km; Vmin = (FLOAT)1.0 - (FLOAT)2.0 / Mode[i].km;
+        Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
         if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
 
-        fmax = Mode[i].fm; fmin = (FLOAT)0.0;
+        fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            ym = ymax = ymin = Mode[i].ym; fm = (fmax + fmin) / (FLOAT)2.0;
+            fm = (fmax + fmin) / (FLOAT)2.0;
 
-            jj = 1; s = 0;
+            Mean = Mode[i].ym;
 
-            while (jj <= ItMax) {
-                Mean = ym;
+            LooseTheta->Theta_[0][i] = Mean;
 
-                LooseTheta->Theta_[0][i] = Mean;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
 
-                Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+            o = i * length_pdf_ + i;
 
-                o = i * length_pdf_ + i;
+            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
-                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+            error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
-                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+            E_CHECK(error != E_OK, error);
+
+            Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+
+            for (j = 0; j < I; j++) {
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
                 E_CHECK(error != E_OK, error);
 
-                Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                for (j = 0; j < I; j++) {
-                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                E_CHECK(error != E_OK, error);
 
-                    E_CHECK(error != E_OK, error);
+                Tmp = CmpConCdf[1] - CmpConCdf[0];
 
-                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
-
-                    E_CHECK(error != E_OK, error);
-
-                    Tmp = CmpConCdf[1] - CmpConCdf[0];
-
-                    if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
-                }
-
-                Hm = Dr - Dl;
-
-                if (s < 2) {
-                    // Bracketing.
-
-                    if (Hm > (FLOAT)0.0) {
-                        ymax = ym;
-
-                        if (s < 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym -= Mode[i].h; s = 1;
-                        }
-                    }
-                    else {
-                        ymin = ym; Hmin = Hm;
-
-                        if (s > 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym += Mode[i].h; s = -1;
-                        }
-                    }
-                }
-                else {
-                    // Bisection.
-
-                    if ((FLOAT)fabs(Hm) < Eps) {
-                        break;
-                    }
-                    else {
-                        if (Hm * Hmin > (FLOAT)0.0) {
-                            ymin = ym; Hmin = Hm;
-                        }
-                        else {
-                            ymax = ym;
-                        }
-
-                        ym = (ymax + ymin) / (FLOAT)2.0;
-                    }
-                }
-
-                jj++;
+                if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
             }
 
-            E_CHECK(jj > ItMax, E_CON);
+            Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km;
 
-            Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km;
-
-            if ((FLOAT)fabs(Vm) < Eps) {
+            if (fmax - fmin < Eps) {
                 Error = E_OK;
             }
             else {
@@ -400,6 +348,18 @@ S0:;
 
             ii++;
         }
+
+        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+
+        Mean = Mode[i].ym;
+
+        LooseTheta->Theta_[0][i] = Mean;
+
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+
+        o = i * length_pdf_ + i;
+
+        LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
 E1:     if (X) free(X);
     }
@@ -448,8 +408,8 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dl, Dr, epsilon, fm, fmax, fmin, Hm, Hmin = (FLOAT)0.0, logCdet, logfm, logV, Mean, Stdev, Sum, Tmp, Vm, Vmin, ym, ymax, ymin;
-    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dl, Dr, epsilon, fm, fmax, fmin, logCdet, logfm, logV, Mean, Stdev, Sum, Tmp, Vm, Vmin;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -648,104 +608,52 @@ S0:;
             if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
         }
 
-        Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km; Vmin = (FLOAT)1.0 - (FLOAT)2.0 / Mode[i].km;
+        Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
         if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
 
-        fmax = Mode[i].fm; fmin = (FLOAT)0.0;
+        fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            ym = ymax = ymin = Mode[i].ym; fm = (fmax + fmin) / (FLOAT)2.0;
+            fm = (fmax + fmin) / (FLOAT)2.0;
 
-            jj = 1; s = 0;
+            Mean = Mode[i].ym;
 
-            while (jj <= ItMax) {
-                Mean = ym;
+            LooseTheta->Theta_[0][i] = Mean;
 
-                LooseTheta->Theta_[0][i] = Mean;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
 
-                Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+            o = i * length_pdf_ + i;
 
-                o = i * length_pdf_ + i;
+            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
-                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+            error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
-                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+            E_CHECK(error != E_OK, error);
+
+            Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+
+            for (j = 0; j < I; j++) {
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
                 E_CHECK(error != E_OK, error);
 
-                Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                for (j = 0; j < I; j++) {
-                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                E_CHECK(error != E_OK, error);
 
-                    E_CHECK(error != E_OK, error);
+                Tmp = CmpConCdf[1] - CmpConCdf[0];
 
-                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
-
-                    E_CHECK(error != E_OK, error);
-
-                    Tmp = CmpConCdf[1] - CmpConCdf[0];
-
-                    if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
-                }
-
-                Hm = Dr - Dl;
-
-                if (s < 2) {
-                    // Bracketing.
-
-                    if (Hm > (FLOAT)0.0) {
-                        ymax = ym;
-
-                        if (s < 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym -= Mode[i].h; s = 1;
-                        }
-                    }
-                    else {
-                        ymin = ym; Hmin = Hm;
-
-                        if (s > 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym += Mode[i].h; s = -1;
-                        }
-                    }
-                }
-                else {
-                    // Bisection.
-
-                    if ((FLOAT)fabs(Hm) < Eps) {
-                        break;
-                    }
-                    else {
-                        if (Hm * Hmin > (FLOAT)0.0) {
-                            ymin = ym; Hmin = Hm;
-                        }
-                        else {
-                            ymax = ym;
-                        }
-
-                        ym = (ymax + ymin) / (FLOAT)2.0;
-                    }
-                }
-
-                jj++;
+                if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
             }
 
-            E_CHECK(jj > ItMax, E_CON);
+            Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km;
 
-            Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km;
-
-            if ((FLOAT)fabs(Vm) < Eps) {
+            if (fmax - fmin < Eps) {
                 Error = E_OK;
             }
             else {
@@ -759,6 +667,18 @@ S0:;
 
             ii++;
         }
+
+        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+
+        Mean = Mode[i].ym;
+
+        LooseTheta->Theta_[0][i] = Mean;
+
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+
+        o = i * length_pdf_ + i;
+
+        LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
 E1:     if (X) free(X);
     }
@@ -806,8 +726,8 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
 {
     RoughParameterType *Mode = NULL;
     Interval           *X = NULL;
-    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dl, Dr, epsilon, fm, fmax, fmin, Hm, Hmin = (FLOAT)0.0, logCdet, logfm, logV, Mean, Stdev, Sum, Tmp, Vm, Vmin, ym, ymax, ymin;
-    INT                i, I, ii, j, jj, l, *N = NULL, o, p, q, r, s, error, Error = E_OK;
+    FLOAT              *C = NULL, *Cinv = NULL, CmpConCdf[2], Dl, Dr, epsilon, fm, fmax, fmin, logCdet, logfm, logV, Mean, Stdev, Sum, Tmp, Vm, Vmin;
+    INT                i, I, ii, j, l, *N = NULL, o, p, q, r, error, Error = E_OK;
 
     // Global mode.
 
@@ -1006,104 +926,52 @@ S0:;
             if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
         }
 
-        Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km; Vmin = (FLOAT)1.0 - (FLOAT)2.0 / Mode[i].km;
+        Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
         if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
 
-        fmax = Mode[i].fm; fmin = (FLOAT)0.0;
+        fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
         // Bisection.
 
         ii = 1; Error = E_CON;
 
         while ((ii <= ItMax) && (Error != E_OK)) {
-            ym = ymax = ymin = Mode[i].ym; fm = (fmax + fmin) / (FLOAT)2.0;
+            fm = (fmax + fmin) / (FLOAT)2.0;
 
-            jj = 1; s = 0;
+            Mean = Mode[i].ym;
 
-            while (jj <= ItMax) {
-                Mean = ym;
+            LooseTheta->Theta_[0][i] = Mean;
 
-                LooseTheta->Theta_[0][i] = Mean;
+            Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
 
-                Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+            o = i * length_pdf_ + i;
 
-                o = i * length_pdf_ + i;
+            LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
-                LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
+            error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
 
-                error = ComponentConditionalCdf(i, Mode[i].ym, Cinv, LooseTheta, &Tmp);
+            E_CHECK(error != E_OK, error);
+
+            Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+
+            for (j = 0; j < I; j++) {
+                error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
 
                 E_CHECK(error != E_OK, error);
 
-                Dl = Tmp; Dr = (FLOAT)1.0 - Tmp;
+                error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
 
-                for (j = 0; j < I; j++) {
-                    error = ComponentConditionalCdf(i, X[j].a, Cinv, LooseTheta, &CmpConCdf[0]);
+                E_CHECK(error != E_OK, error);
 
-                    E_CHECK(error != E_OK, error);
+                Tmp = CmpConCdf[1] - CmpConCdf[0];
 
-                    error = ComponentConditionalCdf(i, X[j].b, Cinv, LooseTheta, &CmpConCdf[1]);
-
-                    E_CHECK(error != E_OK, error);
-
-                    Tmp = CmpConCdf[1] - CmpConCdf[0];
-
-                    if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
-                }
-
-                Hm = Dr - Dl;
-
-                if (s < 2) {
-                    // Bracketing.
-
-                    if (Hm > (FLOAT)0.0) {
-                        ymax = ym;
-
-                        if (s < 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym -= Mode[i].h; s = 1;
-                        }
-                    }
-                    else {
-                        ymin = ym; Hmin = Hm;
-
-                        if (s > 0) {
-                            ym = (ymax + ymin) / (FLOAT)2.0; s = 2;
-                        }
-                        else {
-                            ym += Mode[i].h; s = -1;
-                        }
-                    }
-                }
-                else {
-                    // Bisection.
-
-                    if ((FLOAT)fabs(Hm) < Eps) {
-                        break;
-                    }
-                    else {
-                        if (Hm * Hmin > (FLOAT)0.0) {
-                            ymin = ym; Hmin = Hm;
-                        }
-                        else {
-                            ymax = ym;
-                        }
-
-                        ym = (ymax + ymin) / (FLOAT)2.0;
-                    }
-                }
-
-                jj++;
+                if (X[j].s == 1) Dr -= Tmp; else Dl -= Tmp;
             }
 
-            E_CHECK(jj > ItMax, E_CON);
+            Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km;
 
-            Vm = Dl + Dr - (FLOAT)2.0 / Mode[i].km;
-
-            if ((FLOAT)fabs(Vm) < Eps) {
+            if (fmax - fmin < Eps) {
                 Error = E_OK;
             }
             else {
@@ -1117,6 +985,18 @@ S0:;
 
             ii++;
         }
+
+        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+
+        Mean = Mode[i].ym;
+
+        LooseTheta->Theta_[0][i] = Mean;
+
+        Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
+
+        o = i * length_pdf_ + i;
+
+        LooseTheta->Theta_[1][o] = Cinv[o] * Stdev;
 
 E1:     if (X) free(X);
     }

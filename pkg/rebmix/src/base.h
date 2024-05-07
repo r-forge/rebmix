@@ -16,7 +16,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
 
 #define E_BEGIN() { \
@@ -405,5 +405,13 @@ FLOAT xlogx(FLOAT x);
 void MergeIntervals(FLOAT    ym,  // Mode position.
                     INT      *n,  // Total number of intervals.
                     Interval *X); // Pointer to the intervals.
+
+// Returns the inverse of the normal c.d.f. for the specified Mean and Stdev based on the Beasley-Springer-Moro algorithm.
+
+FLOAT NormalInv(FLOAT Fy, FLOAT Mean, FLOAT Stdev);
+
+// Returns the inverse of the lognormal c.d.f. for the specified Mean and Stdev based on the Beasley-Springer-Moro algorithm.
+
+FLOAT LognormalInv(FLOAT Fy, FLOAT Mean, FLOAT Stdev);
 
 #endif

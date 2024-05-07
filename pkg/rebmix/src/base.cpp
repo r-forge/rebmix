@@ -1017,3 +1017,93 @@ void MergeIntervals(FLOAT    ym,  // Mode position.
 
     *n = k;
 } // MergeIntervals
+
+// Returns the inverse of the normal c.d.f. for the specified Mean and Stdev based on the Beasley-Springer-Moro algorithm.
+
+FLOAT NormalInv(FLOAT Fy, FLOAT Mean, FLOAT Stdev)
+{
+    static FLOAT a[6] = {-(FLOAT)3.969683028665376e+01, (FLOAT)2.209460984245205e+02,
+                         -(FLOAT)2.759285104469687e+02, (FLOAT)1.383577518672690e+02,
+                         -(FLOAT)3.066479806614716e+01, (FLOAT)2.506628277459239e+00};
+
+    static FLOAT b[5] = {-(FLOAT)5.447609879822406e+01, (FLOAT)1.615858368580409e+02,
+                         -(FLOAT)1.556989798598866e+02, (FLOAT)6.680131188771972e+01,
+                         -(FLOAT)1.328068155288572e+01};
+
+    static FLOAT c[6] = {-(FLOAT)7.784894002430293e-03, -(FLOAT)3.223964580411365e-01,
+                         -(FLOAT)2.400758277161838e+00, -(FLOAT)2.549732539343734e+00,
+                          (FLOAT)4.374664141464968e+00,  (FLOAT)2.938163982698783e+00};
+
+    static FLOAT d[4] = {(FLOAT)7.784695709041462e-03, (FLOAT)3.224671290700398e-01,
+                         (FLOAT)2.445134137142996e+00, (FLOAT)3.754408661907416e+00};
+
+    FLOAT low = (FLOAT)0.02425, high = (FLOAT)1.0 - low;
+    FLOAT q, r, z;
+
+    if (Fy < low) {
+        q = (FLOAT)sqrt(-(FLOAT)2.0 * (FLOAT)log(Fy));
+
+        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + (FLOAT)1.0);
+    }
+    else 
+    if (Fy <= high) {
+        q = Fy - (FLOAT)0.5; r = q * q;
+
+        z = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+            (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + (FLOAT)1.0);
+    }
+    else {
+        q = (FLOAT)sqrt(-(FLOAT)2.0 * (FLOAT)log((FLOAT)1.0 - Fy));
+
+        z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + (FLOAT)1.0);
+    }
+
+    return z * Stdev + Mean;
+} // NormalInv
+
+// Returns the inverse of the lognormal c.d.f. for the specified Mean and Stdev based on the Beasley-Springer-Moro algorithm.
+
+FLOAT LognormalInv(FLOAT Fy, FLOAT Mean, FLOAT Stdev)
+{
+    static FLOAT a[6] = { -(FLOAT)3.969683028665376e+01, (FLOAT)2.209460984245205e+02,
+                         -(FLOAT)2.759285104469687e+02, (FLOAT)1.383577518672690e+02,
+                         -(FLOAT)3.066479806614716e+01, (FLOAT)2.506628277459239e+00 };
+
+    static FLOAT b[5] = { -(FLOAT)5.447609879822406e+01, (FLOAT)1.615858368580409e+02,
+                         -(FLOAT)1.556989798598866e+02, (FLOAT)6.680131188771972e+01,
+                         -(FLOAT)1.328068155288572e+01 };
+
+    static FLOAT c[6] = { -(FLOAT)7.784894002430293e-03, -(FLOAT)3.223964580411365e-01,
+                         -(FLOAT)2.400758277161838e+00, -(FLOAT)2.549732539343734e+00,
+                          (FLOAT)4.374664141464968e+00,  (FLOAT)2.938163982698783e+00 };
+
+    static FLOAT d[4] = { (FLOAT)7.784695709041462e-03, (FLOAT)3.224671290700398e-01,
+                         (FLOAT)2.445134137142996e+00, (FLOAT)3.754408661907416e+00 };
+
+    FLOAT low = (FLOAT)0.02425, high = (FLOAT)1.0 - low;
+    FLOAT q, r, z;
+
+    if (Fy < low) {
+        q = (FLOAT)sqrt(-(FLOAT)2.0 * (FLOAT)log(Fy));
+
+        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + (FLOAT)1.0);
+    }
+    else
+        if (Fy <= high) {
+            q = Fy - (FLOAT)0.5; r = q * q;
+
+            z = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+                (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + (FLOAT)1.0);
+        }
+        else {
+            q = (FLOAT)sqrt(-(FLOAT)2.0 * (FLOAT)log((FLOAT)1.0 - Fy));
+
+            z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+                ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + (FLOAT)1.0);
+        }
+
+    return (FLOAT)exp(Mean + Stdev * z);
+} // LognormalInv
