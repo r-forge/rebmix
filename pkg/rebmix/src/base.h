@@ -16,7 +16,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 0
+#define _MAINTAIN_SWITCH 1
 #endif
 
 #define E_BEGIN() { \

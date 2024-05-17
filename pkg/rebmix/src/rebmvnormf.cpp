@@ -10,8 +10,6 @@ INT Rebmvnorm::Initialize()
 
     p_value_ = (FLOAT)0.0001;
 
-    min_dist_mul_ = (FLOAT)2.5;
-
     var_mul_ = (FLOAT)0.0625;
 
     kmax_ = (INT)floor(((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_) * (FLOAT)pow((FLOAT)n_, (FLOAT)1.0 / ((FLOAT)1.0 + (FLOAT)1.0 / length_pdf_)));
@@ -291,7 +289,7 @@ S0:;
 
         Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
-        if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
+        if ((Vm >= (FLOAT)0.0) || (Vmin <= (FLOAT)0.0)) goto E1;
 
         fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
@@ -349,7 +347,7 @@ S0:;
             ii++;
         }
 
-        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+        Tmp = fm / Mode[i].fm; fm = Mode[i].fm * ((FLOAT)1.0 - Tmp) + fm * Tmp;
 
         Mean = Mode[i].ym;
 
@@ -610,7 +608,7 @@ S0:;
 
         Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
-        if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
+        if ((Vm >= (FLOAT)0.0) || (Vmin <= (FLOAT)0.0)) goto E1;
 
         fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
@@ -668,7 +666,7 @@ S0:;
             ii++;
         }
 
-        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+        Tmp = fm / Mode[i].fm; fm = Mode[i].fm * ((FLOAT)1.0 - Tmp) + fm * Tmp;
 
         Mean = Mode[i].ym;
 
@@ -928,7 +926,7 @@ S0:;
 
         Vm = (FLOAT)0.5 * (Dl + Dr) - (FLOAT)1.0 / Mode[i].km; Vmin = (FLOAT)0.5 - (FLOAT)1.0 / Mode[i].km;
 
-        if ((Vm > -Eps) || (Vmin < Eps)) goto E1;
+        if ((Vm >= (FLOAT)0.0) || (Vmin <= (FLOAT)0.0)) goto E1;
 
         fmax = Mode[i].fm; fm = fmin = (FLOAT)0.0;
 
@@ -986,7 +984,7 @@ S0:;
             ii++;
         }
 
-        fm = Max(Mode[i].fm - (FLOAT)0.5 * fm, Mode[i].fm - (FLOAT)0.5 * (Mode[i].fm - fm));
+        Tmp = fm / Mode[i].fm; fm = Mode[i].fm * ((FLOAT)1.0 - Tmp) + fm * Tmp;
 
         Mean = Mode[i].ym;
 
