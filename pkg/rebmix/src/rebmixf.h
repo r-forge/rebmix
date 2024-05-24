@@ -108,6 +108,7 @@ public:
     FLOAT                      **Y_;           // Dataset.
     INT                        Y_type_;        // Dataset type.
     FLOAT                      **X_;           // Temporary dataset.
+    FLOAT                      **Z_;           // Temporary dataset.
     // Output members.
     FLOAT                      *W_;            // Component weights.
     CompnentDistribution       **MixTheta_;    // Mixture parameters.
