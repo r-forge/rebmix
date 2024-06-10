@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 char _e_line_[65536] = "";
-char _w_line_[2][65536] = { "", "" };
+char _w_line_[2][65536] = {"", ""};
 
 void E_begin()
 {

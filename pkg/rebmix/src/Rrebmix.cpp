@@ -1308,7 +1308,7 @@ void RPreprocessingKNNMIX(INT    *k,      // k-nearest neighbours.
                           char   **EList) // Error list.
 {
     Rebmix *rebmix = NULL;
-    FLOAT  **Y = NULL;
+    FLOAT  Rm, **Y = NULL;
     INT    i, j, l, Error;
 
     E_BEGIN();
@@ -1338,7 +1338,7 @@ void RPreprocessingKNNMIX(INT    *k,      // k-nearest neighbours.
         }
     }
 
-    Error = rebmix->PreprocessingKNN(*k, h, Y);
+    Error = rebmix->PreprocessingKNN(*k, h, &Rm, Y);
 
     E_CHECK(Error != E_OK, Error);
 
@@ -1574,7 +1574,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
                                  char   **EList)       // Error list.
 {
     Rebmix *rebmix = NULL;
-    FLOAT  **Y = NULL;
+    FLOAT  Rm, **Y = NULL;
     INT    i, j, l, m, Error;
 
     E_BEGIN();
@@ -1777,7 +1777,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
         }
     }
 
-    Error = rebmix->PreprocessingKNN(*k, h, Y);
+    Error = rebmix->PreprocessingKNN(*k, h, &Rm, Y);
 
     E_CHECK(Error != E_OK, Error);
 

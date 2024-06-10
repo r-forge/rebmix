@@ -134,11 +134,11 @@ public:
     virtual ~Rebmix();
     // Methods.
     virtual INT Initialize();
-    INT PreprocessingKNN(INT k, FLOAT *h, FLOAT **Y);
+    INT PreprocessingKNN(INT k, FLOAT *h, FLOAT *Rm, FLOAT **Y);
     INT PreprocessingKDE(FLOAT *h, FLOAT **Y);
     INT PreprocessingH(FLOAT *h, FLOAT *y0, FLOAT *ymin, FLOAT *ymax, INT *k, FLOAT **Y);
     INT PreprocessingH(FLOAT *h, FLOAT *y0, FLOAT *ymin, FLOAT *ymax, INT *k, FLOAT **Y, INT *State);
-    virtual INT RoughEstimationKNN(FLOAT **Y, INT k, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
+    virtual INT RoughEstimationKNN(FLOAT **Y, INT k, FLOAT *h, FLOAT Rm, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT RoughEstimationKDE(FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT RoughEstimationH(INT k, FLOAT **Y, FLOAT *h, FLOAT nl, INT m, CompnentDistribution *RigidTheta, CompnentDistribution *LooseTheta);
     virtual INT ComponentPdf(INT j, FLOAT **Y, CompnentDistribution *CmpTheta, FLOAT *CmpPdf, INT *Outlier);

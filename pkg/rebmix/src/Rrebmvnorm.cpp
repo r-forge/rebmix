@@ -631,7 +631,7 @@ void RPreprocessingKNNMVNORM(INT    *k,      // k-nearest neighbours.
                              char   **EList) // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    FLOAT     **Y = NULL;
+    FLOAT     Rm, **Y = NULL;
     INT       i, j, l, Error;
 
     E_BEGIN();
@@ -661,7 +661,7 @@ void RPreprocessingKNNMVNORM(INT    *k,      // k-nearest neighbours.
         }
     }
 
-    Error = rebmvnorm->PreprocessingKNN(*k, h, Y);
+    Error = rebmvnorm->PreprocessingKNN(*k, h, &Rm, Y);
 
     E_CHECK(Error != E_OK, Error);
 
@@ -849,7 +849,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
                                     char   **EList)       // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
-    FLOAT     **Y = NULL;
+    FLOAT     Rm, **Y = NULL;
     INT       i, j, l, m, Error;
 
     E_BEGIN();
@@ -1006,7 +1006,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
         }
     }
 
-    Error = rebmvnorm->PreprocessingKNN(*k, h, Y);
+    Error = rebmvnorm->PreprocessingKNN(*k, h, &Rm, Y);
 
     E_CHECK(Error != E_OK, Error);
 
