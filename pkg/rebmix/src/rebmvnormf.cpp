@@ -86,7 +86,7 @@ INT Rebmvnorm::RoughEstimationKNN(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConPdf, Dc, Dm, epsilon, fm, fmax, fmin, fres, logCdet, logfm, R, Stdev, Sum, Tmp;
-    INT                i, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, ii, j, l, *N = NULL, nres, o, p, q, r, Error = E_OK;
 
     // Global mode.
 
@@ -272,12 +272,12 @@ S1:;
 
     // Loose restraints.
 
+    nres = 0; fres = (FLOAT)0.0;
+
     for (i = 0; i < length_pdf_; i++) {
         Error = ComponentConditionalPdf(i, Mode[i].ym, Cinv, LooseTheta, &Mode[i].fm);
 
         E_CHECK(Error != E_OK, Error);
-
-        fres = (FLOAT)0.0;
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -304,14 +304,20 @@ S1:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
@@ -319,6 +325,24 @@ S1:;
         o = i * length_pdf_ + i;
 
         LooseTheta->Theta_[1][o] = Cinv[o] * Stdev; LooseTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
+    }
+
+    LooseTheta->Theta_[3][0] = logCdet;
+
+    for (i = 0; i < length_pdf_; i++) {
+        o = i * length_pdf_ + i;
+
+        LooseTheta->Theta_[3][0] += (FLOAT)log(LooseTheta->Theta_[1][o]);
+
+        for (ii = 0; ii < i; ii++) {
+            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
+
+            Stdev = (FLOAT)sqrt(LooseTheta->Theta_[1][o] * LooseTheta->Theta_[1][r]);
+
+            LooseTheta->Theta_[1][p] = LooseTheta->Theta_[1][q] = C[q] * Stdev;
+
+            LooseTheta->Theta_[2][p] = LooseTheta->Theta_[2][q] = Cinv[q] / Stdev;
+        }
     }
 
     LooseTheta->Theta_[3][0] = logCdet;
@@ -363,7 +387,7 @@ INT Rebmvnorm::RoughEstimationKDE(FLOAT                **Y,         // Pointer t
 {
     RoughParameterType *Mode = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConPdf, Dm, epsilon, fm, fmax, fmin, fres, logCdet, logfm, logV, Sum, Stdev, Tmp;
-    INT                i, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, ii, j, l, *N = NULL, nres, o, p, q, r, Error = E_OK;
 
     // Global mode.
 
@@ -543,12 +567,12 @@ S1:;
 
     // Loose restraints.
 
+    nres = 0; fres = (FLOAT)0.0;
+
     for (i = 0; i < length_pdf_; i++) {
         Error = ComponentConditionalPdf(i, Mode[i].ym, Cinv, LooseTheta, &Mode[i].fm);
 
         E_CHECK(Error != E_OK, Error);
-
-        fres = (FLOAT)0.0;
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -575,14 +599,20 @@ S1:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
@@ -635,7 +665,7 @@ INT Rebmvnorm::RoughEstimationH(INT                  k,           // Total numbe
 {
     RoughParameterType *Mode = NULL;
     FLOAT              *C = NULL, *Cinv = NULL, CmpConPdf, Dm, epsilon, fm, fmax, fmin, fres, logCdet, logfm, logV, Sum, Stdev, Tmp;
-    INT                i, ii, j, l, *N = NULL, o, p, q, r, Error = E_OK;
+    INT                i, ii, j, l, *N = NULL, nres, o, p, q, r, Error = E_OK;
 
     // Global mode.
 
@@ -796,12 +826,12 @@ S0:;
 
     // Loose restraints.
 
-    for (i = 0; i < length_pdf_; i++) { 
+    nres = 0; fres = (FLOAT)0.0;
+
+    for (i = 0; i < length_pdf_; i++) {
         Error = ComponentConditionalPdf(i, Mode[i].ym, Cinv, LooseTheta, &Mode[i].fm);
 
         E_CHECK(Error != E_OK, Error);
-
-        fres = (FLOAT)0.0;
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -828,14 +858,20 @@ S0:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         Stdev = (FLOAT)1.0 / (SqrtPi2 * fm); Stdev *= Stdev;
@@ -843,6 +879,24 @@ S0:;
         o = i * length_pdf_ + i;
 
         LooseTheta->Theta_[1][o] = Cinv[o] * Stdev; LooseTheta->Theta_[2][o] = (FLOAT)1.0 / Stdev;
+    }
+
+    LooseTheta->Theta_[3][0] = logCdet;
+
+    for (i = 0; i < length_pdf_; i++) {
+        o = i * length_pdf_ + i;
+
+        LooseTheta->Theta_[3][0] += (FLOAT)log(LooseTheta->Theta_[1][o]);
+
+        for (ii = 0; ii < i; ii++) {
+            p = i * length_pdf_ + ii; q = ii * length_pdf_ + i; r = ii * length_pdf_ + ii;
+
+            Stdev = (FLOAT)sqrt(LooseTheta->Theta_[1][o] * LooseTheta->Theta_[1][r]);
+
+            LooseTheta->Theta_[1][p] = LooseTheta->Theta_[1][q] = C[q] * Stdev;
+
+            LooseTheta->Theta_[2][p] = LooseTheta->Theta_[2][q] = Cinv[q] / Stdev;
+        }
     }
 
     LooseTheta->Theta_[3][0] = logCdet;

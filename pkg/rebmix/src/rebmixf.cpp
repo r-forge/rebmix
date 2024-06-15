@@ -1338,7 +1338,7 @@ INT Rebmix::RoughEstimationKNN(FLOAT                **Y,         // Pointer to t
 {
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgPdf, Dc, Dm, epsilon, fm, fmax, fmin, fres, logfm, R, Tmp;
-    INT                i, ii, j, l, *N = NULL, Skip, Error = E_OK;
+    INT                i, ii, j, l, *N = NULL, nres, Skip, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -1529,7 +1529,7 @@ S1:;
 
             break;
         case pfvonMises:
-            Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, Mode[i].fm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
+            Error = RoughvonMisesParameters((FLOAT)2.0 * Rm, Mode[i].ym, Mode[i].fm, &RigidTheta->Theta_[0][i], &RigidTheta->Theta_[1][i]);
 
             E_CHECK(Error != E_OK, Error);
 
@@ -1564,11 +1564,11 @@ S1:;
 
     // Loose restraints.
 
+    nres = 0; fres = (FLOAT)0.0;
+
     for (i = 0; i < length_pdf_; i++) {
         Skip = (LooseTheta->pdf_[i] == pfDirac) || (LooseTheta->pdf_[i] == pfUniform) ||
-               ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
-
-        fres = (FLOAT)0.0;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0) && (Skip == 0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -1595,14 +1595,20 @@ S1:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         if (fm != Mode[i].fm) switch (LooseTheta->pdf_[i]) {
@@ -1648,7 +1654,7 @@ S1:;
 
             break;
         case pfvonMises:
-            Error = RoughvonMisesParameters(Mode[i].h, Mode[i].ym, fm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
+            Error = RoughvonMisesParameters((FLOAT)2.0 * Rm, Mode[i].ym, fm, &LooseTheta->Theta_[0][i], &LooseTheta->Theta_[1][i]);
 
             E_CHECK(Error != E_OK, Error);
 
@@ -1690,7 +1696,7 @@ INT Rebmix::RoughEstimationKDE(FLOAT                **Y,         // Pointer to t
 {
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgPdf, Dm, epsilon, fm, fmax, fmin, fres, logfm, logV, Tmp;
-    INT                i, ii, j, l, *N = NULL, Skip, Error = E_OK;
+    INT                i, ii, j, l, *N = NULL, nres, Skip, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -1894,11 +1900,11 @@ S3:;
 
     // Loose restraints.
 
+    nres = 0; fres = (FLOAT)0.0;
+
     for (i = 0; i < length_pdf_; i++) {
         Skip = (LooseTheta->pdf_[i] == pfDirac) || (LooseTheta->pdf_[i] == pfUniform) ||
-               ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
-
-        fres = (FLOAT)0.0;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0) && (Skip == 0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -1925,14 +1931,20 @@ S3:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         if (fm != Mode[i].fm) switch (LooseTheta->pdf_[i]) {
@@ -2021,7 +2033,7 @@ INT Rebmix::RoughEstimationH(INT                  k,           // Total number o
 {
     RoughParameterType *Mode = NULL;
     FLOAT              CmpMrgPdf, Dm, epsilon, fm, fmax, fmin, fres, logfm, logV, Tmp;
-    INT                i, j, l, *N = NULL, Skip, Error = E_OK;
+    INT                i, j, l, *N = NULL, nres, Skip, Error = E_OK;
 
     Mode = (RoughParameterType*)malloc(length_pdf_ * sizeof(RoughParameterType));
 
@@ -2212,11 +2224,11 @@ S2:;
 
     // Loose restraints.
 
+    nres = 0; fres = (FLOAT)0.0;
+
     for (i = 0; i < length_pdf_; i++) {
         Skip = (LooseTheta->pdf_[i] == pfDirac) || (LooseTheta->pdf_[i] == pfUniform) ||
-               ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
-
-        fres = (FLOAT)0.0;
+            ((LooseTheta->pdf_[i] == pfBinomial) && (LooseTheta->Theta_[0][i] < 2));
 
         if ((N[i] > 1) && (Mode[i].km > (FLOAT)10.0) && (Skip == 0)) {
             Dm = (FLOAT)1.0; fmax = fmin = Mode[i].fm;
@@ -2243,14 +2255,20 @@ S2:;
             }
 
             if (Dm < (FLOAT)0.0) {
-                if (fmax < Mode[i].fm) fres += fmax;
+                if (fmax < Mode[i].fm) {
+                    nres += 1; fres += fmax;
+                }
 
-                if (fmin < Mode[i].fm) fres += fmin;
-
-                fres *= (FLOAT)0.5;
+                if (fmin < Mode[i].fm) {
+                    nres += 1; fres += fmin;
+                }
             }
         }
+    }
 
+    if (nres > 0) fres /= nres;
+
+    for (i = 0; i < length_pdf_; i++) {
         fm = Max(Mode[i].fm - fres, fres);
 
         if (fm != Mode[i].fm) switch (LooseTheta->pdf_[i]) {
