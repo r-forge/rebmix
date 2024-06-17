@@ -768,6 +768,8 @@ void RPreprocessingHMVNORM(double *h,      // Sides of the hypersquare.
     FLOAT     **Y = NULL;
     INT       i, j, l, Error;
 
+    E_BEGIN();
+
     rebmvnorm = new Rebmvnorm;
 
     E_CHECK(NULL == rebmvnorm, E_MEM);

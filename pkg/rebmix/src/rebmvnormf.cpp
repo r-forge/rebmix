@@ -373,7 +373,7 @@ EEXIT:
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationKNN
 
 // Rough component parameter estimation for kernel density estimation.
@@ -650,7 +650,7 @@ EEXIT:
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationKDE
 
 // Rough component parameter estimation for histogram.
@@ -927,7 +927,7 @@ EEXIT:
 
     if (Mode) free(Mode);
 
-    return Error;
+    E_RETURN(Error);
 } // RoughEstimationH
 
 // Enhanced component parameter estimation for k-nearest neighbours.

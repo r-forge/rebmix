@@ -306,7 +306,7 @@ EEXIT:
 
     if (y0) free(y0);
 
-    return Error;
+    E_RETURN(Error);
 } // Transform
 
 // Returns mixture p.d.f..
