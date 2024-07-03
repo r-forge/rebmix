@@ -19,7 +19,7 @@ Returns as default the REBMIX algorithm output for mixtures of conditionally ind
        cmax = 15, cmin = 1, Criterion = "AIC", pdf = character(), 
        theta1 = numeric(), theta2 = numeric(), theta3 = numeric(), K = "auto", 
        ymin = numeric(), ymax = numeric(), ar = 0.1, 
-       Restraints = "loose", EMcontrol = NULL, ...)
+       Restraints = "loose", Mode = "outliersplus", EMcontrol = NULL, ...)
 ## ... and for other signatures
 \S4method{summary}{REBMIX}(object, ...)
 ## ... and for other signatures
@@ -83,6 +83,10 @@ acceleration rate \eqn{0 < a_{\mathrm{r}} \leq 1}. The default value is \code{0.
 }
 \item{Restraints}{
 a character giving the restraints type. One of \code{"rigid"} or default \code{"loose"}.
+The rigid restraints are obsolete and applicable for well separated components only.
+}
+\item{Mode}{
+a character giving the mode type. One of \code{"all"}, \code{"outliers"} or default \code{"outliersplus"}.
 The rigid restraints are obsolete and applicable for well separated components only.
 }
 \item{EMcontrol}{

@@ -16,7 +16,7 @@
 #endif
 
 #ifndef _MAINTAIN_SWITCH
-#define _MAINTAIN_SWITCH 1
+#define _MAINTAIN_SWITCH 0
 #endif
 
 #define E_BEGIN() { \
@@ -31,7 +31,8 @@ if (expression) { \
 
 #define W_CHECK(expression, idx) \
 if (expression) { \
-    Print_w_line_(idx); Error = E_OK; \
+    Print_w_line_(idx); \
+    Error = E_OK; \
 } // W_CHECK
 
 #define E_RETURN(error)	return (error)

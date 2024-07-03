@@ -98,7 +98,8 @@ wineest <- REBMIX(model = "REBMVNORM",
   Criterion = "ICL-BIC",
   pdf = rep("normal", 13),
   K = K[1]:K[2],
-  Restraints = "loose")
+  Restraints = "loose",
+  Mode = "outliersplus")
 
 plot(wineest, pos = 1, nrow = 7, ncol = 6, what = c("pdf"))
 plot(wineest, pos = 2, nrow = 7, ncol = 6, what = c("pdf"))

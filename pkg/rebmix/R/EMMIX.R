@@ -179,6 +179,7 @@ function(model, Theta, ...)
     "Criterion",
     "ar",
     "Restraints",
+    "Mode",
     "c",
     "v/k",
     "K",
@@ -374,6 +375,7 @@ function(model, Theta, ...)
     "Criterion",
     "ar",
     "Restraints",
+    "Mode",
     "c",
     "v/k",
     "K",
@@ -442,6 +444,7 @@ function(model,
      ymax = numeric(),
      ar = 0.1,
      Restraints = "loose",
+     Mode = "outliersplus",
      EMcontrol = EMcontrol)
 
   output <- EMMIX(model = model, Theta = Theta, ...)

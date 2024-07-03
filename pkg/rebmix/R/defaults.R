@@ -6,12 +6,13 @@ pdf = c("normal", "lognormal", "Weibull", "binomial", "Poisson", "Dirac", "gamma
 pdf.nargs = c(2, 2, 2, 2, 1, 1, 2, 2, 2, 3),
 pdf.Variables = c("continuous", "continuous", "continuous", "discrete", "discrete", "discrete", "continuous", "continuous", "continuous", "continuous"),
 Restraints = c("rigid", "loose"),
+Mode = c("all", "outliers", "outliersplus"),
 ### Panic Branislav.
 EMStrategy = c("none", "exhaustive", "best", "single"),
 EMVariant = c("EM", "ECM"),
 EMAcceleration = c("fixed", "line", "golden")),
 ### End
-.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "EMStrategy", "EMVariant", "EMAcceleration"))
+.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "Mode", "EMStrategy", "EMVariant", "EMAcceleration"))
 
 .rebmix.plot <- structure(list(
 what = c("pdf", "marginal pdf", "IC", "logL", "D", "marginal cdf", "K", "cdf")),

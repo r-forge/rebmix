@@ -865,6 +865,7 @@ slots = c(Dataset = "list",
   ymax = "numeric",
   ar = "numeric",
   Restraints = "character",
+  Mode = "character",
 ### Panic Branislav.  
   EMcontrol = "ANY",
 ### End    
@@ -887,6 +888,7 @@ prototype = list(cmax = 15,
   Criterion = "AIC",
   ar = 0.1,
   Restraints = "loose",
+  Mode = "outliersplus",
   pos = 1))
 
 setMethod("initialize", "REBMIX",
@@ -905,6 +907,7 @@ function(.Object, ...,
   ymax,
   ar,
   Restraints,
+  Mode,
 ### Panic Branislav.  
   EMcontrol)
 ### End  
@@ -1191,6 +1194,16 @@ function(.Object, ...,
   }
 
   Restraints <- match.arg(Restraints, .rebmix$Restraints, several.ok = FALSE)
+  
+  # Mode.
+
+  if (missing(Mode) || (length(Mode) == 0)) Mode <- .Object@Mode
+
+  if (!is.character(Mode)) {
+    stop(sQuote("Mode"), " character is requested!", call. = FALSE)
+  }
+
+  Mode <- match.arg(Mode, .rebmix$Mode, several.ok = FALSE)  
 
   # Variables.
 
@@ -1238,6 +1251,7 @@ function(.Object, ...,
   .Object@ymax <- ymax
   .Object@ar <- ar
   .Object@Restraints <- Restraints
+  .Object@Mode <- Mode
 ### Panic Branislav.  
   .Object@EMcontrol <- EMcontrol
 ### End

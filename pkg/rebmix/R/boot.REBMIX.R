@@ -110,7 +110,8 @@ function(x,
     ymin = model@x@ymin,
     ymax = model@x@ymax,
     ar = as.numeric(model@x@summary[model@pos, "ar"]),
-    Restraints = as.character(model@x@summary[model@pos, "Restraints"]))
+    Restraints = as.character(model@x@summary[model@pos, "Restraints"]),
+    Mode = as.character(model@x@summary[model@pos, "Mode"]))
 
   freq <- table(as.numeric(bsampleest@summary$c))
 
@@ -310,7 +311,8 @@ function(x,
     ymin = model@x@ymin,
     ymax = model@x@ymax,
     ar = as.numeric(model@x@summary[model@pos, "ar"]),
-    Restraints = as.character(model@x@summary[model@pos, "Restraints"]))
+    Restraints = as.character(model@x@summary[model@pos, "Restraints"]),
+    Mode = as.character(model@x@summary[model@pos, "Mode"]))
 
   freq <- table(as.numeric(bsampleest@summary$c))
 
