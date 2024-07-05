@@ -41,7 +41,8 @@ a character giving the preprocessing type. One of \code{"histogram"}, \cr
 maximum number of components \eqn{c_{\mathrm{max}} > 0}. The default value is \code{15}.
 }
 \item{cmin}{
-minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}.
+minimum number of components \eqn{c_{\mathrm{min}} > 0}. The default value is \code{1}. If \eqn{c_{\mathrm{min}} > 1}, it may happen that no solution is found,
+and an error is returned by the method.
 }
 \item{Criterion}{
 a character giving the information criterion type. One of default Akaike \code{"AIC"}, \code{"AIC3"}, \code{"AIC4"} or \code{"AICc"},
@@ -86,8 +87,9 @@ a character giving the restraints type. One of \code{"rigid"} or default \code{"
 The rigid restraints are obsolete and applicable for well separated components only.
 }
 \item{Mode}{
-a character giving the mode type. One of \code{"all"}, \code{"outliers"} or default \code{"outliersplus"}.
-The rigid restraints are obsolete and applicable for well separated components only.
+a character giving the mode type. One of \code{"all"}, \code{"outliers"} or default \code{"outliersplus"}. The modes are determined in decreasing order of magnitude from all observations if \code{Mode = "all"}.
+If \code{Mode = "outliers"}, the modes are determined in decreasing order of magnitude from outliers only. In the meantime, some outliers are reclassified as inliers. Finally, when all observations are inliers, the procedure is completed.
+If \code{Mode = "outliersplus"}, the modes are determined in decreasing magnitude from the outliers only. In the meantime, some outliers are reclassified as inliers. Finally, if all observations are inliers, they are converted to outliers and the mode determination procedure is continued.
 }
 \item{EMcontrol}{
 an object of class \code{EM.Control}.

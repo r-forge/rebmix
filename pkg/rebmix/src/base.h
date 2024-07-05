@@ -46,6 +46,7 @@ if (expression) { \
 #define E_ARG  2
 #define E_CON  3
 #define E_FILE 4
+#define E_NO_SOLUTION 5
 
 #ifndef FLOAT
 #define FLOAT double

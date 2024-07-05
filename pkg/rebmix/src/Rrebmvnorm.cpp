@@ -137,6 +137,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 double *h,              // Sides of the hypersquare.
                 double *ar,             // Acceleration rate.
                 char   **Restraints,    // Restraints type.
+                char   **Mode,          // Mode type.
                 INT    *n,              // Number of observations.
                 double *Y,              // Dataset.
                 INT    *Y_type,         // Dataset type.
@@ -204,6 +205,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                            h,                 // Sides of the hypersquare.
                            ar,                // Acceleration rate.
                            Restraints,        // Restraints type.
+                           Mode,              // Mode type.
                            n,                 // Number of observations.
                            Y,                 // Dataset.
                            Y_type,            // Dataset type. 
@@ -1932,6 +1934,7 @@ void RCombineComponentsMVNORM(INT    *c,            // Number of components.
                            NULL,         // Sides of the hypersquare.
                            NULL,         // Acceleration rate.
                            NULL,         // Restraints type.
+                           NULL,         // Mode type.
                            n,            // Number of observations.
                            Y,            // Dataset.
                            Y_type,       // Dataset type. 
@@ -2113,6 +2116,7 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                            NULL,              // Sides of the hypersquare.
                            NULL,              // Acceleration rate.
                            NULL,              // Restraints type.
+                           NULL,              // Mode type.
                            n,                 // Number of observations.
                            Y,                 // Dataset.
                            Y_type,            // Dataset type.

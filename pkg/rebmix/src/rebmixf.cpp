@@ -114,6 +114,7 @@ Rebmix::Rebmix()
     h_ = NULL;
     ar_ = (FLOAT)0.1;
     Restraints_ = rtLoose;
+    Mode_ = mtOutliersPlus;
 /// Panic Branislav
     EM_ = NULL;
     EM_TOL_ = (FLOAT)0.0;
@@ -522,7 +523,7 @@ INT Rebmix::GlobalModeKNN(INT   *m,  // Global mode.
     FLOAT cur, imax, omax;
     INT   i, im, j, om, Error = E_OK;
 
-    im = om = -1; imax = omax = (FLOAT)0.0;
+    *m = im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < nr_; i++) {
         cur = Y[length_pdf_][i] / (FLOAT)exp(Y[length_pdf_ + 1][i]);
@@ -539,13 +540,18 @@ INT Rebmix::GlobalModeKNN(INT   *m,  // Global mode.
         }
     }
 
-    if (om >= 0) {
-        *m = om;
+    if (Mode_ == mtAll) {
+        if (omax >= imax) *m = om; else *m = im;
     }
     else {
-        *m = im;
+        if (om >= 0) {
+            *m = om;
+        }
+        else if (Mode_ == mtOutliersPlus) {
+            *m = im;
 
-        for (j = 0; j < nr_; j++) O[j] = 1;
+            for (j = 0; j < nr_; j++) O[j] = 1;
+        }
     }
 
     E_RETURN(Error);
@@ -560,7 +566,7 @@ INT Rebmix::GlobalModeKDE(INT   *m,  // Global mode.
     FLOAT cur, imax, omax;
     INT   i, im, j, om, Error = E_OK;
 
-    im = om = -1; imax = omax = (FLOAT)0.0;
+    *m = im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < nr_; i++) {
         cur = Y[length_pdf_][i] * Y[length_pdf_ + 1][i];
@@ -577,13 +583,18 @@ INT Rebmix::GlobalModeKDE(INT   *m,  // Global mode.
         }
     }
 
-    if (om >= 0) {
-        *m = om;
+    if (Mode_ == mtAll) {
+        if (omax >= imax) *m = om; else *m = im;
     }
     else {
-        *m = im;
+        if (om >= 0) {
+            *m = om;
+        }
+        else if (Mode_ == mtOutliersPlus) {
+            *m = im;
 
-        for (j = 0; j < nr_; j++) O[j] = 1;
+            for (j = 0; j < nr_; j++) O[j] = 1;
+        }
     }
 
     E_RETURN(Error);
@@ -599,7 +610,7 @@ INT Rebmix::GlobalModeH(INT   *m,  // Global mode.
     FLOAT cur, imax, omax;
     INT   i, j, im, om, Error = E_OK;
 
-    im = om = -1; imax = omax = (FLOAT)0.0;
+    *m = im = om = -1; imax = omax = (FLOAT)0.0;
 
     for (i = 0; i < k; i++) {
         cur = Y[length_pdf_][i];
@@ -616,13 +627,18 @@ INT Rebmix::GlobalModeH(INT   *m,  // Global mode.
         }
     }
 
-    if (om >= 0) {
-        *m = om;
+    if (Mode_ == mtAll) {
+        if (omax >= imax) *m = om; else *m = im;
     }
     else {
-        *m = im;
+        if (om >= 0) {
+            *m = om;
+        }
+        else if (Mode_ == mtOutliersPlus) {
+            *m = im;
 
-        for (j = 0; j < k; j++) O[j] = 1;
+            for (j = 0; j < k; j++) O[j] = 1;
+        }
     }
 
     E_RETURN(Error);
@@ -2364,7 +2380,7 @@ INT Rebmix::ComponentPdf(INT                  j,         // Indey of observation
             y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
             if (Outlier) {
-                *Outlier |= (FLOAT)2.0 * y > ChiSqr_;
+                *Outlier = (FLOAT)2.0 * y > ChiSqr_;
             }
 
             *CmpPdf *= (FLOAT)exp(-y) / (SqrtPi2 * CmpTheta->Theta_[1][i]);
@@ -2377,7 +2393,7 @@ INT Rebmix::ComponentPdf(INT                  j,         // Indey of observation
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
                 if (Outlier) {
-                    *Outlier |= (FLOAT)2.0 * y > ChiSqr_;
+                    *Outlier = (FLOAT)2.0 * y > ChiSqr_;
                 }
 
                 *CmpPdf *= (FLOAT)exp(-y) / (SqrtPi2 * CmpTheta->Theta_[1][i]) / Y[i][j];
@@ -2562,10 +2578,10 @@ INT Rebmix::LogComponentPdf(INT                  j,         // Indey of observat
             y = (Y[i][j] - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
             if (Outlier) {
-                *Outlier |= (FLOAT)2.0 * y > ChiSqr_;
+                *Outlier = (FLOAT)2.0 * y > ChiSqr_;
             }
 
-            *CmpPdf += -y - LogSqrtPi2  - (FLOAT)log(CmpTheta->Theta_[1][i]);
+            *CmpPdf += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]);
 
             break;
         case pfTNormal:
@@ -2575,7 +2591,7 @@ INT Rebmix::LogComponentPdf(INT                  j,         // Indey of observat
                 y = ((FLOAT)log(Y[i][j]) - CmpTheta->Theta_[0][i]) / (Sqrt2 * CmpTheta->Theta_[1][i]); y *= y;
 
                 if (Outlier) {
-                    *Outlier |= (FLOAT)2.0 * y > ChiSqr_;
+                    *Outlier = (FLOAT)2.0 * y > ChiSqr_;
                 }
 
                 *CmpPdf += -y - LogSqrtPi2 - (FLOAT)log(CmpTheta->Theta_[1][i]) - (FLOAT)log(Y[i][j]);
@@ -5484,7 +5500,7 @@ INT Rebmix::REBMIXKNN()
     FLOAT                f, **FirstM = NULL, fl, *h = NULL, IC, logfl, logL, lognl, nl;
     FLOAT                *opt_D = NULL, *opt_Dmin = NULL, *opt_IC = NULL, *opt_logL = NULL, r, *R = NULL, Rm;
     FLOAT                **SecondM = NULL, *W = NULL, **Y = NULL, *ymax = NULL, *ymin = NULL;
-    INT                  all_c = 0, c = 0, EMM, emp, Found = 0, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
+    INT                  all_c = 0, c = 0, EMM, emp, Found, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
 
     // Allocation and initialisation.
 
@@ -5831,6 +5847,10 @@ INT Rebmix::REBMIXKNN()
 
                 E_CHECK(Error != E_OK, Error);
 
+                if (m < 0) {
+                    Stop = 1; break;
+                }
+
                 I = 1; W[l] = nl / n_; memset(R, 0, nr_ * sizeof(FLOAT));
 
                 // Inner loop.
@@ -6160,6 +6180,8 @@ INT Rebmix::REBMIXKNN()
     }
 /// End
 
+    E_CHECK(summary_.c == 0, E_NO_SOLUTION);
+
 EEXIT:
 
     if (O) free(O);
@@ -6266,7 +6288,7 @@ INT Rebmix::REBMIXKDE()
     FLOAT                f, **FirstM = NULL, fl, *h = NULL, IC, logfl, logL, lognl, logV = (FLOAT)0.0, nl;
     FLOAT                *opt_D = NULL, *opt_Dmin = NULL, *opt_IC = NULL, *opt_logL = NULL, r, *R = NULL;
     FLOAT                **SecondM = NULL, *W = NULL, **Y = NULL, *ymax = NULL, *ymin = NULL;
-    INT                  all_c = 0, c = 0, EMM, emp, Found = 0, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
+    INT                  all_c = 0, c = 0, EMM, emp, Found, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
 
     // Allocation and initialisation.
 
@@ -6624,6 +6646,10 @@ INT Rebmix::REBMIXKDE()
 
                 E_CHECK(Error != E_OK, Error);
 
+                if (m < 0) {
+                    Stop = 1; break;
+                }
+
                 I = 1; W[l] = nl / n_; memset(R, 0, nr_ * sizeof(FLOAT));
 
                 // Inner loop.
@@ -6955,6 +6981,8 @@ INT Rebmix::REBMIXKDE()
     }
 /// End
 
+    E_CHECK(summary_.c == 0, E_NO_SOLUTION);
+
 EEXIT:
 
     if (O) free(O);
@@ -7061,7 +7089,7 @@ INT Rebmix::REBMIXH()
     FLOAT                f, **FirstM = NULL, fl, *h = NULL, IC, *K = NULL, logfl, logL, lognl, logV = (FLOAT)0.0, nl;
     FLOAT                *opt_D = NULL, *opt_Dmin = NULL, *opt_IC = NULL, *opt_logL = NULL, r, *R = NULL;
     FLOAT                **SecondM = NULL, *W = NULL, **Y = NULL, *y0 = NULL, *ymax = NULL, *ymin = NULL;
-    INT                  all_c = 0, c = 0, EMM, emp, Found = 0, i, I, j, J, k = 0, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, State = 0, Stop = 0, Error = E_OK;
+    INT                  all_c = 0, c = 0, EMM, emp, Found, i, I, j, J, k = 0, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, State = 0, Stop = 0, Error = E_OK;
 
     // Allocation and initialisation.
 
@@ -7441,6 +7469,10 @@ INT Rebmix::REBMIXH()
 
                 E_CHECK(Error != E_OK, Error);
 
+                if (m < 0) {
+                    Stop = 1; break;
+                }
+
                 I = 1; W[l] = nl / n_; memset(R, 0, all_K_[i] * sizeof(FLOAT));
 
                 // Inner loop.
@@ -7786,6 +7818,8 @@ E1:     all_K_[i] = k;
     }
 /// End
 
+    E_CHECK(summary_.c == 0, E_NO_SOLUTION);
+
 EEXIT:
 
     if (O) free(O);
@@ -7896,7 +7930,7 @@ INT Rebmix::REBMIXK()
     FLOAT                f, **FirstM = NULL, fl, IC, *K = NULL, logfl, logL, lognl, logV = (FLOAT)0.0, nl;
     FLOAT                *opt_D = NULL, *opt_Dmin = NULL, *opt_IC = NULL, *opt_logL = NULL, r, *R = NULL;
     FLOAT                **SecondM = NULL, *W = NULL, **Y = NULL;
-    INT                  all_c = 0, c = 0, EMM, emp, Found = 0, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
+    INT                  all_c = 0, c = 0, EMM, emp, Found, i, I, j, J, l, m, M, *O = NULL, *opt_c = NULL, opt_length, Outlier = 0, Stop = 0, Error = E_OK;
 
     // Allocation and initialisation.
 
@@ -8098,7 +8132,7 @@ INT Rebmix::REBMIXK()
 
     if (n_ <= length_pdf_) cmin_ = cmax_ = 1;
 
-    /// Panic Branislav
+/// Panic Branislav
     all_c = cmax_ - cmin_ + 1;
 
     E_CHECK(all_c <= 0, E_ARG);
@@ -8158,7 +8192,7 @@ INT Rebmix::REBMIXK()
 
         E_CHECK(Error != E_OK, Error);
     }
-    /// End 
+/// End 
 
     // Preprocessing of observations.
 
@@ -8191,6 +8225,10 @@ INT Rebmix::REBMIXK()
             Error = GlobalModeH(&m, nr_, Y, O);
 
             E_CHECK(Error != E_OK, Error);
+
+            if (m < 0) {
+                Stop = 1; break;
+            }
 
             I = 1; W[l] = nl / n_; memset(R, 0, nr_ * sizeof(FLOAT));
 
@@ -8303,7 +8341,7 @@ INT Rebmix::REBMIXK()
 
         E_CHECK(Error != E_OK, Error);
 
-        /// Panic Branislav
+/// Panic Branislav
         for (j = 0; j < all_c; j++) {
             if (OptMixTheta_[j].c == c) {
                 if (OptMixTheta_[j].logL < logL) {
@@ -8325,7 +8363,7 @@ INT Rebmix::REBMIXK()
                 }
             }
         }
-        /// End 
+/// End 
 
         if (IC < all_IC_[0]) all_IC_[0] = IC;
 
@@ -8352,7 +8390,7 @@ INT Rebmix::REBMIXK()
         if (Stop) break;
     }
 
-    /// Panic Branislav
+/// Panic Branislav
     if (EM_strategy_ == strategy_exhaustive || EM_strategy_ == strategy_single) {
         EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
@@ -8415,7 +8453,7 @@ INT Rebmix::REBMIXK()
             OptMixTheta_[j].initialized = 0;
         }
     }
-    /// End
+/// End
 
     opt_length = J - 1;
 
@@ -8429,7 +8467,7 @@ INT Rebmix::REBMIXK()
         memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));
     }
 
-    /// Panic Branislav
+/// Panic Branislav
     if (EM_strategy_ == strategy_best) {
         EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
@@ -8495,7 +8533,9 @@ INT Rebmix::REBMIXK()
             memmove(opt_D_, opt_D, opt_length_ * sizeof(FLOAT));
         }
     }
-    /// End
+/// End
+
+    E_CHECK(summary_.c == 0, E_NO_SOLUTION);
 
 EEXIT:
 
@@ -8561,7 +8601,7 @@ EEXIT:
         free(Y);
     }
 
-    /// Panic Branislav
+/// Panic Branislav
     if (OptMixTheta_) {
         for (j = 0; j < all_c; j++) {
             if (OptMixTheta_[j].MixTheta) {
@@ -8585,7 +8625,7 @@ EEXIT:
 
         free(OptMixTheta_);
     }
-    /// End
+/// End
 
     E_RETURN(Error);
 } // REBMIXK
@@ -8768,14 +8808,15 @@ INT Rebmix::WriteDataFile()
     E_CHECK(NULL == fp1, E_FILE);
 
     if (!strcmp(mode, "w")) {
-        fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", "Dataset",
-                                                       "Preprocessing",
-                                                       "cmax",
-                                                       "cmin",
-                                                       "Criterion",
-                                                       "ar",
-                                                       "Restraints",
-                                                       "c");
+        fprintf(fp0, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", "Dataset",
+                                                           "Preprocessing",
+                                                           "cmax",
+                                                           "cmin",
+                                                           "Criterion",
+                                                           "ar",
+                                                           "Restraints",
+                                                           "Mode",
+                                                           "c");
         if (Y_type_ == 0) {
             switch (Preprocessing_) {
             case poHistogram:
@@ -8997,6 +9038,21 @@ INT Rebmix::WriteDataFile()
         break;
     case rtLoose:
         strcpy(line, "loose");
+    }
+
+    fprintf(fp0, "\t%s", line);
+
+    switch (Mode_) {
+    case mtAll:
+        strcpy(line, "all");
+
+        break;
+    case mtOutliers:
+        strcpy(line, "outliers");
+
+        break;
+    case mtOutliersPlus:
+        strcpy(line, "outliersplus");
     }
 
     fprintf(fp0, "\t%s", line);
@@ -9719,6 +9775,20 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             }
         }
         else
+        if (!strcmp(ident, "MODE")) {
+            if (!strcmp(pchar, "ALL"))
+                Mode_ = mtAll;
+            else
+            if (!strcmp(pchar, "OUTLIERS"))
+                Mode_ = mtOutliers;
+            else
+            if (!strcmp(pchar, "OUTLIERSPLUS"))
+                Mode_ = mtOutliersPlus;
+            else {
+                E_CHECK(1, E_ARG);
+            }
+        }
+        else
         if (!strcmp(ident, "SAVE")) {
             save_ = (char*)realloc(save_, (strlen(pchar) + 1) * sizeof(char));
 
@@ -9878,6 +9948,7 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *h,                 // Sides of the hypersquare.
                 FLOAT *ar,                // Acceleration rate.
                 char  **Restraints,       // Restraints type.
+                char  **Mode,             // Mode type.
                 INT   *n,                 // Number of observations.
                 FLOAT *Y,                 // Dataset.
                 INT   *Y_type,            // Dataset type. 
@@ -10120,6 +10191,23 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         }
     }
 
+    if (Mode) {
+        if (!strcmp(Mode[0], "all")) {
+            Mode_ = mtAll;
+        }
+        else
+        if (!strcmp(Mode[0], "outliers")) {
+            Mode_ = mtOutliers;
+        }
+        else
+        if (!strcmp(Mode[0], "outliersplus")) {
+            Mode_ = mtOutliersPlus;
+        }
+        else {
+            E_CHECK(1, E_ARG);
+        }
+    }
+
 /// Panic Branislav
     if (EMStrategy) {
         if (!strcmp(EMStrategy[0], "exhaustive")) {
@@ -10337,11 +10425,11 @@ INT Rebmix::Get(INT   *n_iter,         // Number of iterations for optimal case.
 {
     INT  i, j, l, Error = E_OK;
 
-    /// Panic Branislav
+/// Panic Branislav
     if (n_iter) *n_iter = n_iter_;
 
     if (n_iter_sum) *n_iter_sum = n_iter_sum_;
-    /// End
+/// End
 
     if (summary_k) *summary_k = summary_.k;
 

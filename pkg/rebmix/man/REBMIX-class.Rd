@@ -75,8 +75,9 @@ a character giving the restraints type. One of \code{"rigid"} or default \code{"
 The rigid restraints are obsolete and applicable for well separated components only.
 }
 \item{\code{Mode}:}{
-a character giving the mode type. One of \code{"all"}, \code{"outliers"} or default \code{"outliersplus"}.
-The rigid restraints are obsolete and applicable for well separated components only.
+a character giving the mode type. One of \code{"all"}, \code{"outliers"} or default \code{"outliersplus"}.The modes are determined in decreasing order of magnitude from all observations if \code{Mode = "all"}.
+If \code{Mode = "outliers"}, the modes are determined in decreasing order of magnitude from outliers only. In the meantime, some outliers are reclassified as inliers. Finally, when all observations are inliers, the procedure is completed.
+If \code{Mode = "outliersplus"}, the modes are determined in decreasing magnitude from the outliers only. In the meantime, some outliers are reclassified as inliers. Finally, if all observations are inliers, they are converted to outliers and the mode determination procedure is continued.
 }
 \item{\code{w}:}{
 a list of vectors of length \eqn{c} containing component weights \eqn{w_{l}} summing to 1.

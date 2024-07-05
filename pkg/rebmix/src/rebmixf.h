@@ -24,6 +24,12 @@ typedef enum {
 } PestraintsType_e;
 
 typedef enum {
+    mtAll,         // The modes are determined in decreasing magnitude from all observations.
+    mtOutliers,    // The modes are determined in decreasing magnitude from outliers only. Meanwhile, some outliers are reclassified as inliers. Eventually, when all observations are inliers, the procedure is concluded. 
+    mtOutliersPlus // The modes are determined in decreasing magnitude from outliers only. Meanwhile, some outliers are reclassified as inliers. Eventually, when all observations are inliers, they are converted to outliers, and the procedure is repeated.
+} ModeType_e;
+
+typedef enum {
     icAIC,    // AIC - Akaike information criterion Akaike (1973).
     icAIC3,   // AIC3 - Modified Akaike information criterion Smith & Spiegelhalter (1980).
     icAIC4,   // AIC4 - Modified Akaike information criterion Smith & Spiegelhalter (1980).
@@ -90,6 +96,7 @@ public:
     FLOAT                      *h_;            // Sides of the hypersquare.
     FLOAT                      ar_;            // Acceleration rate.
     PestraintsType_e           Restraints_;    // Restraints type.
+    ModeType_e                 Mode_;          // Mode type.
 /// Panic Branislav
     Emmix                      *EM_;           // Object of class Emmix.
     FLOAT                      EM_TOL_;        // Tolerance for EM algorithm.
@@ -187,6 +194,7 @@ public:
             FLOAT *h,                 // Sides of the hypersquare.
             FLOAT *ar,                // Acceleration rate.
             char  **Restraints,       // Restraints type.
+            char  **Mode,             // Mode type.
             INT   *n,                 // Number of observations.
             FLOAT *Y,                 // Dataset.
             INT   *Y_type,            // Dataset type. 
