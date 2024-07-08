@@ -90,7 +90,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -136,7 +136,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -174,7 +174,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -215,7 +215,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -254,7 +254,7 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(output$error, "\n"));
@@ -362,7 +362,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -405,7 +405,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -440,7 +440,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -478,7 +478,7 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -514,7 +514,7 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(output$error, "\n"));

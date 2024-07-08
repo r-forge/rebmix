@@ -16,7 +16,7 @@
     hy = as.double(hy),
     px = as.character(px),
     py = as.character(py),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));

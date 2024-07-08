@@ -8,7 +8,7 @@
     z = double(length(x)),
     hx = as.double(hx),
     hy = as.double(hy),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));

@@ -45,7 +45,7 @@ function(model, ...)
       n = integer(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(output$error, "\n"));
@@ -132,7 +132,7 @@ function(model, ...)
       n = integer(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(output$error, "\n"));

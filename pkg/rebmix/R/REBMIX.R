@@ -154,7 +154,7 @@ function(model, ...)
       all.length = integer(1),
       all.K = integer(dK),
       all.IC = double(dK),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
       
     error <- unlist(strsplit(output$error, "\n"));
@@ -527,7 +527,7 @@ function(model, ...)
       all.length = integer(1),
       all.K = integer(dK),
       all.IC = double(dK),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(output$error, "\n"));

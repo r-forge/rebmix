@@ -149,7 +149,7 @@ function(model, ...)
     EN = double(c),
     ED = double(c),
     A = double(c * c),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));
@@ -193,7 +193,7 @@ function(model, ...)
     theta2 = as.double(unlist(theta2)),
     theta3 = as.double(unlist(theta3)),
     Z = integer(n),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));
@@ -289,7 +289,7 @@ function(model, ...)
     EN = double(c),
     ED = double(c),
     A = double(c * c),    
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));
@@ -332,7 +332,7 @@ function(model, ...)
     theta1 = as.double(unlist(theta1)),
     theta2 = as.double(unlist(theta2)),
     Z = integer(n),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));

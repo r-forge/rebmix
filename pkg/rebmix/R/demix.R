@@ -82,7 +82,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -117,7 +117,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -153,7 +153,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -190,7 +190,7 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")    
     
     error <- unlist(strsplit(output$error, "\n"));
@@ -309,7 +309,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -344,7 +344,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -380,7 +380,7 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
 
       error <- unlist(strsplit(output$error, "\n"));
@@ -417,7 +417,7 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")    
     
     error <- unlist(strsplit(output$error, "\n"));

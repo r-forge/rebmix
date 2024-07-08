@@ -60,7 +60,7 @@ function(Zp, Sigma, ...)
       Mxy = double(c),
       A = double(c * c),
       Sigma = as.double(Sigma),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
       
     error <- unlist(strsplit(output$error, "\n"));
@@ -107,7 +107,7 @@ function(Zp, Sigma, ...)
       Mxyz = double(c),
       A = double(c * c),
       Sigma = as.double(Sigma),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
       
     error <- unlist(strsplit(output$error, "\n"));      

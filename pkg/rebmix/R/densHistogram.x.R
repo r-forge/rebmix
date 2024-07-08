@@ -10,7 +10,7 @@
     xmax = as.double(xmax),
     hx = as.double(hx),
     px = as.character(px),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));

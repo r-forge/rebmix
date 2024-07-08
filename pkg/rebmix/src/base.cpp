@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdio.h>
 
-char _e_line_[65536] = "";
-char _w_line_[2][65536] = {"", ""};
+char _e_line_[1024] = "";
+char _w_line_[2][1024] = {"", ""};
 
 void E_begin()
 {
@@ -15,7 +15,50 @@ void E_begin()
 
 void Print_e_line_(const char *file, INT line, INT error)
 {
-    if (!strcmp(_e_line_, "")) sprintf(_e_line_, "File = %s; line = %d; code = %d.", file, line, error);
+    if (!strcmp(_e_line_, "")) {
+        char serror[2], sfile[769], sline[227], Tmp[227];
+        INT  i, j;
+
+        strcat(_e_line_, "File = ");
+
+        i = (INT)strlen(file);
+
+        if (i >= 768) {
+            strncpy(sfile, file + i - 768, 768);
+
+            sfile[768] = '\0'; sfile[0] = sfile[1] = sfile[2] = '.';
+
+            
+            strcat(_e_line_, sfile);
+        }
+        else {
+            strcat(_e_line_, file);
+        }
+
+        i = j = 0;
+
+        while (line != 0) {
+            Tmp[i++] = (char)(line % 10 + '0'); line /= 10;
+        }
+                
+        while (i > 0) {
+            sline[j++] = Tmp[--i];
+        }
+
+        sline[j] = '\0';
+
+        if (error > 9) error = 9;
+
+        serror[0] = (char)(error + '0');
+
+        serror[1] = '\0'; 
+
+        strcat(_e_line_, "; line = ");
+        strcat(_e_line_, sline);
+        strcat(_e_line_, "; code = ");
+        strcat(_e_line_, serror);
+        strcat(_e_line_, ".");
+    }
 } // Print_e_line_
 
 void Print_w_line_(INT idx)
@@ -27,7 +70,12 @@ void Print_w_line_(INT idx)
 
 void Print_e_list_(char *elist)
 {
-    sprintf(elist, "%s\n%s\n%s\n", _e_line_, _w_line_[0], _w_line_[1]);
+    strcat(elist, _e_line_);
+    strcat(elist, "\n");
+    strcat(elist, _w_line_[0]);
+    strcat(elist, "\n");
+    strcat(elist, _w_line_[1]);
+    strcat(elist, "\n");
 } // Print_e_list_
 
 // Base constructor.

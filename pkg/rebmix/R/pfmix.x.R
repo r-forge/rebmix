@@ -44,7 +44,7 @@
         Mean = as.double(xTheta[[i]]$theta1),
         Kappa = as.double(xTheta[[i]]$theta2),
         F = double(n),
-        error = character(1),
+        error = character(3075),
         PACKAGE = "rebmix")
         
       error <- unlist(strsplit(output$error, "\n"));

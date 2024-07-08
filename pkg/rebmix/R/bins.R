@@ -119,7 +119,7 @@ function(Dataset, K, ymin, ymax, ...)
       k = as.integer(K[i, ]),
       length.y = integer(1),
       y = double(n * (d + 1)),
-      error = character(1),
+      error = character(3075),
       PACKAGE = "rebmix")
 
     error <- unlist(strsplit(temp$error, "\n"));

@@ -112,7 +112,7 @@ function(A, w, k, ...)
     c = as.integer(c),    
     w = as.double(w),
     L = double(c * c),
-    error = character(1),
+    error = character(3075),
     PACKAGE = "rebmix")
 
   error <- unlist(strsplit(output$error, "\n"));
