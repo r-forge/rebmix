@@ -69,7 +69,7 @@ void Print_w_line_(INT idx)
 
 void Print_e_list_(char *elist)
 {
-    elist = "";
+    elist[0] = '\0';
 
     strcat(elist, _e_line_);
     strcat(elist, "\n");
