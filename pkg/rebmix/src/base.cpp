@@ -27,7 +27,6 @@ void Print_e_line_(const char *file, INT line, INT error)
             strncpy(sfile, file + i - 768, 768);
 
             sfile[768] = '\0'; sfile[0] = sfile[1] = sfile[2] = '.';
-
             
             strcat(_e_line_, sfile);
         }
@@ -70,6 +69,8 @@ void Print_w_line_(INT idx)
 
 void Print_e_list_(char *elist)
 {
+    elist = "";
+
     strcat(elist, _e_line_);
     strcat(elist, "\n");
     strcat(elist, _w_line_[0]);
