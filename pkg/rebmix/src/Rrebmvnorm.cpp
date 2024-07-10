@@ -18,7 +18,7 @@ void RRNGMVNORM(INT    *IDum,         // Random seed.
                 INT    *n,            // Number of observations.
                 double *Y,            // Dataset.
                 INT    *Z,            // Component membership.
-                char   **EList)       // Error list.
+                INT    *EList)        // Error list.
 {
     Rngmvnorm *rngmvnorm = NULL;
     INT       i, j, k, l, Error;
@@ -111,7 +111,7 @@ EEXIT:
 
     if (rngmvnorm) delete rngmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RRNGMVNORM
 
 // Runs RREBMVNORM in R.
@@ -173,7 +173,7 @@ void RREBMVNORM(char   **Preprocessing, // Preprocessing type.
                 INT    *all_length,     // Length of all_K and all_IC.
                 INT    *all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
                 double *all_IC,         // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
-                char   **EList)         // Error list.
+                INT    *EList)          // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     INT       Error;
@@ -258,7 +258,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RREBMVNORM
 
 // Returns classified observations in R.
@@ -275,7 +275,7 @@ void RCLSMVNORM(INT    *n,      // Total number of independent observations.
                 double *theta2, // Component parameters.
                 double *P,      // Prior probabilities.
                 INT    *Z,      // Pointer to the output array Z.
-                char   **EList) // Error list.
+                INT    *EList)  // Error list.
 {
     Rebmvnorm            *rebmvnorm = NULL;
     CompnentDistribution ****Theta = NULL;
@@ -491,7 +491,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCLSMVNORM
 
 // Returns clustered observations in R.
@@ -505,7 +505,7 @@ void RCLRMVNORM(INT    *n,      // Total number of independent observations.
                 double *theta1, // Component parameters.
                 double *theta2, // Component parameters.
                 INT    *Z,      // Pointer to the output array Z.
-                char   **EList) // Error list.
+                INT    *EList)  // Error list.
 {
     Rebmvnorm            *rebmvnorm = NULL;
     CompnentDistribution **Theta = NULL;
@@ -621,7 +621,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCLRMVNORM
 
 void RPreprocessingKNNMVNORM(INT    *k,      // k-nearest neighbours.
@@ -630,7 +630,7 @@ void RPreprocessingKNNMVNORM(INT    *k,      // k-nearest neighbours.
                              INT    *d,      // Number of independent random variables.
                              double *x,      // Pointer to the input array x.
                              double *y,      // Pointer to the output array y.
-                             char   **EList) // Error list.
+                             INT    *EList)  // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     Rm, **Y = NULL;
@@ -687,7 +687,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingKNNMVNORM
 
 void RPreprocessingKDEMVNORM(double *h,      // Sides of the hypersquare.
@@ -695,7 +695,7 @@ void RPreprocessingKDEMVNORM(double *h,      // Sides of the hypersquare.
                              INT    *d,      // Number of independent random variables.
                              double *x,      // Pointer to the input array x.
                              double *y,      // Pointer to the output array y.
-                             char   **EList) // Error list.
+                             INT    *EList)  // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL;
@@ -752,7 +752,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingKDEMVNORM
 
 void RPreprocessingHMVNORM(double *h,      // Sides of the hypersquare.
@@ -764,7 +764,7 @@ void RPreprocessingHMVNORM(double *h,      // Sides of the hypersquare.
                            INT    *d,      // Number of independent random variables.
                            double *x,      // Pointer to the input array x.
                            double *y,      // Pointer to the output array y.
-                           char   **EList) // Error list.
+                           INT    *EList)  // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     **Y = NULL;
@@ -831,7 +831,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingHMVNORM
 
 void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypersquare.
@@ -850,7 +850,7 @@ void RInformationCriterionKNNMVNORM(double *h,            // Sides of the hypers
                                     double *logL,         // log-likelihood.
                                     INT    *M,            // Degrees of freedom.
                                     double *D,            // Total of positive relative deviations.
-                                    char   **EList)       // Error list.
+                                    INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     Rm, **Y = NULL;
@@ -1046,7 +1046,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKNNMVNORM
 
 void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypersquare.
@@ -1064,7 +1064,7 @@ void RInformationCriterionKDEMVNORM(double *h,            // Sides of the hypers
                                     double *logL,         // log-likelihood.
                                     INT    *M,            // Degrees of freedom.
                                     double *D,            // Total of positive relative deviations.
-                                    char   **EList)       // Error list.
+                                    INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     logV, **Y = NULL;
@@ -1266,7 +1266,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKDEMVNORM
 
 void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersquare.
@@ -1288,7 +1288,7 @@ void RInformationCriterionHMVNORM(double *h,            // Sides of the hypersqu
                                   double *logL,         // log-likelihood.
                                   INT    *M,            // Degrees of freedom.
                                   double *D,            // Total of positive relative deviations.
-                                  char   **EList)       // Error list.
+                                  INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     logV, **Y = NULL;
@@ -1487,7 +1487,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionHMVNORM
 
 void RInformationCriterionKMVNORM(double *h,            // Sides of the hypersquare.
@@ -1505,7 +1505,7 @@ void RInformationCriterionKMVNORM(double *h,            // Sides of the hypersqu
                                   double *logL,         // log-likelihood.
                                   INT    *M,            // Degrees of freedom.
                                   double *D,            // Total of positive relative deviations.
-                                  char   **EList)       // Error list.
+                                  INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     FLOAT     logV, **Y = NULL;
@@ -1696,7 +1696,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKMVNORM
 
 void RInformationCriterionMVNORM(char   **Criterion,   // Information criterion type.
@@ -1713,7 +1713,7 @@ void RInformationCriterionMVNORM(char   **Criterion,   // Information criterion 
                                  double *logL,         // log-likelihood.
                                  INT    *M,            // Degrees of freedom.
                                  double *D,            // Total of positive relative deviations.
-                                 char   **EList)       // Error list.
+                                 INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     INT       i, j, l, m, Error;
@@ -1880,7 +1880,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionMVNORM
 
 void RCombineComponentsMVNORM(INT    *c,            // Number of components.
@@ -1902,7 +1902,7 @@ void RCombineComponentsMVNORM(INT    *c,            // Number of components.
                               double *EN,           // Entropy.
                               double *ED,           // Entropy decrease.
                               double *PSS,          // Pairwise similarity scores.
-                              char   **EList)       // Error list.
+                              INT    *EList)        // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     INT       i, Error;
@@ -1993,7 +1993,7 @@ EEXIT:
     
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCombineComponentsMVNORM
 
 void RTvtNormalPdf(INT *n, double *x, double *y, double *Mean, double *Sigma, double *f)
@@ -2021,7 +2021,7 @@ void RTvtNormalPdf(INT *n, double *x, double *y, double *Mean, double *Sigma, do
     }
 } // RTvtNormalPdf
 
-void RMvtNormalPdf(INT *n, double *X, INT *d, double *Mean, double *Sigma, double *f, char **EList)
+void RMvtNormalPdf(INT *n, double *X, INT *d, double *Mean, double *Sigma, double *f, INT *EList)
 {
     FLOAT logAdet, *Ainv, y, yi, yk;
     INT   i, j, k, Error;
@@ -2059,7 +2059,7 @@ EEXIT:
 
     if (Ainv) free(Ainv);
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RMvtNormalPdf
 
 /// Panic Branislav
@@ -2082,7 +2082,7 @@ void REMMVNORM(INT    *d,                 // Number of independent random variab
                INT    *n_iter,            // Number of iterations for optimal case.
                double *summary_logL,      // Log-likelihood.
                INT    *summary_M,         // Degrees of freedom.
-               char   **EList)            // Error list.
+               INT    *EList)             // Error list.
 {
     Rebmvnorm *rebmvnorm = NULL;
     INT       A[4], i = 0, j = 0, l = 0, length_Theta = 4, Error;
@@ -2236,7 +2236,7 @@ EEXIT:
 
     if (rebmvnorm) delete rebmvnorm;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 }
 /// End
 }

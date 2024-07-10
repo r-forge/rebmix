@@ -149,10 +149,10 @@ function(model, ...)
     EN = double(c),
     ED = double(c),
     A = double(c * c),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
@@ -193,10 +193,10 @@ function(model, ...)
     theta2 = as.double(unlist(theta2)),
     theta3 = as.double(unlist(theta3)),
     Z = integer(n),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
@@ -289,10 +289,10 @@ function(model, ...)
     EN = double(c),
     ED = double(c),
     A = double(c * c),    
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
@@ -332,10 +332,10 @@ function(model, ...)
     theta1 = as.double(unlist(theta1)),
     theta2 = as.double(unlist(theta2)),
     Z = integer(n),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)

@@ -45,10 +45,10 @@ function(model, ...)
       n = integer(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)
@@ -132,10 +132,10 @@ function(model, ...)
       n = integer(1),
       Y = double(sum(model@n) * d),
       Z = integer(sum(model@n)),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)

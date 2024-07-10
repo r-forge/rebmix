@@ -30,6 +30,12 @@ Rule = c("Sturges", "Log10", "RootN", "Knuth equal", "Knuth unequal")),
 Rule = c("Entropy", "Demp")),
 .Names = c("Rule"))
 
+.error.defaults <- structure(list(
+ErrorNames = c("E_OK", "E_MEM", "E_ARG", "E_CON", "E_FILE", "E_NO_SOLUTION"),
+FileNames = c("base.cpp", "rngmixf.cpp", "rngmvnormf.cpp", "rebmixf.cpp", "rebmvnormf.cpp", "emf.cpp", "Rmisc.cpp", "Rrebmix.cpp", "Rrebmvnorm.cpp")),
+.Names = c("ErrorNames", "FileNames"))
+
+
 
 
 

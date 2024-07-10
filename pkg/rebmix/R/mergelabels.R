@@ -112,10 +112,10 @@ function(A, w, k, ...)
     c = as.integer(c),    
     w = as.double(w),
     L = double(c * c),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)

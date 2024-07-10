@@ -90,10 +90,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -136,10 +136,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -174,10 +174,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -215,10 +215,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -254,10 +254,10 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)
@@ -362,10 +362,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -405,10 +405,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -440,10 +440,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+     error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -478,10 +478,10 @@ function(x, Criterion, pos, ...)
         logL = double(1),
         M = integer(1),
         D = double(1),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -514,10 +514,10 @@ function(x, Criterion, pos, ...)
       logL = double(1),
       M = integer(1),
       D = double(1),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)

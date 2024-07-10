@@ -288,7 +288,7 @@ void Print_e_line_(const char *file, INT line, INT error);
 
 void Print_w_line_(INT idx);
 
-void Print_e_list_(char *elist);
+void Print_e_list_(INT *elist);
 
 FLOAT Ran1(INT *IDum);
 

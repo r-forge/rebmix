@@ -5,78 +5,51 @@
 #include <string.h>
 #include <stdio.h>
 
-char _e_line_[1024] = "";
-char _w_line_[2][1024] = {"", ""};
+INT _e_line_[3];
+INT _w_line_[2][3];
+
+INT FILE_NUMBER = 9;
+
+const char* FILE_NAMES[9] = {"base.cpp", "rngmixf.cpp", "rngmvnormf.cpp", "rebmixf.cpp", "rebmvnormf.cpp", "emf.cpp", "Rmisc.cpp", "Rrebmix.cpp", "Rrebmvnorm.cpp"};
 
 void E_begin()
 {
-    strcpy(_e_line_, ""); strcpy(_w_line_[0], ""); strcpy(_w_line_[1], "");
+    memset(_e_line_, 0, 3 * sizeof(INT)); memset(_w_line_, 0, 6 * sizeof(INT));
 } // E_begin
 
 void Print_e_line_(const char *file, INT line, INT error)
 {
-    if (!strcmp(_e_line_, "")) {
-        char serror[2], sfile[769], sline[227], Tmp[227];
-        INT  i, j;
+    INT i;
 
-        strcat(_e_line_, "File = ");
+    if ((_e_line_[0] == 0) && (error > 0)) {
+        _e_line_[0] = error; _e_line_[1] = line;
 
-        i = (INT)strlen(file);
-
-        if (i >= 768) {
-            strncpy(sfile, file + i - 768, 768);
-
-            sfile[768] = '\0'; sfile[0] = sfile[1] = sfile[2] = '.';
-            
-            strcat(_e_line_, sfile);
+        for (i = 0; i < FILE_NUMBER; i++) {
+            if (strstr(file, FILE_NAMES[i]) != NULL) {
+                _e_line_[2] = i; break;
+            }
         }
-        else {
-            strcat(_e_line_, file);
-        }
-
-        i = j = 0;
-
-        while (line != 0) {
-            Tmp[i++] = (char)(line % 10 + '0'); line /= 10;
-        }
-                
-        while (i > 0) {
-            sline[j++] = Tmp[--i];
-        }
-
-        sline[j] = '\0';
-
-        if (error > 9) error = 9;
-
-        serror[0] = (char)(error + '0');
-
-        serror[1] = '\0'; 
-
-        strcat(_e_line_, "; line = ");
-        strcat(_e_line_, sline);
-        strcat(_e_line_, "; code = ");
-        strcat(_e_line_, serror);
-        strcat(_e_line_, ".");
     }
 } // Print_e_line_
 
 void Print_w_line_(INT idx)
 {
-    if (!strcmp(_w_line_[idx], "")) strcpy(_w_line_[idx], _e_line_);
+    INT i;
+
+    if (_w_line_[idx][0] == 0) {
+        for (i = 0; i < 3; i++) _w_line_[idx][i] = _e_line_[i];
+    }
     
-    strcpy(_e_line_, "");
+    memset(_e_line_, 0, 3 * sizeof(INT));
 } // Print_w_line_
 
-void Print_e_list_(char *elist)
+void Print_e_list_(INT *elist)
 {
-    elist[0] = '\0';
-
-    strcat(elist, _e_line_);
-    strcat(elist, "\n");
-    strcat(elist, _w_line_[0]);
-    strcat(elist, "\n");
-    strcat(elist, _w_line_[1]);
-    strcat(elist, "\n");
+    INT i;
+    
+    for (i = 0; i < 3; i++) {
+        elist[i] = _e_line_[i]; elist[i + 3] = _w_line_[0][i]; elist[i + 6] = _w_line_[1][i];
+    }
 } // Print_e_list_
 
 // Base constructor.

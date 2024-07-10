@@ -82,10 +82,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -117,10 +117,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -153,10 +153,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -190,10 +190,10 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")    
     
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)
@@ -309,10 +309,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 1)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -344,10 +344,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 2)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -380,10 +380,10 @@ function(x, pos, variables, ...)
         d = as.integer(d),
         x = as.double(Dataset),
         y = double(n * (d + 3)),
-        error = character(3075),
+        error = integer(9),
         PACKAGE = "rebmix")
 
-      error <- unlist(strsplit(output$error, "\n"));
+      error <- error.to.string(output$error);
       
       if (error[1] != "") {
         stop(error[1], call. = FALSE); return(NA)
@@ -417,10 +417,10 @@ function(x, pos, variables, ...)
       d = as.integer(d),
       n = as.integer(n),
       x = as.double(Dataset),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")    
     
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)

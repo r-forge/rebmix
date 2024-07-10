@@ -71,10 +71,10 @@ function(x, Dataset, K, ymin, ymax, shrink, ...)
     nz = as.integer(nz),
     z = as.double(unlist(x@Y)),
     shrink = as.integer(shrink),    
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
@@ -192,10 +192,10 @@ function(x, Dataset, K, ymin, ymax, ...)
     y = as.double(y),
     nz = as.integer(nz),
     z = as.double(unlist(x@Y)),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)

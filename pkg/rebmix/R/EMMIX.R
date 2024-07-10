@@ -77,10 +77,10 @@ function(model, Theta, ...)
       n_iter = integer(1),
       summary.logL = double(1),
       summary.M = integer(1),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)
@@ -279,10 +279,10 @@ function(model, Theta, ...)
       n_iter = integer(1),
       summary.logL = double(1),
       summary.M = integer(1),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(output$error, "\n"));
+    error <- error.to.string(output$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)

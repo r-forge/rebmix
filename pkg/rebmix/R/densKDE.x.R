@@ -5,10 +5,10 @@
     x = as.double(x),
     y = double(length(x)),
     hx = as.double(hx),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)

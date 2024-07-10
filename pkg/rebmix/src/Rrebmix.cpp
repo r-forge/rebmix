@@ -18,7 +18,7 @@ void RRNGMIX(INT    *IDum,         // Random seed.
              INT    *n,            // Number of observations.
              double *Y,            // Dataset.
              INT    *Z,            // Component membership.
-             char   **EList)       // Error list.
+             INT    *EList)        // Error list.
 {
     Rngmix *rngmix = NULL;
     INT    i, j, k, l, Error;
@@ -152,7 +152,7 @@ EEXIT:
 
     if (rngmix) delete rngmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RRNGMIX
 
 // Runs REBMIX in R.
@@ -215,7 +215,7 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              INT    *all_length,     // Length of all_K and all_IC.
              INT    *all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
              double *all_IC,         // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
-             char   **EList)         // Error list.
+             INT    *EList)          // Error list.
 {
     Rebmix *rebmix = NULL;
     INT    Error;
@@ -300,7 +300,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RREBMIX
 
 // Returns k-nearest neighbour empirical densities in R.
@@ -312,7 +312,7 @@ void RdensKNearestNeighbourXY(INT    *n,      // Total number of independent obs
                               INT    *k,      // k-nearest neighbours.
                               double *hx,     // Normalizing vector.
                               double *hy,     // Normalizing vector.
-                              char   **EList) // Error list.
+                              INT    *EList)  // Error list.
 {
     FLOAT C, Dc, *Dk = NULL, R;
     INT   i, j, K, l, m, q, Error;
@@ -360,7 +360,7 @@ EEXIT:
     
     if (Dk) free(Dk);
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKNearestNeighbourXY
 
 // Returns kernel density estimation empirical densities in R.
@@ -371,7 +371,7 @@ void RdensKDEXY(INT    *n,      // Total number of independent observations.
                 double *p,      // Pointer to the output array p.
                 double *hx,     // Side of the hypersquare.
                 double *hy,     // Side of the hypersquare.
-                char   **EList) // Error list.
+                INT    *EList)  // Error list.
 {
     FLOAT C, rx, ry;
     INT   i, j, Error;
@@ -396,7 +396,7 @@ void RdensKDEXY(INT    *n,      // Total number of independent observations.
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKDEXY
 
 // Returns histogram empirical densities in R.
@@ -416,7 +416,7 @@ void RdensHistogramXY(INT    *k,      // Total number of bins.
                       double *hy,     // Side of the hypersquare.
                       char   **px,    // Parametric family type.
                       char   **py,    // Parametric family type.
-                      char   **EList) // Error list.
+                      INT    *EList)  // Error list.
 {
     ParametricFamilyType_e pdfx, pdfy;
     FLOAT                  C, rx, ry;
@@ -566,7 +566,7 @@ S1:;}
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensHistogramXY
 
 // Returns histogram input empirical densities in R.
@@ -578,7 +578,7 @@ void RdensKXY(INT    *v,      // Total number of bins.
               double *p,      // Pointer to the output array p.
               double *hx,     // Side of the hypersquare.
               double *hy,     // Side of the hypersquare.
-              char   **EList) // Error list.
+              INT    *EList)  // Error list.
 {
     FLOAT C, rx, ry;
     INT   i, j, n, Error;
@@ -616,7 +616,7 @@ void RdensKXY(INT    *v,      // Total number of bins.
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKXY
 
 // Returns k-nearest neighbour empirical densities in R.
@@ -626,7 +626,7 @@ void RdensKNearestNeighbourX(INT    *n,      // Total number of independent obse
                              double *p,      // Pointer to the output array p.
                              INT    *k,      // k-nearest neighbours.
                              double *hx,     // Normalizing vector.
-                             char   **EList) // Error list.
+                             INT    *EList)  // Error list.
 {
     FLOAT Dc, *Dk = NULL, R, C;
     INT   i, j, K, l, m, q, Error;
@@ -673,7 +673,7 @@ EEXIT:
     
     if (Dk) free(Dk);
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKNearestNeighbourX
 
 // Returns kernel density estimation empirical densities in R.
@@ -682,7 +682,7 @@ void RdensKDEX(INT    *n,      // Total number of independent observations.
                double *x,      // Pointer to the input array x.
                double *p,      // Pointer to the output array p.
                double *hx,     // Side of the hypersquare.
-               char   **EList) // Error list.
+               INT    *EList)  // Error list.
 {
     FLOAT C, rx;
     INT   i, j, Error;
@@ -707,7 +707,7 @@ void RdensKDEX(INT    *n,      // Total number of independent observations.
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKDEX
 
 // Returns histogram empirical densities in R.
@@ -721,7 +721,7 @@ void RdensHistogramX(INT    *k,      // Total number of bins.
                      double *xmax,   // Maximum observation.
                      double *hx,     // Side of the hypersquare.
                      char   **px,    // Parametric family type.
-                     char   **EList) // Error list.
+                     INT    *EList)  // Error list.
 {
     ParametricFamilyType_e pdfx;
     FLOAT                  C, rx;
@@ -809,7 +809,7 @@ S1:;}
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensHistogramX
 
 // Returns histogram input empirical densities in R.
@@ -819,7 +819,7 @@ void RdensKX(INT    *v,      // Total number of bins.
              double *k,      // Pointer to the input array k.
              double *p,      // Pointer to the output array p.
              double *hx,     // Side of the hypersquare.
-             char   **EList) // Error list.
+             INT    *EList)  // Error list.
 {
     FLOAT C, rx;
     INT   i, j, n, Error;
@@ -857,7 +857,7 @@ void RdensKX(INT    *v,      // Total number of bins.
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RdensKX
 
 // Returns classified observations in R.
@@ -875,7 +875,7 @@ void RCLSMIX(INT    *n,      // Total number of independent observations.
              double *theta3, // Component parameters.
              double *P,      // Prior probabilities.
              INT    *Z,      // Pointer to the output array Z.
-             char   **EList) // Error list.
+             INT    *EList)  // Error list.
 {
     Rebmix               *rebmix = NULL;
     CompnentDistribution ****Theta = NULL;
@@ -1123,7 +1123,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCLSMIX
 
 // Returns clustered observations in R.
@@ -1138,7 +1138,7 @@ void RCLRMIX(INT    *n,      // Total number of independent observations.
              double *theta2, // Component parameters.
              double *theta3, // Component parameters.
              INT    *Z,      // Pointer to the output array Z.
-             char   **EList) // Error list.
+             INT    *EList)  // Error list.
 {
     Rebmix               *rebmix = NULL;
     CompnentDistribution **Theta = NULL;
@@ -1298,7 +1298,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCLRMIX
 
 void RPreprocessingKNNMIX(INT    *k,      // k-nearest neighbours.
@@ -1307,7 +1307,7 @@ void RPreprocessingKNNMIX(INT    *k,      // k-nearest neighbours.
                           INT    *d,      // Number of independent random variables.
                           double *x,      // Pointer to the input array x.
                           double *y,      // Pointer to the output array y.
-                          char   **EList) // Error list.
+                          INT    *EList)  // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  Rm, **Y = NULL;
@@ -1364,7 +1364,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingKNNMIX
 
 void RPreprocessingKDEMIX(double *h,      // Sides of the hypersquare.
@@ -1372,7 +1372,7 @@ void RPreprocessingKDEMIX(double *h,      // Sides of the hypersquare.
                           INT    *d,      // Number of independent random variables.
                           double *x,      // Pointer to the input array x.
                           double *y,      // Pointer to the output array y.
-                          char   **EList) // Error list.
+                          INT    *EList)  // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1429,7 +1429,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingKDEMIX
 
 void RPreprocessingHMIX(double *h,      // Sides of the hypersquare.
@@ -1441,7 +1441,7 @@ void RPreprocessingHMIX(double *h,      // Sides of the hypersquare.
                         INT    *d,      // Number of independent random variables.
                         double *x,      // Pointer to the input array x.
                         double *y,      // Pointer to the output array y.
-                        char   **EList) // Error list.
+                        INT    *EList)  // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -1508,14 +1508,14 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingHMIX
 
 void RPreprocessingKMIX(double *h,      // Sides of the hypersquare.
                         INT    *d,      // Number of independent random variables.
                         INT    *n,      // Length of x.
                         double *x,      // Pointer to the array x.
-                        char   **EList) // Error list.
+                        INT    *EList)  // Error list.
 {
     INT i, j, k, l, dn, jn, kn, Error;
 
@@ -1551,7 +1551,7 @@ S1:;
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RPreprocessingKMIX
 
 void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersquare.
@@ -1573,7 +1573,7 @@ void RInformationCriterionKNNMIX(double *h,            // Sides of the hypersqua
                                  double *logL,         // log-likelihood.
                                  INT    *M,            // Degrees of freedom.
                                  double *D,            // Total of positive relative deviations.
-                                 char   **EList)       // Error list.
+                                 INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  Rm, **Y = NULL;
@@ -1809,7 +1809,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKNNMIX
 
 void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersquare.
@@ -1830,7 +1830,7 @@ void RInformationCriterionKDEMIX(double *h,            // Sides of the hypersqua
                                  double *logL,         // log-likelihood.
                                  INT    *M,            // Degrees of freedom.
                                  double *D,            // Total of positive relative deviations.
-                                 char   **EList)       // Error list.
+                                 INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  logV, **Y = NULL;
@@ -2072,7 +2072,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKDEMIX
 
 void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare.
@@ -2097,7 +2097,7 @@ void RInformationCriterionHMIX(double *h,            // Sides of the hypersquare
                                double *logL,         // log-likelihood.
                                INT    *M,            // Degrees of freedom.
                                double *D,            // Total of positive relative deviations.
-                               char   **EList)       // Error list.
+                               INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  logV, **Y = NULL;
@@ -2336,7 +2336,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionHMIX
 
 void RInformationCriterionKMIX(double *h,            // Sides of the hypersquare.
@@ -2357,7 +2357,7 @@ void RInformationCriterionKMIX(double *h,            // Sides of the hypersquare
                                double *logL,         // log-likelihood.
                                INT    *M,            // Degrees of freedom.
                                double *D,            // Total of positive relative deviations.
-                               char   **EList)       // Error list.
+                               INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  logV, **Y = NULL;
@@ -2588,7 +2588,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionKMIX
 
 void RInformationCriterionMIX(char   **Criterion,   // Information criterion type.
@@ -2608,7 +2608,7 @@ void RInformationCriterionMIX(char   **Criterion,   // Information criterion typ
                               double *logL,         // log-likelihood.
                               INT    *M,            // Degrees of freedom.
                               double *D,            // Total of positive relative deviations.
-                              char   **EList)       // Error list.
+                              INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     INT    i, j, l, m, Error;
@@ -2815,7 +2815,7 @@ EEXIT:
     
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RInformationCriterionMIX
 
 void RCombineComponentsMIX(INT    *c,            // Number of components.
@@ -2837,7 +2837,7 @@ void RCombineComponentsMIX(INT    *c,            // Number of components.
                            double *EN,           // Entropy.
                            double *ED,           // Entropy decrease.
                            double *PSS,          // Pairwise similarity scores.
-                           char   **EList)       // Error list.
+                           INT    *EList)        // Error list.
 {
     Rebmix *rebmix = NULL;
     INT    Error;
@@ -2922,7 +2922,7 @@ EEXIT:
     
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RCombineComponentsMIX
 
 void RvonMisesPdf(INT *n, double *y, double *Mean, double *Kappa, double *f)
@@ -2946,7 +2946,7 @@ void RvonMisesPdf(INT *n, double *y, double *Mean, double *Kappa, double *f)
     }
 } // RvonMisesPdf
 
-void RvonMisesCdf(INT *n, double *y, double *Mean, double *Kappa, double *F, char **EList)
+void RvonMisesCdf(INT *n, double *y, double *Mean, double *Kappa, double *F, INT *EList)
 {
     FLOAT A[3], Io, In, I0, I1;
     INT   i, j, Error;
@@ -2988,7 +2988,7 @@ void RvonMisesCdf(INT *n, double *y, double *Mean, double *Kappa, double *F, cha
         }
     }
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // RvonMisesCdf
 
 void RGumbelPdf(INT *n, double *y, double *Mean, double *Sigma, double *Xi, double *f)
@@ -3036,7 +3036,7 @@ void Roptbins(INT    *d,           // Number of independent random variables.
               INT    *kmin,        // Minimum number of bins.
               INT    *kmax,        // Maximum number of bins.
               INT    *opt_k,       // Optimal number of bins.
-              char   **EList)      // Error list.
+              INT    *EList)       // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -3368,7 +3368,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // Roptbins
 
 /// Binning of data.
@@ -3383,7 +3383,7 @@ void Rbins(INT    *d,           // Number of independent random variables.
            INT    *k,           // Number of bins.
            INT    *length_y,    // Length of y.
            double *y,           // Binned dataset.
-           char   **EList)      // Error list.
+           INT    *EList)       // Error list.
 {
     Rebmix *rebmix = NULL;
     FLOAT  **Y = NULL;
@@ -3504,7 +3504,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // Rbins
 
 /// Panic Branislav
@@ -3528,7 +3528,7 @@ void REMMIX(INT    *d,                 // Number of independent random variables
             INT    *n_iter,            // Number of iterations for optimal case.
             double *summary_logL,      // Log-likelihood.
             INT    *summary_M,         // Degrees of freedom.
-            char   **EList)            // Error list.
+            INT    *EList)             // Error list.
 {
     Rebmix *rebmix = NULL;
     INT    A[3], i = 0, j = 0, l = 0, length_Theta = 3, Error;
@@ -3677,7 +3677,7 @@ EEXIT:
 
     if (rebmix) delete rebmix;
 
-    E_LIST(*EList);
+    E_LIST(EList);
 }
 /// End
 
@@ -3692,7 +3692,7 @@ void Rfhistogram(INT    *K,      // Numbers of bins.
                  INT    *ny,     // Length of y.
                  double *y,      // Pointer to the output array y.
                  INT    *shrink, // If 1 the output array is shrinked.
-                 char   **EList) // Error list.
+                 INT    *EList)  // Error list.
 {
     INT i, j, k, *l = NULL, *m = NULL, dny, Error;
 
@@ -3750,7 +3750,7 @@ EEXIT:
 
     if (l) free(l);
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // Rfhistogram
 
 // Compact histogram calculation.
@@ -3764,7 +3764,7 @@ void Rchistogram(INT    *K,      // Numbers of bins.
                  double *x,      // Pointer to the input array x.
                  INT    *ny,     // Length of y.
                  double *y,      // Pointer to the output array y.
-                 char   **EList) // Error list.
+                 INT    *EList)  // Error list.
 {
     INT i, j, k, dny, kny, Error;
 
@@ -3800,7 +3800,7 @@ S1:;
 
 EEXIT:
 
-    E_LIST(*EList);
+    E_LIST(EList);
 } // Rchistogram
 
 }

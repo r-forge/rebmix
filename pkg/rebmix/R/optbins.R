@@ -141,10 +141,10 @@ function(Dataset, Rule = "Knuth equal", ymin, ymax, kmin, kmax, ...)
       kmin = as.integer(kmin),
       kmax = as.integer(kmax),
       opt.k = integer(d),
-      error = character(3075),
+      error = integer(9),
       PACKAGE = "rebmix")
 
-    error <- unlist(strsplit(temp$error, "\n"));
+    error <- error.to.string(temp$error);
       
     if (error[1] != "") {
       stop(error[1], call. = FALSE); return(NA)

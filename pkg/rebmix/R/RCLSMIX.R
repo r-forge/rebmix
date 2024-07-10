@@ -58,10 +58,10 @@ function(model, ...)
     theta3 = as.double(unlist(theta3)),
     P = as.double(unlist(model@P)),
     Z = integer(model@ntest),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
@@ -135,10 +135,10 @@ function(model, ...)
     theta2 = as.double(unlist(theta2)),
     P = as.double(unlist(model@P)),
     Z = integer(model@ntest),
-    error = character(3075),
+    error = integer(9),
     PACKAGE = "rebmix")
 
-  error <- unlist(strsplit(output$error, "\n"));
+  error <- error.to.string(output$error);
       
   if (error[1] != "") {
     stop(error[1], call. = FALSE); return(NA)
