@@ -244,6 +244,39 @@ EEXIT:
     E_RETURN(Error);
 } // Digamma
 
+// Returns the trigamma for y > 0. See https://CRAN.R-project.org/package=pracma.
+
+INT Trigamma(FLOAT y, FLOAT* Psi)
+{
+    static FLOAT Re[14] = {-(FLOAT)4.1614709798720630, -(FLOAT)4.1614709798720630, -(FLOAT)4.3851935502539474, -(FLOAT)4.3851935502539474,
+        -(FLOAT)4.0914355423005926, -(FLOAT)5.0205261882982271, -(FLOAT)5.9957952053472399, -(FLOAT)7.0024851819328395,
+        -(FLOAT)7.9981186370233868, -(FLOAT)9.0013449037361806, -(FLOAT)9.9992157162305535, -(FLOAT)11.0003314815563886,
+        -(FLOAT)11.9999115102434217, -(FLOAT)13.0000110489923175587};
+    static FLOAT Im[14] = {-(FLOAT)0.14578107125196249, (FLOAT)0.14578107125196249, -(FLOAT)0.19149326909941256, (FLOAT)0.19149326909941256,
+        (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0, (FLOAT)0.0};
+
+    FLOAT A[3];
+    FLOAT g = (FLOAT)607.0 / (FLOAT)128.0;
+    FLOAT h = (FLOAT)0.5;
+    INT   i, Error = E_OK;
+
+    *Psi = (FLOAT)0.0;
+
+    for (i = 0; i < 14; i++) {
+        A[0] = y - Re[i]; A[1] = A[0] * A[0] - Im[i] * Im[i]; A[2] = (FLOAT)2.0 * A[0] * Im[i];
+
+        *Psi += A[1] / (A[1] * A[1] + A[2] * A[2]) - (FLOAT)pow(y + i, -(FLOAT)2.0);
+    }
+
+    *Psi = -*Psi;
+
+    FLOAT ygh = y + (g - h);
+
+    *Psi += (FLOAT)1.0 / ygh + g * (FLOAT)pow(ygh, -(FLOAT)2.0);
+
+    E_RETURN(Error);
+} // Trigamma
+
 // Returns binomial c.d.f. for the specified n and p. See http://www.nr.com/.
 
 FLOAT BinomialCdf(INT k, INT n, FLOAT p)

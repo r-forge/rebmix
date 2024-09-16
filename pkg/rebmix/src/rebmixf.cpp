@@ -765,20 +765,20 @@ INT RoughGammaParameters(FLOAT ym,
 
     A[0] = (FLOAT)log(ym * fm * SqrtPi2);
 
-    if ((FLOAT)2.016083 + A[0] <= (FLOAT)0.0) {
-        Alpha = (FLOAT)1.000299;
+    if ((FLOAT)1.873561 + A[0] <= (FLOAT)0.0) {
+        Alpha = (FLOAT)1.000775;
     }
     else {
-        i = 1; Error = E_CON; Alpha = (FLOAT)1.000299; 
+        i = 1; Error = E_CON; Alpha = (FLOAT)1.000775;
 
         while ((i <= ItMax) && (Error != E_OK)) {
             A[1] = (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha);
 
             A[2] = A[1] + (FLOAT)1.0 / Alpha;
 
-            A[3] = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * A[1]);
+            A[3] = -((FLOAT)1.0 + Alpha) / ((FLOAT)1.0 + (FLOAT)2.0 * Alpha * A[1]);
 
-            A[4] = A[3] * ((FLOAT)1.0 + A[3] * (A[1] + (FLOAT)1.0 / (Alpha - (FLOAT)1.0)) / Euler) / ((FLOAT)1.0 + Alpha);
+            A[4] = A[3] * ((FLOAT)1.0 + A[3] * (A[1] + (FLOAT)1.0 / (Alpha - (FLOAT)1.0)) / (FLOAT)0.5) / ((FLOAT)1.0 + Alpha);
 
             dAlpha = (A[3] * A[2] + (FLOAT)0.5 * (FLOAT)log(A[3]) - A[0]) / (A[4] * (A[2] + (FLOAT)0.5 / A[3]) + A[3] / (Alpha - (FLOAT)1.0) / Alpha / Alpha);
 
@@ -792,7 +792,7 @@ INT RoughGammaParameters(FLOAT ym,
         }
     }
 
-    *Beta = Euler * ((FLOAT)1.0 + Alpha) / (Euler - (FLOAT)1.0 - Alpha * (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha));
+    *Beta = -((FLOAT)1.0 + Alpha) / ((FLOAT)1.0 + (FLOAT)2.0 * Alpha * (FLOAT)log((FLOAT)1.0 - (FLOAT)1.0 / Alpha));
 
     *Theta = ym * Alpha / (Alpha - (FLOAT)1.0) / (*Beta);
 
@@ -1610,7 +1610,7 @@ S1:;
                 Dm -= CmpMrgPdf * Mode[i].h;
             }
 
-            if (Dm < (FLOAT)0.0) {
+            if (Dm <= (FLOAT)0.0) {
                 if (fmax < Mode[i].fm) {
                     nres += 1; fres += fmax;
                 }
@@ -1946,7 +1946,7 @@ S3:;
                 Dm -= CmpMrgPdf * Mode[i].h;
             }
 
-            if (Dm < (FLOAT)0.0) {
+            if (Dm <= (FLOAT)0.0) {
                 if (fmax < Mode[i].fm) {
                     nres += 1; fres += fmax;
                 }
@@ -2270,7 +2270,7 @@ S2:;
                 Dm -= CmpMrgPdf * Mode[i].h;
             }
 
-            if (Dm < (FLOAT)0.0) {
+            if (Dm <= (FLOAT)0.0) {
                 if (fmax < Mode[i].fm) {
                     nres += 1; fres += fmax;
                 }
@@ -2765,7 +2765,7 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                                   CompnentDistribution *LooseTheta) // Loose parameters.
 {
     CompnentDistribution *EnhanTheta = NULL;
-    FLOAT                A[4], dP, MrgVar, T[2], TmpVar;
+    FLOAT                A[5], dP, MrgVar, T[2], TmpVar;
     INT                  i, j, l, error, Error = E_OK;
 
     EnhanTheta = new CompnentDistribution(this);
@@ -2845,23 +2845,25 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
                 for (l = 0; l < nr_; l++) {
                     if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[i][l]);
                         T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta_[1][i]);
 
-                        A[0] += Y[length_pdf_][l] * T[0];
-                        A[1] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[1] += Y[length_pdf_][l] * T[0];
                         A[2] += Y[length_pdf_][l] * T[1];
-                        A[3] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
+                        A[3] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[4] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                T[0] = A[0] / A[2];
+
+                dP = (A[0] / EnhanTheta->Theta_[1][i] + A[1] - T[0] * A[3]) / (T[0] * (A[3] * A[3] / A[2] - A[4]) - A[0] / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -2892,16 +2894,18 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
             EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
-            memset(&A, 0, 2 * sizeof(FLOAT));
+            memset(&A, 0, 4 * sizeof(FLOAT));
 
             for (l = 0; l < nr_; l++) {
                 if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
+                    A[1] += Y[length_pdf_][l] * Y[i][l];
+                    A[2] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
                 }
             }
 
-            A[0] /= nl; A[1] /= nl;
+            A[0] = nl;
+
+            A[3] = (FLOAT)log(A[1] / A[0]) - A[2] / A[0];
 
             j = 1; Error = E_CON;
 
@@ -2914,7 +2918,9 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
 
                 E_CHECK(error != E_OK, error);
 
-                dP = ((FLOAT)log(EnhanTheta->Theta_[1][i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] - (T[1] - T[0]) / Eps);
+                T[1] = (T[1] - T[0]) / Eps;
+
+                dP = (T[0] + A[3] - (FLOAT)log(EnhanTheta->Theta_[1][i])) / (T[1] - (FLOAT)1.0 / EnhanTheta->Theta_[1][i]);
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -2925,9 +2931,9 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            A[2] /= nl;
+            A[1] /= nl;
 
-            EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
+            EnhanTheta->Theta_[0][i] = A[1] / EnhanTheta->Theta_[1][i];
 
             E_CHECK((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN), E_ARG);
 
@@ -3124,7 +3130,7 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                                   CompnentDistribution *LooseTheta) // Loose parameters.
 {
     CompnentDistribution *EnhanTheta = NULL;
-    FLOAT                A[4], dP, MrgVar, T[2], TmpVar;
+    FLOAT                A[5], dP, MrgVar, T[2], TmpVar;
     INT                  i, j, l, error, Error = E_OK;
 
     EnhanTheta = new CompnentDistribution(this);
@@ -3204,23 +3210,25 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
                 for (l = 0; l < nr_; l++) {
                     if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[i][l]);
                         T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta_[1][i]);
 
-                        A[0] += Y[length_pdf_][l] * T[0];
-                        A[1] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[1] += Y[length_pdf_][l] * T[0];
                         A[2] += Y[length_pdf_][l] * T[1];
-                        A[3] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
+                        A[3] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[4] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                T[0] = A[0] / A[2];
+
+                dP = (A[0] / EnhanTheta->Theta_[1][i] + A[1] - T[0] * A[3]) / (T[0] * (A[3] * A[3] / A[2] - A[4]) - A[0] / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3251,16 +3259,18 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
             EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
-            memset(&A, 0, 2 * sizeof(FLOAT));
+            memset(&A, 0, 4 * sizeof(FLOAT));
 
             for (l = 0; l < nr_; l++) {
                 if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
+                    A[1] += Y[length_pdf_][l] * Y[i][l];
+                    A[2] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
                 }
             }
 
-            A[0] /= nl; A[1] /= nl;
+            A[0] = nl;
+
+            A[3] = (FLOAT)log(A[1] / A[0]) - A[2] / A[0];
 
             j = 1; Error = E_CON;
 
@@ -3273,7 +3283,9 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
 
                 E_CHECK(error != E_OK, error);
 
-                dP = ((FLOAT)log(EnhanTheta->Theta_[1][i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] - (T[1] - T[0]) / Eps);
+                T[1] = (T[1] - T[0]) / Eps;
+
+                dP = (T[0] + A[3] - (FLOAT)log(EnhanTheta->Theta_[1][i])) / (T[1] - (FLOAT)1.0 / EnhanTheta->Theta_[1][i]);
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3284,9 +3296,9 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            A[2] /= nl;
+            A[1] /= nl;
 
-            EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
+            EnhanTheta->Theta_[0][i] = A[1] / EnhanTheta->Theta_[1][i];
 
             E_CHECK((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN), E_ARG);
 
@@ -3485,7 +3497,7 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
                                 CompnentDistribution *LooseTheta) // Loose parameters.
 {
     CompnentDistribution *EnhanTheta = NULL;
-    FLOAT                A[4], dP, MrgVar, T[2], TmpVar;
+    FLOAT                A[5], dP, MrgVar, T[2], TmpVar;
     INT                  i, j, l, error, Error = E_OK;
 
     EnhanTheta = new CompnentDistribution(this);
@@ -3565,23 +3577,25 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
                 for (l = 0; l < k; l++) {
                     if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
                         T[0] = (FLOAT)log(Y[i][l]);
                         T[1] = (FLOAT)exp(T[0] * EnhanTheta->Theta_[1][i]);
 
-                        A[0] += Y[length_pdf_][l] * T[0];
-                        A[1] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[1] += Y[length_pdf_][l] * T[0];
                         A[2] += Y[length_pdf_][l] * T[1];
-                        A[3] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
+                        A[3] += Y[length_pdf_][l] * T[1] * T[0];
+                        A[4] += Y[length_pdf_][l] * T[1] * T[0] * T[0];
                     }
                 }
 
-                A[0] /= nl; T[0] = A[1] / A[2]; T[0] *= T[0]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] + A[0] - A[1] / A[2]) / (T[0] - A[3] / A[2] - (FLOAT)1.0 / T[1]);
+                T[0] = A[0] / A[2];
+
+                dP = (A[0] / EnhanTheta->Theta_[1][i] + A[1] - T[0] * A[3]) / (T[0] * (A[3] * A[3] / A[2] - A[4]) - A[0] / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3612,16 +3626,18 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
 
             EnhanTheta->Theta_[1][i] = RigidTheta->Theta_[1][i];
 
-            memset(&A, 0, 2 * sizeof(FLOAT));
+            memset(&A, 0, 4 * sizeof(FLOAT));
 
             for (l = 0; l < k; l++) {
                 if ((Y[length_pdf_][l] > FLOAT_MIN) && (Y[i][l] > FLOAT_MIN)) {
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
+                    A[1] += Y[length_pdf_][l] * Y[i][l];
+                    A[2] += Y[length_pdf_][l] * (FLOAT)log(Y[i][l]);
                 }
             }
 
-            A[0] /= nl; A[1] /= nl;
+            A[0] = nl;
+
+            A[3] = (FLOAT)log(A[1] / A[0]) - A[2] / A[0];
 
             j = 1; Error = E_CON;
 
@@ -3634,7 +3650,9 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
 
                 E_CHECK(error != E_OK, error);
 
-                dP = ((FLOAT)log(EnhanTheta->Theta_[1][i]) - T[0] - (FLOAT)log(A[0]) + A[1]) / ((FLOAT)1.0 / EnhanTheta->Theta_[1][i] - (T[1] - T[0]) / Eps);
+                T[1] = (T[1] - T[0]) / Eps;
+
+                dP = (T[0] + A[3] - (FLOAT)log(EnhanTheta->Theta_[1][i])) / (T[1] - (FLOAT)1.0 / EnhanTheta->Theta_[1][i]);
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3645,9 +3663,9 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
                 j++;
             }
 
-            A[2] /= nl;
+            A[1] /= nl;
 
-            EnhanTheta->Theta_[0][i] = A[0] / EnhanTheta->Theta_[1][i];
+            EnhanTheta->Theta_[0][i] = A[1] / EnhanTheta->Theta_[1][i];
 
             E_CHECK((EnhanTheta->Theta_[0][i] <= FLOAT_MIN) || (EnhanTheta->Theta_[1][i] <= FLOAT_MIN), E_ARG);
 
@@ -3923,6 +3941,54 @@ INT BayesWeibullParameters(FLOAT FirstM,  // First moment.
                            FLOAT *Theta1, // Component parameter.
                            FLOAT *Theta2) // Component parameter.
 {
+    FLOAT A[3], dP, T[2], theta2;
+    INT   i, error, Error = E_OK;
+
+    A[0] = (FLOAT)log(FirstM * FirstM / SecondM);
+
+    if ((FLOAT)7.702305 + A[0] <= (FLOAT)0.0) {
+        theta2 = (FLOAT)0.15;
+    }
+    else {
+        i = 1; Error = E_CON; theta2 = (FLOAT)0.15;
+
+        while ((i <= ItMax) && (Error != E_OK)) {
+            A[1] = (FLOAT)1.0 + (FLOAT)1.0 / theta2; A[2] = (FLOAT)1.0 + (FLOAT)2.0 / theta2;
+
+            error = Digamma(A[1], &T[0]);
+
+            E_CHECK(error != E_OK, error);
+
+            error = Digamma(A[2], &T[1]);
+
+            E_CHECK(error != E_OK, error);
+
+            dP = (A[0] + Gammaln(A[2]) - (FLOAT)2.0 * Gammaln(A[1])) * (FLOAT)0.5 * theta2 * theta2 / (T[0] - T[1]);
+
+            E_CHECK(IsNan(dP) || IsInf(dP), E_CON);
+
+            theta2 -= dP;
+
+            if ((FLOAT)fabs(dP) < Max(Eps * (FLOAT)fabs(theta2), Eps)) Error = E_OK;
+
+            i++;
+        }
+    }
+
+    *Theta1 = FirstM / (FLOAT)exp(Gammaln((FLOAT)1.0 + (FLOAT)1.0 / theta2)); *Theta2 = theta2;
+
+EEXIT:
+
+    E_RETURN(Error);
+} // BayesWeibullParameters
+
+// Returns Bayes Weibull parameters.
+
+INT BayesWeibullParametersOld(FLOAT FirstM,  // First moment.
+                              FLOAT SecondM, // Second moment.
+                              FLOAT *Theta1, // Component parameter.
+                              FLOAT *Theta2) // Component parameter.
+{
     FLOAT A, fl, fh, fm, xl, xh, xm = (FLOAT)0.0;
     INT   i, Error = E_OK;
 
@@ -3982,7 +4048,7 @@ INT BayesWeibullParameters(FLOAT FirstM,  // First moment.
 EEXIT:
 
     E_RETURN(Error);
-} // BayesWeibullParameters
+} // BayesWeibullParametersOld
 
 // Returns Bayes von Mises parameters.
 
@@ -9296,7 +9362,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FLOAT isF;
     INT   i, iinc, imax, imin, isI, j, k, Error = E_OK;
 
-    printf("REBMIX Version 2.16.0\n");
+    printf("REBMIX Version 2.16.1\n");
 
     fp = fopen(file, "r");
 

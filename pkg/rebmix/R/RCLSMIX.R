@@ -168,7 +168,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RCLSMIX Version 2.16.0")
+  message("RCLSMIX Version 2.16.1")
 
   flush.console()
 
@@ -214,7 +214,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("BFSMIX Version 2.16.0")
+  message("BFSMIX Version 2.16.1")
 
   flush.console()
 

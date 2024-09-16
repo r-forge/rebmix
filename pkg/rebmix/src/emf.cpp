@@ -1044,7 +1044,9 @@ INT Emmix::MaximizationStep()
             switch (MixTheta_[l]->pdf_[i]) {
             case pfNormal:
                 for (j = 0; j < nr_; j++) {
-                    M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                    if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                        M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                    }
                 }
 
                 M[i] = M[i] / (W + FLOAT_MIN);
@@ -1055,8 +1057,10 @@ INT Emmix::MaximizationStep()
             case pfTNormal:
                 break;
             case pfLognormal:
-                for (j = 0; j < nr_; j++)  if (Y_[i][j] > FLOAT_MIN) {
-                    M[i] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
+                for (j = 0; j < nr_; j++) {
+                    if ((Y_[length_pdf_][j] > FLOAT_MIN) && (Y_[i][j] > FLOAT_MIN)) {
+                        M[i] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
+                    }
                 }
 
                 M[i] = M[i] / (W + FLOAT_MIN);
@@ -1072,21 +1076,23 @@ INT Emmix::MaximizationStep()
                 while ((j <= ItMax) && (Error != E_OK)) {
                     memset(&A, 0, 5 * sizeof(FLOAT));
 
-                    for (k = 0; k < nr_; k++) if (Y_[i][k] > FLOAT_MIN) {
-                        T[0] = (FLOAT)log(Y_[i][k]);
-                        T[1] = (FLOAT)exp(T[0] * M[i]);
+                    for (k = 0; k < nr_; k++) {
+                        if ((Y_[length_pdf_][k] > FLOAT_MIN) && (Y_[i][k] > FLOAT_MIN)) {
+                            T[0] = (FLOAT)log(Y_[i][k]);
+                            T[1] = (FLOAT)exp(T[0] * M[i]);
 
-                        A[1] += Y_[length_pdf_][k] * P_[l][k] * T[0];
-                        A[2] += Y_[length_pdf_][k] * P_[l][k] * T[1];
-                        A[3] += Y_[length_pdf_][k] * P_[l][k] * T[1] * T[0];
-                        A[4] += Y_[length_pdf_][k] * P_[l][k] * T[1] * T[0] * T[0];
+                            A[1] += Y_[length_pdf_][k] * P_[l][k] * T[0];
+                            A[2] += Y_[length_pdf_][k] * P_[l][k] * T[1];
+                            A[3] += Y_[length_pdf_][k] * P_[l][k] * T[1] * T[0];
+                            A[4] += Y_[length_pdf_][k] * P_[l][k] * T[1] * T[0] * T[0];
+                        }
                     }
 
                     A[0] = W + FLOAT_MIN;
 
                     T[0] = A[0] / A[2];
 
-                    dM = (A[0] / M[i] + A[1] - T[0] * A[3]) / (T[0] * (A[3] * A[3] / A[2] - A[4]) - A[0] / M[i] / M[i]);
+                    dM = (A[0] / M[i] + A[1] - T[0] * A[3]) / (T[0] * (A[3] * A[3] / A[2] - A[4]) - A[0] / (M[i] * M[i]));
 
                     M[i] -= dM;
 
@@ -1105,9 +1111,11 @@ INT Emmix::MaximizationStep()
 
                 memset(&A, 0, 4 * sizeof(FLOAT));
 
-                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
-                    A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
-                    A[2] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
+                for (j = 0; j < nr_; j++) {
+                    if ((Y_[length_pdf_][j] > FLOAT_MIN) && (Y_[i][j] > FLOAT_MIN)) {
+                        A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                        A[2] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)log(Y_[i][j]);
+                    }
                 }
 
                 A[0] = W + FLOAT_MIN;
@@ -1125,7 +1133,9 @@ INT Emmix::MaximizationStep()
 
                     E_CHECK(error != E_OK, error);
 
-                    dM = (T[0] + A[3] - (FLOAT)log(M[i])) / ((T[1] - T[0]) / Eps - (FLOAT)1.0 / M[i]);
+                    T[1] = (T[1] - T[0]) / Eps;
+
+                    dM = (T[0] + A[3] - (FLOAT)log(M[i]) ) / (T[1] - (FLOAT)1.0 / M[i]);
 
                     M[i] -= dM;
 
@@ -1148,19 +1158,21 @@ INT Emmix::MaximizationStep()
                     memset(&A, 0, 5 * sizeof(FLOAT));
 
                     for (k = 0; k < nr_; k++) {
-                        T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][k] / M[i]);
+                        if (Y_[length_pdf_][k] > FLOAT_MIN) {
+                            T[0] = (FLOAT)exp(MixTheta_[l]->Theta_[2][i] * Y_[i][k] / M[i]);
 
-                        A[1] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k];
-                        A[2] += Y_[length_pdf_][k] * P_[l][k] * T[0];
-                        A[3] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k] * T[0];
-                        A[4] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k] * Y_[i][k] * T[0];
+                            A[1] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k];
+                            A[2] += Y_[length_pdf_][k] * P_[l][k] * T[0];
+                            A[3] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k] * T[0];
+                            A[4] += Y_[length_pdf_][k] * P_[l][k] * Y_[i][k] * Y_[i][k] * T[0];
+                        }
                     }
 
                     A[0] = W + FLOAT_MIN;
 
                     T[0] = A[0] / A[2]; T[1] = A[3] / A[2];
 
-                    dM = (M[i] * A[0] + MixTheta_[l]->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / M[i] / M[i]);
+                    dM = (M[i] * A[0] + MixTheta_[l]->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / (M[i] * M[i]));
 
                     M[i] -= dM;
 
@@ -1178,8 +1190,10 @@ INT Emmix::MaximizationStep()
                 memset(&A, 0, 3 * sizeof(FLOAT));
 
                 for (j = 0; j < nr_; j++) {
-                    A[0] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)cos(Y_[i][j]);
-                    A[1] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)sin(Y_[i][j]);
+                    if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                        A[0] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)cos(Y_[i][j]);
+                        A[1] += Y_[length_pdf_][j] * P_[l][j] * (FLOAT)sin(Y_[i][j]);
+                    }
                 }
 
                 A[0] /= n_; A[1] /= n_; A[2] = (FLOAT)sqrt((FLOAT)pow(A[0], (FLOAT)2.0) + (FLOAT)pow(A[1], (FLOAT)2.0));
@@ -1235,7 +1249,9 @@ INT Emmix::MaximizationStep()
             switch (MixTheta_[l]->pdf_[i]) {
             case pfNormal:
                 for (j = 0; j < nr_; j++) {
-                    C[i] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+                    if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                        C[i] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+                    }
                 }
 
                 C[i] = (FLOAT)sqrt(C[i] / (W + FLOAT_MIN));
@@ -1246,11 +1262,15 @@ INT Emmix::MaximizationStep()
             case pfTNormal:
                 break;
             case pfLognormal:
-                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN)  {
-                    C[i] += Y_[length_pdf_][j] * P_[l][j] * ((FLOAT)log(Y_[i][j]) - M[i]) * ((FLOAT)log(Y_[i][j]) - M[i]);
+                for (j = 0; j < nr_; j++) {
+                    if ((Y_[length_pdf_][j] > FLOAT_MIN) && (Y_[i][j] > FLOAT_MIN)) {
+                        A[0] = (FLOAT)log(Y_[i][j]);
+
+                        C[i] += Y_[length_pdf_][j] * P_[l][j] * A[0] * A[0];
+                    }
                 }
 
-                C[i] = (FLOAT)sqrt(C[i] / (W + FLOAT_MIN));
+                C[i] = (FLOAT)sqrt(C[i] / (W + FLOAT_MIN) - M[i] * M[i]);
 
                 dMixTheta_[l]->Theta_[1][i] = C[i] - MixTheta_[l]->Theta_[1][i];
 
@@ -1259,10 +1279,12 @@ INT Emmix::MaximizationStep()
                 memset(&A, 0, 2 * sizeof(FLOAT));
 
                 for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
-                    T[0] = (FLOAT)log(Y_[i][j]);
-                    T[1] = (FLOAT)exp(T[0] * M[i]);
+                    if ((Y_[length_pdf_][j] > FLOAT_MIN) && (Y_[i][j] > FLOAT_MIN)) {
+                        T[0] = (FLOAT)log(Y_[i][j]);
+                        T[1] = (FLOAT)exp(T[0] * M[i]);
 
-                    A[1] += Y_[length_pdf_][j] * P_[l][j] * T[1];
+                        A[1] += Y_[length_pdf_][j] * P_[l][j] * T[1];
+                    }
                 }
 
                 A[0] = W + FLOAT_MIN;
@@ -1277,8 +1299,10 @@ INT Emmix::MaximizationStep()
             case pfGamma:
                 memset(&A, 0, 2 * sizeof(FLOAT));
 
-                for (j = 0; j < nr_; j++) if (Y_[i][j] > FLOAT_MIN) {
-                    A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                for (j = 0; j < nr_; j++) {
+                    if ((Y_[length_pdf_][j] > FLOAT_MIN) && (Y_[i][j] > FLOAT_MIN)) {
+                        A[1] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                    }
                 }
 
                 A[0] = W + FLOAT_MIN;
@@ -1539,7 +1563,9 @@ INT Emmvnorm::MaximizationStep()
 
         for (i = 0; i < length_pdf_; i++) {
             for (j = 0; j < nr_; j++) {
-                M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                    M[i] += Y_[length_pdf_][j] * P_[l][j] * Y_[i][j];
+                }
             }
 
             M[i] = M[i] / (W + FLOAT_MIN);
@@ -1553,7 +1579,9 @@ INT Emmvnorm::MaximizationStep()
             p = i * length_pdf_ + i;
 
             for (j = 0; j < nr_; j++) {
-                C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+                if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                    C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[i][j] - M[i]);
+                }
             }
 
             dMixTheta_[l]->Theta_[1][p] = C[p] / (W + FLOAT_MIN) - MixTheta_[l]->Theta_[1][p];
@@ -1562,7 +1590,9 @@ INT Emmvnorm::MaximizationStep()
                 p = i * length_pdf_ + ii;
 
                 for (j = 0; j < nr_; j++) {
-                    C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[ii][j] - M[ii]);
+                    if (Y_[length_pdf_][j] > FLOAT_MIN) {
+                        C[p] += Y_[length_pdf_][j] * P_[l][j] * (Y_[i][j] - M[i]) * (Y_[ii][j] - M[ii]);
+                    }
                 }
 
                 dMixTheta_[l]->Theta_[1][p] = C[p] / (W + FLOAT_MIN) - MixTheta_[l]->Theta_[1][p];

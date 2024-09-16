@@ -306,6 +306,10 @@ FLOAT Gammaln(FLOAT y);
 
 INT Digamma(FLOAT y, FLOAT *Psi);
 
+// Returns the trigamma for y > 0. See https://CRAN.R-project.org/package=pracma.
+
+INT Trigamma(FLOAT y, FLOAT* Psi);
+
 // Returns binomial c.d.f. for the specified n and p. See http://www.nr.com/.
 
 FLOAT BinomialCdf(INT y, INT n, FLOAT p);

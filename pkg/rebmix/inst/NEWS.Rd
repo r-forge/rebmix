@@ -1,5 +1,11 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.16.1}{ 
+\itemize{
+\item Improved C++ code for rough and enhanced Weibull and gamma parameter estimation.
+\item New C++ function \code{BayesWeibullParameters()}.
+}
+}
 \section{Changes in version 2.16.0}{ 
 \itemize{
 \item Some minor changes and bug fixes in C++ and R codes.
