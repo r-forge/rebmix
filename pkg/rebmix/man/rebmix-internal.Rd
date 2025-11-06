@@ -126,6 +126,7 @@
 \alias{a.theta1.all,REBMIX-method}
 \alias{a.theta2.all,REBMIX-method}
 \alias{a.theta3.all,REBMIX-method}
+\alias{a.theta1.all,REBMVNORM-method}
 \alias{a.theta2.all,REBMVNORM-method}
 \alias{a.K,REBMIX-method}
 \alias{a.ymin,REBMIX-method}
@@ -324,6 +325,8 @@
 \alias{a.acceleration.multiplier}
 \alias{a.maximum.iterations}
 \alias{a.eliminate.zero.components}
+\alias{a.likelihood.estimation.rule}
+\alias{a.likelihood.tolerance.check}
 
 \alias{a.strategy,EM.Control-method}
 \alias{a.variant,EM.Control-method}
@@ -332,6 +335,8 @@
 \alias{a.acceleration.multiplier,EM.Control-method}
 \alias{a.maximum.iterations,EM.Control-method}
 \alias{a.eliminate.zero.components,EM.Control-method}
+\alias{a.likelihood.estimation.rule,EM.Control-method}
+\alias{a.likelihood.tolerance.check,EM.Control-method}
 \alias{a.K,EM.Control-method}
 
 \alias{a.strategy<-}
@@ -341,6 +346,8 @@
 \alias{a.acceleration.multiplier<-}
 \alias{a.maximum.iterations<-}
 \alias{a.eliminate.zero.components<-}
+\alias{a.likelihood.estimation.rule<-}
+\alias{a.likelihood.tolerance.check<-}
 \alias{a.K<-}
 
 \alias{a.strategy<-,EM.Control-method}
@@ -350,6 +357,8 @@
 \alias{a.acceleration.multiplier<-,EM.Control-method}
 \alias{a.maximum.iterations<-,EM.Control-method}
 \alias{a.eliminate.zero.components<-,EM.Control-method}
+\alias{a.likelihood.estimation.rule<-,EM.Control-method}
+\alias{a.likelihood.tolerance.check<-,EM.Control-method}
 \alias{a.K<-,EM.Control-method}
 
 \alias{a.summary.EM}

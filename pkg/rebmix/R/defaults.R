@@ -9,10 +9,13 @@ Restraints = c("rigid", "loose"),
 Mode = c("all", "outliers", "outliersplus"),
 ### Panic Branislav.
 EMStrategy = c("none", "exhaustive", "best", "single"),
-EMVariant = c("EM", "ECM"),
-EMAcceleration = c("fixed", "line", "golden")),
+EMVariant = c("EM", "ECM", "SEM", "ECM-EM", "SEM-EM"),
+EMAcceleration = c("fixed", "line", "golden", "lingrowth", "lindecay", "expgrowth", "expdecay", "stem1", "stem2", "stem3", "square1", "square2", "square3"),
+EMLikelihood = c("standard", "aitken-bohning", "aitken-lindsay", "aitken-nicholas"),
+EMTolType = c("absolute", "normalised", "percentage")),
+
 ### End
-.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "Mode", "EMStrategy", "EMVariant", "EMAcceleration"))
+.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "Mode", "EMStrategy", "EMVariant", "EMAcceleration", "EMLikelihood", "EMTolType"))
 
 .rebmix.plot <- structure(list(
 what = c("pdf", "marginal pdf", "IC", "logL", "D", "marginal cdf", "K", "cdf")),
@@ -34,9 +37,3 @@ Rule = c("Entropy", "Demp")),
 ErrorNames = c("E_OK", "E_MEM", "E_ARG", "E_CON", "E_FILE", "E_NO_SOLUTION"),
 FileNames = c("base.cpp", "rngmixf.cpp", "rngmvnormf.cpp", "rebmixf.cpp", "rebmvnormf.cpp", "emf.cpp", "Rmisc.cpp", "Rrebmix.cpp", "Rrebmvnorm.cpp")),
 .Names = c("ErrorNames", "FileNames"))
-
-
-
-
-
-

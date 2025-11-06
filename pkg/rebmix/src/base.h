@@ -19,6 +19,10 @@
 #define _MAINTAIN_SWITCH 0
 #endif
 
+#ifndef _CMAKE_COMPILATION
+#define _CMAKE_COMPILATION 0
+#endif
+
 #define E_BEGIN() { \
     Error = E_OK; if (Error) {}; E_begin(); \
 } // E_BEGIN
@@ -193,12 +197,18 @@ typedef enum {
 typedef enum {
     varEM,     // Classic Expectation-Maximization algorithm (Soft (continious posterior)).
     varECM,    // Expectation - Conditional - Maximization algorithm (Hard (posterior 0 or 1) EM).
+    varSEM,    // Stochastic EM.
+    varECM_EM, // ECM than EM to improve convergence speed.
+    varSEM_EM, // SEM than EM to improve starting point estimate.
 } EmVariantType_e;
 
 typedef enum {
     acc_fixed,  // Fixed constant multiplier acceleration of the EM algorithm.
     acc_line,   // Line search for multiplier acceleration of the EM algorithm.
-    acc_golden  // Golden search for multiplier accleration of the EM algorithm.
+    acc_golden, // Golden search for multiplier accleration of the EM algorithm.
+    acc_naive,
+    acc_stem,   // Steffensen type acceleration with optimally calculated parameter.
+    acc_square  // Square EM type acceleration with optimally calculated parameter. 
 } EmAccelerationType_e;
 
 typedef enum {
@@ -212,6 +222,30 @@ typedef enum {
     merge_none,  // EM algorithm is not employed for estimation of mixture model parameters.
     merge_naive  // Single REBMIX + EM strategy.
 } EmMergeCompsType_e;
+
+typedef enum {
+    likelihood_absolute,    // convergence check with absolute criterion |l_{t+1} - l_{t}| < eps
+    likelihood_normalised,  // convergence check with normalised criterion |l_{t+1} - l_{t}| / N < eps
+    likelihood_percentage   // convergence check with percentage criterion |l_{t+1} - l_{t}| / l_{t+1} < eps
+} EmConvergenceType_e;
+
+typedef enum {
+    likelihood_standard,            // likelihood estimate
+    likelihood_aitken_lindsay,      // aitken accelerated likelihood estimate
+    likelihood_aitken_bohning,      // aitken accelerated likelihood estimate
+    likelihood_aitken_nicholas      // aitken accelerated likelihood estimate
+} EmLikelihoodEstimateType_e;
+
+typedef enum {
+    acc_param_none,
+    acc_param_growth_lin,
+    acc_param_growth_exp,
+    acc_param_decay_lin,
+    acc_param_decay_exp,
+    acc_param_euclidean_squared,
+    acc_param_euclidean_weighted,
+    acc_param_euclidean_semi_weighted
+} EmAccelParamType_e;
 
 typedef struct summaryparametertype {
     INT   c;     // Optimal number of components.
@@ -279,6 +313,7 @@ typedef struct mixtureparametertype {
     FLOAT                *ymin;       // Minimum values from data.
     FLOAT                *ymax;       // Maximum values from data.
     INT                  n_iter_em;   // Number of performed iterations of EM algorithm.
+    FLOAT                em_aam;      // Average acceleration multipler set by EM algorithm;
     INT                  initialized; // Boolean indicator if struct contains mixture model parameters. 
 } MixtureParameterType;
 
@@ -291,6 +326,8 @@ void Print_w_line_(INT idx);
 void Print_e_list_(INT *elist);
 
 FLOAT Ran1(INT *IDum);
+
+INT Choice(INT *IDum, FLOAT *CumPdf, INT c);
 
 // Inserts y into ascending list Y of length n. Set n = 0 initially.
 

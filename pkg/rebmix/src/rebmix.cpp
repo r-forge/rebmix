@@ -1,5 +1,9 @@
 #include "rngmvnormf.h"
 #include "rebmvnormf.h"
+#if (_CMAKE_COMPILATION)
+#include "config.h"
+#include <unistd.h>
+#endif
 
 #if (_MEMORY_LEAK_SWITCH)
 #define _CRTDBG_MAP_ALLOC
@@ -16,6 +20,12 @@ int main(int argc, char* argv[])
 
     _CrtMemCheckpoint(&s1);
     #endif
+
+    #if (_CMAKE_COMPILATION)
+    printf("%s VERSION %s\n", PROJECT_NAME, PROJECT_VERSION);
+    #endif
+
+
 
     Rngmix    *rngmix = NULL;
     Rebmix    *rebmix = NULL;
@@ -75,9 +85,4 @@ EEXIT:
 
     E_RETURN(Error);
 } // main
-#else
-int main()
-{
-    return 0;
-}
 #endif

@@ -67,12 +67,15 @@ function(model, Theta, ...)
       Theta1 = as.double(theta1),
       Theta2 = as.double(theta2),
       Theta3 = as.double(theta3),
+      EMStrategy = as.character(model@EMcontrol@strategy),
       EMVariant = as.character(model@EMcontrol@variant),
       EMAcceleration = as.character(model@EMcontrol@acceleration),
       EMTolerance = as.double(model@EMcontrol@tolerance),
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
       EMK = as.integer(model@EMcontrol@K),
+      EMLikelihood = as.character(model@EMcontrol@likelihood.estimation.rule),
+      EMTolType = as.character(model@EMcontrol@likelihood.tolerance.check),
       EMMerge = as.integer(model@EMcontrol@eliminate.zero.components),
       n_iter = integer(1),
       summary.logL = double(1),
@@ -133,6 +136,7 @@ function(model, Theta, ...)
     }
 
     summary[[i]] <- c(Dataset.name,
+      NA,
       NA,
       NA,
       NA,
@@ -269,12 +273,15 @@ function(model, Theta, ...)
       w = as.double(w),
       Theta1 = as.double(theta1),
       Theta2 = as.double(theta2),
+      EMStrategy = as.character(model@EMcontrol@strategy),
       EMVariant = as.character(model@EMcontrol@variant),
       EMAcceleration = as.character(model@EMcontrol@acceleration),
       EMTolerance = as.double(model@EMcontrol@tolerance),
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
       EMK = as.integer(model@EMcontrol@K),
+      EMLikelihood = as.character(model@EMcontrol@likelihood.estimation.rule),
+      EMTolType = as.integer(model@EMcontrol@likelihood.tolerance.check),
       EMMerge = as.integer(model@EMcontrol@eliminate.zero.components),
       n_iter = integer(1),
       summary.logL = double(1),
@@ -329,6 +336,7 @@ function(model, Theta, ...)
     }
 
     summary[[i]] <- c(Dataset.name,
+      NA,
       NA,
       NA,
       NA,
@@ -410,6 +418,8 @@ function(model,
   EMcontrol, ...)  
 {
   digits <- getOption("digits"); options(digits = 15)
+
+  message("REBMIX Version 2.17.0")
 
   Theta.model <- paste("EM", substr(model, 4, nchar(model)), ".Theta", sep = "")
 

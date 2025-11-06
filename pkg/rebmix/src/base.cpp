@@ -108,6 +108,25 @@ FLOAT Ran1(INT *IDum)
     if ((Tmp = AM * IY) > RNMX) return RNMX; else return Tmp;
 } // Ran1
 
+INT Choice(INT *IDum, FLOAT *CumPdf, INT c) 
+{
+    INT mid, low = 0, high = c; FLOAT Tmp = CumPdf[c] * Ran1(IDum); 
+
+    while (low < high) {
+        mid = (low + high) / 2;
+
+        if (Tmp < CumPdf[mid]) {
+            high = mid; 
+
+        } else {
+            low = mid + 1; 
+
+        }
+    }
+
+    return low - 1; 
+} // Choice
+
 // Inserts y into ascending list Y of length n.Set n = 0 initially.
 
 void Insert(FLOAT y,   // Inserted value.

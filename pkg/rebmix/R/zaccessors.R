@@ -7,6 +7,8 @@ setMethod("a.acceleration.multiplier", signature(x = "EM.Control"), function(x) 
 setMethod("a.maximum.iterations", signature(x = "EM.Control"), function(x) x@maximum.iterations)
 setMethod("a.K", signature(x = "EM.Control"), function(x) x@K)
 setMethod("a.eliminate.zero.components", signature(x = "EM.Control"), function(x) x@eliminate.zero.components)
+setMethod("a.likelihood.tolerance.check", signature(x = "EM.Control"), function(x) x@likelihood.tolerance.check)
+setMethod("a.likelihood.estimation.rule", signature(x = "EM.Control"), function(x) x@likelihood.estimation.rule)
 
 setMethod("a.strategy<-",
           signature = (x = "EM.Control"),
@@ -201,6 +203,40 @@ function(x, value)
 
   x
 }) ## a.eliminate.zero.components<-
+
+setMethod("a.likelihood.tolerance.check<-",
+          signature = (x = "EM.Control"),
+function(x, value)
+{
+  # value.
+  
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  x@likelihood.tolerance.check <- match.arg(value, .rebmix$EMTolType)
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.likelihood.estimation.rule<-
+
+setMethod("a.likelihood.estimation.rule<-",
+          signature = (x = "EM.Control"),
+function(x, value)
+{
+  # value.
+  
+  if (missing(value) || (length(value) == 0)) {
+    stop(sQuote("value"), " must not be empty!", call. = FALSE)
+  }
+
+  x@likelihood.estimation.rule <- match.arg(value, .rebmix$EMLikelihood)
+
+  rm(list = ls()[!(ls() %in% c("x"))])
+
+  x
+}) ## a.likelihood.estimation.rule<-
 ### End
 
 setMethod("a.c", signature(x = "RNGMIX.Theta"), function(x) x@c)
@@ -1024,6 +1060,36 @@ function(x, pos)
 
   output
 }) ## a.theta3.all
+
+setMethod("a.theta1.all",
+          signature(x = "REBMVNORM"),
+function(x, pos)
+{
+  if (!is.wholenumber(pos)) {
+    stop(sQuote("pos"), " integer is requested!", call. = FALSE)
+  }
+
+  length(pos) <- 1
+
+  if ((pos < 1) || (pos > nrow(x@summary))) {
+    stop(sQuote("pos"), " must be greater than 0 and less or equal than ", nrow(x@summary), "!", call. = FALSE)
+  }
+
+  c <- length(x@w[[pos]]); d <- length(x@pdf)
+
+  output <- matrix(data = 0.0, nrow = c, ncol = d, byrow = TRUE)
+
+  for (l in 1:c) {
+    output[l, ] <- x@Theta[[pos]][[2 + (l - 1) * 3]]
+  }
+
+  colnames(output) <- NULL
+  rownames(output) <- paste("theta1.", 1:c, sep = "")
+
+  rm(list = ls()[!(ls() %in% c("output"))])
+
+  output
+}) ## a.theta1.all
 
 setMethod("a.theta2.all",
           signature(x = "REBMVNORM"),

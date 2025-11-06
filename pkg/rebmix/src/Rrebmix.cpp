@@ -190,6 +190,8 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
              double *EMAccelerationMul, // Acceleration rate for Em algorithm.
              INT    *EMMaxIter,         // Maximum number of iterations in EM algorithm.
              INT    *EMK,               // Number of bins for histogram EM algorithm.
+             char   **EMLikelihood,     // Use aitken accelerated likelihood estimation.
+             char   **EMTolType,        // Likelihood criterion check (absolute vs normalised).
              INT    *n_iter,            // Number of iterations for optimal case.
              INT    *n_iter_sum,        // Number of iterations in whole run.
 /// End
@@ -258,6 +260,8 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
                         EMAccelerationMul, // Acceleration rate for Em algorithm.
                         EMMaxIter,         // Maximum number of iterations in EM algorithm.
                         EMK,               // Number of bins for histogram EM algorithm.
+                        EMLikelihood,      // Use aitken accelerated likelihood estimation.
+                        EMTolType,         // Likelihood criterion check (absolute vs normalised).
                         NULL,              // Component weights.
                         NULL);             // Mixture parameters.
 
@@ -268,31 +272,32 @@ void RREBMIX(char   **Preprocessing, // Preprocessing type.
     E_CHECK(Error != E_OK, Error);
 
 /// Panic Branislav
-    Error = rebmix->Get(n_iter,         // Number of iterations for optimal case.
-                        n_iter_sum,     // Number of iterations in whole run.
+    Error = rebmix->Get(n_iter,            // Number of iterations for optimal case.
+                        n_iter_sum,        // Number of iterations in whole run.
+                        EMAccelerationMul, // Average acceleration multiplier used.
 /// End
-                        summary_k,      // Optimal v or optimal k.
-                        summary_h,      // Optimal class widths of length d.
-                        summary_y0,     // Optimal origins of length d.
-                        summary_ymin,   // Optimal minimum observations of length d.
-                        summary_ymax,   // Optimal maximum observations of length d.
-                        summary_IC,     // Optimal information criterion.
-                        summary_logL,   // Log-likelihood.
-                        summary_M,      // Degrees of freedom.
-                        summary_c,      // Optimal number of components.
-                        W,              // Component weights.
-                        theta1,         // Component parameters.
-                        theta2,         // Component parameters.
-                        theta3,         // Component parameters.
-                        opt_length,     // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
-                        opt_c,          // Numbers of components for optimal v or for optimal k.
-                        opt_IC,         // Information criteria for optimal v or for optimal k.
-                        opt_logL,       // Log-likelihoods for optimal v or for optimal k.
-                        opt_Dmin,       // Dmin for optimal v or for optimal k.
-                        opt_D,          // Totals of positive relative deviations for optimal v or for optimal k.
-                        all_length,     // Length of all_K and all_IC.
-                        all_K,          // All processed numbers of bins v or all processed numbers of nearest neighbours k.
-                        all_IC);        // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
+                        summary_k,         // Optimal v or optimal k.
+                        summary_h,         // Optimal class widths of length d.
+                        summary_y0,        // Optimal origins of length d.
+                        summary_ymin,      // Optimal minimum observations of length d.
+                        summary_ymax,      // Optimal maximum observations of length d.
+                        summary_IC,        // Optimal information criterion.
+                        summary_logL,      // Log-likelihood.
+                        summary_M,         // Degrees of freedom.
+                        summary_c,         // Optimal number of components.
+                        W,                 // Component weights.
+                        theta1,            // Component parameters.
+                        theta2,            // Component parameters.
+                        theta3,            // Component parameters.
+                        opt_length,        // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
+                        opt_c,             // Numbers of components for optimal v or for optimal k.
+                        opt_IC,            // Information criteria for optimal v or for optimal k.
+                        opt_logL,          // Log-likelihoods for optimal v or for optimal k.
+                        opt_Dmin,          // Dmin for optimal v or for optimal k.
+                        opt_D,             // Totals of positive relative deviations for optimal v or for optimal k.
+                        all_length,        // Length of all_K and all_IC.
+                        all_K,             // All processed numbers of bins v or all processed numbers of nearest neighbours k.
+                        all_IC);           // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
     
     E_CHECK(Error != E_OK, Error);
 
@@ -2880,6 +2885,8 @@ void RCombineComponentsMIX(INT    *c,            // Number of components.
                          NULL,         // Acceleration rate for Em algorithm.
                          NULL,         // Maximum number of iterations in EM algorithm.
                          NULL,         // Number of bins for histogram EM algorithm.
+                         NULL,         // Use aitken accelerated likelihood estimation.
+                         NULL,         // Likelihood criterion check (absolute vs normalised).
                          W,            // Component weights.
                          MixTheta);    // Mixture parameters.
 
@@ -3517,13 +3524,16 @@ void REMMIX(INT    *d,                 // Number of independent random variables
             double *W,                 // Input weights of components.
             double *Theta1,            // Input parameters theta 1.
             double *Theta2,            // Input parameters theta 2.
-            double *Theta3,            // Input parameters theta 3. 
+            double *Theta3,            // Input parameters theta 3.
+            char   **EMStrategy,       // EM algorithm strategy.
             char   **EMVariant,        // EM algorithm variant.
             char   **EMAcceleration,   // Acceleration for the standard EM algorithm.
             double *EMTolerance,       // Tolerance for EM algortihm.
             double *EMAccelerationMul, // Acceleration rate for Em algorithm.
             INT    *EMMaxIter,         // Maximum number of iterations in EM algorithm.
             INT    *EMK,               // Number of bins for histogram EM algorithm.
+            char   **EMLikelihood,     // Use aitken accelerated likelihood estimation.
+            char   **EMTolType,        // Likelihood criterion check (absolute vs normalised).
             INT    *EMMerge,           // Remove zero components.   
             INT    *n_iter,            // Number of iterations for optimal case.
             double *summary_logL,      // Log-likelihood.
@@ -3566,17 +3576,19 @@ void REMMIX(INT    *d,                 // Number of independent random variables
                         n,                 // Number of observations.
                         Y,                 // Dataset.
                         Y_type,            // Dataset type.
-                        NULL,              // Strategy for EM algorithm.
+                        EMStrategy,        // Strategy for EM algorithm.
                         EMVariant,         // EM algorithm variant.
                         EMAcceleration,    // Acceleration for the standard EM algorithm.
                         EMTolerance,       // Tolerance for EM algortihm.
                         EMAccelerationMul, // Acceleration rate for Em algorithm.
                         EMMaxIter,         // Maximum number of iterations in EM algorithm.
                         EMK,               // Number of bins for histogram EM algorithm.
+                        EMLikelihood,      // Use aitken accelerated likelihood estimation.
+                        EMTolType,         // Likelihood criterion check (absolute vs normalised).
                         NULL,              // Component weights.
                         NULL);             // Mixture parameters.
 
-    rebmix->EM_strategy_ = strategy_single;
+    //rebmix->EM_strategy_ = strategy_single;
 
     i = 0;
 
@@ -3634,6 +3646,12 @@ void REMMIX(INT    *d,                 // Number of independent random variables
 
     Error = rebmix->EMRun(c, rebmix->W_, rebmix->MixTheta_);
 
+    rebmix->n_iter_ = rebmix->EM_->n_iter_;
+
+    rebmix->n_iter_sum_ = rebmix->EM_->n_iter_;
+
+    rebmix->em_aam_ = rebmix->EM_->aam_;
+
     E_CHECK(Error != E_OK, Error);
 
     Error = rebmix->EM_->LogLikelihood(*c, rebmix->W_, rebmix->MixTheta_, summary_logL);
@@ -3646,30 +3664,31 @@ void REMMIX(INT    *d,                 // Number of independent random variables
 
     rebmix->summary_.c = *c;
 
-    Error = rebmix->Get(n_iter,   // Number of iterations for optimal case.
-                        NULL,     // Number of iterations in whole run.
-                        NULL,     // Optimal v or optimal k.
-                        NULL,     // Optimal class widths of length d.
-                        NULL,     // Optimal origins of length d.
-                        NULL,     // Optimal minimum observations of length d.
-                        NULL,     // Optimal maximum observations of length d.
-                        NULL,     // Optimal information criterion.
-                        NULL,     // Log-likelihood.
-                        NULL,     // Degrees of freedom.
-                        NULL,     // Optimal number of components.
-                        W,        // Component weights.
-                        Theta1,   // Component parameters.
-                        Theta2,   // Component parameters.
-                        Theta3,   // Component parameters.
-                        NULL,     // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
-                        NULL,     // Numbers of components for optimal v or for optimal k.
-                        NULL,     // Information criteria for optimal v or for optimal k.
-                        NULL,     // Log-likelihoods for optimal v or for optimal k.
-                        NULL,     // Dmin for optimal v or for optimal k.
-                        NULL,     // Totals of positive relative deviations for optimal v or for optimal k.
-                        NULL,     // Length of all_K and all_IC.
-                        NULL,     // All processed numbers of bins v or all processed numbers of nearest neighbours k.
-                        NULL);    // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
+    Error = rebmix->Get(n_iter,             // Number of iterations for optimal case.
+                        NULL,               // Number of iterations in whole run.
+                        EMAccelerationMul,  // Average acceleration multiplier used. 
+                        NULL,               // Optimal v or optimal k.
+                        NULL,               // Optimal class widths of length d.
+                        NULL,               // Optimal origins of length d.
+                        NULL,               // Optimal minimum observations of length d.
+                        NULL,               // Optimal maximum observations of length d.
+                        NULL,               // Optimal information criterion.
+                        NULL,               // Log-likelihood.
+                        NULL,               // Degrees of freedom.
+                        NULL,               // Optimal number of components.
+                        W,                  // Component weights.
+                        Theta1,             // Component parameters.
+                        Theta2,             // Component parameters.
+                        Theta3,             // Component parameters.
+                        NULL,               // Length of opt_c, opt_IC, opt_logL, opt_Dmin and opt_D.
+                        NULL,               // Numbers of components for optimal v or for optimal k.
+                        NULL,               // Information criteria for optimal v or for optimal k.
+                        NULL,               // Log-likelihoods for optimal v or for optimal k.
+                        NULL,               // Dmin for optimal v or for optimal k.
+                        NULL,               // Totals of positive relative deviations for optimal v or for optimal k.
+                        NULL,               // Length of all_K and all_IC.
+                        NULL,               // All processed numbers of bins v or all processed numbers of nearest neighbours k.
+                        NULL);              // Information criteria for all processed numbers of bins v or all processed numbers of nearest neighbours k.
 
     E_CHECK(Error != E_OK, Error);
 

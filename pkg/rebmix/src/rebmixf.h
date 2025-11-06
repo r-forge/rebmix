@@ -106,6 +106,9 @@ public:
     EmStrategyType_e           EM_strategy_;   // EM strategy utilization.
     EmVariantType_e            EM_variant_;    // Type of EM variant algorithm.
     EmAccelerationType_e       EM_accel_;      // Type of acceleration of standard EM algorithm.
+    EmAccelParamType_e         EM_accel_eq;    // Type of acceleration of standard EM algorithm.
+    EmLikelihoodEstimateType_e EM_loglkest_;   // Likelihood estimation (normal or accelerated).
+    EmConvergenceType_e        EM_toltype_;    // Convergence criterion for loglikelihood estimate.
     MixtureParameterType       *OptMixTheta_;  // Best mixture parameters.
 /// End
     // Input members.
@@ -133,7 +136,8 @@ public:
     AdditionalParameterType    additional_;    // Additional parameters.
 /// Panic Branislav
     INT                        n_iter_;        // Number of iterations performed by EM algorithm for optimal mixture selected.
-    INT                        n_iter_sum_;    // Total number of iterations performed by EM algorithm. 
+    INT                        n_iter_sum_;    // Total number of iterations performed by EM algorithm.
+    FLOAT                      em_aam_;        // Average acceleration rate used by EM algorithm; 
 /// End
     // Constructor.
     Rebmix();
@@ -205,12 +209,15 @@ public:
             FLOAT *EMAccelerationMul, // Acceleration rate for Em algorithm.
             INT   *EMMaxIter,         // Maximum number of iterations in EM algorithm.
             INT   *EMK,               // Number of bins for histogram EM algorithm.
+            char   **EMLikelihood,    // Use aitken accelerated likelihood estimation.
+            char   **EMTolType,       // Likelihood criterion check (absolute vs normalised).
             FLOAT *W,                 // Component weights.
             FLOAT *MixTheta);         // Mixture parameters.
 
 /// Panic Branislav
     INT Get(INT   *n_iter,         // Number of iterations for optimal case.
             INT   *n_iter_sum,     // Number of iterations in whole run.
+            FLOAT *em_am,          // average acceleration multiplier used.
 /// End
             INT   *summary_k,      // Optimal v or optimal k.
             FLOAT *summary_h,      // Optimal class widths of length d.

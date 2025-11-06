@@ -7,6 +7,8 @@ slots = c(strategy = "character",
   acceleration.multiplier = "numeric",
   maximum.iterations = "numeric",
   K = "numeric",
+  likelihood.tolerance.check = "character",
+  likelihood.estimation.rule = "character",
 ### Panic Branislav.
   eliminate.zero.components = "logical"))
 ### End  
@@ -20,6 +22,8 @@ function(.Object, ...,
   acceleration.multiplier,
   maximum.iterations,
   K,
+  likelihood.tolerance.check,
+  likelihood.estimation.rule,
 ### Panic Branislav.
   eliminate.zero.components)
 ### End 
@@ -113,12 +117,28 @@ function(.Object, ...,
 
   if (K < 0) {
     stop(sQuote("K"), " must be greater or equal than 0!", call. = FALSE)
-  }    
+  }
+
+  # likelihood.tolerance.check.
+
+  if (missing(likelihood.tolerance.check) || (length(likelihood.tolerance.check) == 0)){
+    likelihood.tolerance.check <- .rebmix$EMTolType[2]
+  } else {
+    likelihood.tolerance.check <- match.arg(likelihood.tolerance.check, .rebmix$EMTolType)
+  }
+
+  # likelihood.estimation.rule.
+
+  if (missing(likelihood.estimation.rule) || (length(likelihood.estimation.rule) == 0)){
+    likelihood.estimation.rule <- .rebmix$EMLikelihood[1]
+  } else {
+    likelihood.estimation.rule <- match.arg(likelihood.estimation.rule, .rebmix$EMLikelihood)
+  }
 
   # eliminate.zero.components.
 
   if (missing(eliminate.zero.components) || (length(eliminate.zero.components) == 0)){
-    eliminate.zero.components <- FALSE;
+    eliminate.zero.components <- FALSE
   }
 
   length(eliminate.zero.components) <- 1
@@ -134,7 +154,9 @@ function(.Object, ...,
   .Object@acceleration.multiplier <- acceleration.multiplier
   .Object@maximum.iterations <- maximum.iterations
   .Object@K <- K
-  .Object@eliminate.zero.components <- eliminate.zero.components  
+  .Object@likelihood.tolerance.check <- likelihood.tolerance.check
+  .Object@likelihood.estimation.rule <- likelihood.estimation.rule
+  .Object@eliminate.zero.components <- eliminate.zero.components
 
   rm(list = ls()[!(ls() %in% c(".Object"))])
 

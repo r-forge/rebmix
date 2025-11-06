@@ -1522,7 +1522,10 @@ INT Rebmvnorm::EMInitialize()
         EM_K_,
         EM_strategy_,
         EM_variant_,
-        EM_accel_);
+        EM_accel_,
+        EM_accel_eq,
+        EM_loglkest_,
+        EM_toltype_);
 
     E_CHECK(Error != E_OK, Error);
 

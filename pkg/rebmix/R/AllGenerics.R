@@ -240,6 +240,10 @@ setGeneric("a.maximum.iterations<-", function(x = NULL, value = numeric()) stand
 setGeneric("a.summary.EM", function(x = NULL, col.name = character(), pos = 0) standardGeneric("a.summary.EM"))
 setGeneric("a.eliminate.zero.components", function(x = NULL) standardGeneric("a.eliminate.zero.components"))
 setGeneric("a.eliminate.zero.components<-", function(x = NULL, value = numeric()) standardGeneric("a.eliminate.zero.components<-"))
+setGeneric("a.likelihood.estimation.rule", function(x = NULL) standardGeneric("a.likelihood.estimation.rule"))
+setGeneric("a.likelihood.estimation.rule<-", function(x = NULL, value = character()) standardGeneric("a.likelihood.estimation.rule<-"))
+setGeneric("a.likelihood.tolerance.check", function(x = NULL) standardGeneric("a.likelihood.tolerance.check"))
+setGeneric("a.likelihood.tolerance.check<-", function(x = NULL, value = character()) standardGeneric("a.likelihood.tolerance.check<-"))
 ### End
 
 setGeneric("a.Y", function(x = NULL) standardGeneric("a.Y"))
@@ -298,5 +302,4 @@ setGeneric("mergelabels",
   function(A = list(),
     w = numeric(), 
     k = 2, ...)
-  standardGeneric("mergelabels"))  
-
+  standardGeneric("mergelabels"))

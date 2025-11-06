@@ -129,6 +129,8 @@ function(model, ...)
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
       EMK = as.integer(model@EMcontrol@K),
+      EMLikelihood = as.character(model@EMcontrol@likelihood.estimation.rule),
+      EMTolType = as.character(model@EMcontrol@likelihood.tolerance.check),
       n_iter = integer(1),
       n_iter_all = integer(1),
 ### End            
@@ -502,7 +504,9 @@ function(model, ...)
       EMTolerance = as.double(model@EMcontrol@tolerance),
       EMAccelerationMul = as.double(model@EMcontrol@acceleration.multiplier),
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
-      EMK = as.integer(model@EMcontrol@K),      
+      EMK = as.integer(model@EMcontrol@K),
+      EMLikelihood = as.character(model@EMcontrol@likelihood.estimation.rule),
+      EMTolType = as.character(model@EMcontrol@likelihood.tolerance.check),
       n_iter = integer(1),
       n_iter_all = integer(1),
 ### End         
@@ -772,7 +776,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.16.1")
+  message("REBMIX Version 2.17.0")
 
   flush.console()
 

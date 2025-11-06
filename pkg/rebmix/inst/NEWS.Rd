@@ -1,7 +1,14 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.16.1}{ 
+\section{Changes in version 2.17.0}{ 
 \itemize{
+\item Refactored code for EM algorithm calculation.
+\item Added three different methods for EM acceleration calculation.
+\item Added squared update for EM iteration acceleration.
+\item Added aitken accelerated log likelihood estimation.
+\item Added new slot \code{likelihood.tolerance.check} to the class \code{EM.control}.
+\item Added new slot \code{likelihood.estimation.rule} to the class \code{EM.control}.
+\item Removed bug from EM maximization step for normal and lognormal mixtures.
 \item Improved C++ code for rough and enhanced Weibull and gamma parameter estimation.
 \item New C++ function \code{BayesWeibullParameters()}.
 }

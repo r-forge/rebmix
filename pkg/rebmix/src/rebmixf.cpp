@@ -150,6 +150,7 @@ Rebmix::Rebmix()
     OptMixTheta_ = NULL;
     n_iter_ = 0;
     n_iter_sum_ = 0;
+    em_aam_ = 0;
 /// End
 } // Rebmix
 
@@ -2952,20 +2953,24 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
-                for (l = 0; l < nr_; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
-                    T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
+                for (l = 0; l < nr_; l++) {
+                    if (Y[length_pdf_][l] > FLOAT_MIN) {
+                        T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
 
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * T[0];
-                    A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
-                    A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                        A[1] += Y[length_pdf_][l] * Y[i][l];
+                        A[2] += Y[length_pdf_][l] * T[0];
+                        A[3] += Y[length_pdf_][l] * Y[i][l] * T[0];
+                        A[4] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                    }
                 }
 
-                A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = (EnhanTheta->Theta_[1][i] + EnhanTheta->Theta_[2][i] * (A[0] - T[0])) / ((FLOAT)1.0 + (A[3] / A[1] - T[0] * T[0]) / T[1]);
+                T[0] = A[0] / A[2]; T[1] = A[3] / A[2];
+
+                dP = (EnhanTheta->Theta_[1][i] * A[0] + EnhanTheta->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -2976,9 +2981,9 @@ INT Rebmix::EnhancedEstimationKNN(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            A[1] /= nl;
+            A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[2]);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -3317,20 +3322,24 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
-                for (l = 0; l < nr_; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
-                    T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
+                for (l = 0; l < nr_; l++) {
+                    if (Y[length_pdf_][l] > FLOAT_MIN) {
+                        T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
 
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * T[0];
-                    A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
-                    A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                        A[1] += Y[length_pdf_][l] * Y[i][l];
+                        A[2] += Y[length_pdf_][l] * T[0];
+                        A[3] += Y[length_pdf_][l] * Y[i][l] * T[0];
+                        A[4] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                    }
                 }
 
-                A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = (EnhanTheta->Theta_[1][i] + EnhanTheta->Theta_[2][i] * (A[0] - T[0])) / ((FLOAT)1.0 + (A[3] / A[1] - T[0] * T[0]) / T[1]);
+                T[0] = A[0] / A[2]; T[1] = A[3] / A[2];
+
+                dP = (EnhanTheta->Theta_[1][i] * A[0] + EnhanTheta->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3341,9 +3350,9 @@ INT Rebmix::EnhancedEstimationKDE(FLOAT                **Y,         // Pointer t
                 j++;
             }
 
-            A[1] /= nl;
+            A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[2]);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -3684,20 +3693,24 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
             j = 1; Error = E_CON;
 
             while ((j <= ItMax) && (Error != E_OK)) {
-                memset(&A, 0, 4 * sizeof(FLOAT));
+                memset(&A, 0, 5 * sizeof(FLOAT));
 
-                for (l = 0; l < k; l++) if (Y[length_pdf_][l] > FLOAT_MIN) {
-                    T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
+                for (l = 0; l < k; l++) {
+                    if (Y[length_pdf_][l] > FLOAT_MIN) {
+                        T[0] = (FLOAT)exp(EnhanTheta->Theta_[2][i] * Y[i][l] / EnhanTheta->Theta_[1][i]);
 
-                    A[0] += Y[length_pdf_][l] * Y[i][l];
-                    A[1] += Y[length_pdf_][l] * T[0];
-                    A[2] += Y[length_pdf_][l] * Y[i][l] * T[0];
-                    A[3] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                        A[1] += Y[length_pdf_][l] * Y[i][l];
+                        A[2] += Y[length_pdf_][l] * T[0];
+                        A[3] += Y[length_pdf_][l] * Y[i][l] * T[0];
+                        A[4] += Y[length_pdf_][l] * Y[i][l] * Y[i][l] * T[0];
+                    }
                 }
 
-                A[0] /= nl; T[0] = A[2] / A[1]; T[1] = EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i];
+                A[0] = nl;
 
-                dP = (EnhanTheta->Theta_[1][i] + EnhanTheta->Theta_[2][i] * (A[0] - T[0])) / ((FLOAT)1.0 + (A[3] / A[1] - T[0] * T[0]) / T[1]);
+                T[0] = A[0] / A[2]; T[1] = A[3] / A[2];
+
+                dP = (EnhanTheta->Theta_[1][i] * A[0] + EnhanTheta->Theta_[2][i] * (A[1] - T[0] * A[3])) / (A[0] + T[0] * (A[4] - T[1] * A[3]) / (EnhanTheta->Theta_[1][i] * EnhanTheta->Theta_[1][i]));
 
                 EnhanTheta->Theta_[1][i] -= dP;
 
@@ -3708,9 +3721,9 @@ INT Rebmix::EnhancedEstimationH(INT                  k,           // Total numbe
                 j++;
             }
 
-            A[1] /= nl;
+            A[2] /= nl;
 
-            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[1]);
+            EnhanTheta->Theta_[0][i] = EnhanTheta->Theta_[2][i] * EnhanTheta->Theta_[1][i] * (FLOAT)log(A[2]);
 
             E_CHECK(EnhanTheta->Theta_[1][i] <= FLOAT_MIN, E_ARG);
 
@@ -4615,7 +4628,10 @@ INT Rebmix::EMInitialize()
                             EM_K_,
                             EM_strategy_,
                             EM_variant_, 
-                            EM_accel_);
+                            EM_accel_,
+                            EM_accel_eq,
+                            EM_loglkest_,
+                            EM_toltype_);
 
     E_CHECK(Error != E_OK, Error);
 
@@ -5872,6 +5888,8 @@ INT Rebmix::REBMIXKNN()
 
         OptMixTheta_[i].n_iter_em = 0;
 
+        OptMixTheta_[i].em_aam = 0;
+
         OptMixTheta_[i].initialized = 0;
     }
 
@@ -6100,6 +6118,8 @@ INT Rebmix::REBMIXKNN()
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                        OptMixTheta_[j].em_aam = EM_->aam_;
+
                         Error = InformationCriterionKNN(OptMixTheta_[j].k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                         E_CHECK(Error != E_OK, Error);
@@ -6126,6 +6146,8 @@ INT Rebmix::REBMIXKNN()
                 }
 
                 n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+                em_aam_ = OptMixTheta_[emp].em_aam;
 
                 if (EMIC < all_IC_[i]) all_IC_[i] = EMIC;
 
@@ -6193,6 +6215,8 @@ INT Rebmix::REBMIXKNN()
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                    OptMixTheta_[j].em_aam = EM_->aam_;
+
                     Error = InformationCriterionKNN(OptMixTheta_[j].k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                     E_CHECK(Error != E_OK, Error);
@@ -6222,6 +6246,8 @@ INT Rebmix::REBMIXKNN()
             }
 
             n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+            em_aam_ = OptMixTheta_[emp].em_aam;
 
             summary_.k = OptMixTheta_[emp].k;
 
@@ -6656,6 +6682,8 @@ INT Rebmix::REBMIXKDE()
 
         OptMixTheta_[i].n_iter_em = 0;
 
+        OptMixTheta_[i].em_aam = 0;
+
         OptMixTheta_[i].initialized = 0;
     }
 
@@ -6901,6 +6929,8 @@ INT Rebmix::REBMIXKDE()
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                        OptMixTheta_[j].em_aam = EM_->aam_;
+
                         Error = InformationCriterionKDE(OptMixTheta_[j].logV, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                         E_CHECK(Error != E_OK, Error);
@@ -6927,6 +6957,8 @@ INT Rebmix::REBMIXKDE()
                 }
 
                 n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+                em_aam_ = OptMixTheta_[emp].em_aam;
 
                 if (EMIC < all_IC_[i]) all_IC_[i] = EMIC;
 
@@ -6994,6 +7026,8 @@ INT Rebmix::REBMIXKDE()
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                    OptMixTheta_[j].em_aam = EM_->aam_;
+
                     Error = InformationCriterionKDE(OptMixTheta_[j].logV, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                     E_CHECK(Error != E_OK, Error);
@@ -7023,6 +7057,8 @@ INT Rebmix::REBMIXKDE()
             }
 
             n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+            em_aam_ = OptMixTheta_[emp].em_aam;
 
             summary_.k = OptMixTheta_[emp].k;
 
@@ -7467,6 +7503,8 @@ INT Rebmix::REBMIXH()
 
         OptMixTheta_[i].n_iter_em = 0;
 
+        OptMixTheta_[i].em_aam = 0;
+
         OptMixTheta_[i].initialized = 0;
     }
 
@@ -7728,6 +7766,8 @@ INT Rebmix::REBMIXH()
 
                         OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                        OptMixTheta_[j].em_aam = EM_->aam_;
+
                         Error = InformationCriterionH(OptMixTheta_[j].logV, all_K_[i], Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                         E_CHECK(Error != E_OK, Error);
@@ -7754,6 +7794,8 @@ INT Rebmix::REBMIXH()
                 }
 
                 n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+                em_aam_ = OptMixTheta_[emp].em_aam;
 
                 if (EMIC < all_IC_[i]) all_IC_[i] = EMIC;
 
@@ -7804,7 +7846,7 @@ E1:     all_K_[i] = k;
     }
     while (!Golden());
 
-/// Panic Branislav
+/// Panic Branislav - Tukaj manjka namestitev acceleration value
     if (EM_strategy_ == strategy_best) {
         EMIC = FLOAT_MAX; EMlogL = (FLOAT)0.0; EMM = 0; EMD = (FLOAT)0.0; emp = -1;
 
@@ -7828,6 +7870,8 @@ E1:     all_K_[i] = k;
                     n_iter_sum_ += EM_->n_iter_;
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
+
+                    OptMixTheta_[j].em_aam = EM_->aam_;
 
                     Error = InformationCriterionH(OptMixTheta_[j].logV, k, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
@@ -7858,6 +7902,8 @@ E1:     all_K_[i] = k;
             }
 
             n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+            em_aam_ = OptMixTheta_[emp].em_aam;
 
             summary_.k = OptMixTheta_[emp].k;
 
@@ -8250,6 +8296,8 @@ INT Rebmix::REBMIXK()
 
         OptMixTheta_[i].n_iter_em = 0;
 
+        OptMixTheta_[i].em_aam = 0;
+
         OptMixTheta_[i].initialized = 0;
     }
 
@@ -8469,6 +8517,8 @@ INT Rebmix::REBMIXK()
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                    OptMixTheta_[j].em_aam = EM_->aam_;
+
                     Error = InformationCriterionH(OptMixTheta_[j].logV, nr_, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                     E_CHECK(Error != E_OK, Error);
@@ -8495,6 +8545,8 @@ INT Rebmix::REBMIXK()
             }
 
             n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+            em_aam_ = OptMixTheta_[emp].em_aam;
 
             if (EMIC < all_IC_[0]) all_IC_[0] = EMIC;
 
@@ -8554,6 +8606,8 @@ INT Rebmix::REBMIXK()
 
                     OptMixTheta_[j].n_iter_em = EM_->n_iter_;
 
+                    OptMixTheta_[j].em_aam = EM_->aam_;
+
                     Error = InformationCriterionH(OptMixTheta_[j].logV, nr_, Y, OptMixTheta_[j].c, OptMixTheta_[j].W, OptMixTheta_[j].MixTheta, &IC, &logL, &M, &D);
 
                     E_CHECK(Error != E_OK, Error);
@@ -8583,6 +8637,8 @@ INT Rebmix::REBMIXK()
             }
 
             n_iter_ = OptMixTheta_[emp].n_iter_em;
+
+            em_aam_ = OptMixTheta_[emp].em_aam;
 
             memmove(summary_.h, OptMixTheta_[emp].h, length_pdf_ * sizeof(FLOAT));
 
@@ -9192,6 +9248,20 @@ INT Rebmix::WriteDataFile()
         break;
     case varECM:
         fprintf(fp0, "\t%s", "ECM");
+
+        break;
+    case varSEM:
+        fprintf(fp0, "\t%s", "SEM");
+
+        break;
+    case varECM_EM:
+        fprintf(fp0, "\t%s", "ECM-EM");
+
+        break;
+    case varSEM_EM:
+        fprintf(fp0, "\t%s", "SEM-EM");
+
+        break;
     }
     
     switch (EM_accel_) {
@@ -9205,9 +9275,111 @@ INT Rebmix::WriteDataFile()
         break;
     case acc_golden:
         fprintf(fp0, "\t%s", "golden");
+        break;
+    case acc_naive:
+        switch (EM_accel_eq) {
+        case acc_param_growth_lin:
+            fprintf(fp0, "\t%s", "lingrowth");
+
+            break;
+        case acc_param_growth_exp:
+            fprintf(fp0, "\t%s", "expgrowth");
+
+            break;
+        case acc_param_decay_lin:
+            fprintf(fp0, "\t%s", "lindecay");
+
+            break;
+        case acc_param_decay_exp:
+            fprintf(fp0, "\t%s", "expdecay");
+
+            break;
+        case acc_param_euclidean_squared:
+            fprintf(fp0, "\t%s", "stem1");
+
+            break;
+        case acc_param_euclidean_weighted:
+            fprintf(fp0, "\t%s", "stem2");
+
+            break;
+        case acc_param_euclidean_semi_weighted:
+            fprintf(fp0, "\t%s", "stem3");
+
+            break;
+        case acc_param_none:default:
+            fprintf(fp0, "\t%s", "naive");
+
+            break;
+        }
+        break;
+    case acc_stem:
+        switch (EM_accel_eq) {
+        case acc_param_growth_lin:
+            fprintf(fp0, "\t%s", "lingrowth");
+
+            break;
+        case acc_param_growth_exp:
+            fprintf(fp0, "\t%s", "expgrowth");
+
+            break;
+        case acc_param_decay_lin:
+            fprintf(fp0, "\t%s", "lindecay");
+
+            break;
+        case acc_param_decay_exp:
+            fprintf(fp0, "\t%s", "expdecay");
+
+            break;
+        case acc_param_euclidean_squared:
+            fprintf(fp0, "\t%s", "stem1");
+            break;
+        case acc_param_euclidean_weighted:
+            fprintf(fp0, "\t%s", "stem2");
+            break;
+        case acc_param_euclidean_semi_weighted:
+            fprintf(fp0, "\t%s", "stem3");
+            break;
+        case acc_param_none:default:
+            fprintf(fp0, "\t%s", "stem");
+            break;
+        }
+        break;
+    case acc_square:
+        switch (EM_accel_eq) {
+        case acc_param_growth_lin:
+            fprintf(fp0, "\t%s", "lingrowth");
+
+            break;
+        case acc_param_growth_exp:
+            fprintf(fp0, "\t%s", "expgrowth");
+
+            break;
+        case acc_param_decay_lin:
+            fprintf(fp0, "\t%s", "lindecay");
+
+            break;
+        case acc_param_decay_exp:
+            fprintf(fp0, "\t%s", "expdecay");
+
+            break;
+        case acc_param_euclidean_squared:
+            fprintf(fp0, "\t%s", "square1");
+            break;
+        case acc_param_euclidean_weighted:
+            fprintf(fp0, "\t%s", "square2");
+            break;
+        case acc_param_euclidean_semi_weighted:
+            fprintf(fp0, "\t%s", "square3");
+            break;
+        case acc_param_none:default:
+            fprintf(fp0, "\t%s", "square");
+            break;
+        }
+        break;
+
     }
     
-    fprintf(fp0, "\t%E\t%E\t%d\t%d\t%d\n", EM_am_,
+    fprintf(fp0, "\t%E\t%E\t%d\t%d\t%d\n", em_aam_,
                                            EM_TOL_,
                                            EM_max_iter_,
                                            n_iter_,
@@ -9362,7 +9534,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FLOAT isF;
     INT   i, iinc, imax, imin, isI, j, k, Error = E_OK;
 
-    printf("REBMIX Version 2.16.1\n");
+    printf("REBMIX Version 2.17.0\n");
 
     fp = fopen(file, "r");
 
@@ -9889,6 +10061,18 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             else
             if (!strcmp(pchar, "ECM")) {
                 EM_variant_ = varECM;
+            } 
+            else
+            if (!strcmp(pchar, "SEM")) {
+                EM_variant_ = varSEM;
+            }
+            else
+            if (!strcmp(pchar, "ECM-EM")) {
+                EM_variant_ = varECM_EM;
+            }
+            else
+            if (!strcmp(pchar, "SEM-EM")) {
+                EM_variant_ = varSEM_EM;
             }
             else{
                 E_CHECK(1, E_ARG);
@@ -9898,14 +10082,67 @@ S0: while (fgets(line, 2048, fp) != NULL) {
         if (!strcmp(ident, "EMACCELERATION")) {
             if (!strcmp(pchar, "FIXED")) {
                 EM_accel_ = acc_fixed;
+                EM_accel_eq = acc_param_none;
             }
             else
             if (!strcmp(pchar, "LINE")) {
                 EM_accel_ = acc_line;
+                EM_accel_eq = acc_param_none;
             }
             else
             if (!strcmp(pchar, "GOLDEN")) {
                 EM_accel_ = acc_golden;
+                EM_accel_eq = acc_param_none;
+            }
+            else
+            if (!strcmp(pchar, "LINGROWTH")) {
+                EM_accel_ = acc_naive;
+                EM_accel_eq = acc_param_growth_lin;
+            }
+            else
+            if (!strcmp(pchar, "LINDECAY")) {
+                EM_accel_ = acc_naive;
+                EM_accel_eq = acc_param_decay_lin;
+            }
+            else
+            if (!strcmp(pchar, "EXPGROWTH")) {
+                EM_accel_ = acc_naive;
+                EM_accel_eq = acc_param_growth_exp;
+            }
+            else
+            if (!strcmp(pchar, "EXPDECAY")) {
+                EM_accel_ = acc_naive;
+                EM_accel_eq = acc_param_decay_exp;
+            } 
+            else
+            if (!strcmp(pchar, "STEM1")) {
+                EM_accel_ = acc_stem;
+                EM_accel_eq = acc_param_euclidean_squared;
+            } 
+            else
+            if (!strcmp(pchar, "STEM2")) {
+                EM_accel_ = acc_stem;
+                EM_accel_eq = acc_param_euclidean_weighted;
+            } 
+            else
+            if (!strcmp(pchar, "STEM3")) {
+                EM_accel_ = acc_stem;
+                EM_accel_eq = acc_param_euclidean_semi_weighted;
+            } 
+            else
+            if (!strcmp(pchar, "SQUARE1")) {
+                EM_accel_ = acc_square;
+                EM_accel_eq = acc_param_euclidean_squared;
+            } 
+            else
+            if (!strcmp(pchar, "SQUARE2")) {
+                EM_accel_ = acc_square;
+                EM_accel_eq = acc_param_euclidean_weighted;
+            } 
+            else
+            if (!strcmp(pchar, "SQUARE3")) {
+                EM_accel_ = acc_square;
+                EM_accel_eq = acc_param_euclidean_semi_weighted;
             }
             else{
                 E_CHECK(1, E_ARG);
@@ -9934,6 +10171,42 @@ S0: while (fgets(line, 2048, fp) != NULL) {
             EM_am_ = isF = (FLOAT)atof(pchar);
 
             E_CHECK((isF < (FLOAT)1.0) || (isF > (FLOAT)2.0), E_ARG);
+        }
+        else
+        if (!strcmp(ident, "EMLIKELIHOOD")) {
+            if (!strcmp(pchar, "STANDARD")) {
+                EM_loglkest_ = likelihood_standard;
+            }
+            else
+            if (!strcmp(pchar, "AITKEN_BOHNING")) {
+                EM_loglkest_ = likelihood_aitken_bohning;
+            } else
+            if (!strcmp(pchar, "AITKEN_LINDSAY")) {
+                EM_loglkest_ = likelihood_aitken_lindsay;
+            } else
+            if (!strcmp(pchar, "AITKEN_NICHOLAS")) {
+                EM_loglkest_ = likelihood_aitken_nicholas;
+            }
+            else {
+                EM_loglkest_ = likelihood_standard;
+            }
+        }
+        else
+        if (!strcmp(ident, "EMTOLTYPE")) {
+            if (!strcmp(pchar, "ABSOLUTE")) {
+                EM_toltype_ = likelihood_absolute;
+            }
+            else
+            if (!strcmp(pchar, "NORMALISED")) {
+                EM_toltype_ = likelihood_normalised;
+            }
+            else
+            if (!strcmp(pchar, "PERCENTAGE")) {
+                EM_toltype_ = likelihood_percentage;
+            }
+            else {
+                EM_toltype_ = likelihood_normalised;
+            }
         }
 /// End
         else
@@ -10025,6 +10298,8 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
                 FLOAT *EMAccelerationMul, // Acceleration rate for Em algorithm.
                 INT   *EMMaxIter,         // Maximum number of iterations in EM algorithm.
                 INT   *EMK,               // Number of bins for histogram EM algorithm.
+                char  **EMLikelihood,     // Use aitken accelerated likelihood estimation.
+                char  **EMTolType,        // Likelihood criterion check (absolute vs normalised).
                 FLOAT *W,                 // Component weights.
                 FLOAT *MixTheta)          // Mixture parameters.
 {
@@ -10299,6 +10574,18 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
         else
         if (!strcmp(EMVariant[0], "ECM")) {
             EM_variant_ = varECM;
+        } 
+        else
+        if (!strcmp(EMVariant[0], "SEM")) {
+            EM_variant_ = varSEM;
+        }
+        else
+        if (!strcmp(EMVariant[0], "ECM-EM")) {
+            EM_variant_ = varECM_EM;
+        }
+        else
+        if (!strcmp(EMVariant[0], "SEM-EM")) {
+            EM_variant_ = varSEM_EM;
         }
         else {
             E_CHECK(EM_strategy_ != strategy_none, E_ARG);
@@ -10310,14 +10597,65 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
     if (EMAcceleration && EMStrategy) {
         if (!strcmp(EMAcceleration[0], "fixed")) {
             EM_accel_ = acc_fixed;
+            EM_accel_eq = acc_param_none;
         }
         else
         if (!strcmp(EMAcceleration[0], "line")) {
             EM_accel_ = acc_line;
+            EM_accel_eq = acc_param_none;
         }
         else
         if (!strcmp(EMAcceleration[0], "golden")) {
             EM_accel_ = acc_golden;
+            EM_accel_eq = acc_param_none;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "lingrowth")) {
+            EM_accel_ = acc_naive;
+            EM_accel_eq = acc_param_growth_lin;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "lindecay")) {
+            EM_accel_ = acc_naive;
+            EM_accel_eq = acc_param_decay_lin;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "expgrowth")) {
+            EM_accel_ = acc_naive;
+            EM_accel_eq = acc_param_growth_exp;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "expdecay")) {
+            EM_accel_ = acc_naive;
+            EM_accel_eq = acc_param_decay_exp;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "stem1")) {
+            EM_accel_ = acc_stem;
+            EM_accel_eq = acc_param_euclidean_squared;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "stem2")) {
+            EM_accel_ = acc_stem;
+            EM_accel_eq = acc_param_euclidean_weighted;
+        }else
+        if (!strcmp(EMAcceleration[0], "stem3")) {
+            EM_accel_ = acc_stem;
+            EM_accel_eq = acc_param_euclidean_semi_weighted;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "square1")) {
+            EM_accel_ = acc_square;
+            EM_accel_eq = acc_param_euclidean_squared;
+        }
+        else
+        if (!strcmp(EMAcceleration[0], "square2")) {
+            EM_accel_ = acc_square;
+            EM_accel_eq = acc_param_euclidean_weighted;
+        }else
+        if (!strcmp(EMAcceleration[0], "square3")) {
+            EM_accel_ = acc_square;
+            EM_accel_eq = acc_param_euclidean_semi_weighted;
         }
         else {
             E_CHECK(EM_strategy_ != strategy_none, E_ARG);
@@ -10333,6 +10671,41 @@ INT Rebmix::Set(char  **Preprocessing,    // Preprocessing type.
     if (EMMaxIter) EM_max_iter_ = *EMMaxIter;
 
     if (EMK) EM_K_ = *EMK;
+
+    //EM_toltype_ = likelihood_normalised;
+
+    if (EMTolType) {
+        if (!strcmp(EMTolType[0], "absolute")) {
+            EM_toltype_ = likelihood_absolute;
+        } else 
+        if (!strcmp(EMTolType[0], "normalised")) {
+            EM_toltype_ = likelihood_normalised;
+        } else 
+        if (!strcmp(EMTolType[0], "percentage")) {
+            EM_toltype_ = likelihood_percentage;
+        } else {
+            EM_toltype_ = likelihood_normalised;
+        }
+    }
+
+    // EM_loglkest_ = likelihood_standard;
+
+    if (EMLikelihood) {
+        if (!strcmp(EMLikelihood[0], "standard")) {
+            EM_loglkest_ = likelihood_standard;
+        } else 
+        if (!strcmp(EMLikelihood[0], "aitken-bohning")) {
+            EM_loglkest_ = likelihood_aitken_bohning;
+        } else
+        if (!strcmp(EMLikelihood[0], "aitken-lindsay")) {
+            EM_loglkest_ = likelihood_aitken_lindsay;
+        } else 
+        if (!strcmp(EMLikelihood[0], "aitken-nicholas")) {
+            EM_loglkest_ = likelihood_aitken_nicholas;
+        } else {
+            EM_loglkest_ = likelihood_standard;
+        }
+    }
 /// End
 
     if (n) n_ = nr_ = *n;
@@ -10465,6 +10838,7 @@ EEXIT:
 /// Panic Branislav
 INT Rebmix::Get(INT   *n_iter,         // Number of iterations for optimal case.
                 INT   *n_iter_sum,     // Number of iterations in whole run.
+                FLOAT *em_am,          // Average acceleration multiplier used.
 /// End
                 INT   *summary_k,      // Optimal v or optimal k.
                 FLOAT *summary_h,      // Optimal class widths of length d.
@@ -10495,6 +10869,8 @@ INT Rebmix::Get(INT   *n_iter,         // Number of iterations for optimal case.
     if (n_iter) *n_iter = n_iter_;
 
     if (n_iter_sum) *n_iter_sum = n_iter_sum_;
+
+    if (em_am) *em_am = em_aam_;
 /// End
 
     if (summary_k) *summary_k = summary_.k;

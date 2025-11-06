@@ -10,9 +10,9 @@ options(prompt = "> ", continue = "+ ", width = 70,
   useFancyQuotes = FALSE, digits = 3)
 
 library(rebmix)
-library(e1071)
-library(FNN)
-library(MASS)
+#library(e1071)
+#library(FNN)
+#library(MASS)
 
 data(bearings)
 data(steelplates)
@@ -143,178 +143,178 @@ rownames(test) <- NULL
 
 ########## svm ##########
 
-system.time({
+#system.time({
+#
+#model <- svm(x = train, y = Zr)
+#
+#Zp <- predict(model, test)
+#
+#})
+#
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
 
-model <- svm(x = train, y = Zr)
-
-Zp <- predict(model, test)
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#Error
 
 ########## knn ##########
 
-system.time({
-
-knn <- knn(train = train, test = test, cl = Zr, k = 10)
-
-Zp <- knn[1:nrow(test)]
-
-})
-
-Zp <- as.numeric(as.vector(Zp))
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zp)
-
-Error
+#system.time({
+#
+#knn <- knn(train = train, test = test, cl = Zr, k = 10)
+#
+#Zp <- knn[1:nrow(test)]
+#
+#})
+#
+#Zp <- as.numeric(as.vector(Zp))
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zp)
+#
+#Error
 
 ########## lda ##########
 
-system.time({
-
-lda <- lda(train, Zr)
-
-Zp <- predict(lda, test)$class
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#system.time({
+#
+#lda <- lda(train, Zr)
+#
+#Zp <- predict(lda, test)$class
+#
+#})
+#
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
+#
+#Error
 
 # Steelplates data preparation.
 
-train <- NULL; Zr <- NULL
-
-for (i in 1:length(Steelplates@ntrain)) {
-  Zr <- c(Zr, Steelplates@Zr[[i]])
-  train <- rbind(train, Steelplates@train[[i]])
-}
-
-rownames(train) <- NULL
-
-Zr <- as.factor(Zr)
-
-test <- Steelplates@test; Zt <- as.numeric(Steelplates@Zt)
-
-rownames(test) <- NULL
+#train <- NULL; Zr <- NULL
+#
+#for (i in 1:length(Steelplates@ntrain)) {
+#  Zr <- c(Zr, Steelplates@Zr[[i]])
+#  train <- rbind(train, Steelplates@train[[i]])
+#}
+#
+#rownames(train) <- NULL
+#
+#Zr <- as.factor(Zr)
+#
+#test <- Steelplates@test; Zt <- as.numeric(Steelplates@Zt)
+#
+#rownames(test) <- NULL
 
 ########## svm ##########
 
-system.time({
+#system.time({
+#
+#model <- svm(x = train, y = Zr)
+#
+#Zp <- predict(model, test)
+#
+#})
 
-model <- svm(x = train, y = Zr)
-
-Zp <- predict(model, test)
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
+#
+#Error
 
 ########## knn ##########
 
-system.time({
-
-knn <- knn(train = train, test = test, cl = Zr, k = 10)
-
-Zp <- knn[1:nrow(test)]
-
-})
-
-Zp <- as.numeric(as.vector(Zp))
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zp)
-
-Error
+#system.time({
+#
+#knn <- knn(train = train, test = test, cl = Zr, k = 10)
+#
+#Zp <- knn[1:nrow(test)]
+#
+#})
+#
+#Zp <- as.numeric(as.vector(Zp))
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zp)
+#
+#Error
 
 ########## lda ##########
 
-system.time({
-
-lda <- lda(train, Zr)
-
-Zp <- predict(lda, test)$class
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#system.time({
+#
+#lda <- lda(train, Zr)
+#
+#Zp <- predict(lda, test)$class
+#
+#})
+#
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
+#
+#Error
 
 # Sensorlessdrive data preparation.
 
-train <- NULL; Zr <- NULL
-
-for (i in 1:length(Sensorlessdrive@ntrain)) {
-  Zr <- c(Zr, Sensorlessdrive@Zr[[i]])
-  train <- rbind(train, Sensorlessdrive@train[[i]])
-}
-
-rownames(train) <- NULL
-
-Zr <- as.factor(Zr)
-
-test <- Sensorlessdrive@test; Zt <- as.numeric(Sensorlessdrive@Zt)
-
-rownames(test) <- NULL
+#train <- NULL; Zr <- NULL
+#
+#for (i in 1:length(Sensorlessdrive@ntrain)) {
+#  Zr <- c(Zr, Sensorlessdrive@Zr[[i]])
+#  train <- rbind(train, Sensorlessdrive@train[[i]])
+#}
+#
+#rownames(train) <- NULL
+#
+#Zr <- as.factor(Zr)
+#
+#test <- Sensorlessdrive@test; Zt <- as.numeric(Sensorlessdrive@Zt)
+#
+#rownames(test) <- NULL
 
 ########## svm ##########
 
-system.time({
-
-model <- svm(x = train, y = Zr)
-
-Zp <- predict(model, test)
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#system.time({
+#
+#model <- svm(x = train, y = Zr)
+#
+#Zp <- predict(model, test)
+#
+#})
+#
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
+#
+#Error
 
 ########## knn ##########
 
-system.time({
-
-knn <- knn(train = train, test = test, cl = Zr, k = 10)
-
-Zp <- knn[1:nrow(test)]
-
-})
-
-Zp <- as.numeric(as.vector(Zp))
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zp)
-
-Error
+#system.time({
+#
+#knn <- knn(train = train, test = test, cl = Zr, k = 10)
+#
+#Zp <- knn[1:nrow(test)]
+#
+#})
+#
+#Zp <- as.numeric(as.vector(Zp))
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zp)
+#
+#Error
 
 ########## lda ##########
 
-system.time({
-
-lda <- lda(train, Zr)
-
-Zp <- predict(lda, test)$class
-
-})
-
-Zp <- as.numeric(Zp)
-
-Error <- 1.0 - sum(Zt == Zp) / length(Zt)
-
-Error
+#system.time({
+#
+#lda <- lda(train, Zr)
+#
+#Zp <- predict(lda, test)$class
+#
+#})
+#
+#Zp <- as.numeric(Zp)
+#
+#Error <- 1.0 - sum(Zt == Zp) / length(Zt)
+#
+#Error
