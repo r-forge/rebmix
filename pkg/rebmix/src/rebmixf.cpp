@@ -9534,7 +9534,7 @@ INT Rebmix::RunTemplateFile(char *file)
     FLOAT isF;
     INT   i, iinc, imax, imin, isI, j, k, Error = E_OK;
 
-    printf("REBMIX Version 2.17.0\n");
+    printf("REBMIX Version 2.17.1\n");
 
     fp = fopen(file, "r");
 

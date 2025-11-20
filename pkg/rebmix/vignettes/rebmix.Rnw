@@ -35,9 +35,9 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018, Panic_2020a, Panic_2020b, Panic_2020c}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.17.0}}
+\section{What's new in version \texttt{2.17.1}}
 
-In version \texttt{2.17.0}, several improvements have been introduced. 
+In version \texttt{2.17.1}, several improvements have been introduced. 
 Additional methods for accelerating the EM algorithm have been implemented, including linear and quadratic acceleration schemes from \citep{varadhan2008acceleration}. 
 These can be enabled by setting the \texttt{acceleration} slot of the \texttt{EM.control} class to the appropriate value. 
 For the linear acceleration scheme, \texttt{acceleration} should be set to one of \texttt{"stem1"}, \texttt{"stem2"}, or \texttt{"stem3"}. 

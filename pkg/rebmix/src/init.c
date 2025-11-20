@@ -6,7 +6,7 @@ extern void RRNGMIX(void *, void *, void *, void *, void *, void *, void *, void
 extern void RREBMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
     void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
     void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RdensKNearestNeighbourXY(void *, void *, void *, void *, void *, void *, void *, void *);
 extern void RdensKDEXY(void *, void *, void *, void *, void *, void *, void *);
@@ -37,7 +37,7 @@ extern void RCombineComponentsMIX(void *, void *, void *, void *, void *, void *
 
 /// Panic Branislav
 extern void REMMIX(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-    void *, void *, void *, void *, void *, void *);
+    void *, void *, void *, void *, void *, void *, void *, void *);
 /// End
 
 extern void RRNGMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
@@ -45,7 +45,7 @@ extern void RRNGMVNORM(void *, void *, void *, void *, void *, void *, void *, v
 extern void RREBMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
     void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
     void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
+    void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
 extern void RCLSMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *);
 
@@ -65,7 +65,7 @@ extern void RCombineComponentsMVNORM(void *, void *, void *, void *, void *, voi
 
 /// Panic Branislav
 extern void REMMVNORM(void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *, void *,
-    void *, void *, void *, void *, void *);
+    void *, void *, void *, void *, void *, void *, void *);
 /// End
 
 extern void RvonMisesPdf(void *, void *, void *, void *, void *);

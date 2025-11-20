@@ -1,6 +1,6 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
-\section{Changes in version 2.17.0}{ 
+\section{Changes in version 2.17.1}{ 
 \itemize{
 \item Refactored code for EM algorithm calculation.
 \item Added three different methods for EM acceleration calculation.

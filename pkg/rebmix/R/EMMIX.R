@@ -419,7 +419,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.17.0")
+  message("REBMIX Version 2.17.1")
 
   Theta.model <- paste("EM", substr(model, 4, nchar(model)), ".Theta", sep = "")
 
