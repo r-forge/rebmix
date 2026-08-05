@@ -187,7 +187,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("RNGMIX Version 2.17.1")
+  message("RNGMIX Version 2.17.2")
 
   flush.console()
 

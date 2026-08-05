@@ -1,4 +1,4 @@
-.rebmix <- structure(list(
+.rebmix <- list(
 Preprocessing = c("histogram", "kernel density estimation", "k-nearest neighbour"),
 Criterion = c("AIC", "AIC3", "AIC4", "AICc", "BIC", "CAIC", "HQC", "MDL2", "MDL5", "AWE", "CLC", "ICL", "ICL-BIC", "PC", "D", "SSE"),
 Variables = c("continuous", "discrete"),
@@ -12,28 +12,21 @@ EMStrategy = c("none", "exhaustive", "best", "single"),
 EMVariant = c("EM", "ECM", "SEM", "ECM-EM", "SEM-EM"),
 EMAcceleration = c("fixed", "line", "golden", "lingrowth", "lindecay", "expgrowth", "expdecay", "stem1", "stem2", "stem3", "square1", "square2", "square3"),
 EMLikelihood = c("standard", "aitken-bohning", "aitken-lindsay", "aitken-nicholas"),
-EMTolType = c("absolute", "normalised", "percentage")),
-
+EMTolType = c("absolute", "normalised", "percentage"))
 ### End
-.Names = c("Preprocessing", "Criterion", "Variables", "pdf", "pdf.nargs", "pdf.Variables", "Restraints", "Mode", "EMStrategy", "EMVariant", "EMAcceleration", "EMLikelihood", "EMTolType"))
 
-.rebmix.plot <- structure(list(
-what = c("pdf", "marginal pdf", "IC", "logL", "D", "marginal cdf", "K", "cdf")),
-.Names = c("what"))
+.rebmix.plot <- list(
+what = c("pdf", "marginal pdf", "IC", "logL", "D", "marginal cdf", "K", "cdf"))
 
-.rebmix.boot <- structure(list(
-Bootstrap = c("parametric", "nonparametric")),
-.Names = c("Bootstrap"))
+.rebmix.boot <- list(
+Bootstrap = c("parametric", "nonparametric"))
 
-.optbins <- structure(list(
-Rule = c("Sturges", "Log10", "RootN", "Knuth equal", "Knuth unequal")),
-.Names = c("Rule"))
+.optbins <- list(
+Rule = c("Sturges", "Log10", "RootN", "Knuth equal", "Knuth unequal"))
 
-.rclrmix <- structure(list(
-Rule = c("Entropy", "Demp")),
-.Names = c("Rule"))
+.rclrmix <- list(
+Rule = c("Entropy", "Demp"))
 
-.error.defaults <- structure(list(
+.error.defaults <- list(
 ErrorNames = c("E_OK", "E_MEM", "E_ARG", "E_CON", "E_FILE", "E_NO_SOLUTION"),
-FileNames = c("base.cpp", "rngmixf.cpp", "rngmvnormf.cpp", "rebmixf.cpp", "rebmvnormf.cpp", "emf.cpp", "Rmisc.cpp", "Rrebmix.cpp", "Rrebmvnorm.cpp")),
-.Names = c("ErrorNames", "FileNames"))
+FileNames = c("base.cpp", "rngmixf.cpp", "rngmvnormf.cpp", "rebmixf.cpp", "rebmvnormf.cpp", "emf.cpp", "Rmisc.cpp", "Rrebmix.cpp", "Rrebmvnorm.cpp"))

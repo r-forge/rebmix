@@ -1,5 +1,10 @@
 \name{NEWS} \title{News for Package \pkg{rebmix}}
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
+\section{Changes in version 2.17.2}{
+\itemize{
+\item Bug fixes in R code.
+}
+}
 \section{Changes in version 2.17.1}{ 
 \itemize{
 \item Refactored code for EM algorithm calculation.

@@ -281,7 +281,7 @@ function(model, Theta, ...)
       EMMaxIter = as.integer(model@EMcontrol@maximum.iterations),
       EMK = as.integer(model@EMcontrol@K),
       EMLikelihood = as.character(model@EMcontrol@likelihood.estimation.rule),
-      EMTolType = as.integer(model@EMcontrol@likelihood.tolerance.check),
+      EMTolType = as.character(model@EMcontrol@likelihood.tolerance.check),
       EMMerge = as.integer(model@EMcontrol@eliminate.zero.components),
       n_iter = integer(1),
       summary.logL = double(1),
@@ -419,7 +419,7 @@ function(model,
 {
   digits <- getOption("digits"); options(digits = 15)
 
-  message("REBMIX Version 2.17.1")
+  message("REBMIX Version 2.17.2")
 
   Theta.model <- paste("EM", substr(model, 4, nchar(model)), ".Theta", sep = "")
 

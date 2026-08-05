@@ -35,11 +35,13 @@ The \pkg{rebmix} package provides R functions for random univariate and multivar
 \section{Introduction}
 To cite the REBMIX algorithm please refer to \citep{Nagode_Fajdiga_2011a, Nagode_Fajdiga_2011b, Nagode_2015, Nagode_2018, Panic_2020a, Panic_2020b, Panic_2020c}. For theoretical backgrounds please upload \url{http://doi.org/10.5963/JAO0302001}.
 
-\section{What's new in version \texttt{2.17.1}}
+\section{What's new in version \texttt{2.17.2}}
 
-In version \texttt{2.17.1}, several improvements have been introduced. 
-Additional methods for accelerating the EM algorithm have been implemented, including linear and quadratic acceleration schemes from \citep{varadhan2008acceleration}. 
-These can be enabled by setting the \texttt{acceleration} slot of the \texttt{EM.control} class to the appropriate value. 
+Version \texttt{2.17.2} introduces minor bug fixes within R code.
+
+\section{Previous versions}
+
+Version \texttt{2.17.1}, several improvements have been introduced. Additional methods for accelerating the EM algorithm have been implemented, including linear and quadratic acceleration schemes from \citep{varadhan2008acceleration}. These can be enabled by setting the \texttt{acceleration} slot of the \texttt{EM.control} class to the appropriate value. 
 For the linear acceleration scheme, \texttt{acceleration} should be set to one of \texttt{"stem1"}, \texttt{"stem2"}, or \texttt{"stem3"}. 
 For the quadratic acceleration scheme, it should be set to \texttt{"square1"}, \texttt{"square2"}, or \texttt{"square3"}. 
 The difference between \texttt{"stem1"}, \texttt{"stem2"}, and \texttt{"stem3"} lies in the estimation of the acceleration parameter $\alpha$, as described in \citep{varadhan2008acceleration}. 
@@ -72,7 +74,7 @@ The \texttt{likelihood.estimation.rule} accepts one of \texttt{"standard"}, \tex
 The option \texttt{"standard"} represents the original estimate of the log likelihood value, while \texttt{"aitken-bohning"}, \texttt{"aitken-lindsay"}, and \texttt{"aitken-nicholas"} all use Aitken-accelerated estimates.
 The main difference lies in which value is used for the previous estimate of the log likelihood, as described in \citep{mcnicholas2010serial}.
 To support these changes, much of the old EM estimation code has been refactored, and minor bug fixes have been applied. Finally, we improved the C++ code for rough and enhanced Weibull and gamma parameter estimation, and added a new C++ function \texttt{BayesWeibullParameters()}.
-\section{Previous versions}
+
 
 Version \texttt{2.16.0} introduces handling of warnings and errors. The user can monitor in R code the problems that may occur in C++ code. Some minor changes and bug fixes have been made in C++ and R. The rough estimation procedure has been thoroughly analysed and improved. An additional argument \texttt{Mode} has been added to the method \texttt{REBMIX}. The detection of the global mode can now be performed in different ways, which can be advantageous when handling different types of datasets.
 

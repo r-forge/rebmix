@@ -1469,7 +1469,7 @@ INT Emmix::Converged(FLOAT LogLNew, FLOAT LogLOld, INT n) {
         if ((FLOAT)fabs(LogLNew - LogLOld) / (FLOAT)n <= TOL_) Error = E_OK;
         break;
     case likelihood_percentage:
-        if ((FLOAT)fabs((LogLNew - LogLOld) / LogLNew)  <= TOL_) Error = E_OK;
+        if ((FLOAT)fabs((LogLNew - LogLOld) / Max(LogLNew, (FLOAT)1.0))  <= TOL_) Error = E_OK;
         break;
     default:
         if ((FLOAT)fabs(LogLNew - LogLOld) <= TOL_) Error = E_OK;
